@@ -7,6 +7,14 @@
 
 #include "hot/throwable.h"
 
+// The independent tests repository may land before the owning Hotcwap change.
+// Both spellings invoke the same fatal host operation during the transition.
+#if defined(FATAL_THROW)
+#define TEST_FATAL_THROW(...) FATAL_THROW(__VA_ARGS__)
+#else
+#define TEST_FATAL_THROW(...) THROW(__VA_ARGS__)
+#endif
+
 static int g_failures = 0;
 
 #define CHECK(cond, msg) do { \
@@ -99,20 +107,45 @@ int main(void) {
     CHECK(gfxEx.message != NULL && strstr(gfxEx.message, "pipeline") != NULL, "Exception message formatted");
     Exception_free(&gfxEx);
 
-    // Test 8: THROW in isolated child process terminates with code 1 after running teardowns
-    pid_t pid = fork();
-    if (pid == 0) {
-        // Child process
-        printf("[Child] Executing THROW to test runtime termination banner & emergency teardown...\n");
-        THROW("Intentional fatal exception for test", "ThrowableTest::childTest", "dummyVar=%d", 12345);
-        exit(0); // Should never be reached
-    } else if (pid > 0) {
-        int status = 0;
-        waitpid(pid, &status, 0);
-        CHECK(WIFEXITED(status), "Child process exited normally (not via unhandled signal or segfault)");
-        CHECK(WEXITSTATUS(status) == 1, "Child process exited with status code 1 as specified by THROW()");
+    // Test 8: fatal reporting is distinct, loud, and exits after teardown.
+    int reportPipe[2];
+    if (pipe(reportPipe) != 0) {
+        CHECK(false, "Failed to create fatal diagnostic capture pipe");
     } else {
-        CHECK(false, "Failed to fork process for THROW test");
+        fflush(stdout);
+        pid_t pid = fork();
+        if (pid == 0) {
+            close(reportPipe[0]);
+            if (dup2(reportPipe[1], fileno(stderr)) < 0)
+                _exit(2);
+            close(reportPipe[1]);
+            TEST_FATAL_THROW("Intentional fatal exception for test", "ThrowableTest::childTest", "dummyVar=%d", 12345);
+            _exit(2); // Never reached.
+        }
+        close(reportPipe[1]);
+        if (pid > 0) {
+            int status = 0;
+            alarm(10); // A stuck emergency teardown must fail the test.
+            pid_t waited = waitpid(pid, &status, 0);
+            alarm(0);
+            CHECK(waited == pid, "Child was joined successfully");
+            if (waited == pid) {
+                CHECK(WIFEXITED(status), "Fatal path exited rather than segfaulting");
+                if (WIFEXITED(status))
+                    CHECK(WEXITSTATUS(status) == 1, "FATAL_THROW exited with status 1");
+            }
+            char report[8192] = {0};
+            ssize_t count = read(reportPipe[0], report, sizeof(report) - 1);
+            CHECK(count > 0, "Fatal diagnostic was written");
+            if (count > 0) {
+                CHECK(strstr(report, "RUNTIME EXCEPTION") != NULL, "Fatal banner was emitted");
+                CHECK(strstr(report, "Intentional fatal exception for test") != NULL,
+                      "Fatal reason was emitted");
+            }
+        } else {
+            CHECK(false, "Failed to fork process for FATAL_THROW test");
+        }
+        close(reportPipe[0]);
     }
 
     if (g_failures == 0) {

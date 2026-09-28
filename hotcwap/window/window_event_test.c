@@ -135,7 +135,7 @@ static void onFocusLostRec(void *self, Window *window) {
 }
 
 static void onZoomFilledRec(void *self, Window *window) {
-    Recorder *r = (Recorder*) self;
+    Recorder *r = self;
     (*r).lastWindow = window;
     (*r).fired++;
 }

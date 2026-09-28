@@ -4,7 +4,7 @@
 // harness for hotcwap's restore-before-commit rollback (hot/hot.c).
 //
 // EXERCISES THE REAL LADDER AGAINST A FOREIGN-GENERATION MODULE:
-//   1. Build a console.log $VEX_MANIFEST and reflect generation 1 = the good
+//   1. Build a scratch $VEX_MANIFEST and reflect generation 1 = the good
 //      hot_behavior build (canonical HOT_BEHAVIOR_SCHEMA_MAGIC).
 //   2. First load, then mutate module state via hot_behavior_set_phase_bias
 //      and record a determinist pulse baseline (the value proves which image
@@ -197,11 +197,18 @@ int main(void) {
     char scratch[] = "/tmp/vexgraph_rollback_XXXXXX";
     char *loadBase = mkdtemp(scratch);
     if (!loadBase) {
-        fprintf(stderr, "FAIL: cannot mkdtemp console.log manifest base\n");
+        fprintf(stderr, "FAIL: cannot mkdtemp scratch manifest base\n");
         return 1;
     }
     if (setenv("VEX_MANIFEST", loadBase, 1) != 0) {
         fprintf(stderr, "FAIL: cannot override VEX_MANIFEST\n");
+        rmtree(loadBase);
+        return 1;
+    }
+    char homeDir[512];
+    snprintf(homeDir, sizeof(homeDir), "%s/home", loadBase);
+    if (!mkdir_p(homeDir) || setenv("HOME", homeDir, 1) != 0) {
+        fprintf(stderr, "FAIL: cannot redirect HOME\n");
         rmtree(loadBase);
         return 1;
     }

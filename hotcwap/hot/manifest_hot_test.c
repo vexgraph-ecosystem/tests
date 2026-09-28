@@ -4,7 +4,7 @@
 // harness for hotcwap's generation-driven loader (hot/hot.c + hot/manifest.c).
 //
 // EXERCISES THE REAL LADDER, NOT A STUB:
-//   1. Build a console.log $VEX_MANIFEST (MANIFEST_APP_DATA override seam).
+//   1. Build a scratch $VEX_MANIFEST (MANIFEST_APP_DATA override seam).
 //   2. MANIFEST() + MANIFEST_LIBRARY("hot_behavior") + MANIFEST_ENSURE().
 //   3. MANIFEST_REFLECT a payload dir containing the built hot_behavior
 //      module → seeds generation stamp 1.
@@ -173,11 +173,18 @@ int main(void) {
     char scratch[] = "/tmp/vexgraph_manifest_XXXXXX";
     char *loadBase = mkdtemp(scratch);
     if (!loadBase) {
-        fprintf(stderr, "FAIL: cannot mkdtemp console.log manifest base\n");
+        fprintf(stderr, "FAIL: cannot mkdtemp scratch manifest base\n");
         return 1;
     }
     if (setenv("VEX_MANIFEST", loadBase, 1) != 0) {
         fprintf(stderr, "FAIL: cannot override VEX_MANIFEST\n");
+        rmtree(loadBase);
+        return 1;
+    }
+    char homeDir[512];
+    snprintf(homeDir, sizeof(homeDir), "%s/home", loadBase);
+    if (!mkdir_p(homeDir) || setenv("HOME", homeDir, 1) != 0) {
+        fprintf(stderr, "FAIL: cannot redirect HOME\n");
         rmtree(loadBase);
         return 1;
     }

@@ -43,11 +43,15 @@ static bool dirExists(const char *path) {
 int main(void) {
     printf("=== Running Manifest UNINSTALL & Bespoke Bridge Test Suite ===\n");
 
-    // Isolate in console.log dir via VEX_MANIFEST test seam
+    // Isolate in scratch dir via VEX_MANIFEST test seam
     char scratchTemplate[] = "/tmp/vex_uninstall_test_XXXXXX";
     char *scratchDir = mkdtemp(scratchTemplate);
-    CHECK(scratchDir != NULL, "Created isolated console.log directory");
+    CHECK(scratchDir != NULL, "Created isolated scratch directory");
     setenv("VEX_MANIFEST", scratchDir, 1);
+    char homeDir[512];
+    snprintf(homeDir, sizeof(homeDir), "%s/home", scratchDir);
+    if (mkdir(homeDir, 0755) == 0)
+        setenv("HOME", homeDir, 1);
 
     // #1 Mount initial manifest
     bool mounted = MANIFEST("appdata", "vexgraph", "test suite");
@@ -111,7 +115,7 @@ int main(void) {
     (void) changed;
     CHECK(true, "bridgeBespokeCheck() executed safely");
 
-    // Remove console.log base
+    // Remove scratch base
     rmdir(scratchDir);
 
     printf("\n=== Results: %d failure(s) ===\n", g_failures);
