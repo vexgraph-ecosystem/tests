@@ -5,6 +5,26 @@
 # aggregates the run target.
 cmake_minimum_required(VERSION 3.28)
 
+# Small, explicit diagnostic proof set. This is not a claim that every test
+# source in this independent repository is built or executed.
+if(TARGET throw_test AND TARGET throwable_test)
+    add_test(NAME recoverable_throw_test COMMAND $<TARGET_FILE:throw_test>)
+    add_test(NAME fatal_throw_test COMMAND $<TARGET_FILE:throwable_test>)
+    set_tests_properties(recoverable_throw_test fatal_throw_test PROPERTIES TIMEOUT 15)
+    add_custom_target(diagnostic_smoke_tests
+        COMMAND $<TARGET_FILE:throw_test>
+        COMMAND $<TARGET_FILE:throwable_test>
+        DEPENDS throw_test throwable_test
+        COMMENT "Checking recoverable and fatal diagnostics separately"
+    )
+endif()
+foreach(CONTAINER_TEST array collection)
+    if(TARGET ${CONTAINER_TEST}_test)
+        add_test(NAME ${CONTAINER_TEST}_test COMMAND $<TARGET_FILE:${CONTAINER_TEST}_test>)
+        set_tests_properties(${CONTAINER_TEST}_test PROPERTIES TIMEOUT 15)
+    endif()
+endforeach()
+
 # Target run_all_tests: the renovation matrix — the graphvex language suite.
 # Placement (component) → drawing (graphics) → painting (raster row) →
 # collage (compositor) → device dialects (device) → filters.

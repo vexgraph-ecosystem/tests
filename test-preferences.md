@@ -1,11 +1,9 @@
 # vexgraph — Test Preferences (Ecosystem Test Laws)
 
-;;EDITION("2026.09-testing")
-
 This is the ecosystem's proof lawbook. It defines the evidence required before a production file,
 class, component, or subsystem is called tested across the R1–R5 ecosystem. It governs **proof and
 readiness only**; the universal architecture remains governed by `ecosystem/vexspoke/preferences.md`
-(the Living Preferences Law). When a test law is cited, cite its **Title** — never a position,
+(the Living Documentation Law). When a test law is cited, cite its **Title** — never a position,
 never a number (the Law Identity Doctrine).
 
 ## How to use this document
@@ -27,6 +25,7 @@ blueprints, so their first real commit lands already governed.
 
 **Part I — Universal Test Laws** (bind every repo and every file)
 - Per-File Battle Test Law
+- Test Tree Mirror Law
 - Contract Before Cases Law
 - Public Surface Proof Law
 - Value Boundary Matrix Law
@@ -38,6 +37,7 @@ blueprints, so their first real commit lands already governed.
 - Resource and Lifetime Law
 - Concurrency and Bounded Progress Law
 - Adversarial and Hostile-Input Proof Law
+- Hot-Path Minimal Guard Law
 - Darling Component Narrative and Focus Law
 - Runtime-Level Seam Law
 - Executable Evidence and Readiness Law
@@ -71,9 +71,10 @@ Subsystem-wide green results can hide an untested file. A neighboring class work
 establish that this file's constructors, operations, failure paths, and cleanup work.
 
 ### The Rule:
-- Every production file unit has an owning test file in the matching `tests/<subsystem>/` tree, named
-  for that unit, plus a short inventory of its public surface and applicable requirements from this
-  document. A file with no callable public API still gets an owner test that exercises its behavior
+- Every production file unit has an owning test file in the matching `tests/<subsystem>/` tree, in the
+  directory that mirrors the unit's source directory (the Test Tree Mirror Law), named for that unit,
+  plus a short inventory of its public surface and applicable requirements from this document. A file
+  with no callable public API still gets an owner test that exercises its behavior
   through the nearest stable seam; record that seam explicitly.
 - Each owner test proves the file's normal behavior, applicable value boundaries, invalid inputs,
   failure state, lifetime, and concurrency contract. It runs independently enough that its result
@@ -88,6 +89,30 @@ establish that this file's constructors, operations, failure paths, and cleanup 
   executed evidence. Never promote an entire layer from a partial set of file results.
 - Add cross-file and cross-level integration tests after file-level proof. They test seams and
   composition; they do not confer readiness on an individual file whose own owner test is missing.
+
+---
+
+## Test Tree Mirror Law
+
+### Definition:
+A subsystem's test tree mirrors its production source tree. For a production unit at
+`<repo>/<dir>/<unit>.c`, the owning test is `tests/<subsystem>/<dir>/<unit>_test.c` — the same
+relative directory, with the unit name suffixed by `_test`. A seam test that spans directories or
+levels sits in the mirrored directory of its primary subject.
+
+### The Why:
+A flat `tests/<subsystem>/` dump becomes unreadable as the ecosystem grows: hundreds of files in one
+directory, no signal which source directory an owner test belongs to, and no mechanical way to answer
+"is this file tested?". Mirroring the source tree makes ownership a path lookup, keeps each directory
+self-describing, and preserves the Per-File Battle Test Law's one-owner-test-per-unit mapping.
+
+### The Rule:
+- Mirror the production directory: `ecosystem/hotcwap/window/window.c` maps to
+  `tests/hotcwap/window/window_test.c`.
+- One owner test per file unit, named `<unit>_test.c` in the mirrored directory.
+- A unit with no directory (a repo-root file) keeps its owner test at `tests/<subsystem>/<unit>_test.c`.
+- A seam test lives in the mirrored directory of its primary subject; record the seam in the test header.
+- The Test Segregation Law still forbids any test file inside a production source tree.
 
 ---
 
@@ -245,9 +270,18 @@ half-written file, or partially swapped module.
 
 ### Definition:
 A rejection the contract promises must be **observable**. The caller receives a defined result
-(return code, `false`, entinel, or safe default), and on the cold path the failure is emitted to a
-channel the test can assert (stderr/stdout log, error code, or counter). Failure is never silent
-where the contract says it rejects.
+(return code, `false`, sentinel, or safe default), and on the cold path the failure is reported
+through `THROW(...)` (the THROW Law) — one `[vex] <file>:<line>: <message>` line to stderr — or
+another channel the test can assert (error code, counter). Failure is never silent where the
+contract says it rejects.
+
+Vexspoke's `THROW` reports a recoverable cold rejection; Hotcwap's
+`FATAL_THROW` is a separate process-terminating operation. The owning tests
+must check the safe return or exit **and** the diagnostic, and normal paths
+must produce no unexpected rejection report. Debug-only probes may be removed
+from Release; bounds and external-input validation needed to avoid undefined
+behavior remain. Sanitizer and isolated crash tests catch faults that never
+reach a reporter.
 
 ### The Why:
 A crash, a silent no-op, and a correct rejection are indistinguishable if nothing reports which
@@ -256,7 +290,7 @@ defect class: the operation failed and nothing said so.
 
 ### The Rule:
 - Every promised rejection has an asserted observable channel. Assert the return value **and**, on
-  cold paths, the reported message or code.
+  cold paths, the reported `THROW` message (`[vex] <file>:<line>: <message>`) or code.
 - Log-once determinism is testable: a rejection emitted once per call is asserted once, not raced.
 - Hot paths stay quiet per the Cold-Strict, Hot-Minimal Validation Law; observability is a cold-seam
   obligation, not a per-frame cost.
@@ -363,6 +397,33 @@ prove nothing about the hostile case, which is the case an attacker supplies.
 
 ---
 
+## Hot-Path Minimal Guard Law
+
+### Definition:
+A hot-path getter or access validates **nothing beyond a single entry guard** — one `nullptr` test,
+or one range test — and returns the Contract's safe default. It never logs, never allocates, and never
+re-validates per element. Where it performs a deliberately unchecked, trust-the-handle read, that
+hot path is declared `;;HOTCODE`, the hot-path declaration marker.
+
+### The Why:
+Re-validating every element on a frame path is how frames die (the Cold-Strict, Hot-Minimal Validation
+Law). A numeric or field getter must be a load plus a branch, not a validation pass. The checks belong
+at the cold seam that admitted the handle; the hot read trusts it. This law proves the split is real
+instead of assumed.
+
+### The Rule:
+- A hot-path getter carries exactly one entry guard (nullptr, or a single range test) and returns the
+  safe default; assert both the guarded path and the value.
+- Assert the absence of cost: no logging and no allocation across a bounded run of calls.
+- The hostile matrix (nullptr variants, wrong pointer, overflow, out-of-range) lives at the **cold
+  seam** under the Pointer, Identity, and Dereference Safety Law — never on the hot getter.
+- Every `;;HOTCODE` marks a hot site; a test proves the cold validator (`;;CHECKER`) rejects the
+  hostile input and the marked site is reachable only with a validated handle.
+- `grep -rn ';;HOTCODE'` lists every hot site; a new `;;HOTCODE` without a covering hot-path guard
+  test is a gap.
+
+---
+
 ## Darling Component Narrative and Focus Law
 
 ### Definition:
@@ -427,8 +488,9 @@ Unwired tests, disabled assertions, skipped platforms, and nondeterministic pass
 confidence.
 
 ### The Rule:
-- Place tests in `tests/<subsystem>/` in the umbrella workspace, or a standalone repository's root
-  `tests/` directory, per the Test Segregation Law. Keep generated artifacts out of source control.
+- Place tests in `tests/<subsystem>/`, mirroring the production source directory (the Test Tree Mirror
+  Law), in the umbrella workspace, or a standalone repository's root `tests/` directory, per the Test
+  Segregation Law. Keep generated artifacts out of source control.
 - Wire every test into a named build and run target. Compile with `-Wall -Wextra -Werror`; keep
   assertions active in release-like test builds. A suite exits nonzero on any failed check.
 - Run deterministic unit and seam tests for each change. Run relevant integration, sanitizer,
@@ -504,16 +566,42 @@ teardown. Everything here is about **swapping live code safely** and **refusing 
   while anything is registered.
 - All waits are bounded (the 25 ms save slices and 100 ms console slices); no wait is unbounded.
 
+### Install Ledger Law
+**Proves:** the machine remembers an install outside the tree.
+- A recorded install reads back; `UNINSTALL` keeps the record (state uninstalled), so a wiped tree is
+  not a fresh install; an explicit `forget` purges it.
+- The ledger is a plain per-user state file outside the tree — a correctness record, not a secure
+  store. The test redirects `HOME` to a scratch dir so it never touches the real state directory.
+
 ### Seams to Prove
 
 | Law | Target test | Seam |
 | :--- | :--- | :--- |
-| Two-Dylib Swap | `tests/hotcwap/two_dylib_swap_test.c` | `Hot_poll` / `perform_swap` |
-| Stale and Wrong Binary | `tests/hotcwap/wrong_binary_test.c` | `dlopen` / `dlsym` gate |
-| Manifest Resilience | `tests/hotcwap/manifest_adversarial_test.c` | `catalog_seed`/`load`/`apply` |
-| Loader Trust Boundary | `tests/hotcwap/loader_trust_test.c` | `readdir` → `dlopen` window |
-| Retire-Ring Overflow | `tests/hotcwap/retire_ring_overflow_test.c` | `HotRetireRing_*` |
-| Teardown and Bounded Wait | `tests/hotcwap/shutdown_order_test.c` | `HotShutdown` |
+| Two-Dylib Swap | `tests/hotcwap/hot/two_dylib_swap_test.c` | `Hot_poll` / `perform_swap` |
+| Stale and Wrong Binary | `tests/hotcwap/hot/wrong_binary_test.c` | `dlopen` / `dlsym` gate |
+| Manifest Resilience | `tests/hotcwap/hot/manifest_adversarial_test.c` | `catalog_seed`/`load`/`apply` |
+| Loader Trust Boundary | `tests/hotcwap/hot/loader_trust_test.c` | `readdir` → `dlopen` window |
+| Retire-Ring Overflow | `tests/hotcwap/hot/retire_ring_overflow_test.c` | `HotRetireRing_*` |
+| Teardown and Bounded Wait | `tests/hotcwap/hot/shutdown_order_test.c` | `HotShutdown` |
+| Install Ledger | `tests/hotcwap/hot/ledger_test.c` | `Ledger_*`, Keychain backend |
+
+### Owner coverage
+
+Every hotcwap production unit that builds on macOS has an owning test in the mirrored tree
+(`tests/hotcwap/<dir>/<unit>_test.c`): the loader family (`hot_test`, `hot_trampoline_test`,
+`hot_retire_test`, `hot_behavior_test`, `ledger_test`, `throwable_test`, `manifest_*`), the kernel
+(`kernel_function_test`, `kernel_lifecycle_test`, `process_test`, `console_test`, `application_test`),
+the spoke bridge (`spoke_test`), and the window subsystem (`window_test`, `window_event_test`,
+`bridge_seam_test`, `traffic_light_test`). This is an ownership inventory, not
+a current pass report: some listed sources are still unwired or platform-specific.
+Record executed target counts and failures from the actual build before claiming
+the R1 battery passed.
+
+The window backends are **platform-exclusive** and compiled only on their own host: `window_test` is
+the owner test for whichever backend the host builds, so the macOS run proves `window/window_cocoa.m`
+and `window/traffic_light_cocoa.m`. `window/window.c`, `window/window_linux.c`,
+`window/window_wayland.c`, and `window/window_win32.c` are **explicitly unproved on macOS** — each
+requires its own host run before it is claimed battle tested.
 
 ---
 
@@ -576,13 +664,15 @@ that lie**.
 
 | Law | Target test | Seam |
 | :--- | :--- | :--- |
-| Deterministic Calculation | `tests/vexspoke/determinism_test.c` | `StrictMath`, `Calc_eval`, `Hash_*` |
-| Boundary Value | `tests/vexspoke/container_boundary_test.c` | `struct/*` |
-| Pointer Legitimacy | `tests/vexspoke/pointer_legitimacy_test.c` | `mem`, `bit`, `variable_pool` |
-| Failure Observability | `tests/vexspoke/failure_observability_test.c` | cold rejections |
-| Overflow Guard | `tests/vexspoke/overflow_guard_test.c` | `Transient_alloc`, `Url_base64`, radix |
-| Lifetime and Arena | `tests/vexspoke/arena_lifetime_test.c` | `MemoryArena_*` |
-| Concurrent Substrate | `tests/vexspoke/atomic_contention_test.c` | `atomic/ring`, `atomic/spin`, `bit` |
+| Deterministic Calculation | `tests/vexspoke/math/determinism_test.c` | `StrictMath`, `Calc_eval`, `Hash_*` |
+| Boundary Value | `tests/vexspoke/struct/container_boundary_test.c` | `struct/*` |
+| Pointer Legitimacy | `tests/vexspoke/nio/pointer_legitimacy_test.c` | `mem`, `bit`, `variable_pool` |
+| Failure Observability | `tests/vexspoke/relational/failure_observability_test.c` | cold rejections |
+| Failure Observability | `tests/vexspoke/exception/try_value_test.c` | `TryValue`/`TryPtr` value-or-error pair |
+| Overflow Guard | `tests/vexspoke/nio/overflow_guard_test.c` | `Transient_alloc`, `Url_base64`, radix |
+| Lifetime and Arena | `tests/vexspoke/nio/arena_lifetime_test.c` | `MemoryArena_*` |
+| Concurrent Substrate | `tests/vexspoke/atomic/atomic_contention_test.c` | `atomic/ring`, `atomic/spin`, `bit` |
+| Hot-Path Guard | `tests/vexspoke/nio/hot_path_guard_test.c` | hot getters, `;;HOTCODE` sites |
 
 ---
 
@@ -634,13 +724,13 @@ resources without use-after-free**.
 
 | Law | Target test | Seam |
 | :--- | :--- | :--- |
-| Backend Conformance | `tests/graphvex/backend_conformance_test.c` | `Device_*`, `Graphics_*` |
-| Native Pixel / Present | `tests/graphvex/native_pixel_test.c` | `Device_resize`/`present` |
-| Resource Retirement | `tests/graphvex/retire_ring_test.c` | retire/swapchain/sync |
-| Safety-Net | `tests/graphvex/vk_guard_test.c` | `VkGuard_check` |
-| Stride Overflow | `tests/graphvex/image_overflow_test.c` | `image`, `texture` |
-| Shader Fallback | `tests/graphvex/shader_fallback_test.c` | `.spv` resolution |
-| Device Fuzz | `tests/graphvex/device_fuzz_test.c` | `vk_device` create |
+| Backend Conformance | `tests/graphvex/device/backend_conformance_test.c` | `Device_*`, `Graphics_*` |
+| Native Pixel / Present | `tests/graphvex/device/native_pixel_test.c` | `Device_resize`/`present` |
+| Resource Retirement | `tests/graphvex/image/retire_ring_test.c` | retire/swapchain/sync |
+| Safety-Net | `tests/graphvex/vulkan/vk_guard_test.c` | `VkGuard_check` |
+| Stride Overflow | `tests/graphvex/image/image_overflow_test.c` | `image`, `texture` |
+| Shader Fallback | `tests/graphvex/shader/shader_fallback_test.c` | `.spv` resolution |
+| Device Fuzz | `tests/graphvex/vulkan/device_fuzz_test.c` | `vk_device` create |
 
 ---
 
@@ -705,15 +795,15 @@ The API driver: REST client, auth, AI providers, MCP server, SSE, webhooks. Ever
 
 | Law | Target test | Seam |
 | :--- | :--- | :--- |
-| Transport Failure-Code | `tests/api-haven/transport_fault_test.c` | `Http_perform` |
-| Status Taxonomy | `tests/api-haven/status_taxonomy_test.c` | `Rest_*` |
-| Retry and Recovery | `tests/api-haven/retry_test.c` | retry policy |
-| Dropout | `tests/api-haven/dropout_test.c` | recv loop / SSE |
-| Volume and Saturation | `tests/api-haven/volume_limit_test.c` | body/line/JSON caps |
-| Offline-Proof | `tests/api-haven/loopback_fault_server_test.c` | loopback server |
-| Endpoint Trust and SSRF | `tests/api-haven/ssrf_test.c` | `parseUrl` copies |
-| Secret Handling | `tests/api-haven/secret_handling_test.c` | auth / TLS |
-| Framing and Escaping | `tests/api-haven/mcp_framing_test.c` | MCP JSON |
+| Transport Failure-Code | `tests/api-haven/api/transport_fault_test.c` | `Http_perform` |
+| Status Taxonomy | `tests/api-haven/api/status_taxonomy_test.c` | `Rest_*` |
+| Retry and Recovery | `tests/api-haven/api/retry_test.c` | retry policy |
+| Dropout | `tests/api-haven/api/dropout_test.c` | recv loop / SSE |
+| Volume and Saturation | `tests/api-haven/api/volume_limit_test.c` | body/line/JSON caps |
+| Offline-Proof | `tests/api-haven/api/loopback_fault_server_test.c` | loopback server |
+| Endpoint Trust and SSRF | `tests/api-haven/api/ssrf_test.c` | `parseUrl` copies |
+| Secret Handling | `tests/api-haven/api/secret_handling_test.c` | auth / TLS |
+| Framing and Escaping | `tests/api-haven/mcp/mcp_framing_test.c` | MCP JSON |
 
 ---
 
@@ -727,6 +817,30 @@ a real window**, shows **many variations of the same element**, and proves **foc
 - Every component test mounts and renders inside a window.
 - A headless probe is used only for deterministic logic and is never presented as proof of hardware
   behavior.
+
+### Robot Input Law
+**Proves:** interaction is driven by a scripted robot/human hardware vocabulary, with no real device.
+- The vocabulary is synthetic steps: pointer move, enter, hover, press, hold (bounded duration),
+  drag begin/to/end, release, click, scroll (wheel and trackpad), and cancel — how a human or a robot
+  would tinker the system, replayed through code.
+- Every scenario is a named, explicit, deterministic sequence; the same script replays identically
+  (the Determinism and Reproducibility Law).
+- Assert the component's state after each step: focus, hover/pressed/highlight, callback count
+  (exactly once), value change, pointer capture and release, and which component receives each event.
+- A gesture that needs real hardware (a real touchpad, a real display) belongs to the IRL probe, never
+  the deterministic suite.
+
+### Window Oracle Law (Lab and IRL)
+**Proves:** the window itself is the test artifact — it renders, and the render is captured and
+compared, like a device tested in a lab and again in the field.
+- **Lab (in a vacuum):** render a scenario deterministically into an offscreen target and capture the
+  frame(s); compare against a stored reference (golden) or a bounded perceptual delta. One scenario
+  yields many named captures — one per element, variant, and state in the Variation Matrix.
+- **IRL:** a separate probe runs on the real window, compositor, and hardware. It never stands in for
+  the lab oracle and its result is never claimed deterministic.
+- A capture mismatch is a defect; a reference is regenerated only with a reviewed, intent-stating
+  change — never silently.
+- Show the tested element both isolated (in a vacuum) and in composition; keep both captures.
 
 ### ScrollPanel Habitat Law
 **Proves:** containers live and scroll where users put them.
@@ -770,13 +884,15 @@ a real window**, shows **many variations of the same element**, and proves **foc
 
 | Law | Target test | Seam |
 | :--- | :--- | :--- |
-| Window-First | `tests/darling/window_host_test.m` | window mount |
-| ScrollPanel Habitat | `tests/darling/scrollpanel_habitat_test.c` | `ScrollPanel` |
-| Variation Matrix | `tests/darling/variation_matrix_test.c` | widget matrix |
-| Focus and Input Reality | `tests/darling/focus_reality_test.c` | `dispatch`/`focus` |
-| Present-On-Demand and Dirty | `tests/darling/tree_dirty_test.c` | `Panel_isTreeDirty` |
-| Layout Robustness | `tests/darling/layout_robustness_test.c` | `container` |
-| Untrusted Text | `tests/darling/untrusted_text_test.c` | markdown/rich_text/input |
+| Window-First | `tests/darling/window/window_host_test.m` | window mount |
+| Robot Input | `tests/darling/event/robot_input_test.c` | synthetic gesture vocabulary |
+| Window Oracle | `tests/darling/window/window_oracle_test.c` | lab capture vs golden; IRL probe |
+| ScrollPanel Habitat | `tests/darling/panel/scrollpanel_habitat_test.c` | `ScrollPanel` |
+| Variation Matrix | `tests/darling/panel/variation_matrix_test.c` | widget matrix |
+| Focus and Input Reality | `tests/darling/event/focus_reality_test.c` | `dispatch`/`focus` |
+| Present-On-Demand and Dirty | `tests/darling/panel/tree_dirty_test.c` | `Panel_isTreeDirty` |
+| Layout Robustness | `tests/darling/panel/layout_robustness_test.c` | `container` |
+| Untrusted Text | `tests/darling/text/untrusted_text_test.c` | markdown/rich_text/input |
 
 ---
 
