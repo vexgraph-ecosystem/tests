@@ -154,40 +154,21 @@ int main(void) {
     ScrollPanel_verticalScroll_setOpacity(sp, 1.0f);
     ScrollPanel_horizontalScroll_setOpacity(sp, 1.0f);
 
-    // section 9 nesting + chaining: inner at end bubbles to the parent
-    ScrollPanel *outer = ScrollPanel_2(200.0f, 200.0f);
-    ScrollPanel_verticalScroll_setScrollMode(outer, SCROLL_BAR_STEP);
-    ScrollPanel_horizontalScroll_setScrollMode(outer, SCROLL_BAR_STEP);
-    Panel *outerContent = Panel_0();
-    Panel_setSize(outerContent, 200.0f, 800.0f);
-    ScrollPanel_setContent(outer, outerContent);
-    ScrollPanel *inner = ScrollPanel_2(200.0f, 200.0f);
-    ScrollPanel_verticalScroll_setScrollMode(inner, SCROLL_BAR_STEP);
-    ScrollPanel_horizontalScroll_setScrollMode(inner, SCROLL_BAR_STEP);
-    Panel *innerContent = Panel_0();
-    Panel_setSize(innerContent, 200.0f, 600.0f);
-    ScrollPanel_setContent(inner, innerContent);
-    Panel_addContainer(outerContent, &(*inner).base);
-    float leftX = -1.0f, leftY = -1.0f;
-    ScrollPanel_scrollByChained(inner, 0.0f, 1000.0f, 9000u, &leftX, &leftY);
-    ScrollPanel_getOffset(inner, &ox, &oy);
-    check(near(oy, 400.0f) && near(leftY, 600.0f), "chain-inner-consumes");
-    ScrollPanel_scrollByAt(outer, leftX, leftY, 9000u);
-    ScrollPanel_getOffset(outer, &ox, &oy);
-    check(near(oy, 600.0f) && near(leftY, 600.0f), "chain-parent-continues");
-    ScrollPanel_scrollByChained(inner, 0.0f, 100.0f, 9100u, &leftX, &leftY);
-    check(near(leftY, 100.0f), "chain-inner-at-end");
-    ScrollPanel_scrollByAt(outer, leftX, leftY, 9100u);
-    ScrollPanel_getOffset(outer, &ox, &oy);
-    check(near(oy, 600.0f), "chain-parent-clamped");
-    ScrollPanel_scrollByChained(inner, 0.0f, -100.0f, 9200u, &leftX, &leftY);
-    ScrollPanel_getOffset(inner, &ox, &oy);
-    check(near(oy, 300.0f) && near(leftY, 0.0f), "chain-reverse-consumes");
-    ScrollPanel_scrollByChained(nullptr, 1.0f, 2.0f, 0u, &leftX, &leftY);
-    check(near(leftX, 1.0f) && near(leftY, 2.0f), "chain-null-passthrough");
-    float cx = GraphicsComponent_getX(&(*innerContent).component);
-    float cy = GraphicsComponent_getY(&(*innerContent).component);
-    check(near(cx, 0.0f) && near(cy, -300.0f), "content-rides-offset");
+    // section 9 public acquisition ability: hard stops do not claim, elastic
+    // overflowing axes do, and fitting elastic axes do not.
+    ScrollPanel *ability = ScrollPanel_2(200.0f, 200.0f);
+    Panel *abilityContent = Panel_0();
+    Panel_setSize(abilityContent, 200.0f, 600.0f);
+    ScrollPanel_setContent(ability, abilityContent);
+    ScrollPanel_verticalScroll_setScrollMode(ability, SCROLL_BAR_STEP);
+    check(ScrollPanel_canAcquire(ability, 0.0f, 10.0f), "ability-interior");
+    ScrollPanel_setOffset(ability, 0.0f, 400.0f);
+    check(!ScrollPanel_canAcquire(ability, 0.0f, 10.0f), "ability-hard-stop");
+    ScrollPanel_verticalScroll_setScrollMode(ability, SCROLL_BAR_ELASTIC);
+    check(ScrollPanel_canAcquire(ability, 0.0f, 10.0f), "ability-elastic-edge");
+    Panel_setSize(abilityContent, 200.0f, 200.0f);
+    ScrollPanel_layoutBars(ability);
+    check(!ScrollPanel_canAcquire(ability, 0.0f, 10.0f), "ability-fit-elastic-skipped");
 
     // section 10 scroll behavior: sensitivity, mode, friction, delay
     ScrollPanel *b = ScrollPanel_2(200.0f, 200.0f);
@@ -295,7 +276,8 @@ int main(void) {
     check(near(ox, 100.0f), "h-scroll-x");
     check(near(oy, 0.0f), "h-scroll-y-untouched");
 
-    // section 13 elastic (slinky): overscroll past an end, spring home
+    // section 13 elastic: exact nonlinear resistance, raw reversal, layout
+    // preservation, and an exact critically damped return.
     ScrollPanel *e = ScrollPanel_2(200.0f, 200.0f);
     Panel *ec = Panel_0();
     Panel_setSize(ec, 200.0f, 400.0f);
@@ -304,61 +286,335 @@ int main(void) {
     check(ScrollPanel_verticalScroll_getScrollMode(e) == SCROLL_BAR_ELASTIC, "elastic-default");
     ScrollPanel_setOverscrollLimit(e, 80.0f);
     check(ScrollPanel_getOverscrollLimit(e) == 80.0f, "elastic-limit-set");
-    // Isolate stretch+spring: friction 0 disables glide so only the spring
-    // moves the offset (the input lands, clamped to the stretched bound).
     ScrollPanel_verticalScroll_setScrollFriction(e, 0.0f);
-    // overscroll past the bottom (hard hi = 200) stretches to 280
-    ScrollPanel_scrollInputAt(e, 0.0f, 2000.0f, 1000u);
+    ScrollPanel_setOffset(e, 0.0f, 200.0f);
+    ScrollPanel_directBegin(e, 1000u);
+    ScrollPanel_directChange(e, 0.0f, 100.0f, 1100u);
     ScrollPanel_getOffset(e, &ox, &oy);
-    check(near(oy, 280.0f), "elastic-overscroll");
-    // the thumb value stays pinned at the end (no overshoot in the bar)
+    float expectedResistance = 100.0f * 80.0f * 0.55f / (80.0f + 0.55f * 100.0f);
+    check(near(oy, 200.0f + expectedResistance), "elastic-resistance-exact");
+    ScrollPanel_directChange(e, 0.0f, 1000000.0f, 1150u);
+    ScrollPanel_getOffset(e, &ox, &oy);
+    check(oy < 280.0f && oy > 279.0f, "elastic-asymptote");
+    ScrollPanel_setOffset(e, 0.0f, 200.0f);
+    ScrollPanel_directBegin(e, 1150u);
+    ScrollPanel_directChange(e, 0.0f, 100.0f, 1160u);
     check(near(ScrollPanel_verticalScroll_getValue(e), 1.0f), "elastic-bar-pinned");
-    // within the release window the stretch is HELD (slinky rubber)
-    ScrollPanel_tick(e, 1050u);
+    ScrollPanel_layoutBars(e);
     ScrollPanel_getOffset(e, &ox, &oy);
-    check(near(oy, 280.0f), "elastic-held");
-    // after release it springs home, monotonically (no vibration/oscillation)
+    check(near(oy, 200.0f + expectedResistance), "layout-preserves-overscroll");
+    ScrollPanel_directChange(e, 0.0f, -50.0f, 1200u);
+    ScrollPanel_getOffset(e, &ox, &oy);
+    float halfResistance = 50.0f * 80.0f * 0.55f / (80.0f + 0.55f * 50.0f);
+    check(near(oy, 200.0f + halfResistance), "elastic-reversal-unwinds-raw");
+    ScrollPanel_directChange(e, 0.0f, -60.0f, 1300u);
+    ScrollPanel_getOffset(e, &ox, &oy);
+    check(near(oy, 190.0f), "elastic-reversal-reenters-bounds");
+    ScrollPanel_directChange(e, 0.0f, -290.0f, 1400u);
+    ScrollPanel_getOffset(e, &ox, &oy);
+    check(near(oy, -expectedResistance), "elastic-symmetric");
+    ScrollPanel_directEnd(e, 1400u);
     float prevOff = oy;
     bool monotonic = true;
-    for (uint64_t t = 1100u; t < 2000u; t += 50u) {
+    for (uint64_t t = 1450u; t < 3000u; t += 50u) {
         ScrollPanel_tick(e, t);
         ScrollPanel_getOffset(e, &ox, &oy);
-        if (oy > prevOff + 0.001f)
+        if (oy < prevOff - 0.001f || oy > 0.001f)
             monotonic = false;
         prevOff = oy;
     }
-    check(monotonic, "elastic-no-vibration");
-    check(oy <= 200.0f && oy >= 199.0f, "elastic-springs-home");
-    // overscroll past the top
-    ScrollPanel_scrollInputAt(e, 0.0f, -5000.0f, 3000u);
-    ScrollPanel_getOffset(e, &ox, &oy);
-    check(near(oy, -80.0f), "elastic-overscroll-top");
-    for (uint64_t t = 3100u; t < 4000u; t += 50u)
-        ScrollPanel_tick(e, t);
-    ScrollPanel_getOffset(e, &ox, &oy);
-    check(oy >= 0.0f && oy <= 1.0f, "elastic-springs-top");
+    check(monotonic, "critical-return-no-cross-no-vibration");
+    check(oy >= 0.0f && oy <= 0.5f, "critical-return-snaps-home");
     // a non-elastic axis hard-clamps (no stretch)
     ScrollPanel_verticalScroll_setScrollMode(e, SCROLL_BAR_STEP);
     ScrollPanel_scrollInputAt(e, 0.0f, 2000.0f, 5000u);
     ScrollPanel_getOffset(e, &ox, &oy);
     check(near(oy, 200.0f), "step-hard-clamp");
 
-    // section 13b elastic HOLD: gravity waits for release, not for a timer
-    ScrollPanel_verticalScroll_setScrollMode(e, SCROLL_BAR_ELASTIC);
-    ScrollPanel_setGestureHeld(e, true);
-    check(ScrollPanel_isGestureHeld(e), "held-flag");
-    ScrollPanel_setOffsetAt(e, 0.0f, 400.0f, 6000u);   // stretch to the limit
+    // Every motion constant is runtime-backed and independently axis-tunable.
+    ScrollPanel_verticalScroll_setRubberCoefficient(e, 0.7f);
+    ScrollPanel_verticalScroll_setOverscrollExtent(e, 70.0f);
+    ScrollPanel_verticalScroll_setVelocitySampleTauMs(e, 30.0f);
+    ScrollPanel_verticalScroll_setDecelerationTauMs(e, 250.0f);
+    ScrollPanel_verticalScroll_setStopVelocity(e, 3.0f);
+    ScrollPanel_verticalScroll_setSpringOmega(e, 20.0f);
+    ScrollPanel_verticalScroll_setSpringSnapDistance(e, 0.25f);
+    ScrollPanel_verticalScroll_setSpringSnapVelocity(e, 2.0f);
+    check(near(ScrollPanel_verticalScroll_getRubberCoefficient(e), 0.7f), "tune-rubber");
+    check(near(ScrollPanel_verticalScroll_getOverscrollExtent(e), 70.0f), "tune-extent");
+    check(near(ScrollPanel_verticalScroll_getVelocitySampleTauMs(e), 30.0f), "tune-sample-tau");
+    check(near(ScrollPanel_verticalScroll_getDecelerationTauMs(e), 250.0f), "tune-decel-tau");
+    check(near(ScrollPanel_verticalScroll_getStopVelocity(e), 3.0f), "tune-stop");
+    check(near(ScrollPanel_verticalScroll_getSpringOmega(e), 20.0f), "tune-spring");
+    check(near(ScrollPanel_verticalScroll_getSpringSnapDistance(e), 0.25f), "tune-snap-distance");
+    check(near(ScrollPanel_verticalScroll_getSpringSnapVelocity(e), 2.0f), "tune-snap-velocity");
+
+    // Writer exclusivity is per axis: Y springs while X independently
+    // decelerates. The first Y spring tick is the exact critical solution,
+    // with no synthetic displacement integrated before it.
+    ScrollPanel *writers = ScrollPanel_2(200.0f, 200.0f);
+    Panel *writersContent = Panel_0();
+    Panel_setSize(writersContent, 1000.0f, 400.0f);
+    ScrollPanel_setContent(writers, writersContent);
+    ScrollPanel_horizontalScroll_setScrollMode(writers, SCROLL_BAR_SMOOTH);
+    ScrollPanel_verticalScroll_setScrollMode(writers, SCROLL_BAR_ELASTIC);
+    ScrollPanel_setOffset(writers, 0.0f, 200.0f);
+    ScrollPanel_directBegin(writers, 100u);
+    ScrollPanel_directChange(writers, 50.0f, 100.0f, 200u);
+    ScrollPanel_directEnd(writers, 200u);
+    check(ScrollPanel_horizontalScroll_getMotionWriter(writers) == SCROLLPANEL_MOTION_SYNTHETIC,
+          "writer-x-synthetic");
+    check(ScrollPanel_verticalScroll_getMotionWriter(writers) == SCROLLPANEL_MOTION_SPRING,
+          "writer-y-spring-after-release");
+    float springSeconds = 0.05f;
+    float springDecay = expf(-18.0f * springSeconds);
+    float springRaw = (100.0f + 18.0f * 100.0f * springSeconds)
+        * springDecay;
+    float springDistance = springRaw * 80.0f * 0.55f
+        / (80.0f + 0.55f * springRaw);
+    ScrollPanel_tick(writers, 250u);
+    ScrollPanel_getOffset(writers, &ox, &oy);
+    check(ox > 50.0f, "writer-x-keeps-decelerating");
+    check(near(oy, 200.0f + springDistance), "first-spring-tick-has-no-synthetic-step");
+    check(ScrollPanel_horizontalScroll_getMotionWriter(writers) == SCROLLPANEL_MOTION_SYNTHETIC,
+          "spring-does-not-stop-other-axis");
+
+    ScrollPanel *zeroResistance = ScrollPanel_2(200.0f, 200.0f);
+    Panel *zeroContent = Panel_0();
+    Panel_setSize(zeroContent, 200.0f, 400.0f);
+    ScrollPanel_setContent(zeroResistance, zeroContent);
+    ScrollPanel_setOffset(zeroResistance, 0.0f, 200.0f);
+    ScrollPanel_verticalScroll_setRubberCoefficient(zeroResistance, 0.0f);
+    ScrollPanel_directBegin(zeroResistance, 100u);
+    ScrollPanel_directChange(zeroResistance, 0.0f, 100.0f, 200u);
+    ScrollPanel_directEnd(zeroResistance, 200u);
+    ScrollPanel_getOffset(zeroResistance, &ox, &oy);
+    check(near(oy, 200.0f), "zero-coefficient-hard-stops");
+    check(ScrollPanel_verticalScroll_getMotionWriter(zeroResistance) != SCROLLPANEL_MOTION_SPRING,
+          "zero-coefficient-no-invisible-pull");
+    ScrollPanel_verticalScroll_setRubberCoefficient(zeroResistance, 0.55f);
+    ScrollPanel_verticalScroll_setOverscrollExtent(zeroResistance, 0.0f);
+    ScrollPanel_directBegin(zeroResistance, 300u);
+    ScrollPanel_directChange(zeroResistance, 0.0f, 100.0f, 400u);
+    ScrollPanel_directEnd(zeroResistance, 400u);
+    ScrollPanel_getOffset(zeroResistance, &ox, &oy);
+    check(near(oy, 200.0f), "zero-extent-hard-stops");
+    check(ScrollPanel_verticalScroll_getMotionWriter(zeroResistance) != SCROLLPANEL_MOTION_SPRING,
+          "zero-extent-no-invisible-pull");
+
+    // Exact elapsed-time integration is cadence stable.
+    ScrollPanel *cadenceA = ScrollPanel_2(200.0f, 200.0f);
+    ScrollPanel *cadenceB = ScrollPanel_2(200.0f, 200.0f);
+    Panel *cadenceContentA = Panel_0();
+    Panel *cadenceContentB = Panel_0();
+    Panel_setSize(cadenceContentA, 200.0f, 2000.0f);
+    Panel_setSize(cadenceContentB, 200.0f, 2000.0f);
+    ScrollPanel_setContent(cadenceA, cadenceContentA);
+    ScrollPanel_setContent(cadenceB, cadenceContentB);
+    ScrollPanel_verticalScroll_setScrollMode(cadenceA, SCROLL_BAR_SMOOTH);
+    ScrollPanel_verticalScroll_setScrollMode(cadenceB, SCROLL_BAR_SMOOTH);
+    ScrollPanel_directBegin(cadenceA, 100u);
+    ScrollPanel_directBegin(cadenceB, 100u);
+    ScrollPanel_directChange(cadenceA, 0.0f, 100.0f, 200u);
+    ScrollPanel_directChange(cadenceB, 0.0f, 100.0f, 200u);
+    ScrollPanel_directEnd(cadenceA, 200u);
+    ScrollPanel_directEnd(cadenceB, 200u);
+    ScrollPanel_tick(cadenceA, 1200u);
+    for (uint64_t t = 250u; t <= 1200u; t += 50u)
+        ScrollPanel_tick(cadenceB, t);
+    float cadenceY = 0.0f;
+    ScrollPanel_getOffset(cadenceA, &ox, &oy);
+    ScrollPanel_getOffset(cadenceB, &ox, &cadenceY);
+    check(near(oy, cadenceY), "deceleration-cadence-stable");
+
+    // Native momentum is authoritative and cannot arm synthetic continuation.
+    ScrollPanel *native = ScrollPanel_2(200.0f, 200.0f);
+    Panel *nativeContent = Panel_0();
+    Panel_setSize(nativeContent, 200.0f, 2000.0f);
+    ScrollPanel_setContent(native, nativeContent);
+    ScrollPanel_directBegin(native, 100u);
+    ScrollPanel_directChange(native, 0.0f, 20.0f, 200u);
+    ScrollPanel_nativeMomentumBegin(native, 200u);
+    ScrollPanel_nativeMomentumChange(native, 0.0f, 40.0f, 250u);
+    ScrollPanel_nativeMomentumEnd(native, 300u);
+    ScrollPanel_getOffset(native, &ox, &oy);
+    float nativeEnd = oy;
+    ScrollPanel_tick(native, 1300u);
+    ScrollPanel_getOffset(native, &ox, &oy);
+    check(near(oy, nativeEnd), "native-no-synthetic-continuation");
+    check(ScrollPanel_verticalScroll_getMotionWriter(native) == SCROLLPANEL_MOTION_IDLE,
+          "writer-synchronized-idle");
+
+    // A still-running momentum tail must not pin an overscrolled axis in
+    // mid-air: the rubber band rebounds at fingers-up, and momentum aimed at a
+    // spring-owned axis is ignored rather than deepening the pull.
+    ScrollPanel *tail = ScrollPanel_2(200.0f, 200.0f);
+    Panel *tailContent = Panel_0();
+    Panel_setSize(tailContent, 200.0f, 400.0f);
+    ScrollPanel_setContent(tail, tailContent);
+    ScrollPanel_setOverscrollLimit(tail, 80.0f);
+    ScrollPanel_verticalScroll_setScrollFriction(tail, 0.0f);   // isolate the spring
+    ScrollPanel_directBegin(tail, 100u);
+    ScrollPanel_directChange(tail, 0.0f, 300.0f, 150u);
+    ScrollPanel_getOffset(tail, &ox, &oy);
+    float tailParked = oy;
+    check(tailParked > 200.0f, "tail-overscroll-parked");
+    ScrollPanel_directEnd(tail, 200u);
+    ScrollPanel_nativeMomentumBegin(tail, 210u);
+    bool tailRebounds = true;
+    float tailPrev = tailParked;
+    uint64_t tailClock = 220u;
+    for (int i = 0; i < 6; i++) {
+        ScrollPanel_nativeMomentumChange(tail, 0.0f, 20.0f, tailClock);
+        ScrollPanel_tick(tail, tailClock);
+        ScrollPanel_getOffset(tail, &ox, &oy);
+        if (oy > tailPrev + 0.001f)
+            tailRebounds = false;
+        tailPrev = oy;
+        tailClock += 50u;
+    }
+    check(tailRebounds, "momentum-tail-does-not-pin-overscroll");
+    // The spring can reach its edge BEFORE AppKit has finished sending native
+    // momentum. Later packets belong to that same gesture and must not start
+    // a second, smaller excursion after the spring writer becomes IDLE.
+    ScrollPanel_tick(tail, 2000u);
+    ScrollPanel_getOffset(tail, &ox, &oy);
+    check(near(oy, 200.0f), "momentum-tail-spring-settled");
+    ScrollPanel_nativeMomentumChange(tail, 0.0f, 20.0f, 2016u);
+    ScrollPanel_getOffset(tail, &ox, &oy);
+    check(near(oy, 200.0f), "momentum-tail-no-second-bounce");
+    ScrollPanel_nativeMomentumEnd(tail, 2032u);
+
+    ScrollPanel *lateMomentum = ScrollPanel_2(200.0f, 200.0f);
+    Panel *lateContent = Panel_0();
+    Panel_setSize(lateContent, 200.0f, 400.0f);
+    ScrollPanel_setContent(lateMomentum, lateContent);
+    ScrollPanel_setOffset(lateMomentum, 0.0f, 200.0f);
+    ScrollPanel_directBegin(lateMomentum, 100u);
+    ScrollPanel_directChange(lateMomentum, 0.0f, 100.0f, 150u);
+    ScrollPanel_directEnd(lateMomentum, 200u);
+    ScrollPanel_tick(lateMomentum, 2000u);
+    ScrollPanel_nativeMomentumBegin(lateMomentum, 2010u);
+    ScrollPanel_nativeMomentumChange(lateMomentum, 0.0f, 20.0f, 2020u);
+    ScrollPanel_getOffset(lateMomentum, &ox, &oy);
+    check(near(oy, 200.0f), "post-spring-momentum-no-second-bounce");
+    ScrollPanel_nativeMomentumEnd(lateMomentum, 2030u);
+
+    ScrollPanel *nativeSpring = ScrollPanel_2(200.0f, 200.0f);
+    Panel *nativeSpringContent = Panel_0();
+    Panel_setSize(nativeSpringContent, 200.0f, 400.0f);
+    ScrollPanel_setContent(nativeSpring, nativeSpringContent);
+    ScrollPanel_setOffset(nativeSpring, 0.0f, 200.0f);
+    ScrollPanel_nativeMomentumBegin(nativeSpring, 100u);
+    ScrollPanel_nativeMomentumChange(nativeSpring, 0.0f, 100.0f, 200u);
+    ScrollPanel_nativeMomentumEnd(nativeSpring, 200u);
+    check(ScrollPanel_verticalScroll_getMotionWriter(nativeSpring) == SCROLLPANEL_MOTION_SPRING,
+          "native-end-overscroll-enters-spring");
+
+    // A successful scrollbar grab is an authoritative interruption: neither
+    // fallback glide nor spring motion may resume after release.
+    ScrollPanel *dragGlide = ScrollPanel_2(200.0f, 200.0f);
+    Panel *dragGlideContent = Panel_0();
+    Panel_setSize(dragGlideContent, 200.0f, 1000.0f);
+    ScrollPanel_setContent(dragGlide, dragGlideContent);
+    ScrollPanel_verticalScroll_setScrollMode(dragGlide, SCROLL_BAR_SMOOTH);
+    ScrollPanel_directBegin(dragGlide, 100u);
+    ScrollPanel_directChange(dragGlide, 0.0f, 100.0f, 200u);
+    ScrollPanel_directEnd(dragGlide, 200u);
+    check(ScrollPanel_verticalScroll_getMotionWriter(dragGlide) == SCROLLPANEL_MOTION_SYNTHETIC,
+          "drag-interrupt-glide-armed");
+    check(ScrollPanel_barDragBegin(dragGlide, 192.0f, 190.0f), "drag-interrupt-glide-grab");
+    ScrollPanel_barDragEnd(dragGlide);
+    ScrollPanel_getOffset(dragGlide, &ox, &oy);
+    float draggedGlideOffset = oy;
+    ScrollPanel_tick(dragGlide, 2000u);
+    ScrollPanel_getOffset(dragGlide, &ox, &oy);
+    check(near(oy, draggedGlideOffset), "drag-interrupt-glide-stays");
+    check(ScrollPanel_verticalScroll_getMotionWriter(dragGlide) == SCROLLPANEL_MOTION_IDLE,
+          "drag-interrupt-glide-idle");
+
+    ScrollPanel *dragSpring = ScrollPanel_2(200.0f, 200.0f);
+    Panel *dragSpringContent = Panel_0();
+    Panel_setSize(dragSpringContent, 200.0f, 400.0f);
+    ScrollPanel_setContent(dragSpring, dragSpringContent);
+    ScrollPanel_setOffset(dragSpring, 0.0f, 200.0f);
+    ScrollPanel_directBegin(dragSpring, 100u);
+    ScrollPanel_directChange(dragSpring, 0.0f, 100.0f, 200u);
+    ScrollPanel_directEnd(dragSpring, 200u);
+    check(ScrollPanel_verticalScroll_getMotionWriter(dragSpring) == SCROLLPANEL_MOTION_SPRING,
+          "drag-interrupt-spring-armed");
+    check(ScrollPanel_barDragBegin(dragSpring, 192.0f, 5.0f), "drag-interrupt-spring-grab");
+    ScrollPanel_barDragEnd(dragSpring);
+    ScrollPanel_getOffset(dragSpring, &ox, &oy);
+    float draggedSpringOffset = oy;
+    ScrollPanel_tick(dragSpring, 2000u);
+    ScrollPanel_getOffset(dragSpring, &ox, &oy);
+    check(near(oy, draggedSpringOffset), "drag-interrupt-spring-stays");
+    check(ScrollPanel_verticalScroll_getMotionWriter(dragSpring) == SCROLLPANEL_MOTION_IDLE,
+          "drag-interrupt-spring-idle");
+
+    // Cold non-finite writes reject atomically; hot packets drop without
+    // poisoning offsets, velocity, resistance, or bar values.
+    float oldCoefficient = ScrollPanel_verticalScroll_getRubberCoefficient(e);
+    float oldExtent = ScrollPanel_verticalScroll_getOverscrollExtent(e);
+    ScrollPanel_verticalScroll_setRubberCoefficient(e, NAN);
+    ScrollPanel_verticalScroll_setOverscrollExtent(e, INFINITY);
+    ScrollPanel_setOverscrollLimit(e, NAN);
+    check(near(ScrollPanel_verticalScroll_getRubberCoefficient(e), oldCoefficient),
+          "nonfinite-rubber-rejected");
+    check(near(ScrollPanel_verticalScroll_getOverscrollExtent(e), oldExtent),
+          "nonfinite-extent-rejected");
+    ScrollPanel_setOffset(e, 0.0f, 50.0f);
     ScrollPanel_getOffset(e, &ox, &oy);
-    check(near(oy, 280.0f), "held-stretch");
-    for (uint64_t t = 6100u; t < 7000u; t += 50u)
-        ScrollPanel_tick(e, t);                        // far past any release window
+    float finiteOffset = oy;
+    ScrollPanel_setOffsetAt(e, 0.0f, NAN, 100u);
+    ScrollPanel_directChange(e, 0.0f, INFINITY, 200u);
+    ScrollPanel_nativeMomentumBegin(e, 200u);
+    ScrollPanel_nativeMomentumChange(e, 0.0f, NAN, 300u);
+    ScrollPanel_nativeMomentumEnd(e, 300u);
     ScrollPanel_getOffset(e, &ox, &oy);
-    check(near(oy, 280.0f), "held-no-gravity");
-    ScrollPanel_setGestureHeld(e, false);
-    for (uint64_t t = 7100u; t < 8000u; t += 50u)
-        ScrollPanel_tick(e, t);
-    ScrollPanel_getOffset(e, &ox, &oy);
-    check(oy >= 199.0f && oy <= 200.0f, "released-springs");
+    check(near(oy, finiteOffset) && isfinite(oy), "nonfinite-motion-packets-dropped");
+    check(isfinite(ScrollPanel_verticalScroll_getValue(e)), "bar-value-remains-finite");
+
+    ScrollPanel *hugeDt = ScrollPanel_2(200.0f, 200.0f);
+    Panel *hugeDtContent = Panel_0();
+    Panel_setSize(hugeDtContent, 200.0f, 400.0f);
+    ScrollPanel_setContent(hugeDt, hugeDtContent);
+    ScrollPanel_setOffset(hugeDt, 0.0f, 200.0f);
+    ScrollPanel_directBegin(hugeDt, 1u);
+    ScrollPanel_directChange(hugeDt, 0.0f, 100.0f, 2u);
+    ScrollPanel_directEnd(hugeDt, 2u);
+    ScrollPanel_tick(hugeDt, UINT64_MAX);
+    ScrollPanel_getOffset(hugeDt, &ox, &oy);
+    check(near(oy, 200.0f) && isfinite(oy), "huge-dt-spring-snaps-finite");
+
+    // Layout derives current hard bounds: resize clamps a former edge, and
+    // loss of overflow discards both active and canceled raw pull.
+    ScrollPanel *resize = ScrollPanel_2(200.0f, 200.0f);
+    Panel *resizeContent = Panel_0();
+    Panel_setSize(resizeContent, 200.0f, 400.0f);
+    ScrollPanel_setContent(resize, resizeContent);
+    ScrollPanel_verticalScroll_setScrollMode(resize, SCROLL_BAR_STEP);
+    ScrollPanel_setOffset(resize, 0.0f, 200.0f);
+    ScrollPanel_setViewportSize(resize, 200.0f, 300.0f);
+    ScrollPanel_getOffset(resize, &ox, &oy);
+    check(near(oy, 100.0f), "resize-edge-clamps-to-current-bound");
+    check(!ScrollPanel_canAcquire(resize, 0.0f, 10.0f)
+          && ScrollPanel_canAcquire(resize, 0.0f, -10.0f), "resize-edge-acquisition-current");
+
+    ScrollPanel_verticalScroll_setScrollMode(resize, SCROLL_BAR_ELASTIC);
+    ScrollPanel_setViewportSize(resize, 200.0f, 200.0f);
+    ScrollPanel_setOffset(resize, 0.0f, 200.0f);
+    ScrollPanel_directBegin(resize, 100u);
+    ScrollPanel_directChange(resize, 0.0f, 100.0f, 200u);
+    ScrollPanel_cancelMotion(resize);
+    Panel_setSize(resizeContent, 200.0f, 100.0f);
+    ScrollPanel_layoutBars(resize);
+    ScrollPanel_getOffset(resize, &ox, &oy);
+    check(near(oy, 0.0f), "no-overflow-discards-canceled-pull");
+    check(ScrollPanel_verticalScroll_getMotionWriter(resize) == SCROLLPANEL_MOTION_IDLE,
+          "no-overflow-cancels-spring-writer");
+    check(!ScrollPanel_canAcquire(resize, 0.0f, 10.0f), "no-overflow-not-acquired");
 
     // section 14 fade-out (not a toggle) + grappable
     ScrollPanel *fd = ScrollPanel_2(200.0f, 200.0f);
