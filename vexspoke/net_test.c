@@ -104,7 +104,7 @@ int main(void) {
     CHECK(Json_number(&doc, Json_member(&doc, root, "n")) == 42.0);
     CHECK(Json_number(&doc, Json_member(&doc, root, "pi")) == 3.5);
 
-    // Escaped string forced the console.log-decode path.
+    // Escaped string forced the scratch-decode path.
     JsonRef quote = Json_member(&doc, root, "quote");
     const char *q = Json_string(&doc, quote, &len);
     CHECK(len == 8 && strncmp(q, "a\"b\nline", 8) == 0);
