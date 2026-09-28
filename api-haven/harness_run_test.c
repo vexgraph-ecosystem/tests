@@ -9,7 +9,7 @@
 ;;OVERVIEW
 /**
  * ============================================================================
- * MODULE: HarnessRunTest (_test/harness_run_test.c — local-only console.log, never committed)
+ * MODULE: HarnessRunTest (_test/harness_run_test.c — local-only scratch, never committed)
  * LEVEL: L2 — Behavior verification (headless; no spawn, no network)
  * ============================================================================
  * Executable proof of the src/harness/ seam: the EngineProvider table

@@ -8,7 +8,7 @@
 ;;OVERVIEW
 /**
  * ============================================================================
- * MODULE: AppBrokerTest (_test/app_broker_test.c — local-only console.log, never committed)
+ * MODULE: AppBrokerTest (_test/app_broker_test.c — local-only scratch, never committed)
  * LEVEL: L2 — Behavior verification (headless; no scripts, no network)
  * ============================================================================
  * Executable proof of the src/app/ seam: the AppProvider allowlist

@@ -184,7 +184,7 @@ int main(int argc, const char **argv) {
     uint32_t modelLen = 0;
     const char *modelView = model >= 0 ? Json_string(&doc, model, &modelLen) : "";
     // Note: Json_string views are NUL-terminated only when escaped into
-    // console.log — plain views point into src and need the length (memcmp).
+    // scratch — plain views point into src and need the length (memcmp).
     CHECK(model >= 0 && modelLen == 11 && memcmp(modelView, "gpt-4o-mini", 11) == 0);
 
     JsonRef msgs = Json_member(&doc, root, "messages");
