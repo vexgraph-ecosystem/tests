@@ -11,6 +11,7 @@
 #include "reactive/reactive_double.h"
 #include "reactive/reactive_int.h"
 #include "reactive/reactive_string.h"
+#include "reactive/dispatch.h"
 
 ;;OVERVIEW
 /**

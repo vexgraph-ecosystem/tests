@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "annotation/overview.h"
-#include "objects/reactive.h"
+#include "reactive/dispatch.h"
 
 ;;OVERVIEW
 /**
@@ -12,8 +12,8 @@
  * ============================================================================
  * Proves the per-variable event emitter: multiple observers per event, set never
  * fires (it stores + marks dirty), drain coalesces the batch into one onSet and
- * one onChanged on a real move, add/remove, a mid-fire removal is safe, onRemove
- * fires on free, and a CROSS-THREAD writer is safe (the owner drains).
+ * one onChanged on a real move, add/remove, a mid-fire removal is safe, and a
+ * CROSS-THREAD writer is safe (the owner drains).
  *
  * STRUCT FIELDS: none — procedural test harness.
  * ============================================================================
@@ -27,7 +27,7 @@
         }                                                                    \
     } while(0)
 
-static int g_setA, g_setB, g_changedA, g_changedB, g_removed;
+static int g_setA, g_setB, g_changedA, g_changedB;
 static Reactive *g_self;
 static ReactiveChangedFn g_changedFnA;
 
@@ -41,7 +41,6 @@ static void onChangedA(Reactive *r, uintptr_t o, uintptr_t n, void *ud) {
         Reactive_removeOnChanged(r, g_changedFnA, nullptr);
 }
 static void onChangedB(Reactive *r, uintptr_t o, uintptr_t n, void *ud) { (void) r; (void) o; (void) n; (void) ud; g_changedB++; }
-static void onRemoved(Reactive *r, void *ud) { (void) r; (void) ud; g_removed++; }
 
 // A writer thread: hammer the reactive from a foreign thread. Must never fire an
 // observer there — it only stores + marks dirty.
@@ -66,8 +65,7 @@ int main(void) {
     CHECK(Reactive_addOnSet(r, onSetB, nullptr));
     CHECK(Reactive_addOnChanged(r, onChangedA, nullptr));
     CHECK(Reactive_addOnChanged(r, onChangedB, nullptr));
-    CHECK(Reactive_addOnRemove(r, onRemoved, nullptr));
-    CHECK(Reactive_observerCount(r) == 5);
+    CHECK(Reactive_observerCount(r) == 4);
 
     // 2. set stores + marks dirty but NEVER fires; drain fires onSet (both) +
     //    onChanged (both) on a real move.
@@ -97,9 +95,8 @@ int main(void) {
     Reactive_drain(r);
     CHECK(g_changedA == 1 && g_changedB == 2);
 
-    // 6. onRemove fires on free (teardown notify).
+    // 6. free is just free — the old teardown channel is gone.
     Reactive_free(r);
-    CHECK(g_removed == 1);
 
     // 7. Cross-thread: a writer thread moves the value; the owner drains.
     g_self = nullptr;                       // keep the mid-fire path inert
