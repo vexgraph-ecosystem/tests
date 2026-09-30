@@ -268,13 +268,6 @@ static void onResolveFire(void *userdata, int64_t combo) {
     (void) userdata;
 }
 
-static void tapKey(int key) {
-    Key_pushEvent(0, key, KEY_ACTION_DOWN, 250000000ULL);
-    Key_dispatchEvents();
-    Key_pushEvent(0, key, KEY_ACTION_UP, 0);
-    Key_dispatchEvents();
-}
-
 // Short tap window + settle sleep: settlement is an OWNERSHIP of the pending
 // window, so tests drive it with a 30ms window and wait 40ms — same settle
 // semantics as the 250ms platform drivers, without 250ms of test latency.
