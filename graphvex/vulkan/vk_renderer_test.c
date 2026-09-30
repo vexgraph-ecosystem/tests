@@ -1,12 +1,13 @@
 // tests/graphvex/vulkan/vk_renderer_test.c — mirrors src/vulkan/vk_renderer.c
 //
-// The Vulkan Backend row. Without a device it still records the display-list
-// verbs into the CPU quad batch (the part that must never be wrong); present()
-// is the host seam and returns false until it lands.
+// The Vulkan Backend row: display-list verbs land in the CPU quad batch, and
+// capture renders them ON THE GPU (offscreen) + reads back. clear() is the
+// render-pass clear (no quad); clip() intersects into the recorded quad.
 
 #include <stdio.h>
 
 #include "graphics/graphics.h"
+#include "image.h"
 #include "vulkan/vulkan_backend.h"
 
 static int g_fail = 0;
@@ -18,35 +19,47 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+static void at(const Image *img, int x, int y, int *r, int *g, int *b) {
+    const uint8_t *p = Image_pixels(img) + (size_t)y * Image_stride(img) + (size_t)x * 4;
+    *r = p[0]; *g = p[1]; *b = p[2];
+}
+
 int main(void) {
     CHECK(Graphics_register(VulkanBackend_row()));
     CHECK(Graphics_use(BACKEND_VULKAN));
     CHECK(Graphics_backendId() == BACKEND_VULKAN);
 
-    CHECK(Graphics_resize(64, 64));
+    CHECK(Graphics_resize(32, 32));
     CHECK(Graphics_begin());
-    CHECK(Graphics_clear(COLOR_BLACK));                       // full-viewport quad
-    CHECK(Graphics_fillRect(&(Rect){4, 4, 10, 10}, &(Brush){COLOR_WHITE, 0, 0, 0}));
+    CHECK(Graphics_clear(COLOR_RGBA(0, 0, 0, 255)));   // render-pass clear
+    CHECK(Graphics_fillRect(&(Rect){0, 0, 16, 32}, &(Brush){COLOR_RGBA(255, 0, 0, 255), 0, 0, 0}));
+    CHECK(Graphics_fillRect(&(Rect){16, 0, 16, 32}, &(Brush){COLOR_RGBA(0, 0, 255, 255), 0, 0, 0}));
 
     const VkBatch *batch = VulkanBackend_batch();
     CHECK(batch != NULL);
-    CHECK(batch->count == 2);                                  // clear + rect
-
+    CHECK(batch->count == 2);                          // two rects, no clear quad
     CHECK(Graphics_end());
-    // present is the (unimplemented) host seam -> false, never a swapchain
-    CHECK(!Graphics_present());
-    CHECK(VulkanBackend_lastError() != NULL);
+
+    // capture = GPU render + readback
+    Image *shot = Image_0();
+    CHECK(Graphics_capture(shot));
+    int r, g, b;
+    at(shot, 8, 16, &r, &g, &b);
+    CHECK(r == 255 && g == 0 && b == 0);
+    at(shot, 24, 16, &r, &g, &b);
+    CHECK(b == 255 && r == 0);
+    Image_destroy(shot);
 
     // clip intersects into the recorded quad
     CHECK(Graphics_begin());
-    CHECK(Graphics_clip(&(Rect){0, 0, 4, 4}));
-    CHECK(Graphics_fillRect(&(Rect){0, 0, 100, 100}, &(Brush){COLOR_WHITE, 0, 0, 0}));
+    CHECK(Graphics_clip(&(Rect){0, 0, 8, 8}));
+    CHECK(Graphics_fillRect(&(Rect){0, 0, 32, 32}, &(Brush){COLOR_WHITE, 0, 0, 0}));
     const VkBatch *b2 = VulkanBackend_batch();
     CHECK(b2->count == 1);
-    CHECK(b2->quads[0].w == 4.0f && b2->quads[0].h == 4.0f);   // clipped
+    CHECK(b2->quads[0].w == 8.0f && b2->quads[0].h == 8.0f);
     CHECK(Graphics_end());
+    CHECK(VulkanBackend_lastError() != NULL);
 
-    VulkanBackend_unbind();
     printf("vk_renderer_test: ALL PASS\n");
     return g_fail == 0 ? 0 : 1;
 }

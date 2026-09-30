@@ -1,0 +1,57 @@
+// tests/graphvex/vulkan/gpu_render_test.c — the GPU path.
+//
+// Renders quads through the Vulkan backend (offscreen + readback) and verifies
+// the pixels came out of the GPU, with the SDF shader's Y-down orientation.
+
+#include <stdio.h>
+
+#include "graphics/graphics.h"
+#include "image.h"
+#include "vulkan/vulkan_backend.h"
+
+static int g_fail = 0;
+#define CHECK(cond)                                                        \
+    do {                                                                   \
+        if (!(cond)) {                                                     \
+            printf("FAIL %s:%d %s\n", __FILE__, __LINE__, #cond);          \
+            g_fail++;                                                      \
+        }                                                                  \
+    } while (0)
+
+static void at(const Image *img, int x, int y, int *r, int *g, int *b) {
+    const uint8_t *p = Image_pixels(img) + (size_t)y * Image_stride(img) + (size_t)x * 4;
+    *r = p[0]; *g = p[1]; *b = p[2];
+}
+
+int main(void) {
+    Graphics_register(VulkanBackend_row());
+    CHECK(Graphics_use(BACKEND_VULKAN));
+    CHECK(Graphics_backendId() == BACKEND_VULKAN);
+
+    CHECK(Graphics_resize(64, 64));
+    CHECK(Graphics_begin());
+    Graphics_clear(COLOR_RGBA(0, 0, 0, 255));
+    // left half red, right half blue, top band green (to catch a Y flip)
+    Graphics_fillRect(&(Rect){0, 0, 32, 64}, &(Brush){COLOR_RGBA(255, 0, 0, 255), 0, 0, 0});
+    Graphics_fillRect(&(Rect){32, 0, 32, 64}, &(Brush){COLOR_RGBA(0, 0, 255, 255), 0, 0, 0});
+    Graphics_fillRect(&(Rect){0, 0, 64, 8}, &(Brush){COLOR_RGBA(0, 255, 0, 255), 0, 0, 0});
+    CHECK(Graphics_end());
+
+    Image *shot = Image_0();
+    CHECK(Graphics_capture(shot));
+    CHECK(Image_width(shot) == 64 && Image_height(shot) == 64);
+
+    int r, g, b;
+    at(shot, 16, 32, &r, &g, &b);
+    CHECK(r == 255 && g == 0 && b == 0);            // left = red
+    at(shot, 48, 32, &r, &g, &b);
+    CHECK(r == 0 && g == 0 && b == 255);            // right = blue
+    at(shot, 32, 4, &r, &g, &b);
+    CHECK(r == 0 && g == 255 && b == 0);            // TOP band = green (not flipped)
+    at(shot, 32, 60, &r, &g, &b);
+    CHECK(!(r == 0 && g == 255 && b == 0));         // bottom is not the band
+
+    Image_destroy(shot);
+    if (g_fail == 0) printf("gpu_render_test: ALL PASS (Vulkan renders the quads)\n");
+    return g_fail == 0 ? 0 : 1;
+}
