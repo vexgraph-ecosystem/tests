@@ -51,6 +51,30 @@ int main(void) {
     at(shot, 32, 60, &r, &g, &b);
     CHECK(!(r == 0 && g == 255 && b == 0));         // bottom is not the band
 
+    // CLIP = DISCARD, not resize. A 200x200 circle (radius 100) clipped to a
+    // 60-wide window must stay a circle; a shrink-to-fit would make a 60-wide
+    // pill (radius 30) and clip the curve much earlier.
+    CHECK(Graphics_resize(60, 200));
+    CHECK(Graphics_begin());
+    Graphics_clear(COLOR_RGBA(0, 0, 0, 255));
+    Graphics_fillRect(&(Rect){0, 0, 200, 200}, &(Brush){COLOR_RGBA(255, 255, 255, 255), 100, 0, 0});
+    CHECK(Graphics_end());
+    Image *clip = Image_0();
+    CHECK(Graphics_capture(clip));
+    at(clip, 1, 88, &r, &g, &b);                    // inside the circle, outside a pill
+    CHECK(r > 150);
+    at(clip, 1, 112, &r, &g, &b);
+    CHECK(r > 150);
+    at(clip, 1, 100, &r, &g, &b);                   // dead centre-left: both
+    CHECK(r > 200);
+    at(clip, 40, 100, &r, &g, &b);                  // inside the circle, within clip
+    CHECK(r > 200);
+    at(clip, 59, 100, &r, &g, &b);                  // still inside the 60px window
+    CHECK(r > 200);
+    at(clip, 40, 5, &r, &g, &b);                    // above the circle: background
+    CHECK(r < 40);
+    Image_destroy(clip);
+
     Image_destroy(shot);
     if (g_fail == 0) printf("gpu_render_test: ALL PASS (Vulkan renders the quads)\n");
     return g_fail == 0 ? 0 : 1;

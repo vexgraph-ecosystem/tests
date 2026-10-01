@@ -50,13 +50,15 @@ int main(void) {
     CHECK(b == 255 && r == 0);
     Image_destroy(shot);
 
-    // clip intersects into the recorded quad
+    // clip DISCARDS pixels — the quad keeps its true geometry (never shrinks)
     CHECK(Graphics_begin());
     CHECK(Graphics_clip(&(Rect){0, 0, 8, 8}));
     CHECK(Graphics_fillRect(&(Rect){0, 0, 32, 32}, &(Brush){COLOR_WHITE, 0, 0, 0}));
     const VkBatch *b2 = VulkanBackend_batch();
     CHECK(b2->count == 1);
-    CHECK(b2->quads[0].w == 8.0f && b2->quads[0].h == 8.0f);
+    CHECK(b2->quads[0].w == 32.0f && b2->quads[0].h == 32.0f);      // shape intact
+    CHECK(b2->quads[0].cx0 == 0.0f && b2->quads[0].cx1 == 8.0f);    // clip baked local
+    CHECK(b2->quads[0].cy0 == 0.0f && b2->quads[0].cy1 == 8.0f);
     CHECK(Graphics_end());
     CHECK(VulkanBackend_lastError() != NULL);
 
