@@ -1,0 +1,48 @@
+// tests/graphvex/vulkan/iosurface_host.c
+//
+// The platform half of the zero-copy seam, isolated in its own translation unit
+// so no Apple header (which defines the Carbon `Rect`) meets graphvex's `Rect`.
+// Mirrors what hotcwap (R1) will own for real.
+
+#include "iosurface_host.h"
+
+#include <CoreFoundation/CoreFoundation.h>
+#include <IOSurface/IOSurface.h>
+
+void *IosHost_create(int width, int height) {
+    if (width <= 0 || height <= 0) return NULL;
+    CFMutableDictionaryRef d = CFDictionaryCreateMutable(NULL, 0,
+        &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    if (!d) return NULL;
+    int32_t w = width, h = height, bpe = 4, bpr = width * 4, fmt = 'RGBA';
+    CFNumberRef nw = CFNumberCreate(NULL, kCFNumberSInt32Type, &w);
+    CFNumberRef nh = CFNumberCreate(NULL, kCFNumberSInt32Type, &h);
+    CFNumberRef nbpe = CFNumberCreate(NULL, kCFNumberSInt32Type, &bpe);
+    CFNumberRef nbpr = CFNumberCreate(NULL, kCFNumberSInt32Type, &bpr);
+    CFNumberRef nfmt = CFNumberCreate(NULL, kCFNumberSInt32Type, &fmt);
+    CFDictionarySetValue(d, kIOSurfaceWidth, nw);
+    CFDictionarySetValue(d, kIOSurfaceHeight, nh);
+    CFDictionarySetValue(d, kIOSurfaceBytesPerElement, nbpe);
+    CFDictionarySetValue(d, kIOSurfaceBytesPerRow, nbpr);
+    CFDictionarySetValue(d, kIOSurfacePixelFormat, nfmt);
+    IOSurfaceRef s = IOSurfaceCreate(d);
+    CFRelease(nw); CFRelease(nh); CFRelease(nbpe); CFRelease(nbpr); CFRelease(nfmt);
+    CFRelease(d);
+    return (void *)s;
+}
+
+void IosHost_release(void *surface) {
+    if (surface) CFRelease((IOSurfaceRef)surface);
+}
+
+const uint8_t *IosHost_lockRead(void *surface, size_t *outStride) {
+    if (!surface) return NULL;
+    if (IOSurfaceLock((IOSurfaceRef)surface, kIOSurfaceLockReadOnly, NULL) != kIOReturnSuccess)
+        return NULL;
+    if (outStride) *outStride = IOSurfaceGetBytesPerRow((IOSurfaceRef)surface);
+    return (const uint8_t *)IOSurfaceGetBaseAddress((IOSurfaceRef)surface);
+}
+
+void IosHost_unlock(void *surface) {
+    if (surface) IOSurfaceUnlock((IOSurfaceRef)surface, kIOSurfaceLockReadOnly, NULL);
+}
