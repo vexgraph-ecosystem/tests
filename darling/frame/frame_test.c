@@ -34,6 +34,11 @@ int main(void) {
     Element *root = Frame_element(f);
     CHECK(root != NULL);
 
+    // the present seam is owned and live (its present Image is the target)
+    Surface *surf = Frame_surface(f);
+    CHECK(surf != NULL);
+    CHECK(Surface_presentImage(surf) != NULL);
+
     // one resize surface: setSize -> root tracks the new size
     Frame_setSize(f, 400, 300);
     Rect r = Frame_root(f);
@@ -41,6 +46,8 @@ int main(void) {
     Frame_setSize(f, 640, 360);
     r = Frame_root(f);
     CHECK(r.w == 640.0f && r.h == 360.0f);
+    // ...and the Surface was revalidated to the same size (render target)
+    CHECK(Surface_width(surf) == 640 && Surface_height(surf) == 360);
 
     // title / background
     Frame_setTitle(f, "renamed");
@@ -69,11 +76,12 @@ int main(void) {
     Frame_removePanels(f);
     CHECK(Frame_count(f) == 0);
 
-    // capture re-renders and hands back pixels
+    // capture re-renders and hands back the Surface's present Image
     Frame_addPanel(f, &d);
     Frame_render(f);
     Image *shot = Frame_capture(f);
     CHECK(shot != NULL);
+    CHECK(shot == Surface_presentImage(surf));       // the seam IS the capture
     CHECK(Image_width(shot) == 640 && Image_height(shot) == 360);
 
     // hide / show don't crash and keep the frame alive
