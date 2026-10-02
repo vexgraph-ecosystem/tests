@@ -35,7 +35,7 @@ int main(void) {
     CHECK(q != nullptr && Float_get(q) == 2.5f);
     void *r = Float(-1.25f);
     CHECK(r != nullptr && Float_get(r) == -1.25f);
-    void *s = Float();
+    void *s = Float_0();
     CHECK(s != nullptr && Float_type(s) == ID_FLOAT);
 
     Float_set(p, 1.0f);

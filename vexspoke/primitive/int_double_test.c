@@ -36,10 +36,10 @@ int main(void) {
     CHECK(c != nullptr);
     CHECK((IntDouble_get(c) & 0xFFFFFFFFLL) == 7); // v1 landed at offset 0
 
-    void *r = IntDouble(4, 0.5);
+    void *r = IntDouble_2(4, 0.5);
     CHECK(r != nullptr);
     CHECK((IntDouble_get(r) & 0xFFFFFFFFLL) == 4);
-    void *s = IntDouble();
+    void *s = IntDouble_0();
     CHECK(s != nullptr && IntDouble_type(s) == ID_INT_DOUBLE);
 
     IntDouble_set(p, 11);

@@ -35,7 +35,7 @@ int main(void) {
     CHECK(q != nullptr && Byte_get(q) == 42);
     void *r = Byte(-7);
     CHECK(r != nullptr && Byte_get(r) == -7);
-    void *s = Byte();
+    void *s = Byte_0();
     CHECK(s != nullptr && Byte_type(s) == ID_BYTE);
 
     CHECK(Byte_compareAndSet(p, Byte_get(p), 99));

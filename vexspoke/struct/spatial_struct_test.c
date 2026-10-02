@@ -123,7 +123,7 @@ static void test_sphere_array(void) {
 static void test_octree(void) {
     printf("\n--- Testing Octree (3D Spatial Partitioning) ---\n");
     OctreeAABB bounds = { -100.0f, -100.0f, -100.0f, 100.0f, 100.0f, 100.0f };
-    Octree *oct = Octree(bounds, 4, 2); // capacity 2 items before subdividing
+    Octree *oct = Octree_create(bounds, 4, 2); // capacity 2 items before subdividing
     TEST_ASSERT(oct != nullptr, "Octree_create succeeds");
 
     // Insert 4 items

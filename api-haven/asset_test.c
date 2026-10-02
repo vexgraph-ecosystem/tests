@@ -120,7 +120,7 @@ int main(int argc, const char **argv) {
     CHECK(AssetProvider_getNote(NULL, NULL) == NULL);
 
     // --- broker: cursor copies --------------------------------------------------------------------------
-    AssetBroker broker = AssetBroker();
+    AssetBroker broker = AssetBroker_0();
     CHECK(AssetBroker_getChunkBudget(&broker) == ASSET_BROKER_CHUNK_BUDGET_MS);
     CHECK(!AssetBroker_isCancelled(&broker));
     CHECK(AssetBroker_getBytesCopied(&broker) == 0);
@@ -158,7 +158,7 @@ int main(int argc, const char **argv) {
     CHECK(!AssetBroker_copyChunk(&broker, c1, sizeof(c1), dest, sizeof(dest), &used, nullptr));
 
     // --- broker: cancel latch + zero budget --------------------------------------------------------------------
-    AssetBroker canc = AssetBroker();
+    AssetBroker canc = AssetBroker_0();
     AssetBroker_cancel(&canc);
     CHECK(AssetBroker_isCancelled(&canc));
     used = 0;
@@ -167,7 +167,7 @@ int main(int argc, const char **argv) {
     CHECK(!AssetBroker_isCancelled(&canc));
     CHECK(AssetBroker_copyChunk(&canc, c1, sizeof(c1), dest, sizeof(dest), &used, &truncated));
 
-    AssetBroker tmo = AssetBroker();
+    AssetBroker tmo = AssetBroker_0();
     AssetBroker_setChunkBudget(&tmo, 0);
     CHECK(AssetBroker_getChunkBudget(&tmo) == 0);
     used = 0;
@@ -195,7 +195,7 @@ int main(int argc, const char **argv) {
     CHECK(!AssetBroker_getCacheSub(&broker, sub, 0));
 
     // --- broker: setters round-trip --------------------------------------------------------------------
-    AssetBroker st = AssetBroker();
+    AssetBroker st = AssetBroker_0();
     bool subTrunc = false;
     CHECK(AssetBroker_setCacheSub(&st, "models", &subTrunc));
     CHECK(!subTrunc);

@@ -57,7 +57,7 @@ static bool mat_equal(const Mat4 *a, const Mat4 *b) {
 }
 
 static void test_construction(void) {
-    Mat4 *m = Mat4();
+    Mat4 *m = Mat4_0();
     CHECK(m != nullptr);
     CHECK(is_identity(m));
     Mat4 *m2 = Mat4_identityAlloc();

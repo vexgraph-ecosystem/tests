@@ -352,7 +352,7 @@ static void runTour(Window *w) {
 int main(int argc, char **argv) {
     bool tour = (argc > 1 && strcmp(argv[1], "--tour") == 0);
 
-    Window *w = Window("vex", 640, 480);
+    Window *w = Window_create("vex", 640, 480);
     Window_addKeyAdapter(w, &g_keyListener);
     Window_addMouseAdapter(w, &g_mouseListener);
     Window_addTouchAdapter(w, &g_touchListener);

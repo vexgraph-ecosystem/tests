@@ -18,7 +18,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    Map *m = Map(ID_INT, ID_INT);
+    Map *m = Map_2(ID_INT, ID_INT);
     CHECK(m != nullptr);
     CHECK(Map_isEmpty(m));
     CHECK(Map_size(m) == 0);

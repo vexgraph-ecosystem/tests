@@ -497,7 +497,10 @@ confidence.
   concurrency stress, and platform tests before claiming a changed subsystem battle tested. Record
   command, platform, configuration, seed, skips, and result.
 - A skip is neither a pass nor a failure. State which claim remains unproved. Flaky tests are defects
-  to diagnose, not results to rerun until green.
+  to diagnose, not results to rerun until green. A test that cannot exercise its contract on this host
+  must `return B_TEST_SKIP` (77, from `tests/test_support.h`) after printing the reason to stderr —
+  never `return 0`. `b test` reports SKIP separately from PASS; a skip contributes no coverage and
+  must never be read as green.
 - Each file's readiness claim requires its owner test, public-surface inventory, applicable boundary
   matrix, failure and lifetime proof, and executed test results. A changed contract updates its tests
   and this document in the same development cycle.

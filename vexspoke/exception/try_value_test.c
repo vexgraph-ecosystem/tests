@@ -44,7 +44,7 @@ static void testValueConstructors(void) {
     CHECK(!TryValue_isOk(&err));
     CHECK(TryValue_getCode(&err) == TRY_BOUNDS);
 
-    TryValue two = TryValue(7u, TRY_IO);
+    TryValue two = TryValue_2(7u, TRY_IO);
     CHECK(TryValue_getValue(&two) == 7u);
     CHECK(TryValue_getCode(&two) == TRY_IO);
 
@@ -141,7 +141,7 @@ static void testPtr(void) {
     CHECK(TryPtr_getValue(&err) == nullptr);
     CHECK(TryPtr_getCode(&err) == TRY_IO);
 
-    TryPtr two = TryPtr(nullptr, TRY_NOT_FOUND);
+    TryPtr two = TryPtr_2(nullptr, TRY_NOT_FOUND);
     CHECK(TryPtr_getCode(&two) == TRY_NOT_FOUND);
 
     TryPtr_setValue(&two, &payload);

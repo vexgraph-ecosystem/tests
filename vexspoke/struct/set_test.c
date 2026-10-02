@@ -18,7 +18,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    Set *s = Set(ID_INT);
+    Set *s = Set_1(ID_INT);
     CHECK(s != nullptr);
     CHECK(Set_isEmpty(s));
     CHECK(Set_size(s) == 0);

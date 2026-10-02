@@ -1,4 +1,5 @@
 #include "annotation/overview.h"
+#include "test_support.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -165,9 +166,15 @@ int main(void) {
     }
 
     HttpServer_stop(&srv);
-    if (g_failures == 0)
-        printf("=== ALL LOOPBACK PASS ===\n");
-    else
+    if (g_failures != 0) {
         printf("=== %d LOOPBACK FAILURES ===\n", g_failures);
-    return g_failures;
+        return g_failures;
+    }
+    if (loopbackBlocked) {
+        // the socket transports never ran; pure auth vectors passing is not a
+        // pass for the transport contract. A skip is not a pass.
+        return B_TEST_SKIP;
+    }
+    printf("=== ALL LOOPBACK PASS ===\n");
+    return 0;
 }

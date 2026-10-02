@@ -160,7 +160,7 @@ int main(int argc, const char **argv) {
     CHECK(AiProvider_resolveBaseUrl(NULL, NULL) == NULL);
 
     // --- AiChat: URL resolution + auth ---------------------------------------
-    AiChat chat = AiChat("gpt-4o-mini", "sk-test");
+    AiChat chat = AiChat_2("gpt-4o-mini", "sk-test");
     AiChat_setPeer(&chat, openai);
 
     char body[2048];
@@ -205,7 +205,7 @@ int main(int argc, const char **argv) {
                               body, sizeof(body), url, sizeof(url), &auth));
     CHECK(strcmp(url, "https://gateway.example/chat/completions") == 0);
 
-    AiChat bare = AiChat("grok-2-latest"); // peer NULL -> gateway
+    AiChat bare = AiChat_1("grok-2-latest"); // peer NULL -> gateway
     CHECK(AiChat_buildRequest(&bare, sMessages, 1,
                               body, sizeof(body), url, sizeof(url), &auth));
     CHECK(strcmp(url, "https://openrouter.ai/api/v1/chat/completions") == 0);
@@ -218,14 +218,14 @@ int main(int argc, const char **argv) {
                                body, sizeof(body), url, sizeof(url), &auth));
     CHECK(!AiChat_buildRequest(&bare, sMessages, 0,
                                NULL, 0, url, sizeof(url), &auth));
-    AiChat noModel = AiChat();
+    AiChat noModel = AiChat_0();
     CHECK(!AiChat_buildRequest(&noModel, sMessages, 1,
                                body, sizeof(body), url, sizeof(url), &auth));
     CHECK(!AiChat_complete(&bare, sMessages, 1,
                            body, sizeof(body), NULL));
 
     // --- AiChat: getters/setters (Rule 24) -----------------------------------
-    AiChat c = AiChat();
+    AiChat c = AiChat_0();
     CHECK(AiChat_getModel(&c) == NULL);
     CHECK(AiChat_getModel(NULL) == NULL);
     AiChat_setProvider(&c, dir);
@@ -246,7 +246,7 @@ int main(int argc, const char **argv) {
     CHECK(nous && AiProvider_getFamily(dir, nous) == AI_PROVIDER_FAMILY_OPENAI_COMPAT);
     CHECK(nous && AiProvider_getAuth(dir, nous) == AI_PROVIDER_AUTH_BEARER);
 
-    AiChat hermes = AiChat("hermes"); // provider = shared; peer set below
+    AiChat hermes = AiChat_1("hermes"); // provider = shared; peer set below
     AiChat_setPeer(&hermes, nous);
     AiChat_setApiKey(&hermes, "nous-key");
     CHECK(AiChat_buildRequest(&hermes, sMessages, 1,

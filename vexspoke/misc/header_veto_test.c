@@ -38,7 +38,7 @@ static int g_failures = 0;
 
 int main(void) {
     printf("=== Running Header Veto Test Suite ===\n");
-    MemoryArena *arena = MemoryArena(64u << 20);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
     CHECK("arena created", arena != nullptr);
 
     // section 1 Valid blocks read back; Similar answers identity.

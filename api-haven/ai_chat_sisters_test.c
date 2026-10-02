@@ -49,7 +49,7 @@ int main(int argc, const char **argv) {
     CHECK(anthropic != NULL);
 
     // --- Anthropic: URL + auth -------------------------------------------------
-    AiChatAnthropic achat = AiChatAnthropic("claude-sonnet-4-5", "ant-key");
+    AiChatAnthropic achat = AiChatAnthropic_2("claude-sonnet-4-5", "ant-key");
     AiChatAnthropic_setPeer(&achat, anthropic);
     CHECK(AiChatAnthropic_getMaxTokens(&achat) == AI_CHAT_ANTHROPIC_DEFAULT_MAX_TOKENS);
 
@@ -87,7 +87,7 @@ int main(int argc, const char **argv) {
     CHECK(strcmp(url, "https://proxy.example/anthropic/v1/messages") == 0);
     CHECK(strstr(body, "\"max_tokens\":512") != NULL);
 
-    AiChatAnthropic bare = AiChatAnthropic("claude-haiku");
+    AiChatAnthropic bare = AiChatAnthropic_1("claude-haiku");
     CHECK(AiChatAnthropic_buildRequest(&bare, sMessages, 1,
                                        body, sizeof(body), url, sizeof(url), &auth));
     CHECK(auth.kind == API_AUTH_NONE);
@@ -97,10 +97,10 @@ int main(int argc, const char **argv) {
                                         body, sizeof(body), url, sizeof(url), &auth));
     CHECK(!AiChatAnthropic_buildRequest(&bare, NULL, 1,
                                         body, sizeof(body), url, sizeof(url), &auth));
-    AiChatAnthropic noModel = AiChatAnthropic();
+    AiChatAnthropic noModel = AiChatAnthropic_0();
     CHECK(!AiChatAnthropic_buildRequest(&noModel, sMessages, 1,
                                         body, sizeof(body), url, sizeof(url), &auth));
-    AiChatAnthropic zeroTok = AiChatAnthropic("m");
+    AiChatAnthropic zeroTok = AiChatAnthropic_1("m");
     AiChatAnthropic_setMaxTokens(&zeroTok, 0);
     CHECK(!AiChatAnthropic_buildRequest(&zeroTok, sMessages, 1,
                                         body, sizeof(body), url, sizeof(url), &auth));
@@ -110,7 +110,7 @@ int main(int argc, const char **argv) {
     CHECK(!AiChatAnthropic_complete(&bare, sMessages, 1, body, sizeof(body), NULL));
 
     // --- Anthropic: getters/setters (Rule 24) ---------------------------------------
-    AiChatAnthropic ac = AiChatAnthropic();
+    AiChatAnthropic ac = AiChatAnthropic_0();
     CHECK(AiChatAnthropic_getModel(&ac) == NULL);
     CHECK(AiChatAnthropic_getModel(NULL) == NULL);
     CHECK(AiChatAnthropic_getMaxTokens(NULL) == 0);
@@ -132,7 +132,7 @@ int main(int argc, const char **argv) {
     CHECK(AiChatAnthropic_getBaseUrl(NULL) == NULL);
 
     // --- Gemini: URL carries the model + goog auth ------------------------------------
-    AiChatGemini gchat = AiChatGemini("gemini-2.0-flash", "goog-key");
+    AiChatGemini gchat = AiChatGemini_2("gemini-2.0-flash", "goog-key");
     CHECK(AiChatGemini_buildRequest(&gchat, sMessages, 2,
                                     body, sizeof(body), url, sizeof(url), &auth));
     CHECK(strcmp(url, "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") == 0);
@@ -172,7 +172,7 @@ int main(int argc, const char **argv) {
                                     body, sizeof(body), url, sizeof(url), &auth));
     CHECK(strstr(url, "https://proxy.example/gemini/v1beta/models/") != NULL);
 
-    AiChatGemini gbare = AiChatGemini("gemini-flash-lite");
+    AiChatGemini gbare = AiChatGemini_1("gemini-flash-lite");
     CHECK(AiChatGemini_buildRequest(&gbare, sMessages, 1,
                                     body, sizeof(body), url, sizeof(url), &auth));
     CHECK(auth.kind == API_AUTH_NONE);
@@ -180,7 +180,7 @@ int main(int argc, const char **argv) {
                                      body, sizeof(body), url, sizeof(url), &auth));
     CHECK(!AiChatGemini_buildRequest(&gbare, NULL, 1,
                                      body, sizeof(body), url, sizeof(url), &auth));
-    AiChatGemini gnoModel = AiChatGemini();
+    AiChatGemini gnoModel = AiChatGemini_0();
     CHECK(!AiChatGemini_buildRequest(&gnoModel, sMessages, 1,
                                      body, sizeof(body), url, sizeof(url), &auth));
     CHECK(!AiChatGemini_buildRequest(&gbare, sMessages, 2,
@@ -188,7 +188,7 @@ int main(int argc, const char **argv) {
     CHECK(!AiChatGemini_complete(&gbare, sMessages, 1, body, sizeof(body), NULL));
 
     // --- Gemini: getters/setters ---------------------------------------------------------------
-    AiChatGemini gc = AiChatGemini();
+    AiChatGemini gc = AiChatGemini_0();
     CHECK(AiChatGemini_getModel(&gc) == NULL);
     CHECK(AiChatGemini_getModel(NULL) == NULL);
     AiChatGemini_setProvider(&gc, dir);

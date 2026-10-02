@@ -34,7 +34,7 @@ static bool anyNonZero(const uint8_t *buf, size_t len) {
 }
 
 int main(void) {
-    SecureRandom *sr = SecureRandom();
+    SecureRandom *sr = SecureRandom_0();
     CHECK(sr != nullptr);
     if (!sr) {
         printf("secure_random_test: cannot allocate handle\n");
@@ -73,7 +73,7 @@ int main(void) {
     CHECK(memcmp(a, b, sizeof a) != 0);
 
     // Two handles differ (independent streams, both OS-sourced).
-    SecureRandom *sr2 = SecureRandom();
+    SecureRandom *sr2 = SecureRandom_0();
     CHECK(sr2 != nullptr);
     uint8_t c[32];
     uint8_t d[32];

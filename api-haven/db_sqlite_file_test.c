@@ -48,7 +48,7 @@ int main(int argc, const char **argv) {
     (void)argv;
 
     // --- read-only defaults ----------------------------------------------------------
-    DbSqliteFile bare = DbSqliteFile();
+    DbSqliteFile bare = DbSqliteFile_0();
     CHECK(DbSqliteFile_isReadOnly(&bare));
     CHECK(DbSqliteFile_getPath(&bare) == NULL);
     CHECK(DbSqliteFile_getCaps(&bare) == 0);
@@ -56,7 +56,7 @@ int main(int argc, const char **argv) {
     CHECK(DbSqliteFile_getExecHandle(&bare) == NULL);
     CHECK(DbSqliteFile_getExecTable(&bare) == NULL);
 
-    DbSqliteFile file = DbSqliteFile("/tmp/catalog.db");
+    DbSqliteFile file = DbSqliteFile_1("/tmp/catalog.db");
     CHECK(DbSqliteFile_isReadOnly(&file));
     CHECK(strcmp(DbSqliteFile_getPath(&file), "/tmp/catalog.db") == 0);
     CHECK((DbSqliteFile_getCaps(&file) & DB_SQLITE_CAP_READ) != 0);
@@ -109,7 +109,7 @@ int main(int argc, const char **argv) {
     CHECK(!DbSqliteFile_exec(&file, "SELECT 1", out, 0));
 
     // --- setters round-trip --------------------------------------------------------------------------------------
-    DbSqliteFile st = DbSqliteFile();
+    DbSqliteFile st = DbSqliteFile_0();
     DbSqliteFile_setPath(&st, "/data/app.db");
     DbSqliteFile_setCaps(&st, DB_SQLITE_CAP_READ);
     DbSqliteFile_setMaxBytes(&st, 4096);

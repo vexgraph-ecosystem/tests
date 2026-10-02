@@ -27,6 +27,7 @@
 
 #include "hot/hot.h"
 #include "hot/manifest.h"
+#include "test_support.h"
 
 #ifndef HOT_BEHAVIOR_MODULE
 #define HOT_BEHAVIOR_MODULE "hot_behavior.so"
@@ -138,7 +139,7 @@ static bool stage_module(const char *loadBase) {
 int main(void) {
 #if defined(_WIN32)
     printf("shutdown_order_test: SKIP (POSIX dlopen contract)\n");
-    return 0;
+    return B_TEST_SKIP;
 #else
     char scratch[] = "/tmp/vexgraph_shutdown_order_XXXXXX";
     char *base = mkdtemp(scratch);

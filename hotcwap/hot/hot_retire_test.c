@@ -14,6 +14,7 @@
 
 #include <dlfcn.h>
 #include <stddef.h>
+#include "test_support.h"
 #include <stdio.h>
 
 #include "hot/hot_retire.h"
@@ -54,7 +55,7 @@ int main(void) {
     void *h = dlopen("/usr/lib/libSystem.B.dylib", RTLD_NOW | RTLD_NODELETE);
     if (!h) {
         printf("hot_retire_test: SKIP (no dlopen handle available)\n");
-        return 0;
+        return B_TEST_SKIP;
     }
 
     HotRetireRing_retire(&ring, h);

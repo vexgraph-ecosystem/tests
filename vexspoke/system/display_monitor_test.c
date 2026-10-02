@@ -31,7 +31,7 @@ static int g_failures = 0;
 int main(void) {
     CHECK(Memory_init(0));
 
-    DisplayMonitor *m = DisplayMonitor();
+    DisplayMonitor *m = DisplayMonitor_0();
     CHECK(m != nullptr);
     if (!m)
         return 1;

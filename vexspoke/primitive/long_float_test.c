@@ -36,9 +36,9 @@ int main(void) {
     CHECK(c != nullptr);
     CHECK(LongFloat_get(c) == 7); // v1 (int64) landed at offset 0
 
-    void *r = LongFloat(4, 0.5f);
+    void *r = LongFloat_2(4, 0.5f);
     CHECK(r != nullptr && LongFloat_get(r) == 4);
-    void *s = LongFloat();
+    void *s = LongFloat_0();
     CHECK(s != nullptr && LongFloat_type(s) == ID_LONG_FLOAT);
 
     LongFloat_set(p, 11);

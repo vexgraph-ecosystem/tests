@@ -34,7 +34,7 @@ int main(void) {
     CHECK(q != nullptr && Bool_get(q) == true);
     void *r = Bool(true);
     CHECK(r != nullptr && Bool_get(r) == true);
-    void *s = Bool();
+    void *s = Bool_0();
     CHECK(s != nullptr && Bool_type(s) == ID_BOOL);
 
     Bool_set(p, false);

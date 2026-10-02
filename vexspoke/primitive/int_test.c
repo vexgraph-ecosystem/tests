@@ -39,7 +39,7 @@ int main(void) {
     CHECK(q != nullptr && Int_get(q) == 42);
     void *r = Int(-7); // dispatch macro -> Int_1
     CHECK(r != nullptr && Int_get(r) == -7);
-    void *s = Int();
+    void *s = Int_0();
     CHECK(s != nullptr && Int_type(s) == ID_INT);
 
     CHECK(Int_compareAndSet(p, Int_get(p), 999));

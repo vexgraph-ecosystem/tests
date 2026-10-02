@@ -30,12 +30,12 @@ static int g_failures = 0;
 #define CLOSE(a, b) (fabsf((a) - (b)) <= 1e-5f)
 
 static void test_construction(void) {
-    Vec2 *z = Vec2();
+    Vec2 *z = Vec2_0();
     CHECK(z != nullptr);
     CHECK(Vec2_getX(z) == 0.0f && Vec2_getY(z) == 0.0f);
     Vec2_free(z);
 
-    Vec2 *v = Vec2(3.0f, -4.0f);
+    Vec2 *v = Vec2_2(3.0f, -4.0f);
     CHECK(v != nullptr);
     CHECK(Vec2_getRight(v) == 3.0f);
     CHECK(Vec2_getUp(v) == -4.0f);

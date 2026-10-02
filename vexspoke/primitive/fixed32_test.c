@@ -35,7 +35,7 @@ int main(void) {
     CHECK(q != nullptr && Fixed32_get(q) == 65536);
     void *r = Fixed32(-65536);
     CHECK(r != nullptr && Fixed32_get(r) == -65536);
-    void *s = Fixed32();
+    void *s = Fixed32_0();
     CHECK(s != nullptr && Fixed32_type(s) == ID_FIXED32);
 
     CHECK(Fixed32_compareAndSet(p, Fixed32_get(p), 999));

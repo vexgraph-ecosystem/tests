@@ -42,10 +42,10 @@ int main(void) {
     int64_t expected = ((int64_t) fbits << 32) | (uint32_t) 7;
     CHECK(IntFloat_get(c) == expected);
 
-    void *r = IntFloat(3, 0.5f);
+    void *r = IntFloat_2(3, 0.5f);
     CHECK(r != nullptr);
     CHECK((IntFloat_get(r) & 0xFFFFFFFFLL) == 3);
-    void *s = IntFloat();
+    void *s = IntFloat_0();
     CHECK(s != nullptr && IntFloat_type(s) == ID_INT_FLOAT);
 
     IntFloat_set(p, 11);

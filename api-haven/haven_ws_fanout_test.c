@@ -72,7 +72,7 @@ int main(int argc, const char **argv) {
     (void)argv;
 
     // --- 1. Creation and Initial State ---------------------------------------
-    HavenWsFanout *fanout = HavenWsFanout();
+    HavenWsFanout *fanout = HavenWsFanout_0();
     CHECK(fanout != nullptr);
     CHECK(HavenWsFanout_getCount(fanout) == 0);
     for (uint32_t i = 0; i < HAVEN_WS_FANOUT_MAX; i++) {

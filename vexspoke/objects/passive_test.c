@@ -29,7 +29,7 @@ static void storeSet(uint64_t value, void *userdata) {
 
 int main(void) {
     int token = 1;
-    Passive *p = Passive(storeGet, storeSet, &token);
+    Passive *p = Passive_3(storeGet, storeSet, &token);
     CHECK(p != nullptr);
 
     g_store = 11;
@@ -41,7 +41,7 @@ int main(void) {
     Passive_free(p);
 
     // Null hooks: get returns the cache; set caches (Passive always caches).
-    Passive *q = Passive(nullptr, nullptr, nullptr);
+    Passive *q = Passive_3(nullptr, nullptr, nullptr);
     CHECK(q != nullptr);
     CHECK(Passive_get(q) == 0);
     Passive_set(q, 5);

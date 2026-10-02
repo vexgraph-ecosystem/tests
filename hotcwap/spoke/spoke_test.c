@@ -52,7 +52,7 @@ int main(void) {
     CHECK("aligned high pointer is legit", Lifetime_isLegit((const void*) 0x10000));
 
     // #2 Lifetime creation & struct validation
-    Lifetime lt = Lifetime(64u << 20, 64u << 20);
+    Lifetime lt = Lifetime_create(64u << 20, 64u << 20);
     CHECK("persistent arena created", lt.persistentArena != nullptr);
     CHECK("transient arena created", lt.transientArena != nullptr);
     CHECK("persistent attested", lt.persistentType == VEXSPOKE_TYPE_ARENA);

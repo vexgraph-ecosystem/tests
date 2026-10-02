@@ -47,7 +47,7 @@ int main(void) {
         CHECK("pre-init count closed", StringPool_count() == 0);
         CHECK("pre-init isSlot closed", StringPool_isSlot("label") == false);
         StringPool_shutdown();
-        MemoryArena *arena = MemoryArena(64u << 20);
+        MemoryArena *arena = MemoryArena_create(64u << 20);
         CHECK("arena created", arena != nullptr);
         CHECK("init null arena", StringPool_init(nullptr) == false);
         CHECK("init ok", StringPool_init(arena) == true);
@@ -69,7 +69,7 @@ int main(void) {
 
     // section 2 Intern, dedup, 23-char boundary, self links.
     {
-        MemoryArena *arena = MemoryArena(64u << 20);
+        MemoryArena *arena = MemoryArena_create(64u << 20);
         StringPool_init(arena);
         int32_t a = StringPool_intern("label");
         int32_t b = StringPool_intern("label");
@@ -94,7 +94,7 @@ int main(void) {
 
     // section 3 Lookup over reverse-sorted input + growth past initial capacity.
     {
-        MemoryArena *arena = MemoryArena(64u << 20);
+        MemoryArena *arena = MemoryArena_create(64u << 20);
         StringPool_init(arena);
         const char *words[] = { "delta", "alpha", "charlie", "bravo" };
         for (int i = 0; i < 4; i++)

@@ -30,9 +30,9 @@ static int g_failures = 0;
     } while (0)
 
 static void test_construction(void) {
-    CHECK(SphereArray(-1, ID_INT) == nullptr);
+    CHECK(SphereArray_create(-1, ID_INT) == nullptr);
 
-    SphereArray *r0 = SphereArray(0, ID_INT);
+    SphereArray *r0 = SphereArray_create(0, ID_INT);
     CHECK(r0 != nullptr);
     CHECK(SphereArray_radius(r0) == 0);
     CHECK(SphereArray_diameter(r0) == 1);
@@ -41,7 +41,7 @@ static void test_construction(void) {
 
     const int expected[] = { 1, 7, 33 };
     for (int32_t r = 0; r <= 2; r++) {
-        SphereArray *a = SphereArray(r, ID_INT);
+        SphereArray *a = SphereArray_create(r, ID_INT);
         CHECK(a != nullptr);
         CHECK(SphereArray_radius(a) == r);
         CHECK(SphereArray_diameter(a) == 2 * r + 1);
@@ -58,7 +58,7 @@ static void test_construction(void) {
 }
 
 static void test_geometry(void) {
-    SphereArray *a = SphereArray(2, ID_INT);
+    SphereArray *a = SphereArray_create(2, ID_INT);
     CHECK(a != nullptr);
 
     CHECK(SphereArray_distanceSquaredOffset(0, 0, 0) == 0);
@@ -85,7 +85,7 @@ static void test_geometry(void) {
 }
 
 static void test_access_round_trip(void) {
-    SphereArray *a = SphereArray(2, ID_INT);
+    SphereArray *a = SphereArray_create(2, ID_INT);
     CHECK(a != nullptr);
 
     int v = 4321;
@@ -153,7 +153,7 @@ static void walkVoxel(int32_t gx, int32_t gy, int32_t gz,
 }
 
 static void test_for_each(void) {
-    SphereArray *a = SphereArray(2, ID_INT);
+    SphereArray *a = SphereArray_create(2, ID_INT);
     CHECK(a != nullptr);
 
     int fill = 1;

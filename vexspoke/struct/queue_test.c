@@ -18,7 +18,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    Queue *q = Queue(ID_INT);
+    Queue *q = Queue_1(ID_INT);
     CHECK(q != nullptr);
     CHECK(Queue_isEmpty(q));
     CHECK(Queue_elementClassId(q) == ID_INT);

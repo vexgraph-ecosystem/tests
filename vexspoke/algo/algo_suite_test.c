@@ -44,7 +44,7 @@ static void test_radix_sort(void) {
 }
 
 static void test_dijkstra(void) {
-    DijkstraGraph *g = DijkstraGraph(6);
+    DijkstraGraph *g = Dijkstra_create(6);
     assert(g != NULL);
 
     Dijkstra_addEdge(g, 0, 1, 7.0f);

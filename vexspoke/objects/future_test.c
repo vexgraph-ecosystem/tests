@@ -18,7 +18,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    Future *f = Future();
+    Future *f = Future_0();
     CHECK(f != nullptr);
     CHECK(!Future_isGiven(f));
     CHECK(Future_get(f) == 0);

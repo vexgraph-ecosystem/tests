@@ -33,7 +33,7 @@ int main(void) {
     uint64_t objects[3] = { 100, 200, 300 };
     ChoiceCallback callbacks[3] = { cb, cb, cb };
 
-    Choice *c = Choice(objects, callbacks, 3);
+    Choice *c = Choice_3(objects, callbacks, 3);
     CHECK(c != nullptr);
     CHECK(Choice_length(c) == 3);
     CHECK(Choice_getObject(c, 0) == 100);

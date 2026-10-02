@@ -32,21 +32,21 @@ static int g_failures = 0;
 #define CLOSE(a, b) (fabsf((a) - (b)) <= 1e-4f)
 
 static void test_construction(void) {
-    Vec3 *z = Vec3();
+    Vec3 *z = Vec3_0();
     CHECK(z != nullptr);
     CHECK(Vec3_getX(z) == 0.0f && Vec3_getY(z) == 0.0f && Vec3_getZ(z) == 0.0f);
     CHECK(Vec3_getFrame(z) == COORD_FRAME_DEFAULT);
     Vec3_free(z);
 
-    Vec3 *v = Vec3(1.0f, 2.0f, 3.0f);
+    Vec3 *v = Vec3_3(1.0f, 2.0f, 3.0f);
     CHECK(v != nullptr);
     CHECK(Vec3_getRight(v) == 1.0f && Vec3_getUp(v) == 2.0f && Vec3_getFront(v) == 3.0f);
     CHECK(Vec3_getFrame(v) == COORD_FRAME_DEFAULT);
 
-    Vec3 *f = Vec3(4.0f, 5.0f, 6.0f, COORD_FRAME_Z_UP_RIGHT);
+    Vec3 *f = Vec3_4(4.0f, 5.0f, 6.0f, COORD_FRAME_Z_UP_RIGHT);
     CHECK(Vec3_getFrame(f) == COORD_FRAME_Z_UP_RIGHT);
     // Invalid frame is rejected at construction and replaced by the default.
-    Vec3 *bad = Vec3(1.0f, 1.0f, 1.0f, (CoordFrame) 999);
+    Vec3 *bad = Vec3_4(1.0f, 1.0f, 1.0f, (CoordFrame) 999);
     CHECK(Vec3_getFrame(bad) == COORD_FRAME_DEFAULT);
 
     Vec3_free(v);

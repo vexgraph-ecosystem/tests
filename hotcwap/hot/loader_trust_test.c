@@ -29,6 +29,7 @@
 
 #include "hot/hot.h"
 #include "hot/manifest.h"
+#include "test_support.h"
 
 static int s_failures = 0;
 
@@ -98,7 +99,7 @@ static bool rmtree(const char *path) {
 int main(void) {
 #if defined(_WIN32)
     printf("loader_trust_test: SKIP (POSIX dlopen contract)\n");
-    return 0;
+    return B_TEST_SKIP;
 #else
     char scratch[] = "/tmp/vexgraph_loader_trust_XXXXXX";
     char *base = mkdtemp(scratch);

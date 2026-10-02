@@ -67,7 +67,7 @@ static void test_null_safety(void) {
 }
 
 static void test_bounds_and_queries(void) {
-    Octree *t = Octree(box(-10.0f, 10.0f), 4, 2);
+    Octree *t = Octree_create(box(-10.0f, 10.0f), 4, 2);
     CHECK(t != nullptr);
     CHECK(Octree_count(t) == 0);
 
@@ -122,7 +122,7 @@ static void test_bounds_and_queries(void) {
 #define OCT_POINTS 500
 
 static void test_bulk(void) {
-    Octree *t = Octree(box(0.0f, 100.0f), 8, 2);   // tiny nodes force subdivision
+    Octree *t = Octree_create(box(0.0f, 100.0f), 8, 2);   // tiny nodes force subdivision
     CHECK(t != nullptr);
 
     OctreePoint pts[OCT_POINTS];

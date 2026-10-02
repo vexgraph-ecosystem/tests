@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 #include "graphics/graphics.h"
+#include "test_support.h"
 #include "vulkan/vulkan_backend.h"
 #include "iosurface_host.h"
 
@@ -33,7 +34,7 @@ int main(void) {
     if (!VulkanBackend_bindSurface(surf, 32, 32)) {
         printf("surface_gpu_test: SKIP (%s)\n", VulkanBackend_lastError());
         IosHost_release(surf);
-        return 0;   // no metal-objects support -> skip rather than fail
+        return B_TEST_SKIP;   // no metal-objects support -> skip, not a pass
     }
 
     CHECK(Graphics_resize(32, 32));

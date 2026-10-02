@@ -13,6 +13,7 @@
 #include <stdio.h>
 
 #include "window/traffic_light.h"
+#include "test_support.h"
 #include "window/window.h"
 
 static int g_failures = 0;
@@ -27,7 +28,7 @@ static int g_failures = 0;
 
 int main(void) {
     // Nil-handle bookkeeping: visibility still tracks.
-    TrafficLight *tl = TrafficLight(nullptr);
+    TrafficLight *tl = TrafficLight_create(nullptr);
     CHECK(tl != nullptr);
     CHECK(TrafficLight_isButtonVisible(tl, TRAFFIC_LIGHT_CLOSE));
     CHECK(TrafficLight_isButtonVisible(tl, TRAFFIC_LIGHT_MINIATURIZE));
@@ -62,9 +63,9 @@ int main(void) {
     TrafficLight_destroy(nullptr); // null-safe
 
     // Real window: the controller over a live AppKit window.
-    Window *w = Window("traffic", 300, 200);
+    Window *w = Window_create("traffic", 300, 200);
     if (w) {
-        TrafficLight *live = TrafficLight(Window_nativeHandle(w));
+        TrafficLight *live = TrafficLight_create(Window_nativeHandle(w));
         CHECK(live != nullptr);
         TrafficLight_refresh(live);
 
@@ -87,6 +88,10 @@ int main(void) {
         Window_destroy(w);
     } else {
         printf("traffic_light_test: SKIP real-window portion (no window server)\n");
+        if (g_failures == 0) {
+            // the real-window contract never ran; a skip is not a pass.
+            return B_TEST_SKIP;
+        }
     }
 
     if (g_failures == 0) {

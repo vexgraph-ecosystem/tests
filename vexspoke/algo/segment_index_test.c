@@ -87,7 +87,7 @@ static void testSplitter(void) {
 static void testBuild(void) {
     printf("[2] index build + getters + null-safety\n");
 
-    SegmentIndex *index = SegmentIndex();
+    SegmentIndex *index = SegmentIndex_0();
     CHECK(index != nullptr);
     if (!index)
         return;
@@ -113,7 +113,7 @@ static void testBuild(void) {
 static void testRanking(void) {
     printf("[3] ranked phrase search: exact > suffix > contains\n");
 
-    SegmentIndex *index = SegmentIndex();
+    SegmentIndex *index = SegmentIndex_0();
     if (!index) {
         CHECK(false);
         return;
@@ -191,7 +191,7 @@ static void testBridge(void) {
     VariableHashMap_add(map, "position.x", 0x2u);
     VariableHashMap_add(map, "health", 0x3u);
 
-    SegmentIndex *index = SegmentIndex();
+    SegmentIndex *index = SegmentIndex_0();
     CHECK(index != nullptr);
     if (!index) {
         VariableHashMap_free(map);

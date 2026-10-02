@@ -17,6 +17,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <stdbool.h>
+#include "test_support.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -71,7 +72,7 @@ static bool rmtree(const char *path) {
 int main(void) {
 #if defined(_WIN32)
     printf("ledger_test: SKIP (POSIX state-file contract)\n");
-    return 0;
+    return B_TEST_SKIP;
 #else
     char homeT[] = "/tmp/vexgraph_ledger_home_XXXXXX";
     char *home = mkdtemp(homeT);
@@ -105,7 +106,7 @@ int main(void) {
         printf("ledger_test: SKIP (state dir not writable)\n");
         Ledger_free(ledger);
         rmtree(home);
-        return 0;
+        return B_TEST_SKIP;
     }
     Ledger_free(ledger);
     ledger = Ledger_open(org, app);

@@ -79,7 +79,7 @@ static bool fakeJoined(const void *ctx) {
 
 int main(void) {
     // Constructor defaults + the dispatch macro.
-    Console *c = Console();
+    Console *c = Console_0();
     CHECK(c != nullptr);
     CHECK(strcmp(Console_getShell(c), "/bin/sh") == 0);
     CHECK(Console_getWorkDir(c)[0] == '\0');
@@ -141,7 +141,7 @@ int main(void) {
     Console_free(nullptr); // null-safe
 
     // free-while-running cancels first (the Teardown Order Law).
-    Console *c4 = Console("sh");
+    Console *c4 = Console_1("sh");
     Console_setIo(c4, &io, &f);
     int before = f.cancels;
     CHECK(Console_run(c4));

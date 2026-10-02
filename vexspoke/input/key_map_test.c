@@ -41,10 +41,10 @@ static void onFire2(void *userdata, int64_t combo) {
 // ── Tests ─────────────────────────────────────────────────
 
 static void test_create_destroy(void) {
-    MemoryArena *arena = MemoryArena(64u << 20);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
     CHECK(arena != nullptr);
 
-    KeyMap *map = KeyMap(arena);
+    KeyMap *map = KeyMap_create(arena);
     CHECK(map != nullptr);
     CHECK(KeyMap_isEmpty(map));
     CHECK(KeyMap_count(map) == 0);
@@ -58,7 +58,7 @@ static void test_create_destroy(void) {
 
 static void test_null_safety(void) {
     // All operations on NULL should be safe
-    CHECK(KeyMap(nullptr) == nullptr);
+    CHECK(KeyMap_create(nullptr) == nullptr);
     CHECK(KeyMap_count(nullptr) == 0);
     CHECK(KeyMap_isEmpty(nullptr) == true);
     CHECK(KeyMap_match(nullptr, 0) == nullptr);
@@ -69,8 +69,8 @@ static void test_null_safety(void) {
 }
 
 static void test_bind_and_match(void) {
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     // Bind Cmd+A
     int64_t cmdA = KMOD_CMD | KEY_A;
@@ -107,8 +107,8 @@ static void test_bind_and_match(void) {
 }
 
 static void test_bind_replaces(void) {
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     int64_t combo = KMOD_CMD | KEY_S;
     CHECK(KeyMap_bind(map, combo, onFire, nullptr));
@@ -127,8 +127,8 @@ static void test_bind_replaces(void) {
 }
 
 static void test_unbind(void) {
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     int64_t cmdA = KMOD_CMD | KEY_A;
     int64_t cmdB = KMOD_CMD | KEY_B;
@@ -155,8 +155,8 @@ static void test_unbind(void) {
 }
 
 static void test_growth(void) {
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     // Bind more than KEYMAP_INITIAL_CAPACITY (16) entries
     for (int i = 0; i < 24; i++) {
@@ -295,8 +295,8 @@ static void test_resolve_tap(void) {
     // once it closes, resolve fires exactly the Cmd+A binding once, and the
     // consumed tap cannot re-fire on the next frame.
     Key_init();
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     int64_t cmdA = KMOD_CMD | KEY_A;
     CHECK(KeyMap_bind(map, cmdA, onResolveFire, nullptr));
@@ -333,8 +333,8 @@ static void test_resolve_specificity(void) {
     // DOUBLE and resolve the DOUBLE_TAP binding (higher KMODE wins), never the
     // TAP — settlement is what makes the double reachable.
     Key_init();
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     CHECK(KeyMap_bind(map, KEY_A | KMODE_TAP, onResolveFire, nullptr));
     CHECK(KeyMap_bind(map, KEY_A | KMODE_DOUBLE_TAP, onResolveFire, nullptr));
@@ -367,8 +367,8 @@ static void test_resolve_modifier_exact(void) {
     // Plain A and Cmd+A both bound. Exact modifier equality: with Super held
     // only Cmd+A fires; without modifiers only plain A fires.
     Key_init();
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     int64_t plainA = KEY_A | KMODE_TAP;
     int64_t cmdA = KMOD_CMD | KEY_A | KMODE_TAP;
@@ -403,8 +403,8 @@ static void test_resolve_mouse(void) {
     // Right-button double-click settles and resolves the MOUSE_RIGHT
     // DOUBLE_TAP binding; Mouse_resetTaps consumes it via the winner path.
     Mouse_init();
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     int64_t dblRight = MOUSE_RIGHT | KMODE_DOUBLE_TAP;
     CHECK(KeyMap_bind(map, dblRight, onResolveFire, nullptr));
@@ -442,8 +442,8 @@ static void test_resolve_long_press(void) {
     // Hold A past KEYMAP_LONG_PRESS_NANOS: the LONG_PRESS binding fires.
     // Uses a real 450 ms hold — single deliberate sleep in the suite.
     Key_init();
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     int64_t holdA = KEY_A | KMODE_LONG_PRESS;
     CHECK(KeyMap_bind(map, holdA, onResolveFire, nullptr));
@@ -480,8 +480,8 @@ static void test_long_press_single_fire(void) {
     // ONE press → at most ONE fire: a LONG_PRESS hit consumes the tap count
     // as well, so releasing the same press never ALSO fires a TAP.
     Key_init();
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     CHECK(KeyMap_bind(map, KEY_A | KMODE_LONG_PRESS, onResolveFire, nullptr));
     CHECK(KeyMap_bind(map, KEY_A | KMODE_TAP, onResolveFire, nullptr));
@@ -517,8 +517,8 @@ static void test_multi_tap_disabled(void) {
     // is a single tap resolved IMMEDIATELY — zero window latency; DOUBLE and
     // TRIPLE bindings never resolve.
     Key_init();
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     CHECK(KeyMap_isMultiTapEnabled(map)); // settle-based multi-tap default on
     KeyMap_setMultiTapEnabled(map, false);
@@ -605,8 +605,8 @@ static void test_modifier_breaks_sequence(void) {
     // plain Q then Cmd+Q within the window must NOT accumulate into a
     // double — the Cmd+Q key press starts a fresh single sequence.
     Key_init();
-    MemoryArena *arena = MemoryArena(64u << 20);
-    KeyMap *map = KeyMap(arena);
+    MemoryArena *arena = MemoryArena_create(64u << 20);
+    KeyMap *map = KeyMap_create(arena);
 
     int64_t cmdQ = KMOD_CMD | KMODE_TAP | KEY_Q;
     CHECK(KeyMap_bind(map, cmdQ, onResolveFire, nullptr));

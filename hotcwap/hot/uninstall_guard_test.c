@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #include "hot/manifest.h"
+#include "test_support.h"
 
 static int s_failures = 0;
 
@@ -116,7 +117,7 @@ static bool path_exists(const char *path) {
 int main(void) {
 #if defined(_WIN32)
     printf("uninstall_guard_test: SKIP (POSIX path contract)\n");
-    return 0;
+    return B_TEST_SKIP;
 #else
     char homeT[] = "/tmp/vexgraph_guard_home_XXXXXX";
     char appT[]  = "/tmp/vexgraph_guard_app_XXXXXX";

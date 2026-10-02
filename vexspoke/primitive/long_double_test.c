@@ -36,9 +36,9 @@ int main(void) {
     CHECK(c != nullptr);
     CHECK(LongDouble_get(c) == 7); // v1 (int64) landed at offset 0
 
-    void *r = LongDouble(4, 0.5);
+    void *r = LongDouble_2(4, 0.5);
     CHECK(r != nullptr && LongDouble_get(r) == 4);
-    void *s = LongDouble();
+    void *s = LongDouble_0();
     CHECK(s != nullptr && LongDouble_type(s) == ID_LONG_DOUBLE);
 
     LongDouble_set(p, 11);

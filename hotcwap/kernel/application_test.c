@@ -17,6 +17,7 @@
 
 #include "kernel/application.h"
 #include "window/window.h"
+#include "test_support.h"
 
 static int g_failures = 0;
 
@@ -116,7 +117,7 @@ int main(void) {
 
     // isFinished with a REAL window (the one dereferencing path).
     Application *app = Application();
-    Window *rw = Window("app_test", 200, 150);
+    Window *rw = Window_create("app_test", 200, 150);
     if (rw) {
         CHECK(Application_addWindow(app, rw));
         Application_start(app);
@@ -133,10 +134,14 @@ int main(void) {
     Application_free(a);
     Application_free(nullptr); // null-safe
 
-    if (g_failures == 0) {
-        printf("application_test: all assertions held\n");
-        return 0;
+    if (g_failures != 0) {
+        printf("application_test: %d FAILURES\n", g_failures);
+        return 1;
     }
-    printf("application_test: %d FAILURES\n", g_failures);
-    return 1;
+    if (rw == nullptr) {
+        // the real-window isFinished contract never ran; a skip is not a pass.
+        return B_TEST_SKIP;
+    }
+    printf("application_test: all assertions held\n");
+    return 0;
 }

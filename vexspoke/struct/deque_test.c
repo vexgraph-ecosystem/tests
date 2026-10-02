@@ -18,7 +18,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    Deque *d = Deque(ID_INT);
+    Deque *d = Deque_1(ID_INT);
     CHECK(d != nullptr);
     CHECK(Deque_isEmpty(d));
     CHECK(Deque_elementClassId(d) == ID_INT);
