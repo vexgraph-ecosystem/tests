@@ -1,7 +1,7 @@
 // tests/graphvex/vulkan/surface_test.c — mirrors src/vulkan/surface.c
 //
 // A Surface is a host-borrowed destination + ONE retained present Image.
-// There is NO swapchain; present() hands the image to the host seam.
+// There is NO swapchain; present() invokes the host-installed blit seam.
 
 #include <stdio.h>
 
@@ -16,6 +16,20 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// a recording host blit: proves Surface_present hands over native + image
+static int g_presentCalls = 0;
+static void *g_seenNative = NULL;
+static Image *g_seenImage = NULL;
+static bool g_blitOk = true;
+
+static bool recordPresent(Surface *surface, void *userdata) {
+    g_presentCalls++;
+    (*(int *) userdata)++;
+    g_seenNative = Surface_handle(surface);
+    g_seenImage = Surface_presentImage(surface);
+    return g_blitOk;
+}
+
 int main(void) {
     Surface *s = Surface_2((void *)0xCAFE, 100, 50);
     CHECK(s != NULL);
@@ -29,8 +43,26 @@ int main(void) {
     CHECK(Image_width(img) == 100 && Image_height(img) == 50);
     CHECK((Image_usage(img) & IMAGE_USAGE_RENDER) != 0u);
 
-    // present is the (unimplemented) host seam -> false, never a swapchain call
+    // with no seam installed there is nowhere to present -> false
     CHECK(!Surface_present(s));
+
+    // a registered host blit receives the native handle + the present image
+    int hits = 0;
+    Surface_onPresent(s, recordPresent, &hits);
+    CHECK(Surface_present(s));
+    CHECK(g_presentCalls == 1 && hits == 1);
+    CHECK(g_seenNative == (void *)0xCAFE);
+    CHECK(g_seenImage == Surface_presentImage(s));
+
+    // a failing blit propagates -> present reports false
+    g_blitOk = false;
+    CHECK(!Surface_present(s));
+    CHECK(g_presentCalls == 2);
+
+    // re-register clears the seam (NULL callback) -> back to offscreen false
+    Surface_onPresent(s, NULL, NULL);
+    CHECK(!Surface_present(s));
+    CHECK(g_presentCalls == 2);          // not called again
 
     CHECK(Surface_resize(s, 200, 100));
     CHECK(Surface_width(s) == 200 && Surface_height(s) == 100);
@@ -44,6 +76,7 @@ int main(void) {
     Surface_destroy(off);
 
     // null-safe
+    Surface_onPresent(NULL, recordPresent, NULL);   // no-op, no crash
     CHECK(!Surface_isValid(NULL));
     CHECK(Surface_width(NULL) == 0u);
     CHECK(Surface_handle(NULL) == NULL);
