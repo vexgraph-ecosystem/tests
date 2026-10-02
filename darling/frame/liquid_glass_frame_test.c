@@ -40,7 +40,7 @@ int main(void) {
     Window *w = Frame_window(f);
     CHECK(w != NULL);
     Window_setUndecorated(w, WINDOW_UNDECORATED_NAKED);  // transparent top bar, traffic lights kept
-    Frame_setBackground(f, COLOR_CLEAR);                 // transparent colour -> see-through window
+    Frame_setBackground(f, COLOR_CLEAR);                 // clear paint; explicit opt-in below
     Frame_setTransparent(f, true);
     Frame_setTitle(f, "liquid glass");
 

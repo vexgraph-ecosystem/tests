@@ -27,6 +27,7 @@ int main(void) {
     Frame *f = Frame("frame test", 400, 300);
     CHECK(f != NULL);
     CHECK(Frame_window(f) != NULL);
+    CHECK(!Window_isTransparent(Frame_window(f)));
     CHECK(!Frame_isClosed(f));
     CHECK(Frame_active() == f);
 
@@ -62,12 +63,27 @@ int main(void) {
     Frame_setTitle(f, "renamed");
     Frame_setBackgroundColor(f, COLOR_RGBA(10, 20, 30, 255));
     CHECK(Frame_background(f) == COLOR_RGBA(10, 20, 30, 255));
-    Frame_setBackground(f, COLOR_CLEAR);       // transparent colour -> see-through window
+    Frame_setBackground(f, COLOR_CLEAR);       // paint alpha does not enable see-through
     CHECK(Frame_background(f) == COLOR_CLEAR);
+    CHECK(!Window_isTransparent(Frame_window(f)));
+    Frame_setBackgroundColor(f, COLOR_RGBA(10, 20, 30, 128));
+    CHECK(Frame_background(f) == COLOR_RGBA(10, 20, 30, 128));
+    CHECK(!Window_isTransparent(Frame_window(f)));
 
-    // transparency + blur are settable without crashing (OS-backed; both ways)
+    // Only explicit transparency changes the OS policy; colors preserve it.
     Frame_setTransparent(f, true);
+    CHECK(Window_isTransparent(Frame_window(f)));
+    Frame_setBackgroundColor(f, COLOR_RGBA(10, 20, 30, 255));
+    CHECK(Window_isTransparent(Frame_window(f)));
+    Frame_setBackground(f, COLOR_CLEAR);
+    CHECK(Window_isTransparent(Frame_window(f)));
     Frame_setTransparent(f, false);
+    CHECK(!Window_isTransparent(Frame_window(f)));
+    Frame_setBackgroundColor(f, COLOR_CLEAR);
+    CHECK(!Window_isTransparent(Frame_window(f)));
+
+    // Leave the ordinary frame test with an opaque painted background.
+    Frame_setBackground(f, COLOR_RGBA(10, 20, 30, 255));
     Frame_setBlur(f, 12.0f);
     Frame_setBlur(f, 0.0f);
 
