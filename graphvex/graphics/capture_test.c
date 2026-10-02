@@ -28,7 +28,7 @@ int main(void) {
 
     CHECK(Graphics_begin());
     CHECK(Graphics_clear(COLOR_BLACK));
-    CHECK(Graphics_fillRect(&(Rect){0, 0, 16, 16}, &(Brush){COLOR_WHITE, 0, 0, 0}));
+    CHECK(Graphics_fillRect(&(Rect){0, 0, 16, 16}, &(Brush){COLOR_WHITE, 0, 0, 0, 0}));
     CHECK(Graphics_end());
 
     // capture into a fresh 1x1 image -> sized to the target

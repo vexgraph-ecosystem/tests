@@ -30,9 +30,9 @@ static const uint8_t *at(const Image *img, int x, int y) {
 static void scene(void) {
     Graphics_clear(COLOR_RGBA(10, 12, 16, 255));
     Graphics_fillRect(&(Rect){0, 0, 200, 200},
-                      &(Brush){COLOR_RGBA(230, 120, 120, 255), 24, 0, 0});
+                      &(Brush){COLOR_RGBA(230, 120, 120, 255), 24, 0, 0, 0});
     Graphics_fillRect(&(Rect){120, 40, 200, 200},
-                      &(Brush){COLOR_RGBA(120, 180, 230, 255), 32, 0, 0});
+                      &(Brush){COLOR_RGBA(120, 180, 230, 255), 32, 0, 0, 0});
 }
 
 // Render the scene at a size THROUGH the resize path a window uses, then grab it.

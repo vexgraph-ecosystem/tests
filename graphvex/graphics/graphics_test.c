@@ -1,7 +1,7 @@
 // tests/graphvex/graphics/graphics_test.c — mirrors src/graphics/graphics.c
 //
 // The rect-first core: backend registry, the raster (headless) backend, solid
-// fill, rounded corners, alpha blend, clip, and the display list -> submit path.
+// fill, rounded corners, alpha blend, clip, and the display list → submit path.
 
 #include <stdio.h>
 
@@ -22,14 +22,14 @@ static void test_registry(void) {
     CHECK(!Graphics_use(9999u));                 // unknown id refused
     CHECK(Graphics_backendId() == BACKEND_RASTER); // previous selection kept
     CHECK(!Graphics_register(NULL));
-    CHECK(Graphics_current() != NULL && Graphics_current()->fillRect != NULL);
+    CHECK(Graphics_current() != NULL && (*Graphics_current()).fillRect != NULL);
 }
 
 static void test_fill_and_clear(void) {
     CHECK(Raster_configure(64, 64));
     CHECK(Graphics_begin());
     CHECK(Graphics_clear(COLOR_BLACK));
-    CHECK(Graphics_fillRect(&(Rect){5, 5, 10, 10}, &(Brush){COLOR_WHITE, 0, 0, 0}));
+    CHECK(Graphics_fillRect(&(Rect){5, 5, 10, 10}, &(Brush){COLOR_WHITE, 0, 0, 0, 0}));
     CHECK(Graphics_end());
     CHECK(Raster_pixelAt(6, 6) == COLOR_WHITE);
     CHECK(Raster_pixelAt(4, 4) == COLOR_BLACK);
@@ -40,7 +40,7 @@ static void test_fill_and_clear(void) {
 static void test_rounded_corners(void) {
     CHECK(Graphics_begin());
     CHECK(Graphics_clear(COLOR_BLACK));
-    CHECK(Graphics_fillRect(&(Rect){0, 0, 10, 10}, &(Brush){COLOR_WHITE, 5.0f, 0, 0}));
+    CHECK(Graphics_fillRect(&(Rect){0, 0, 10, 10}, &(Brush){COLOR_WHITE, 5.0f, 0, 0, 0}));
     CHECK(Graphics_end());
     CHECK(Raster_pixelAt(0, 0) == COLOR_BLACK);   // corner carved away
     CHECK(Raster_pixelAt(9, 9) == COLOR_BLACK);
@@ -50,14 +50,14 @@ static void test_rounded_corners(void) {
 static void test_alpha_blend(void) {
     CHECK(Graphics_begin());
     CHECK(Graphics_clear(COLOR_BLACK));
-    CHECK(Graphics_fillRect(&(Rect){0, 0, 4, 4}, &(Brush){COLOR_RGBA(255, 255, 255, 128), 0, 0, 0}));
+    CHECK(Graphics_fillRect(&(Rect){0, 0, 4, 4}, &(Brush){COLOR_RGBA(255, 255, 255, 128), 0, 0, 0, 0}));
     uint32_t p = Raster_pixelAt(1, 1);
     CHECK(Color_red(p) > 100u && Color_red(p) < 160u);
     CHECK(Graphics_end());
     // fully transparent leaves the destination alone
     CHECK(Graphics_begin());
     CHECK(Graphics_clear(COLOR_BLACK));
-    CHECK(Graphics_fillRect(&(Rect){0, 0, 4, 4}, &(Brush){COLOR_RGBA(255, 0, 0, 0), 0, 0, 0}));
+    CHECK(Graphics_fillRect(&(Rect){0, 0, 4, 4}, &(Brush){COLOR_RGBA(255, 0, 0, 0), 0, 0, 0, 0}));
     CHECK(Raster_pixelAt(1, 1) == COLOR_BLACK);
     CHECK(Graphics_end());
 }
@@ -66,9 +66,9 @@ static void test_display_list_and_clip(void) {
     DisplayList *dl = DisplayList_0();
     CHECK(dl != NULL);
     CHECK(DisplayList_count(dl) == 0);
-    DisplayList_rect(dl, (Rect){0, 0, 8, 8}, &(Brush){COLOR_WHITE, 0, 0, 0});
+    DisplayList_rect(dl, (Rect){0, 0, 8, 8}, &(Brush){COLOR_WHITE, 0, 0, 0, 0});
     DisplayList_clip(dl, (Rect){0, 0, 4, 4});
-    DisplayList_rect(dl, (Rect){0, 0, 8, 8}, &(Brush){COLOR_RGBA(255, 0, 0, 255), 0, 0, 0});
+    DisplayList_rect(dl, (Rect){0, 0, 8, 8}, &(Brush){COLOR_RGBA(255, 0, 0, 255), 0, 0, 0, 0});
     DisplayList_unclip(dl);
     CHECK(DisplayList_count(dl) == 4);
     CHECK(DisplayList_cmds(dl) != NULL);
@@ -83,7 +83,7 @@ static void test_display_list_and_clip(void) {
 
     // empty rects and null lists are no-ops
     DisplayList *d2 = DisplayList_0();
-    DisplayList_rect(d2, (Rect){0, 0, 0, 5}, &(Brush){COLOR_WHITE, 0, 0, 0});
+    DisplayList_rect(d2, (Rect){0, 0, 0, 5}, &(Brush){COLOR_WHITE, 0, 0, 0, 0});
     CHECK(DisplayList_count(d2) == 0);
     DisplayList_free(d2);
     DisplayList_free(NULL);   // null-safe

@@ -19,20 +19,20 @@ static int g_fail = 0;
 int main(void) {
     VkBatch *b = VkBatch_0();
     CHECK(b != NULL);
-    CHECK(b->count == 0);
+    CHECK((*b).count == 0);
     CHECK(VkBatch_vertices(b, NULL, 0) == 0);
 
     // a rect appends one quad; an empty rect is ignored
-    VkBatch_rect(b, (Rect){1, 2, 3, 4}, &(Brush){COLOR_WHITE, 0, 0, 0});
-    CHECK(b->count == 1);
-    VkBatch_rect(b, (Rect){0, 0, 0, 5}, &(Brush){COLOR_WHITE, 0, 0, 0});
-    CHECK(b->count == 1);
+    VkBatch_rect(b, (Rect){1, 2, 3, 4}, &(Brush){COLOR_WHITE, 0, 0, 0, 0});
+    CHECK((*b).count == 1);
+    VkBatch_rect(b, (Rect){0, 0, 0, 5}, &(Brush){COLOR_WHITE, 0, 0, 0, 0});
+    CHECK((*b).count == 1);
     VkBatch_rect(b, (Rect){0, 0, 5, 0}, NULL);   // null brush ignored
-    CHECK(b->count == 1);
+    CHECK((*b).count == 1);
 
     // a glyph appends a mode-2 quad with its atlas layer
     VkBatch_glyph(b, (Rect){0, 0, 8, 8}, 2, COLOR_BLACK);
-    CHECK(b->count == 2);
+    CHECK((*b).count == 2);
 
     // 6 vertices per quad; the query never writes when capacity is short
     CHECK(VkBatch_vertices(b, NULL, 0) == 12);
@@ -57,7 +57,7 @@ int main(void) {
     Image *img = Image_2(16, 16);
     Image_setLayer(img, 1);
     VkBatch_image(b, img, (Rect){0, 0, 16, 16}, (Rect){0, 0, 32, 32});
-    CHECK(b->count == 3);
+    CHECK((*b).count == 3);
     CHECK(VkBatch_vertices(b, NULL, 0) == 18);
     VkVertex v3[18];
     CHECK(VkBatch_vertices(b, v3, 18) == 18);
@@ -69,12 +69,12 @@ int main(void) {
 
     // null image / null batch are no-ops
     VkBatch_image(b, NULL, (Rect){0, 0, 1, 1}, (Rect){0, 0, 1, 1});
-    CHECK(b->count == 3);
-    VkBatch_rect(NULL, (Rect){0, 0, 1, 1}, &(Brush){COLOR_WHITE, 0, 0, 0});
+    CHECK((*b).count == 3);
+    VkBatch_rect(NULL, (Rect){0, 0, 1, 1}, &(Brush){COLOR_WHITE, 0, 0, 0, 0});
 
     // clear resets; free is null-safe
     VkBatch_clear(b);
-    CHECK(b->count == 0);
+    CHECK((*b).count == 0);
     VkBatch_free(b);
     VkBatch_free(NULL);
 

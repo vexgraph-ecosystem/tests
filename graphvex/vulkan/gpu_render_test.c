@@ -32,9 +32,9 @@ int main(void) {
     CHECK(Graphics_begin());
     Graphics_clear(COLOR_RGBA(0, 0, 0, 255));
     // left half red, right half blue, top band green (to catch a Y flip)
-    Graphics_fillRect(&(Rect){0, 0, 32, 64}, &(Brush){COLOR_RGBA(255, 0, 0, 255), 0, 0, 0});
-    Graphics_fillRect(&(Rect){32, 0, 32, 64}, &(Brush){COLOR_RGBA(0, 0, 255, 255), 0, 0, 0});
-    Graphics_fillRect(&(Rect){0, 0, 64, 8}, &(Brush){COLOR_RGBA(0, 255, 0, 255), 0, 0, 0});
+    Graphics_fillRect(&(Rect){0, 0, 32, 64}, &(Brush){COLOR_RGBA(255, 0, 0, 255), 0, 0, 0, 0});
+    Graphics_fillRect(&(Rect){32, 0, 32, 64}, &(Brush){COLOR_RGBA(0, 0, 255, 255), 0, 0, 0, 0});
+    Graphics_fillRect(&(Rect){0, 0, 64, 8}, &(Brush){COLOR_RGBA(0, 255, 0, 255), 0, 0, 0, 0});
     CHECK(Graphics_end());
 
     Image *shot = Image_0();
@@ -57,7 +57,7 @@ int main(void) {
     CHECK(Graphics_resize(60, 200));
     CHECK(Graphics_begin());
     Graphics_clear(COLOR_RGBA(0, 0, 0, 255));
-    Graphics_fillRect(&(Rect){0, 0, 200, 200}, &(Brush){COLOR_RGBA(255, 255, 255, 255), 100, 0, 0});
+    Graphics_fillRect(&(Rect){0, 0, 200, 200}, &(Brush){COLOR_RGBA(255, 255, 255, 255), 100, 0, 0, 0});
     CHECK(Graphics_end());
     Image *clip = Image_0();
     CHECK(Graphics_capture(clip));
