@@ -27,7 +27,8 @@ static int g_fail = 0;
 int main(void) {
     Frame *f = Frame("panel — anchor + corner radius", 1200, 820);
     CHECK(f != NULL);
-    Frame_setBackgroundColor(f, COLOR_CLEAR);   // transparent background
+    Frame_setBackgroundColor(f, COLOR_CLEAR);   // clear paint (alpha is paint only)
+    Frame_setTransparent(f, true);              // explicit OS see-through
     Frame_setBlur(f, 30.0f);                    // frosted backdrop
 
     Color cols[PART_COUNT] = {
