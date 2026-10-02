@@ -91,7 +91,7 @@ static void test_timer_tick(void) {
 }
 
 static void test_timer_with_paused_clock(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     Clock_setPaused(&c, true);
 
     NanoTimer t;
@@ -110,7 +110,7 @@ static void test_timer_with_paused_clock(void) {
 }
 
 static void test_timer_scale(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     Clock_setTimeScale(&c, 2.0);
 
     NanoTimer t;

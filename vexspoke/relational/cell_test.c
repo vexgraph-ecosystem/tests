@@ -30,20 +30,20 @@ static int g_failures = 0;
     } while (0)
 
 static void test_construction(void) {
-    Cell *anon = Cell_0();
+    Cell *anon = Cell();
     CHECK(anon != nullptr);
     CHECK(Cell_typeId(anon) == 0u);
     CHECK(Cell_check(anon, 0u));
     CHECK(Cell_getValue(anon) == 0u);
 
-    Cell *one = Cell_1(ID_INT);
+    Cell *one = Cell(ID_INT);
     CHECK(one != nullptr);
     CHECK(Cell_typeId(one) == ID_INT);
     CHECK(Cell_check(one, ID_INT));
     CHECK(!Cell_check(one, ID_LONG));
     CHECK(Cell_getValue(one) == 0u);            // zero value
 
-    Cell *two = Cell_2(ID_LONG, 0xDEADBEEFull);
+    Cell *two = Cell(ID_LONG, 0xDEADBEEFull);
     CHECK(two != nullptr);
     CHECK(Cell_typeId(two) == ID_LONG);
     CHECK(Cell_getValue(two) == 0xDEADBEEFull);
@@ -66,7 +66,7 @@ static void test_construction(void) {
 }
 
 static void test_value_slot(void) {
-    Cell *c = Cell_2(ID_INT, 1u);
+    Cell *c = Cell(ID_INT, 1u);
     CHECK(c != nullptr);
 
     Cell_setValue(c, 0u);
@@ -85,7 +85,7 @@ static void test_value_slot(void) {
 }
 
 static void test_to_string(void) {
-    Cell *c = Cell_2(ID_INT, 0xABCDu);
+    Cell *c = Cell(ID_INT, 0xABCDu);
     CHECK(c != nullptr);
 
     char buf[128];

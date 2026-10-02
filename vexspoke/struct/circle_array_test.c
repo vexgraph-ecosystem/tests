@@ -32,9 +32,9 @@ static int g_failures = 0;
     } while (0)
 
 static void test_construction(void) {
-    CHECK(CircleArray_create(-1, ID_INT) == nullptr);   // negative radius refused
+    CHECK(CircleArray(-1, ID_INT) == nullptr);   // negative radius refused
 
-    CircleArray *r0 = CircleArray_create(0, ID_INT);
+    CircleArray *r0 = CircleArray(0, ID_INT);
     CHECK(r0 != nullptr);
     CHECK(CircleArray_radius(r0) == 0);
     CHECK(CircleArray_diameter(r0) == 1);
@@ -43,7 +43,7 @@ static void test_construction(void) {
 
     const int expected[] = { 1, 5, 13, 29, 49 };
     for (int32_t r = 0; r <= 4; r++) {
-        CircleArray *a = CircleArray_create(r, ID_INT);
+        CircleArray *a = CircleArray(r, ID_INT);
         CHECK(a != nullptr);
         CHECK(CircleArray_radius(a) == r);
         CHECK(CircleArray_diameter(a) == 2 * r + 1);
@@ -61,7 +61,7 @@ static void test_construction(void) {
 }
 
 static void test_geometry(void) {
-    CircleArray *a = CircleArray_create(3, ID_INT);
+    CircleArray *a = CircleArray(3, ID_INT);
     CHECK(a != nullptr);
 
     // Distance squared around the center.
@@ -88,7 +88,7 @@ static void test_geometry(void) {
 }
 
 static void test_access_round_trip(void) {
-    CircleArray *a = CircleArray_create(2, ID_INT);
+    CircleArray *a = CircleArray(2, ID_INT);
     CHECK(a != nullptr);
 
     // Offset write / grid read must agree.
@@ -160,7 +160,7 @@ static void walkCell(int32_t gridX, int32_t gridY, int32_t dx, int32_t dy,
 }
 
 static void test_for_each(void) {
-    CircleArray *a = CircleArray_create(3, ID_INT);
+    CircleArray *a = CircleArray(3, ID_INT);
     CHECK(a != nullptr);
 
     // Fill every valid cell with its linear (1 + dx + dy) to make the walk sum

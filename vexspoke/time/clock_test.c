@@ -46,14 +46,14 @@ static bool accrue_at_least(Clock *c, uint64_t target) {
 }
 
 static void test_create(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     CHECK(Clock_timeScale(&c) == 1.0);
     CHECK(!Clock_isPaused(&c));
     CHECK(Clock_virtualTimeMillis(&c) == 0);
 }
 
 static void test_settings(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     Clock_setTimeScale(&c, 2.5);
     CHECK(Clock_timeScale(&c) == 2.5);
     Clock_setPaused(&c, true);
@@ -63,7 +63,7 @@ static void test_settings(void) {
 }
 
 static void test_accrual(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     CHECK(accrue_at_least(&c, 1));
     uint64_t afterFirst = Clock_virtualTimeMillis(&c);
     CHECK(afterFirst >= 1);
@@ -74,7 +74,7 @@ static void test_accrual(void) {
 }
 
 static void test_pause_freezes_virtual(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     CHECK(accrue_at_least(&c, 1));
     uint64_t v = Clock_virtualTimeMillis(&c);
 
@@ -94,7 +94,7 @@ static void test_pause_freezes_virtual(void) {
 }
 
 static void test_zero_scale(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     Clock_setTimeScale(&c, 0.0);
     for (int i = 0; i < 10; i++) {
         Clock_tick(&c);
@@ -104,7 +104,7 @@ static void test_zero_scale(void) {
 }
 
 static void test_reset(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     CHECK(accrue_at_least(&c, 1));
     CHECK(Clock_virtualTimeMillis(&c) >= 1);
     Clock_reset(&c);

@@ -36,8 +36,8 @@ int main(void) {
     // No monitors registered past the count.
     CHECK(DisplayInfo_getMonitor(9999) == nullptr);
 
-    DisplayMonitor *a = DisplayMonitor_0();
-    DisplayMonitor *b = DisplayMonitor_0();
+    DisplayMonitor *a = DisplayMonitor();
+    DisplayMonitor *b = DisplayMonitor();
     CHECK(a != nullptr && b != nullptr);
 
     DisplayMonitor *list[2] = { a, b };
