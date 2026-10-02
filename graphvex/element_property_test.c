@@ -76,7 +76,10 @@ int main(void) {
     Image *img = Image_0();
     CHECK(Graphics_capture(img));
     CHECK(alpha_at(img, 50, 50) == 255);                 // inside the viewport: child shows
-    CHECK(alpha_at(img, 80, 80) == 0);                   // beyond it: clipped away
+    CHECK(alpha_at(img, 30, 30) == 255);                 // the circle's centre
+    CHECK(alpha_at(img, 80, 80) == 0);                   // beyond the rect: clipped away
+    CHECK(alpha_at(img, 2, 2) == 0);                     // inside the rect but OUTSIDE the
+                                                         // circle: the ROUNDED mask cuts it
     Image_destroy(img);
     DisplayList_free(dl);
 
