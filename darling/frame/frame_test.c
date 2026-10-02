@@ -49,6 +49,15 @@ int main(void) {
     // ...and the Surface was revalidated to the same size (render target)
     CHECK(Surface_width(surf) == 640 && Surface_height(surf) == 360);
 
+    // the zero-copy seam: on Apple a render publishes an IOSurface to the
+    // window's CALayer; elsewhere the RGBA fallback leaves the layer untouched
+    Frame_render(f);
+#ifdef __APPLE__
+    CHECK(Window_presentSurfaceContents(Frame_window(f)) != NULL);
+#else
+    CHECK(Window_presentSurfaceContents(Frame_window(f)) == NULL);
+#endif
+
     // title / background
     Frame_setTitle(f, "renamed");
     Frame_setBackgroundColor(f, COLOR_RGBA(10, 20, 30, 255));
@@ -76,12 +85,12 @@ int main(void) {
     Frame_removePanels(f);
     CHECK(Frame_count(f) == 0);
 
-    // capture re-renders and hands back the Surface's present Image
+    // capture re-renders and hands back pixels (the GPU path reads the front
+    // IOSurface back into a CPU Image; the fallback path returns the Surface's)
     Frame_addPanel(f, &d);
     Frame_render(f);
     Image *shot = Frame_capture(f);
     CHECK(shot != NULL);
-    CHECK(shot == Surface_presentImage(surf));       // the seam IS the capture
     CHECK(Image_width(shot) == 640 && Image_height(shot) == 360);
 
     // hide / show don't crash and keep the frame alive

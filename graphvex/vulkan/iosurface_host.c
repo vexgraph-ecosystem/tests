@@ -14,7 +14,8 @@ void *IosHost_create(int width, int height) {
     CFMutableDictionaryRef d = CFDictionaryCreateMutable(NULL, 0,
         &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     if (!d) return NULL;
-    int32_t w = width, h = height, bpe = 4, bpr = width * 4, fmt = 'RGBA';
+    int32_t w = width, h = height, bpe = 4, fmt = 'RGBA';
+    int32_t bpr = ((width * 4) + 63) & ~63;   // Metal needs an aligned row stride
     CFNumberRef nw = CFNumberCreate(NULL, kCFNumberSInt32Type, &w);
     CFNumberRef nh = CFNumberCreate(NULL, kCFNumberSInt32Type, &h);
     CFNumberRef nbpe = CFNumberCreate(NULL, kCFNumberSInt32Type, &bpe);
