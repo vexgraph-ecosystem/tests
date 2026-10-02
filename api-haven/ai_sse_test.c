@@ -68,7 +68,7 @@ int main(int argc, const char **argv) {
     (void)argv;
 
     // --- single event decode --------------------------------------------------
-    AiSse sse = AiSse_0();
+    AiSse sse = AiSse();
     CHECK(AiSse_getTimeout(&sse) == AI_SSE_POLL_BUDGET_MS);
     CHECK(!AiSse_isCancelled(&sse));
     CHECK(!AiSse_isDone(&sse));
@@ -82,26 +82,26 @@ int main(int argc, const char **argv) {
     CHECK(strcmp(text, "hello") == 0);
 
     // --- multi-line data joins with newline ------------------------------------
-    AiSse multi = AiSse_0();
+    AiSse multi = AiSse();
     const char *two = "data: line1\ndata: line2\n\n";
     CHECK(AiSse_feed(&multi, two, strlen(two), text, sizeof(text), &truncated));
     CHECK(strcmp(text, "line1\nline2") == 0);
 
     // --- comments ignored, \r stripped ------------------------------------------
-    AiSse cr = AiSse_0();
+    AiSse cr = AiSse();
     const char *three = ": keep-alive\r\ndata: hi\r\n\r\n";
     CHECK(AiSse_feed(&cr, three, strlen(three), text, sizeof(text), &truncated));
     CHECK(strcmp(text, "hi") == 0);
 
     // --- partial line staging across feeds --------------------------------------
-    AiSse part = AiSse_0();
+    AiSse part = AiSse();
     CHECK(!AiSse_feed(&part, "data: hel", 9, text, sizeof(text), &truncated));
     CHECK(AiSse_getLineLen(&part) == 9);
     CHECK(AiSse_feed(&part, "lo\n\n", 4, text, sizeof(text), &truncated));
     CHECK(strcmp(text, "hello") == 0);
 
     // --- custom event name remembered --------------------------------------------
-    AiSse ev = AiSse_0();
+    AiSse ev = AiSse();
     const char *evBytes = "event: done\ndata: x\n\n";
     CHECK(AiSse_feed(&ev, evBytes, strlen(evBytes), text, sizeof(text), &truncated));
     char evName[64];
@@ -109,13 +109,13 @@ int main(int argc, const char **argv) {
     CHECK(strcmp(evName, "done") == 0);
 
     // --- [DONE] latches done -----------------------------------------------------
-    AiSse fin = AiSse_0();
+    AiSse fin = AiSse();
     CHECK(AiSse_feed(&fin, "data: [DONE]\n\n", 14, text, sizeof(text), &truncated));
     CHECK(AiSse_isDone(&fin));
     CHECK(!AiSse_feed(&fin, "data: late\n\n", 12, text, sizeof(text), &truncated));
 
     // --- explicit one-slot binding ------------------------------------------------
-    AiSse bound = AiSse_0();
+    AiSse bound = AiSse();
     int fakeHandle = 7;
     CHECK(AiSse_getSlotHandle(&bound) == nullptr);
     CHECK(AiSse_bind(&bound, &fakeHandle, &sFakeSource));
@@ -133,7 +133,7 @@ int main(int argc, const char **argv) {
     AiSse_unbind(nullptr); // null-safe no-op
 
     // --- cancel latch + reset ------------------------------------------------------
-    AiSse canc = AiSse_0();
+    AiSse canc = AiSse();
     AiSse_cancel(&canc);
     CHECK(AiSse_isCancelled(&canc));
     CHECK(!AiSse_feed(&canc, one, strlen(one), text, sizeof(text), &truncated));
@@ -146,7 +146,7 @@ int main(int argc, const char **argv) {
     CHECK(!AiSse_isCancelled(&canc));
 
     // --- zero timeout drops ----------------------------------------------------------
-    AiSse tmo = AiSse_0();
+    AiSse tmo = AiSse();
     AiSse_setTimeout(&tmo, 0);
     CHECK(AiSse_getTimeout(&tmo) == 0);
     CHECK(!AiSse_feed(&tmo, one, strlen(one), text, sizeof(text), &truncated));
@@ -154,7 +154,7 @@ int main(int argc, const char **argv) {
     CHECK(AiSse_feed(&tmo, one, strlen(one), text, sizeof(text), &truncated));
 
     // --- truncation flag (Rule 35.3) ---------------------------------------------------
-    AiSse trunc = AiSse_0();
+    AiSse trunc = AiSse();
     char tiny[4];
     CHECK(!AiSse_feed(&trunc, one, strlen(one), tiny, sizeof(tiny), &truncated));
     CHECK(truncated);
@@ -180,7 +180,7 @@ int main(int argc, const char **argv) {
     AiSse_cancel(nullptr);
 
     // --- setters round-trip ---------------------------------------------------------------
-    AiSse st = AiSse_0();
+    AiSse st = AiSse();
     AiSse_setDone(&st, true);
     CHECK(AiSse_isDone(&st));
     AiSse_setDone(&st, false);

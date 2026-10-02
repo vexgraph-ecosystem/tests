@@ -35,7 +35,7 @@ int main(void) {
     CHECK(q != nullptr && Double_get(q) == 2.5);
     void *r = Double(-1.25);
     CHECK(r != nullptr && Double_get(r) == -1.25);
-    void *s = Double_0();
+    void *s = Double();
     CHECK(s != nullptr && Double_type(s) == ID_DOUBLE);
 
     Double_set(p, 1.0);

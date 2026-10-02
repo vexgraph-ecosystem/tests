@@ -15,7 +15,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    Probable *p = Probable_3((uintptr_t) 0xABCD, 3, 10);
+    Probable *p = Probable((uintptr_t) 0xABCD, 3, 10);
     CHECK(p != nullptr);
     CHECK(Probable_object(p) == (uintptr_t) 0xABCD);
     CHECK(Probable_weight(p) == 3);

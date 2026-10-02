@@ -115,7 +115,7 @@ int main(void) {
     CHECK(Memory_findAll(0xABCDu, nullptr, 0) == 0);         // all reclaimed
 
     // --- Arena isolation: allocate in B, free B, default untouched.
-    MemoryArena *b = MemoryArena_create(64u * 1024u * 1024u);
+    MemoryArena *b = MemoryArena(64u * 1024u * 1024u);
     CHECK(b != nullptr);
     CHECK(MemoryArena_capacity(b) == 64u * 1024u * 1024u);
     void *bp = MemoryArena_alloc(b, 0xB0B0u, 32);

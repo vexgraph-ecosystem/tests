@@ -138,7 +138,7 @@ int main(int argc, const char **argv) {
     CHECK(EngineProvider_getAuth(NULL, NULL) == ENGINE_PROVIDER_AUTH_NONE);
 
     // --- unbound-driver degrade (no engine, no driver: no slot consumed) ----
-    Harness bare = Harness_0();
+    Harness bare = Harness();
     CHECK(Harness_getEngine(&bare) == NULL);
     CHECK(Harness_getDriver(&bare) == NULL);
     CHECK(Harness_getTimeout(&bare) == 100);
@@ -152,7 +152,7 @@ int main(int argc, const char **argv) {
     CHECK(!Harness_run(&bare, "hello", 0, 100, &jobId));
 
     // --- bound run + poll + cancel through the stub --------------------------
-    Harness h = Harness_1(250);
+    Harness h = Harness(250);
     Harness_setEngine(&h, opencode);
     int driverCtx = 7;
     Harness_setDriver(&h, &driverCtx, stubTable());
@@ -182,7 +182,7 @@ int main(int argc, const char **argv) {
     CHECK(Harness_getJobStatus(NULL, 1) == HARNESS_STATUS_IDLE);
 
     // --- BUSY_FULL: 16 bounded slots, 17th run refused -----------------------
-    Harness full = Harness_0();
+    Harness full = Harness();
     Harness_setEngine(&full, EngineProvider_get(dir, "claude-code"));
     Harness_setDriver(&full, &driverCtx, stubTable());
     sPollVerdict = HARNESS_STATUS_RUNNING;

@@ -151,7 +151,7 @@ int main(int argc, const char **argv) {
     CHECK(AppProvider_getAuth(NULL, NULL) == APP_PROVIDER_AUTH_NONE);
 
     // --- unbound-driver degrade (target set, no driver: no slot consumed) ---
-    AppBroker bare = AppBroker_0();
+    AppBroker bare = AppBroker();
     AppBroker_setTarget(&bare, notes);
     CHECK(AppBroker_getTarget(&bare) == notes);
     CHECK(AppBroker_getDriver(&bare) == NULL);
@@ -165,7 +165,7 @@ int main(int argc, const char **argv) {
     CHECK(!AppBroker_action(NULL, "x", "{}", 2, out, sizeof(out), &jobId));
     CHECK(!AppBroker_action(&bare, NULL, "{}", 2, out, sizeof(out), &jobId));
     CHECK(!AppBroker_action(&bare, "", "{}", 2, out, sizeof(out), &jobId));
-    AppBroker noTarget = AppBroker_0();
+    AppBroker noTarget = AppBroker();
     AppDriverTable echoTable;
     echoTable.runActionFn = stubEcho;
     int driverCtx = 3;
@@ -173,7 +173,7 @@ int main(int argc, const char **argv) {
     CHECK(!AppBroker_action(&noTarget, "x", "{}", 2, out, sizeof(out), &jobId));
 
     // --- stub echo-driver success (DONE + outLen) -----------------------------
-    AppBroker b = AppBroker_1(250);
+    AppBroker b = AppBroker(250);
     AppBroker_setTarget(&b, notes);
     AppBroker_setDriver(&b, &driverCtx, echoTable);
     CHECK(AppBroker_getTarget(&b) == notes);

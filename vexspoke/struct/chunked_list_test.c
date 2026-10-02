@@ -40,7 +40,7 @@ typedef struct Row16 {
 static void testDefaults(void) {
     printf("[1] defaults: 128-byte budget, 16-byte rows -> 8 rows/chunk\n");
 
-    ChunkedList *list = ChunkedList_3(ID_INT, 16u, VEX_CHUNKED_BYTES_DEFAULT);
+    ChunkedList *list = ChunkedList(ID_INT, 16u, VEX_CHUNKED_BYTES_DEFAULT);
     CHECK(list != nullptr);
     if (!list)
         return;
@@ -62,7 +62,7 @@ static void testDefaults(void) {
     CHECK(Collection_stride(c) == 16u);
 
     // Byte budget is a floor of 16 (reject-clamp policy).
-    ChunkedList *tiny = ChunkedList_2(ID_INT, 4u);
+    ChunkedList *tiny = ChunkedList(ID_INT, 4u);
     CHECK(tiny != nullptr);
     if (tiny) {
         CHECK(ChunkedList_getChunkBytes(tiny) == 16u);
@@ -79,7 +79,7 @@ static void testDefaults(void) {
 static void testStableAddresses(void) {
     printf("[2] stable addresses + chunk boundaries across growth\n");
 
-    ChunkedList *list = ChunkedList_3(ID_INT, 16u, 128u);
+    ChunkedList *list = ChunkedList(ID_INT, 16u, 128u);
     if (!list)
         return;
 
@@ -155,7 +155,7 @@ static void testStableAddresses(void) {
 static void testReserve(void) {
     printf("[3] reserve pre-allocates chunks without activating rows\n");
 
-    ChunkedList *list = ChunkedList_3(ID_INT, 16u, 128u);
+    ChunkedList *list = ChunkedList(ID_INT, 16u, 128u);
     if (!list)
         return;
 
@@ -185,7 +185,7 @@ static void testReserve(void) {
 static void testPackInto(void) {
     printf("[4] packInto snapshot: dest-last + truncation flag\n");
 
-    ChunkedList *list = ChunkedList_3(ID_INT, 16u, 128u);
+    ChunkedList *list = ChunkedList(ID_INT, 16u, 128u);
     if (!list)
         return;
 
@@ -235,7 +235,7 @@ static void testPackInto(void) {
 static void testChunkBytesBudget(void) {
     printf("[5] chunk byte budget: settable before growth, rejected after\n");
 
-    ChunkedList *list = ChunkedList_3(ID_INT, 16u, 128u);
+    ChunkedList *list = ChunkedList(ID_INT, 16u, 128u);
     if (!list)
         return;
 
@@ -248,7 +248,7 @@ static void testChunkBytesBudget(void) {
     // gets a chunk to itself, so neighbours never share that chunk's bytes.
     // (Chunk alignment stays 16 bytes — owning a chunk is not owning a cache
     // line.)
-    ChunkedList *own = ChunkedList_3(ID_INT, 128u, 128u);
+    ChunkedList *own = ChunkedList(ID_INT, 128u, 128u);
     if (own) {
         CHECK(ChunkedList_getRowsPerChunk(own) == 1u);
         uint8_t *a = ChunkedList_addSlot(own);
@@ -296,7 +296,7 @@ static void testCheckedMath(void) {
 
     // Stride 1 with the maximum budget: rowsPerChunk is 2^31. Construction is
     // math only (no chunks grown), so this stays cheap and allocation-free.
-    ChunkedList *huge = ChunkedList_3(ID_INT, 1u, UINT32_MAX);
+    ChunkedList *huge = ChunkedList(ID_INT, 1u, UINT32_MAX);
     CHECK(huge != nullptr);
     if (huge) {
         CHECK(ChunkedList_getRowsPerChunk(huge) == 0x80000000u);
@@ -309,7 +309,7 @@ static void testCheckedMath(void) {
 
     // A row far bigger than the budget: exactly one row per chunk, and the
     // budget invariant still holds.
-    ChunkedList *wide = ChunkedList_3(ID_INT, 4096u, 128u);
+    ChunkedList *wide = ChunkedList(ID_INT, 4096u, 128u);
     CHECK(wide != nullptr);
     if (wide) {
         CHECK(ChunkedList_getRowsPerChunk(wide) == 1u);
@@ -319,7 +319,7 @@ static void testCheckedMath(void) {
     }
 
     // reserve(0) grows nothing and succeeds.
-    ChunkedList *list = ChunkedList_3(ID_INT, 16u, 128u);
+    ChunkedList *list = ChunkedList(ID_INT, 16u, 128u);
     if (list) {
         CHECK(ChunkedList_reserve(list, 0u) == true);
         CHECK(ChunkedList_getChunkCount(list) == 0u);
@@ -378,7 +378,7 @@ static int cmpPtr(const void *a, const void *b) {
 static void testConcurrentWriters(void) {
     printf("[8] concurrent writers claim every row exactly once; readers see no holes\n");
 
-    ChunkedList *list = ChunkedList_3(ID_INT, 16u, 128u);
+    ChunkedList *list = ChunkedList(ID_INT, 16u, 128u);
     if (!list) {
         CHECK(false);
         return;

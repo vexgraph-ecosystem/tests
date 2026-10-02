@@ -36,7 +36,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    ProbableObjects *po = ProbableObjects_1(4);
+    ProbableObjects *po = ProbableObjects(4);
     CHECK(po != nullptr);
     CHECK(ProbableObjects_size(po) == 0);
     CHECK(ProbableObjects_capacity(po) >= 4);
@@ -59,11 +59,11 @@ int main(void) {
     CHECK(drawn == 100 || drawn == 200);
 
     // A zero-weight first slot must never capture zero-based target 0.
-    ProbableObjects *weighted = ProbableObjects_1(2);
+    ProbableObjects *weighted = ProbableObjects(2);
     CHECK(weighted != nullptr);
     CHECK(ProbableObjects_add(weighted, 11, 0) == 1);
     CHECK(ProbableObjects_add(weighted, 22, 1) == 1);
-    Random *stream = Random_2(123, RANDOM_ENGINE_MURMUR);
+    Random *stream = Random(123, RANDOM_ENGINE_MURMUR);
     CHECK(stream != nullptr);
     if (stream && weighted) {
         for (size_t i = 0; i < 1000; i++)
@@ -73,7 +73,7 @@ int main(void) {
     ProbableObjects_free(weighted);
 
     // capacity overflow is refused, not corrupting.
-    ProbableObjects *small = ProbableObjects_1(2);
+    ProbableObjects *small = ProbableObjects(2);
     CHECK(ProbableObjects_add(small, 1, 1) == 1);
     CHECK(ProbableObjects_add(small, 2, 1) == 1);
     CHECK(ProbableObjects_add(small, 3, 1) == 0); // full
@@ -82,7 +82,7 @@ int main(void) {
 
     // The allocator and pool use uint32_t lengths. Neither constructor
     // arithmetic nor cumulative weights may silently wrap.
-    ProbableObjects *boundary = ProbableObjects_1(2);
+    ProbableObjects *boundary = ProbableObjects(2);
     CHECK(boundary != nullptr);
     CHECK(ProbableObjects_add(boundary, 77, UINT32_MAX) == 1);
 
@@ -95,7 +95,7 @@ int main(void) {
         CHECK(saved >= 0);
         if (saved >= 0) {
             CHECK(TEST_DUP2(TEST_FILENO(capture), TEST_FILENO(stderr)) >= 0);
-            CHECK(ProbableObjects_1(SIZE_MAX) == nullptr);
+            CHECK(ProbableObjects(SIZE_MAX) == nullptr);
             CHECK(ProbableObjects_add(boundary, 88, 1) == 0);
             fflush(stderr);
             CHECK(TEST_DUP2(saved, TEST_FILENO(stderr)) >= 0);
@@ -118,7 +118,7 @@ int main(void) {
     ProbableObjects_free(boundary);
 
     // addProbable copies object + weight.
-    Probable *pr = Probable_3((uintptr_t) 500, 5, 5);
+    Probable *pr = Probable((uintptr_t) 500, 5, 5);
     CHECK(ProbableObjects_addProbable(po, pr) == 1);
     CHECK(ProbableObjects_size(po) == 3);
     CHECK(ProbableObjects_totalWeight(po) == 8);
@@ -126,7 +126,7 @@ int main(void) {
     Probable_free(pr);
 
     // The single-element array constructor must preserve flexible slots.
-    ProbableObjects *copy = ProbableObjects_2(po, 1);
+    ProbableObjects *copy = ProbableObjects(po, 1);
     CHECK(copy != nullptr);
     if (copy) {
         CHECK(ProbableObjects_capacity(copy) == 4);
@@ -138,8 +138,8 @@ int main(void) {
         ProbableObjects_free(copy);
     }
     // Multiple populated flexible-array elements cannot be safely indexed.
-    CHECK(ProbableObjects_2(po, 2) == nullptr);
-    CHECK(ProbableObjects_2(nullptr, SIZE_MAX) == nullptr);
+    CHECK(ProbableObjects(po, 2) == nullptr);
+    CHECK(ProbableObjects(nullptr, SIZE_MAX) == nullptr);
 
     // Null-safety.
     CHECK(ProbableObjects_size(nullptr) == 0);

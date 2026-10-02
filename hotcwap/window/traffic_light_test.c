@@ -27,7 +27,7 @@ static int g_failures = 0;
 
 int main(void) {
     // Nil-handle bookkeeping: visibility still tracks.
-    TrafficLight *tl = TrafficLight_create(nullptr);
+    TrafficLight *tl = TrafficLight(nullptr);
     CHECK(tl != nullptr);
     CHECK(TrafficLight_isButtonVisible(tl, TRAFFIC_LIGHT_CLOSE));
     CHECK(TrafficLight_isButtonVisible(tl, TRAFFIC_LIGHT_MINIATURIZE));
@@ -62,9 +62,9 @@ int main(void) {
     TrafficLight_destroy(nullptr); // null-safe
 
     // Real window: the controller over a live AppKit window.
-    Window *w = Window_create("traffic", 300, 200);
+    Window *w = Window("traffic", 300, 200);
     if (w) {
-        TrafficLight *live = TrafficLight_create(Window_nativeHandle(w));
+        TrafficLight *live = TrafficLight(Window_nativeHandle(w));
         CHECK(live != nullptr);
         TrafficLight_refresh(live);
 

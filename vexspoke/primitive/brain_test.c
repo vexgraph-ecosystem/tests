@@ -53,7 +53,7 @@ int main(void) {
     CHECK(q != nullptr && Brain_get(q) == bf35);
     void *r = Brain(bf35);
     CHECK(r != nullptr && Brain_get(r) == bf35);
-    void *s = Brain_0();
+    void *s = Brain();
     CHECK(s != nullptr && Brain_type(s) == ID_BRAIN);
 
     Brain_set(p, 1);

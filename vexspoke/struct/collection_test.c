@@ -26,7 +26,7 @@ static int g_failures = 0;
 
 int main(void) {
     // Collection is Array's first member; build one and view it as its header.
-    Array *a = Array_2(ID_INT, 4);
+    Array *a = Array(ID_INT, 4);
     CHECK(a != nullptr);
     Collection *c = (Collection*) a;
 

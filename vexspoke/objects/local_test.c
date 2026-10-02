@@ -17,7 +17,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    Local *l = Local_0();
+    Local *l = Local();
     CHECK(l != nullptr);
     CHECK(Local_get(l, 0) == 0); // unset -> 0
 

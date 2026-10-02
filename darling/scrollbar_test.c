@@ -52,8 +52,7 @@ int main(void) {
 
     Panel *p = &(*s).base;
     Component *cnt = &(*p).component;
-    (*cnt).w = 20.0f;
-    (*cnt).h = 200.0f;
+    GraphicsComponent_setSize(cnt, 20.0f, 200.0f);
 
     ScrollBar_setRange(s, 0.0f, 1000.0f);
     CHECK("range set to [0, 1000]", nearf(ScrollBar_getValue(s), 0.0f, 0.001f));
@@ -78,7 +77,7 @@ int main(void) {
     CHECK("pointer drag clamps to max 1000", nearf(ScrollBar_getValue(s), 1000.0f, 0.01f));
 
     // section 7 Default height fallback (h <= 0 defaults to 100.0)
-    (*cnt).h = 0.0f;
+    GraphicsComponent_setSize(cnt, 20.0f, 0.0f);
     ScrollBar_handlePointer(s, PTR_DOWN, 10.0f, 30.0f);
     // fraction = 30 / 100 = 0.3 => val = 300
     CHECK("default height fallback maps 30px to 300", nearf(ScrollBar_getValue(s), 300.0f, 0.01f));

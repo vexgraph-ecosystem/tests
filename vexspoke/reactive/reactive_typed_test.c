@@ -64,7 +64,7 @@ static void onSetInt(Reactive *r, uintptr_t v, void *ud) {
 
 static void testEmbedFirst(void) {
     printf("[1] embed-first: a typed reactive* is a Reactive*\n");
-    ReactiveInt *h = ReactiveInt_1(7);
+    ReactiveInt *h = ReactiveInt(7);
     CHECK(h != nullptr);
     if (h) {
         CHECK((uintptr_t) h == (uintptr_t) &(*h).base);
@@ -75,7 +75,7 @@ static void testEmbedFirst(void) {
 
 static void testInt(void) {
     printf("[2] int: set/get, exact old/new, coalescing, out-of-band write\n");
-    ReactiveInt *h = ReactiveInt_1(10);
+    ReactiveInt *h = ReactiveInt(10);
     CHECK(h != nullptr);
     if (!h)
         return;
@@ -116,7 +116,7 @@ static void testInt(void) {
 
 static void testBool(void) {
     printf("[3] bool\n");
-    ReactiveBool *b = ReactiveBool_1(false);
+    ReactiveBool *b = ReactiveBool(false);
     CHECK(b != nullptr);
     if (!b)
         return;
@@ -131,7 +131,7 @@ static void testBool(void) {
 
 static void testDouble(void) {
     printf("[4] double: bit-exact round trip, incl. -0.0 and NaN\n");
-    ReactiveDouble *d = ReactiveDouble_1(1.5);
+    ReactiveDouble *d = ReactiveDouble(1.5);
     CHECK(d != nullptr);
     if (!d)
         return;
@@ -159,7 +159,7 @@ static void testString(void) {
     printf("[5] string: pointer word, rebind is a change\n");
     const uint8_t *a = (const uint8_t*) "hello";
     const uint8_t *b = (const uint8_t*) "world";
-    ReactiveString *s = ReactiveString_1(a);
+    ReactiveString *s = ReactiveString(a);
     CHECK(s != nullptr);
     if (!s)
         return;

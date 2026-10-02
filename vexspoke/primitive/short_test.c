@@ -35,7 +35,7 @@ int main(void) {
     CHECK(q != nullptr && Short_get(q) == 42);
     void *r = Short(-7);
     CHECK(r != nullptr && Short_get(r) == -7);
-    void *s = Short_0();
+    void *s = Short();
     CHECK(s != nullptr && Short_type(s) == ID_SHORT);
 
     CHECK(Short_compareAndSet(p, Short_get(p), 999));

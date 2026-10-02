@@ -116,7 +116,7 @@ int main(void) {
 
     // isFinished with a REAL window (the one dereferencing path).
     Application *app = Application();
-    Window *rw = Window_create("app_test", 200, 150);
+    Window *rw = Window("app_test", 200, 150);
     if (rw) {
         CHECK(Application_addWindow(app, rw));
         Application_start(app);

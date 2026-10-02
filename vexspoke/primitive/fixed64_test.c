@@ -35,7 +35,7 @@ int main(void) {
     CHECK(q != nullptr && Fixed64_get(q) == 4294967296LL);
     void *r = Fixed64(-4294967296LL);
     CHECK(r != nullptr && Fixed64_get(r) == -4294967296LL);
-    void *s = Fixed64_0();
+    void *s = Fixed64();
     CHECK(s != nullptr && Fixed64_type(s) == ID_FIXED64);
 
     CHECK(Fixed64_compareAndSet(p, Fixed64_get(p), 999));

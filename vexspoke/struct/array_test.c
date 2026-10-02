@@ -33,7 +33,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    Array *a = Array_2(ID_INT, 8);
+    Array *a = Array(ID_INT, 8);
     CHECK(a != nullptr);
     if (!a)
         return 1;

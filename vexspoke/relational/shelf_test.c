@@ -46,7 +46,7 @@ static void testCell(void) {
 
     CHECK(sizeof(Cell) == 16u);
 
-    Cell *c = Cell_2(TYPE_VARIABLE_SLOT, 0xDEADu);
+    Cell *c = Cell(TYPE_VARIABLE_SLOT, 0xDEADu);
     CHECK(c != nullptr);
     if (c) {
         CHECK(Cell_typeId(c) == TYPE_VARIABLE_SLOT);
@@ -59,11 +59,11 @@ static void testCell(void) {
         Cell_free(c);
     }
 
-    Cell *anon = Cell_0();
+    Cell *anon = Cell();
     CHECK(anon != nullptr && Cell_typeId(anon) == 0u);
     Cell_free(anon);
 
-    Cell *one = Cell_1(TYPE_SHELF);
+    Cell *one = Cell(TYPE_SHELF);
     CHECK(one != nullptr && Cell_getValue(one) == 0u && Cell_check(one, TYPE_SHELF));
     Cell_free(one);
     Cell_free(nullptr);
@@ -73,7 +73,7 @@ static void testCell(void) {
 static void testCellStrings(void) {
     printf("[2] cell string projections\n");
 
-    Cell *c = Cell_2(0x2Cu, 0x1Fu);
+    Cell *c = Cell(0x2Cu, 0x1Fu);
     char buf[96];
     bool truncated = true;
     Cell_toString(c, buf, sizeof(buf), &truncated);
@@ -93,7 +93,7 @@ static void testCellStrings(void) {
 static void testShelfBasics(void) {
     printf("[3] shelf: node pool, cells, u32 edges, head walk\n");
 
-    Shelf *shelf = Shelf_0();
+    Shelf *shelf = Shelf();
     CHECK(shelf != nullptr);
     if (!shelf)
         return;
@@ -143,7 +143,7 @@ static void testShelfBasics(void) {
 static void testShelfStability(void) {
     printf("[4] node/cell addresses stay stable across growth\n");
 
-    Shelf *shelf = Shelf_0();
+    Shelf *shelf = Shelf();
     if (!shelf) {
         CHECK(false);
         return;

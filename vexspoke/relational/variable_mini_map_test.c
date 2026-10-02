@@ -164,7 +164,7 @@ static void testScopedSearch(void) {
     printf("[5] scoped search: SegmentIndex over a class's field mini map\n");
 
     VariableMiniMap *fields = VariableMiniMap();
-    SegmentIndex *scoped = SegmentIndex_0();
+    SegmentIndex *scoped = SegmentIndex();
     CHECK(fields && scoped);
     if (!fields || !scoped) {
         VariableMiniMap_free(fields);

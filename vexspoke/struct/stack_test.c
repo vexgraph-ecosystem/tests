@@ -18,7 +18,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    Stack *s = Stack_1(ID_INT);
+    Stack *s = Stack(ID_INT);
     CHECK(s != nullptr);
     CHECK(Stack_isEmpty(s));
     CHECK(Stack_size(s) == 0);

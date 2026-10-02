@@ -57,8 +57,7 @@ int main(void) {
 
     Panel *p = &(*k).base;
     Component *cnt = &(*p).component;
-    (*cnt).w = 40.0f;
-    (*cnt).h = 40.0f;
+    GraphicsComponent_setSize(cnt, 40.0f, 40.0f);
     Knob_setDiameter(k, 40.0f);
     Knob_setMin(k, 0.0f);
     Knob_setMax(k, 100.0f);

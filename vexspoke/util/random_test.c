@@ -26,8 +26,8 @@ static int g_failures = 0;
     } while (0)
 
 static bool sameStream(uint64_t seed, RandomEngine engine) {
-    Random *a = Random_2(seed, engine);
-    Random *b = Random_2(seed, engine);
+    Random *a = Random(seed, engine);
+    Random *b = Random(seed, engine);
     bool ok = (a != nullptr) && (b != nullptr);
     for (int i = 0; i < 32 && ok; i++)
         if (Random_nextLong(a) != Random_nextLong(b))
@@ -39,8 +39,8 @@ static bool sameStream(uint64_t seed, RandomEngine engine) {
 
 int main(void) {
     // Auto-selected engine: same seed -> same engine and same stream.
-    Random *p = Random_1(1234u);
-    Random *q = Random_1(1234u);
+    Random *p = Random(1234u);
+    Random *q = Random(1234u);
     CHECK(p && q);
     CHECK(Random_engine(p) == Random_engine(q));
     for (int i = 0; i < 32; i++)
@@ -49,7 +49,7 @@ int main(void) {
     Random_free(q);
 
     // Engine selection is a pure function of the seed.
-    CHECK(Random_engine(Random_1(42u)) == Random_engine(Random_1(42u)));
+    CHECK(Random_engine(Random(42u)) == Random_engine(Random(42u)));
 
     // Each engine is reproducible from its own seed.
     CHECK(sameStream(1234u, RANDOM_ENGINE_MURMUR));
@@ -57,9 +57,9 @@ int main(void) {
     CHECK(sameStream(1234u, RANDOM_ENGINE_PCG));
 
     // A forced engine is reported back, and distinct engines diverge.
-    Random *m = Random_2(7u, RANDOM_ENGINE_MURMUR);
-    Random *x = Random_2(7u, RANDOM_ENGINE_XORSHIFT);
-    Random *c = Random_2(7u, RANDOM_ENGINE_PCG);
+    Random *m = Random(7u, RANDOM_ENGINE_MURMUR);
+    Random *x = Random(7u, RANDOM_ENGINE_XORSHIFT);
+    Random *c = Random(7u, RANDOM_ENGINE_PCG);
     CHECK(Random_engine(m) == RANDOM_ENGINE_MURMUR);
     CHECK(Random_engine(x) == RANDOM_ENGINE_XORSHIFT);
     CHECK(Random_engine(c) == RANDOM_ENGINE_PCG);
@@ -70,7 +70,7 @@ int main(void) {
     Random_free(c);
 
     // xorshift's zero-seed guard: the stream is not stuck at 0.
-    Random *z = Random_2(0u, RANDOM_ENGINE_XORSHIFT);
+    Random *z = Random(0u, RANDOM_ENGINE_XORSHIFT);
     uint64_t z0 = Random_nextLong(z);
     uint64_t z1 = Random_nextLong(z);
     CHECK(z0 != z1);
@@ -79,7 +79,7 @@ int main(void) {
     // Draw ranges hold on every engine.
     RandomEngine engines[] = { RANDOM_ENGINE_MURMUR, RANDOM_ENGINE_XORSHIFT, RANDOM_ENGINE_PCG };
     for (size_t e = 0; e < sizeof engines / sizeof engines[0]; e++) {
-        Random *r = Random_2(42u, engines[e]);
+        Random *r = Random(42u, engines[e]);
         for (int i = 0; i < 32; i++) {
             float f = Random_nextFloat(r);
             CHECK(f >= 0.0f && f < 1.0f);
@@ -93,14 +93,14 @@ int main(void) {
     }
 
     // Weighted sampling wrappers (engine-independent).
-    Random *w = Random_1(99u);
+    Random *w = Random(99u);
     CHECK(Random_getWeight(w, 10u, 10u));
     CHECK(!Random_getWeight(w, 0u, 10u));
 
     uintptr_t token = (uintptr_t) &g_failures;
-    Probable *hit = Probable_3(token, 10u, 10u);
+    Probable *hit = Probable(token, 10u, 10u);
     CHECK(Random_sample(w, hit) == token);
-    Probable *miss = Probable_3(token, 0u, 10u);
+    Probable *miss = Probable(token, 0u, 10u);
     CHECK(Random_sample(w, miss) == 0u);
     Probable_free(hit);
     Probable_free(miss);

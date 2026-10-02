@@ -112,7 +112,7 @@ static bool paintFrame(ScrollPanel *sp, Panel *content, size_t count,
         *visited = count;
         // ScrollPanel_paint returns only viewport/chrome draw status: its
         // paintSubtree is void and does not propagate child draw status.
-        (void) ScrollPanel_paint(sp, viewport, nullptr);
+        (void) ScrollPanel_paint(sp, viewport);
     }
     // Offscreen Vulkan has no swapchain: Graphics_end submits, while present
     // deliberately returns false. Raster end likewise completes the frame.
@@ -218,8 +218,8 @@ int main(int argc, char **argv) {
     ScrollPanel_setContent(sp, content);
     if (ScrollPanel_getContentPanel(sp) != content)
         goto done;
-    ScrollPanel_verticalScroll_setVisible(sp, false);
-    ScrollPanel_horizontalScroll_setVisible(sp, false);
+    ScrollPanel_setBarVisible(sp, true, false);
+    ScrollPanel_setBarVisible(sp, false, false);
     for (size_t i = 0; i < count; i++) {
         Panel *child = Panel_0();
         if (!child) {

@@ -19,7 +19,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    MinHeap *h = MinHeap_1(8);
+    MinHeap *h = MinHeap(8);
     CHECK(h != nullptr);
     CHECK(MinHeap_isEmpty(h));
     CHECK(MinHeap_size(h) == 0);
@@ -38,7 +38,7 @@ int main(void) {
     CHECK(MinHeap_peekItem(h) == 0);
 
     // Volume within capacity: 2048 pushed in reverse priority, popped ascending.
-    MinHeap *big = MinHeap_1(2048);
+    MinHeap *big = MinHeap(2048);
     CHECK(big != nullptr);
     for (int i = 2047; i >= 0; i--)
         CHECK(MinHeap_push(big, i, (float) i) == 1);
@@ -54,7 +54,7 @@ int main(void) {
     CHECK(ok); // strictly ascending
 
     // Capacity-full rejection (fixed capacity).
-    MinHeap *full = MinHeap_1(2);
+    MinHeap *full = MinHeap(2);
     CHECK(MinHeap_push(full, 1, 1.0f) == 1);
     CHECK(MinHeap_push(full, 2, 2.0f) == 1);
     CHECK(MinHeap_push(full, 3, 3.0f) == 0); // full -> refused

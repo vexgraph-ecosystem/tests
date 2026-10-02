@@ -35,7 +35,7 @@ int main(void) {
     CHECK(TryPtr_getValue(&err) == nullptr);
     CHECK(TryPtr_getCode(&err) == TRY_IO);
 
-    TryPtr two = TryPtr_2(&other, TRY_NOT_FOUND);
+    TryPtr two = TryPtr(&other, TRY_NOT_FOUND);
     CHECK(TryPtr_getValue(&two) == &other);
     CHECK(TryPtr_getCode(&two) == TRY_NOT_FOUND);
 

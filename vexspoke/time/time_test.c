@@ -75,7 +75,7 @@ int main(void) {
     CHECK(Calendar_daysInMonth(2023, 13) == 0);
 
     // --- Clock: scale and pause shape virtual time ---
-    Clock clock = Clock_create();
+    Clock clock = Clock();
     CHECK(Clock_timeScale(&clock) == 1.0 && !Clock_isPaused(&clock));
 
     Clock_setTimeScale(&clock, 0.5);

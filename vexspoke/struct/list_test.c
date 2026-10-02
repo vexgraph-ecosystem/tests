@@ -45,7 +45,7 @@ static void *adder(void *userData) {
 
 int main(void) {
     // Construction + introspection.
-    List *list = List_2(ID_INT, 4); // grows to the 1024 default
+    List *list = List(ID_INT, 4); // grows to the 1024 default
     CHECK(list != nullptr);
     CHECK(List_isEmpty(list));
     CHECK(List_size(list) == 0);
@@ -79,7 +79,7 @@ int main(void) {
     CHECK(List_size(list) == before - 1);
     CHECK(List_get(list, 0) == 1); // shifted down
 
-    List *copy = List_2(ID_INT, 4);
+    List *copy = List(ID_INT, 4);
     for (size_t i = 0; i < List_size(list); i++)
         List_add(copy, List_get(list, i));
     CHECK(List_compare(list, copy));
@@ -101,7 +101,7 @@ int main(void) {
 
     // VOLUME + concurrency: 4 threads x 250000 = 1000000, under one mutex.
     enum { THREADS = 4, PER_THREAD = 250000 };
-    List *big = List_2(ID_INT, 4);
+    List *big = List(ID_INT, 4);
     pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
     pthread_t tids[THREADS];
     AddArg args[THREADS];

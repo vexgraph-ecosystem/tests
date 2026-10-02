@@ -17,7 +17,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    Global *g = Global_1(10);
+    Global *g = Global(10);
     CHECK(g != nullptr);
     CHECK(Global_get(g) == 10);
 

@@ -13,10 +13,15 @@ static void expectPixel(int x, int y, uint32_t color) {
     uint8_t *pixels = Image_pixels(frame);
     assert(pixels);
     size_t at = ((size_t) y * Image_width(frame) + (size_t) x) * 4u;
-    assert(pixels[at] == (uint8_t) (color >> 24));
-    assert(pixels[at + 1u] == (uint8_t) (color >> 16));
-    assert(pixels[at + 2u] == (uint8_t) (color >> 8));
-    assert(pixels[at + 3u] == (uint8_t) color);
+    bool match = (pixels[at] == (uint8_t) (color >> 24)) &&
+                 (pixels[at + 1u] == (uint8_t) (color >> 16)) &&
+                 (pixels[at + 2u] == (uint8_t) (color >> 8)) &&
+                 (pixels[at + 3u] == (uint8_t) color);
+    assert(match);
+    (void) match;
+    (void) pixels;
+    (void) at;
+    (void) color;
 }
 
 int main(void) {
@@ -26,6 +31,7 @@ int main(void) {
     assert(Graphics_clear(PANEL_COLOR_BLACK));
     Rectangle clip = { 20.0f, 20.0f, 60.0f, 60.0f };
     assert(Graphics_clip(&clip));
+    (void) clip;
 
     Panel *parent = Panel_0();
     Panel *child = Panel_0();
@@ -85,6 +91,9 @@ int main(void) {
     float pageX = 0.0f, pageY = 0.0f;
     ScrollPanel_getOffset(s_page, &pageX, &pageY);
     assert(pageY == 150.0f);
+    (void) rowBase;
+    (void) pageX;
+    (void) pageY;
     ScrollScene_free();
 
     RasterGraphics_shutdown();

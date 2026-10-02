@@ -19,7 +19,7 @@ static int g_failures = 0;
     } while (0)
 
 int main(void) {
-    SparseSet *s = SparseSet_3(1024, 2048, 4);
+    SparseSet *s = SparseSet(1024, 2048, 4);
     CHECK(s != nullptr);
     CHECK(SparseSet_count(s) == 0);
     CHECK(SparseSet_capacity(s) >= 64);

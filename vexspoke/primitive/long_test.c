@@ -35,7 +35,7 @@ int main(void) {
     CHECK(q != nullptr && Long_get(q) == 42);
     void *r = Long(-7);
     CHECK(r != nullptr && Long_get(r) == -7);
-    void *s = Long_0();
+    void *s = Long();
     CHECK(s != nullptr && Long_type(s) == ID_LONG);
 
     CHECK(Long_compareAndSet(p, Long_get(p), 999));

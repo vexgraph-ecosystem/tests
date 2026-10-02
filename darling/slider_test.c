@@ -57,8 +57,7 @@ int main(void) {
 
     Panel *p = &(*s).base;
     Component *cnt = &(*p).component;
-    (*cnt).w = 200.0f;
-    (*cnt).h = 20.0f;
+    GraphicsComponent_setSize(cnt, 200.0f, 20.0f);
 
     Slider_setRange(s, 0.0f, 100.0f);
     Slider_setStep(s, 0.0f);

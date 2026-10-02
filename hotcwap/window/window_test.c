@@ -190,6 +190,38 @@ static void runChromeContract(Window *w) {
     Window_setUndecorated(w, WINDOW_DECORATED);
     CHECK(Window_isDecorated(w));
 
+    // Viewport flush-to-top chrome control:
+    // When decorated, flush-to-top moves the viewport under the top bar while keeping decorated mode.
+    CHECK(!Window_isViewportFlushToTop(w));
+    Window_setViewportFlushToTop(w, true);
+    CHECK(Window_isViewportFlushToTop(w));
+    CHECK(Window_isDecorated(w));
+    CHECK(!Window_isNaked(w));
+    Window_setViewportFlushToTop(w, false);
+    CHECK(!Window_isViewportFlushToTop(w));
+    CHECK(Window_isDecorated(w));
+
+    // When naked, Window_setViewportFlushToTop is disabled (no-op).
+    Window_setUndecorated(w, WINDOW_UNDECORATED_NAKED);
+    CHECK(Window_isNaked(w));
+    CHECK(!Window_isViewportFlushToTop(w));
+    Window_setViewportFlushToTop(w, true);
+    CHECK(!Window_isViewportFlushToTop(w));
+    CHECK(Window_isNaked(w));
+
+    // When borderless, Window_setViewportFlushToTop is disabled (no-op).
+    Window_setUndecorated(w, WINDOW_UNDECORATED_BORDERLESS);
+    CHECK(Window_isBorderless(w));
+    CHECK(!Window_isViewportFlushToTop(w));
+    Window_setViewportFlushToTop(w, true);
+    CHECK(!Window_isViewportFlushToTop(w));
+    CHECK(Window_isBorderless(w));
+
+    // Restore standard decorated mode.
+    Window_setUndecorated(w, WINDOW_DECORATED);
+    CHECK(Window_isDecorated(w));
+    CHECK(!Window_isViewportFlushToTop(w));
+
     // shouldClose is a plain atomic mirror.
     Window_setShouldClose(w, true);
     CHECK(Window_shouldClose(w));
@@ -209,7 +241,24 @@ static void runChromeContract(Window *w) {
     CHECK(Window_getLifecycle(w) != nullptr);
     CHECK(Window_width(w) > 0 && Window_height(w) > 0);
 
+    float scale = Window_getScale(w);
+    CHECK(scale >= 1.0f);
+
+    // Native Pixel Law: Window_setSize operates in native physical display pixels.
+    Window_setSize(w, 800, 600);
+    CHECK(Window_width(w) == 800);
+    CHECK(Window_height(w) == 600);
+    CHECK(Window_widthPoints(w) > 0.0f);
+    CHECK(Window_heightPoints(w) > 0.0f);
+
+    Window_revalidate(w);
+    CHECK(Window_width(w) == 800);
+    CHECK(Window_height(w) == 600);
+
     Window_setSize(w, 900, 700);
+    CHECK(Window_width(w) == 900);
+    CHECK(Window_height(w) == 700);
+
     Window_setMinSize(w, 320, 240);
     Window_setMaxSize(w, 1920, 1080);
     Window_setLocation(w, 120, 120);
@@ -303,7 +352,7 @@ static void runTour(Window *w) {
 int main(int argc, char **argv) {
     bool tour = (argc > 1 && strcmp(argv[1], "--tour") == 0);
 
-    Window *w = Window_create("vex", 640, 480);
+    Window *w = Window("vex", 640, 480);
     Window_addKeyAdapter(w, &g_keyListener);
     Window_addMouseAdapter(w, &g_mouseListener);
     Window_addTouchAdapter(w, &g_touchListener);
