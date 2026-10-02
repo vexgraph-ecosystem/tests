@@ -19,8 +19,9 @@ tests/run.sh — run anything by name
   tests/run.sh <name> [args...]
 
   friendly names:
-    darling-gallery  -> _main/darling_gallery.c
-    hello-window     -> _main/hello_window.c
+    darling-gallery  -> tests/darling/darling_gallery.c
+    darling-tests    -> tests/darling/darling_tests.c
+    hello-window     -> tests/darling/frame/hello_window.c
     gpu              -> tests/graphvex/vulkan/gpu_render_test.c
     vk               -> tests/graphvex/vulkan/vk_renderer_test.c
     capture          -> tests/graphvex/graphics/capture_test.c
@@ -37,8 +38,9 @@ EOF
 name="$1"
 case "$name" in
     -h|--help|list)  usage; exit 0 ;;
-    darling-gallery) name="_main/darling_gallery.c" ;;
-    hello-window)    name="_main/hello_window.c" ;;
+    darling-gallery) name="tests/darling/darling_gallery.c" ;;
+    darling-tests)   name="tests/darling/darling_tests.c" ;;
+    hello-window)    name="tests/darling/frame/hello_window.c" ;;
     gpu)             name="tests/graphvex/vulkan/gpu_render_test.c" ;;
     vk)              name="tests/graphvex/vulkan/vk_renderer_test.c" ;;
     capture)         name="tests/graphvex/graphics/capture_test.c" ;;
