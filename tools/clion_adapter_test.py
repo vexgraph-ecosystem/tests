@@ -1,0 +1,105 @@
+"""Lab proof for the CLion CMake adapter; never executes UI/window tests."""
+
+import argparse
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import unittest
+
+
+ROOT = Path(__file__).resolve().parents[2]
+BUILD = ROOT / "cmake-build-debug"
+GENERATOR = None
+NINJA = None
+
+
+def run(command, **kwargs):
+    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True,
+                            timeout=300, **kwargs)
+    if result.returncode:
+        raise RuntimeError(f"{command!r}\n{result.stdout}\n{result.stderr}")
+    return result.stdout
+
+
+class ClionAdapterTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        configure = ["cmake", "-S", str(ROOT), "-B", str(BUILD), "-DCMAKE_BUILD_TYPE=Debug"]
+        if GENERATOR:
+            configure += ["-G", GENERATOR]
+        if NINJA:
+            configure += [f"-DCMAKE_MAKE_PROGRAM={NINJA}"]
+        run(configure)
+        # Compile the reported problem, but only execute two headless targets.
+        run(["cmake", "--build", str(BUILD), "--target", "ui_anchor_pivot_pixels_test",
+             "console_test", "hot_behavior_test", "-j", "4"])
+        cls.graph = json.loads((BUILD / "b-test-graph.json").read_text())
+        cls.targets = {t["name"]: t for t in cls.graph["tests"]}
+        cls.ctest = json.loads(run(["ctest", "--test-dir", str(BUILD), "--show-only=json-v1"]))
+        cls.tests = {t["name"]: t for t in cls.ctest["tests"]}
+
+    def test_anchor_has_transitive_includes_and_libraries(self):
+        target = self.targets["ui_anchor_pivot_pixels_test"]
+        self.assertIn(str(ROOT / "ecosystem/interface/darling-framework/src"), target["includes"])
+        self.assertIn(str(ROOT / "ecosystem/drivers/graphvex/src"), target["includes"])
+        self.assertIn("UNDEBUG", target["definitions"])
+        self.assertIn("-std=gnu23", target["options"])
+        archives = [Path(p).name for p in target["libraries"] if p.endswith(".a")]
+        self.assertIn("libdarling.a", archives)
+        self.assertIn("libhotcwap.a", archives)
+        self.assertIn("libgraphvex.a", archives)
+        self.assertIn("libvexspoke.a", archives)
+        self.assertTrue((BUILD / "bin/ui_anchor_pivot_pixels_test").is_file())
+
+    def test_ctest_safety_and_no_demo_registration(self):
+        self.assertEqual(set(self.targets), set(self.tests))
+        for name in ["window_test", "ui_anchor_pivot_pixels_test"]:
+            props = {p["name"]: p["value"] for p in self.tests[name]["properties"]}
+            self.assertTrue(props["DISABLED"])
+            self.assertEqual(props["SKIP_RETURN_CODE"], 77)
+            self.assertEqual(props["TIMEOUT"], 120)
+        self.assertNotIn("hello_window", self.tests)
+        self.assertNotIn("darling_tests", self.tests)
+
+    def test_hotload_paths_are_isolated_and_built(self):
+        for name in ["hot_behavior_test", "manifest_rollback_test"]:
+            definitions = self.targets[name]["definitions"]
+            modules = [d.split("=", 1)[1].strip('"') for d in definitions
+                       if d.startswith(("HOT_BEHAVIOR_MODULE=", "HOT_BEHAVIOR_BAD_MODULE="))]
+            self.assertTrue(modules)
+            for module in modules:
+                self.assertTrue(Path(module).is_relative_to(BUILD / "b-state"))
+                self.assertTrue(Path(module).is_file())
+
+    def test_release_metadata_matches_release_dependencies(self):
+        env = dict(os.environ, B_HOME=str(BUILD / "b-state"))
+        release = json.loads(run([str(ROOT / "tools/b"), "--release", "ide"], env=env))
+        target = next(t for t in release["tests"] if t["name"] == "console_test")
+        self.assertIn("-O2", target["options"])
+        self.assertNotIn("DEBUG_BORROW_CHECK=1", target["definitions"])
+        for path in release["byproducts"]:
+            self.assertIn("/out/release/", path)
+
+    def test_headless_native_ctest_execution(self):
+        output = run(["ctest", "--test-dir", str(BUILD), "-R", "^(console_test|hot_behavior_test)$",
+                      "--output-on-failure", "--no-tests=error"])
+        self.assertIn("100% tests passed", output)
+        self.assertIn("2/2", output)
+        print(output)
+
+
+if __name__ == "__main__":
+    if not shutil.which("cmake") or not shutil.which("ctest"):
+        print("SKIP: CMake and CTest are required for adapter lab proof")
+        raise SystemExit(77)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--build-dir", type=Path, default=BUILD)
+    parser.add_argument("--generator")
+    parser.add_argument("--ninja")
+    options = parser.parse_args()
+    BUILD = options.build_dir.resolve()
+    GENERATOR, NINJA = options.generator, options.ninja
+    unittest.main(argv=[sys.argv[0]])

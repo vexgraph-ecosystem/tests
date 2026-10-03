@@ -3,7 +3,7 @@
 Generated test report maintained by `python3 tools/test_checklist.py`.
 Governed by the **Timestamped Test Checklist Law** in `preferences.md`.
 
-- ✅ = the recorded command passed for this exact file hash, in its stated scope.
+- ✅ = an automated lab check passed for this exact file hash, in its stated scope.
 - ❌ = untested, failed, skipped, or stale; see evidence. This is not a battle-tested claim.
 - Last checked is actual Unix time: integer seconds since 1970-01-01T00:00:00Z.
   `—` means never checked. Estimates must never be recorded as executed evidence.
@@ -15,6 +15,11 @@ Governed by the **Timestamped Test Checklist Law** in `preferences.md`.
 - An integration pass only applies to explicitly named subjects and scope.
   Neither test-file presence nor a passing build proves every framework file.
 - Platform gaps and omitted cases must be stated in the evidence/scope column.
+- Visual appearance, interactive demos, and subjective approval are not tested
+  by this ledger. The user performs visual checks and reports what is broken.
+  Automated assertions (including numeric/pixel oracles) are lab evidence only,
+  never visual approval. Do not launch galleries or manual demos to earn ✅.
+- Descriptions explain the check; no author, agent name, or session ID is stored.
 
 ## Commands
 
@@ -30,1633 +35,2152 @@ Add repeated `--file` arguments only for files actually exercised by the command
 Use `--scope` to describe proof limits, platform and gaps. A syntax check is only
 syntax evidence, not runtime or full contract verification. Agents must read this
 report before working and update affected rows in the same work cycle.
+Use `--description` for a short explanation. Only `--kind lab` is recordable;
+`--kind visual` is rejected before execution. Visual reports belong to the user.
 Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 ## ecosystem/drivers/api-haven
 
 ### `ecosystem/drivers/api-haven`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/README.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/api-haven-preferences.md` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/api-haven-preferences.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/ai`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/ai/ai_chat.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/ai_chat.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/ai_chat_anthropic.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/ai_chat_anthropic.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/ai_chat_gemini.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/ai_chat_gemini.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/ai_provider.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/ai_provider.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/ai_sse.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/ai_sse.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/ai/ai_chat.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/ai_chat.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/ai_chat_anthropic.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/ai_chat_anthropic.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/ai_chat_gemini.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/ai_chat_gemini.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/ai_provider.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/ai_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/ai_sse.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/ai_sse.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/ai/data`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/ai/data/providers_china.inc` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/data/providers_europe.inc` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/ai/data/providers_global.inc` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/ai/data/providers_china.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/data/providers_europe.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/ai/data/providers_global.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/api`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/api/auth.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/api/auth.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/api/client.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/api/client.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/api/discord.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/api/haven_ws_fanout.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/api/haven_ws_fanout.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/api/rest.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/api/rest.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/api/auth.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/api/auth.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/api/client.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/api/client.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/api/discord.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/api/haven_ws_fanout.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/api/haven_ws_fanout.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/api/rest.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/api/rest.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/app`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/app/app_broker.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/app/app_broker.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/app/app_provider.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/app/app_provider.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/app/app_broker.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/app/app_broker.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/app/app_provider.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/app/app_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/asset`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/asset/asset_broker.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/asset/asset_broker.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/asset/asset_provider.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/asset/asset_provider.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/asset/asset_broker.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/asset/asset_broker.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/asset/asset_provider.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/asset/asset_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/com/discord`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/com/discord/discord.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/com/discord/discord.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/com/discord/discord_webhook.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/com/discord/discord.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/com/discord/discord.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/com/discord/discord_webhook.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/com/slack`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/com/slack/slack.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/com/slack/slack.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/com/slack/slack.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/com/slack/slack.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/database`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/database/db_provider.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/database/db_provider.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/database/db_sqlite_file.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/database/db_sqlite_file.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/database/db_provider.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/database/db_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/database/db_sqlite_file.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/database/db_sqlite_file.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/database/data`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/database/data/db_providers.inc` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/database/data/db_providers.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/harness`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/harness/engine_provider.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/harness/engine_provider.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/harness/harness.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/harness/harness.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/harness/engine_provider.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/harness/engine_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/harness/harness.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/harness/harness.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/main`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/main/mcp_main.c` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/main/mcp_main.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/mcp`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/mcp/mcp_server.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/mcp/mcp_server.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/mcp/mcp_server.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/mcp/mcp_server.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/src/search`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/src/search/search_provider.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/src/search/search_provider.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/src/search/search_provider.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/src/search/search_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/api-haven/tools`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/api-haven/tools/gen_db_providers.py` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/api-haven/tools/gen_providers.py` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/api-haven/tools/gen_db_providers.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/api-haven/tools/gen_providers.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ## ecosystem/drivers/darkbase
 
 ### `ecosystem/drivers/darkbase`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/darkbase/.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/darkbase/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/darkbase/LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/darkbase/README.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/darkbase/darkbase-preferences.md` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/darkbase/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/darkbase/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/darkbase/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/darkbase/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/darkbase/darkbase-preferences.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ## ecosystem/drivers/graphvex
 
 ### `ecosystem/drivers/graphvex`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/graphvex/.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/README.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/graphvex-preferences.md` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/graphvex/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/graphvex-preferences.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/graphvex/src`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/graphvex/src/board.c` | ✅ | 1791038758 | c8ef94d95e5ed17c3a333d1fd5ccee67376bcb3deb24ccb35ea1e869fff1e3cf | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/drivers/graphvex/src/board.h` | ✅ | 1791038758 | 8f4a385b0579f16924194f2b63d9d662a9d1e3a4000593fe128bc91e84b712cd | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/drivers/graphvex/src/image.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/image.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/graphvex/src/board.c` | ✅ | 1791038758 | c8ef94d95e5ed17c3a333d1fd5ccee67376bcb3deb24ccb35ea1e869fff1e3cf | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+| `ecosystem/drivers/graphvex/src/board.h` | ✅ | 1791038758 | 8f4a385b0579f16924194f2b63d9d662a9d1e3a4000593fe128bc91e84b712cd | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+| `ecosystem/drivers/graphvex/src/image.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/image.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/graphvex/src/graphics`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/graphvex/src/graphics/graphics.c` | ✅ | 1791038696 | 51ca60a8cf957694ffa63e5f0138f58cd2b1cf6e81a1ce999474e65344a40745 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `ecosystem/drivers/graphvex/src/graphics/graphics.h` | ✅ | 1791038696 | d08229cbd4ba1f4fb6443b75bd697d880d6641ad3bed17881e58cf8d4c2e7eb9 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `ecosystem/drivers/graphvex/src/graphics/render_loop.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/graphics/render_loop.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/graphics/viewport.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/graphics/viewport.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/graphvex/src/graphics/graphics.c` | ✅ | 1791038696 | 51ca60a8cf957694ffa63e5f0138f58cd2b1cf6e81a1ce999474e65344a40745 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | Automated lab evidence only; visual approval not recorded | passed |
+| `ecosystem/drivers/graphvex/src/graphics/graphics.h` | ✅ | 1791038696 | d08229cbd4ba1f4fb6443b75bd697d880d6641ad3bed17881e58cf8d4c2e7eb9 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | Automated lab evidence only; visual approval not recorded | passed |
+| `ecosystem/drivers/graphvex/src/graphics/render_loop.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/graphics/render_loop.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/graphics/viewport.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/graphics/viewport.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/graphvex/src/nio`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/graphvex/src/nio/pool.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/nio/pool.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/nio/property_pool.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/nio/property_pool.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/graphvex/src/nio/pool.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/nio/pool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/nio/property_pool.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/nio/property_pool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/graphvex/src/shaders/frag`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/graphvex/src/shaders/frag/quad.frag` | ✅ | 1791038696 | 5d6888eb30439ea37305ba2905d174eedf37e0a319811992e37a1cb20f4a2d7a | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
+| `ecosystem/drivers/graphvex/src/shaders/frag/quad.frag` | ✅ | 1791038696 | 5d6888eb30439ea37305ba2905d174eedf37e0a319811992e37a1cb20f4a2d7a | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | Automated lab evidence only; visual approval not recorded | passed |
 
 ### `ecosystem/drivers/graphvex/src/shaders/vert`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/graphvex/src/shaders/vert/quad.vert` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/graphvex/src/shaders/vert/quad.vert` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/drivers/graphvex/src/ui`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/graphvex/src/ui/element.c` | ✅ | 1791038758 | 482c0952827972c0a60f42a8a43ec818b819011e5742f9d0b6bba10c3d4017a4 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/drivers/graphvex/src/ui/element.h` | ✅ | 1791038758 | a0709f54e18cf17ad61b3e5f25c9b930fa0eb397cef1498c75006ef74a02dd90 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/drivers/graphvex/src/ui/property.c` | ✅ | 1791038758 | 92f3e5972d511a5473839121e549b984847ca328293bbee9b45c58c3a4f35780 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/drivers/graphvex/src/ui/property.h` | ✅ | 1791038758 | e4619e214957d8c1d78b078767d2526222e25763f138da6737f9bd8d0ac457a6 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
+| `ecosystem/drivers/graphvex/src/ui/element.c` | ✅ | 1791041332 | 13ed964ef58aa22e577c271834feb54ac306afff1ef70992ac6037292962ebb9 | ['./tools/b', 'test', 'set_cursor_test']; Automated assertions for inheritance, overrides, clipping, invalid/null inputs, shared-bound independence and repeated destruction; no native window, appearance, lock/capture or OS bridge runtime evidence | Headless hover cursor selection and macro-generated class setters | passed |
+| `ecosystem/drivers/graphvex/src/ui/element.h` | ✅ | 1791041332 | 327c719dba27ce6ef692b80a68c1c7d8ad43cc11f9ef4fcd63d2e7c89c5516f4 | ['./tools/b', 'test', 'set_cursor_test']; Automated assertions for inheritance, overrides, clipping, invalid/null inputs, shared-bound independence and repeated destruction; no native window, appearance, lock/capture or OS bridge runtime evidence | Headless hover cursor selection and macro-generated class setters | passed |
+| `ecosystem/drivers/graphvex/src/ui/property.c` | ✅ | 1791038758 | 92f3e5972d511a5473839121e549b984847ca328293bbee9b45c58c3a4f35780 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+| `ecosystem/drivers/graphvex/src/ui/property.h` | ✅ | 1791038758 | e4619e214957d8c1d78b078767d2526222e25763f138da6737f9bd8d0ac457a6 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
 
 ### `ecosystem/drivers/graphvex/src/vulkan`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/graphvex/src/vulkan/device.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/vulkan/device.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/vulkan/pipeline.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/vulkan/pipeline.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/vulkan/surface.c` | ✅ | 1791038758 | 9cfa255f25f8bc5727c60430bd08ef0910d030b911d40e15451385ea5c09c756 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/drivers/graphvex/src/vulkan/surface.h` | ✅ | 1791038758 | dc3755ba3add758ba0f46c8ee549136047120ef57d2d0bd8fbf266473ee4d5e9 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/drivers/graphvex/src/vulkan/vk_batch.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/vulkan/vk_batch.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/vulkan/vk_renderer.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/graphvex/src/vulkan/vulkan_backend.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/graphvex/src/vulkan/device.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/vulkan/device.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/vulkan/pipeline.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/vulkan/pipeline.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/vulkan/surface.c` | ✅ | 1791048098 | a9074de6bb250fb5727f7e19279589085c289b88fde8eea1fb1b94d1f5a8364d | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","run","tests/darling/frame/frame_application_lifecycle_test.c"],check=True); subprocess.run(["./tools/b","run","tests/darling/frame/frame_fps_focus_test.c"],check=True)']; macOS Apple Silicon: worker callback/return, owner invoke-close, hidden vs closed two-window lifetime, close-all/join, Frame attach/detach; native focus requests + deterministic R3 -1/1/120 submission ceilings/coalescing with independent scene worker. Header client/API evidence only; no whole-contract, Linux/Windows, physical display-Hz or visual approval | Application/Frame lifecycle and R3 presentation-cap integration owner tests | passed |
+| `ecosystem/drivers/graphvex/src/vulkan/surface.h` | ✅ | 1791048098 | c6eeb67f475ee83c869012da552bc3278860f3fc9a5e7aeb3714923dba07fd13 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","run","tests/darling/frame/frame_application_lifecycle_test.c"],check=True); subprocess.run(["./tools/b","run","tests/darling/frame/frame_fps_focus_test.c"],check=True)']; macOS Apple Silicon: worker callback/return, owner invoke-close, hidden vs closed two-window lifetime, close-all/join, Frame attach/detach; native focus requests + deterministic R3 -1/1/120 submission ceilings/coalescing with independent scene worker. Header client/API evidence only; no whole-contract, Linux/Windows, physical display-Hz or visual approval | Application/Frame lifecycle and R3 presentation-cap integration owner tests | passed |
+| `ecosystem/drivers/graphvex/src/vulkan/vk_batch.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/vulkan/vk_batch.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/vulkan/vk_renderer.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/graphvex/src/vulkan/vulkan_backend.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ## ecosystem/drivers/language
 
 ### `ecosystem/drivers/language`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/language/.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/language/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/language/LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/language/README.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/language/language-preferences.md` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/language/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/language/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/language/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/language/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/language/language-preferences.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ## ecosystem/drivers/samplerate
 
 ### `ecosystem/drivers/samplerate`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/drivers/samplerate/.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/samplerate/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/samplerate/LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/samplerate/README.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/drivers/samplerate/samplerate-preferences.md` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/drivers/samplerate/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/samplerate/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/samplerate/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/samplerate/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/drivers/samplerate/samplerate-preferences.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ## ecosystem/hotcwap
 
 ### `ecosystem/hotcwap`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/hotcwap/.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/README.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hotcwap-preferences.md` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/hotcwap/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/hotcwap/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/hotcwap/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/hotcwap/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/hotcwap/hotcwap-preferences.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/hotcwap/capability`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/hotcwap/capability/capability.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/capability/capability.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/hotcwap/capability/capability.c` | ✅ | 1791039324 | 9e06b1821d38a48590b58ff0f567c0cff565806c0a14fbb924a8ce26a24971e4 | ['./tools/b', 'run', 'capability_test']; Apple Silicon macOS; only assertions in tests/hotcwap/capability/capability_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | capability_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/capability/capability.h` | ✅ | 1791039324 | b49e0c98432528eeae348d746ad1f611d5661067beb8d189edcccf65f9421b8e | ['./tools/b', 'run', 'capability_test']; Apple Silicon macOS; only assertions in tests/hotcwap/capability/capability_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | capability_test: automated headless/prompt-free contract assertions; no visual approval | passed |
 
 ### `ecosystem/hotcwap/docs`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/hotcwap/docs/bridging.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/docs/install.md` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/hotcwap/docs/bridging.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/hotcwap/docs/install.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/hotcwap/hot`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/hotcwap/hot/hot.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/hot.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/hot_behavior.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/hot_retire.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/hot_retire.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/hot_trampoline.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/hot_trampoline.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/ledger.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/ledger.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/manifest.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/manifest.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/throwable.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/hot/throwable.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/hotcwap/hot/hot.c` | ✅ | 1791039337 | 6622daac29db0430c22e11908799509ebf8a083c44ef5df585cbdb9315d47e86 | ['./tools/b', 'run', 'wrong_binary_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/wrong_binary_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | wrong_binary_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/hot.h` | ✅ | 1791039337 | 7d61869af84c0e82a549eac8b9341949fedc663ea851ff9358daea6695e01aa9 | ['./tools/b', 'run', 'wrong_binary_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/wrong_binary_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | wrong_binary_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/hot_behavior.c` | ✅ | 1791039325 | 2fc48633c1cca59cc7e4d3db69aa8810bbe5c1ec4b0cc55a41191833e61cee10 | ['./tools/b', 'run', 'hot_behavior_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/hot_behavior_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | hot_behavior_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/hot_retire.c` | ✅ | 1791039334 | 9974ea28fa073147bca8441df61c6830bf0821bd6f2ca165444d871711aa7ef5 | ['./tools/b', 'run', 'retire_ring_overflow_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/retire_ring_overflow_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | retire_ring_overflow_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/hot_retire.h` | ✅ | 1791039334 | 19e62ae255626829ee9d6621135b1c9a0e99e4edb89bdc34ee9afde2aa2685fc | ['./tools/b', 'run', 'retire_ring_overflow_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/retire_ring_overflow_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | retire_ring_overflow_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/hot_trampoline.c` | ✅ | 1791039327 | caae4acd290e09e04f5847123e2e36a22f615066f5253c16f7783e39e4495dcf | ['./tools/b', 'run', 'hot_trampoline_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/hot_trampoline_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | hot_trampoline_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/hot_trampoline.h` | ✅ | 1791039327 | 15a11d8e91a73deff06a4ca9051bb73a912d94a1887bbc67e48978445691196a | ['./tools/b', 'run', 'hot_trampoline_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/hot_trampoline_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | hot_trampoline_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/ledger.c` | ✅ | 1791039327 | b0d8771812d4a098dfb8b3c265b88d78d48a728ee1c0a6dd3ee805c03f2e2156 | ['./tools/b', 'run', 'ledger_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/ledger_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | ledger_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/ledger.h` | ✅ | 1791039327 | d6a253ba7177d0d657236118227cf6e14661a0a9e41f69f3ef71f808268cec62 | ['./tools/b', 'run', 'ledger_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/ledger_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | ledger_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/manifest.c` | ✅ | 1791039337 | b38203e5fdf5ff4deb0c00d2038ebf322832fb60245e281dc9b864d38d132927 | ['./tools/b', 'run', 'wrong_binary_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/wrong_binary_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | wrong_binary_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/manifest.h` | ✅ | 1791039337 | 54b53b83f1ce3960a302cba962f108bf00d77971b9a624d1e34279bcfd76efe5 | ['./tools/b', 'run', 'wrong_binary_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/wrong_binary_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | wrong_binary_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/throwable.c` | ✅ | 1791039335 | d4b89ad390803851fd9bfb29770420c7e491f9353660cf626cff83ea26da7c60 | ['./tools/b', 'run', 'throwable_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/throwable_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | throwable_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/hot/throwable.h` | ✅ | 1791039335 | 89795aa1ff90f26bf47d68706c88719de8786312136f10edac706eac1cb45567 | ['./tools/b', 'run', 'throwable_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/throwable_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | throwable_test: automated headless/prompt-free contract assertions; no visual approval | passed |
 
 ### `ecosystem/hotcwap/kernel`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/hotcwap/kernel/application.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/kernel/application.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/kernel/console.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/kernel/console.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/kernel/kernel.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/kernel/kernel.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/kernel/process.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/kernel/process.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/hotcwap/kernel/application.c` | ✅ | 1791048098 | 0fc13cc998ebbfc602978913e9f02d8843d3778378e49aa33c19c01b7f477196 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","run","tests/darling/frame/frame_application_lifecycle_test.c"],check=True); subprocess.run(["./tools/b","run","tests/darling/frame/frame_fps_focus_test.c"],check=True)']; macOS Apple Silicon: worker callback/return, owner invoke-close, hidden vs closed two-window lifetime, close-all/join, Frame attach/detach; native focus requests + deterministic R3 -1/1/120 submission ceilings/coalescing with independent scene worker. Header client/API evidence only; no whole-contract, Linux/Windows, physical display-Hz or visual approval | Application/Frame lifecycle and R3 presentation-cap integration owner tests | passed |
+| `ecosystem/hotcwap/kernel/application.h` | ✅ | 1791048098 | b8a3381652f3f635e0a5a271fc8007efe3729bcf924f8e312b242fc2b3882f3f | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","run","tests/darling/frame/frame_application_lifecycle_test.c"],check=True); subprocess.run(["./tools/b","run","tests/darling/frame/frame_fps_focus_test.c"],check=True)']; macOS Apple Silicon: worker callback/return, owner invoke-close, hidden vs closed two-window lifetime, close-all/join, Frame attach/detach; native focus requests + deterministic R3 -1/1/120 submission ceilings/coalescing with independent scene worker. Header client/API evidence only; no whole-contract, Linux/Windows, physical display-Hz or visual approval | Application/Frame lifecycle and R3 presentation-cap integration owner tests | passed |
+| `ecosystem/hotcwap/kernel/console.c` | ✅ | 1791039338 | cda866ab14bcdae0fab67285f9acb555583388c3590c0ee1e51713e61de5c870 | ['./tools/b', 'run', 'console_test']; Apple Silicon macOS; only assertions in tests/hotcwap/kernel/console_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | console_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/kernel/console.h` | ✅ | 1791039338 | 21dd85ba23dba88434a738cd62382d0cb184c39f2ada057cfc07999c80ca8044 | ['./tools/b', 'run', 'console_test']; Apple Silicon macOS; only assertions in tests/hotcwap/kernel/console_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | console_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/kernel/kernel.c` | ✅ | 1791047640 | b0a66a2dcb5613b09c6d96a9af3b84bbeb2dee351950ce59192296c9a45e862d | ['./tools/b', 'run', 'tests/hotcwap/kernel/kernel_function_test.c']; macOS Apple Silicon; only executed assertion branches, no full-contract/platform/visual proof | Lifecycle compatibility/owner assertions after blocking-start migration | passed |
+| `ecosystem/hotcwap/kernel/kernel.h` | ✅ | 1791039340 | 864e7566cab0ad90e1cbca90fcf3ffa0aa4e0b471b8b6bf855923fc23ab40b11 | ['./tools/b', 'run', 'process_test']; Apple Silicon macOS; only assertions in tests/hotcwap/kernel/process_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | process_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/kernel/process.c` | ✅ | 1791039340 | a01bf41bb68c0514d96bbf7936a632a8ecc40c08588e094805c510a0a73c441f | ['./tools/b', 'run', 'process_test']; Apple Silicon macOS; only assertions in tests/hotcwap/kernel/process_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | process_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/kernel/process.h` | ✅ | 1791039340 | 518ce8aab2a4f1d6db8ee4ab5001d6597a5a2ee3f945defd2b0815ae2e7ac41c | ['./tools/b', 'run', 'process_test']; Apple Silicon macOS; only assertions in tests/hotcwap/kernel/process_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | process_test: automated headless/prompt-free contract assertions; no visual approval | passed |
 
 ### `ecosystem/hotcwap/permission`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/hotcwap/permission/permission.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/permission/permission.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/permission/permission_backend.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/hotcwap/permission/permission.c` | ✅ | 1791039341 | 33ac376cc62e68bb49ad07cab64f117d7d9756ecdb47da8f25e1a7de3ef1ea21 | ['./tools/b', 'run', 'permission_test']; Apple Silicon macOS; only assertions in tests/hotcwap/permission/permission_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | permission_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/permission/permission.h` | ✅ | 1791039341 | fe6004d8b1d4902675bfd8a7203ed70b4c277e83d4fe8ce577d2e0ebe7636f1d | ['./tools/b', 'run', 'permission_test']; Apple Silicon macOS; only assertions in tests/hotcwap/permission/permission_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | permission_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/permission/permission_backend.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/hotcwap/permission/objc`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/hotcwap/permission/objc/permission_cocoa.m` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/hotcwap/permission/objc/permission_cocoa.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/hotcwap/spoke`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/hotcwap/spoke/lifetime.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/spoke/lifetime.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/hotcwap/spoke/lifetime.c` | ✅ | 1791039341 | 674bfb9a51ad2b33bb79232db88c91fa14382eb728f8478c0034604f0b9a60e6 | ['./tools/b', 'run', 'spoke_test']; Apple Silicon macOS; only assertions in tests/hotcwap/spoke/spoke_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | spoke_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/spoke/lifetime.h` | ✅ | 1791039341 | 1560825d027432c593f95a74093b61ff8dd83e1fd102fb95fe97860bd35d5aac | ['./tools/b', 'run', 'spoke_test']; Apple Silicon macOS; only assertions in tests/hotcwap/spoke/spoke_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | spoke_test: automated headless/prompt-free contract assertions; no visual approval | passed |
 
 ### `ecosystem/hotcwap/window`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/hotcwap/window/traffic_light.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/window/traffic_light_cocoa.m` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/window/window.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/window/window.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/window/window_cocoa.m` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/window/window_event.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/window/window_event.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/window/window_linux.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/window/window_wayland.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/hotcwap/window/window_win32.c` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/hotcwap/window/traffic_light.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/hotcwap/window/traffic_light_cocoa.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/hotcwap/window/window.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/hotcwap/window/window.h` | ✅ | 1791048098 | bba3a5d0d8ff4655f57de230da1fb70895b81fd38058f7e7b1784aa90aaa76be | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","run","tests/darling/frame/frame_application_lifecycle_test.c"],check=True); subprocess.run(["./tools/b","run","tests/darling/frame/frame_fps_focus_test.c"],check=True)']; macOS Apple Silicon: worker callback/return, owner invoke-close, hidden vs closed two-window lifetime, close-all/join, Frame attach/detach; native focus requests + deterministic R3 -1/1/120 submission ceilings/coalescing with independent scene worker. Header client/API evidence only; no whole-contract, Linux/Windows, physical display-Hz or visual approval | Application/Frame lifecycle and R3 presentation-cap integration owner tests | passed |
+| `ecosystem/hotcwap/window/window_cocoa.m` | ✅ | 1791048098 | be979b9527cde8015ad621d486a1eaa084495ba1be9a48cbe314fa406ccdf8b7 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","run","tests/darling/frame/frame_application_lifecycle_test.c"],check=True); subprocess.run(["./tools/b","run","tests/darling/frame/frame_fps_focus_test.c"],check=True)']; macOS Apple Silicon: worker callback/return, owner invoke-close, hidden vs closed two-window lifetime, close-all/join, Frame attach/detach; native focus requests + deterministic R3 -1/1/120 submission ceilings/coalescing with independent scene worker. Header client/API evidence only; no whole-contract, Linux/Windows, physical display-Hz or visual approval | Application/Frame lifecycle and R3 presentation-cap integration owner tests | passed |
+| `ecosystem/hotcwap/window/window_event.c` | ✅ | 1791039342 | 5bf0b2c532bd4c25c303e9758b35fdd0afbce4fcf1d608445e8b78e15fc0067c | ['./tools/b', 'run', 'window_event_test']; Apple Silicon macOS; only assertions in tests/hotcwap/window/window_event_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | window_event_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/window/window_event.h` | ✅ | 1791039342 | 0ca90d3582347abf9857731ff3296212406ea8ec80d1a0c77878e09804e35de6 | ['./tools/b', 'run', 'window_event_test']; Apple Silicon macOS; only assertions in tests/hotcwap/window/window_event_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | window_event_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `ecosystem/hotcwap/window/window_linux.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/hotcwap/window/window_wayland.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/hotcwap/window/window_win32.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ## ecosystem/interface/darling-framework
 
 ### `ecosystem/interface/darling-framework`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/interface/darling-framework/.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/interface/darling-framework/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/interface/darling-framework/LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/interface/darling-framework/README.md` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/interface/darling-framework/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/interface/darling-framework/APPLICATION_LIFECYCLE.md` | ✅ | 1791048306 | 09e033be7bb5a63cb2137735f4672300be24b973cb8dd39cf87e4f5c9fbd6a9e | ['python3', '-B', 'tests/tools/darling_lifecycle_test.py']; Three structural/documentation checks: all C starters use Application, no test-written pump loop, sample compiles freshly with C23 warnings-as-errors, links/README command homes and amended lifecycle-law phrases. No full documentation correctness, runtime or visual proof | Darling starter migration inventory and documented lifecycle API compilation | passed |
+| `ecosystem/interface/darling-framework/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/interface/darling-framework/CURSORS.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/interface/darling-framework/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/interface/darling-framework/README.md` | ✅ | 1791046094 | 1a6a6480c5675624897751841f3d3c090a4e175793a02a0902cc739351310f0a | ['python3', '-B', '-c', 'import json,re; from pathlib import Path; r=Path("ecosystem/interface/darling-framework"); m=json.loads((r/"scaffolds.json").read_text()); assert len(m["entries"])==126; drafts={e["path"] for e in m["entries"]}; assert len([p for p in (r/"src").rglob("*.c") if p.relative_to(r/"src").with_suffix("").as_posix() not in drafts])==16; status=(r/"STATUS.md").read_text(); readme=(r/"README.md").read_text(); assert "Not implemented" in status and "partial ScrollPanel" in readme; assert readme.count("&lt;details&gt;")==readme.count("&lt;/details&gt;")==1; intent=Path("repos/.ecosystem/darling.md").read_text(); assert intent.count("&lt;details&gt;")==intent.count("&lt;/details&gt;")==1 and "Archive only." in intent; assert all((r/link).is_file() for doc in (status,readme) for link in re.findall(r"\\]\\(([^)]+)\\)",doc)); assert "DRAFT ONLY" in (r/"src/label/label.h").read_text(); assert "DRAFT ONLY" in (r/"src/input/scroll_bar.h").read_text(); scroll=re.sub(r"/\\*.*?\\*/&#124;//[^\\n]*", "", (r/"src/panel/scroll_panel.c").read_text(), flags=re.S); assert "ScrollPanel_scrollBy" in scroll and "ScrollPanel_addScrollEvent" not in scroll; add=(r/"src/properties/add.h").read_text(); assert "Panel *child" in add and "ScrollPanel" not in add; raster=Path("ecosystem/drivers/graphvex/src/graphics/graphics.c").read_text().split("static bool raster_drawText",1)[1].split("\\n}",1)[0]; assert "(void)text" in raster and "return true" in raster; vk=Path("ecosystem/drivers/graphvex/src/vulkan/vk_renderer.c").read_text().split("static bool vk_drawText",1)[1].split("\\n}",1)[0]; assert "(void)text" in vk and "VkBatch_glyph" in vk; print("PASS: status links, inventory, archive boundary, drafts and renderer/scroll limitations")']; Documentation links, source counts, draft markers, manual scrolling and renderer placeholders; ignores comments when checking handler installation; no runtime text or visual proof | Current Darling documentation checked against live source boundaries | passed |
+| `ecosystem/interface/darling-framework/SCAFFOLDS.md` | ❌ | 1791040802 | e416587a0accbe918647774205b75b46d7065242b553399bf38d9953cda07a00 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | stale — content changed; rerun required |
+| `ecosystem/interface/darling-framework/STATUS.md` | ✅ | 1791048306 | e54085d3dc2b2314ccf3303fe681d5e6aeea3738c8faf32c75fd622f1e89676a | ['python3', '-B', 'tests/tools/darling_lifecycle_test.py']; Three structural/documentation checks: all C starters use Application, no test-written pump loop, sample compiles freshly with C23 warnings-as-errors, links/README command homes and amended lifecycle-law phrases. No full documentation correctness, runtime or visual proof | Darling starter migration inventory and documented lifecycle API compilation | passed |
+| `ecosystem/interface/darling-framework/scaffolds.json` | ✅ | 1791040802 | ab1afc28ae2191e653605b1f625d63a13f000fec7a6063e490a942a4e2fb7aa3 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/anim`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/anim/anim.c` | ✅ | 1791040802 | 013828898f68671e90f1429ad882506e5bdd7efc8394e7c321ae3eb690b8ce96 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/anim/anim.h` | ✅ | 1791040802 | f96467658566e5e9b07b3709fd5b11c6220e4a942ba1506dce138da2be0eb194 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/bridge`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/bridge/clipboard.c` | ✅ | 1791040802 | 609b18709195838df4ce3b9e03d46f4866a013432781c09bdce52427908fa3de | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/bridge/clipboard.h` | ✅ | 1791040802 | 1fd6af963a210453d902e97c1a0fe0bc50fc6652a593d077c5b568058efefb96 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/bridge/font_bridge.c` | ✅ | 1791040802 | b1c561c27ebd08b8b14dc500d653f1359d6634bfec88d04fb6bf9ea5313de7fe | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/bridge/font_bridge.h` | ✅ | 1791040802 | f1b5630799798532b7f36be6584b38d63bcddc8d5504f028646d9cf4e7ac4902 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/bridge/panel_bridge.c` | ✅ | 1791040802 | b266ae0a5105118a5851dd6aa7f2741fb63b1df0a6895313c3ec2d647dd29e0a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/bridge/panel_bridge.h` | ✅ | 1791040802 | 42c27e5ac7746465c4ec377931e0185b5e87f152faacc705b34a1b8087bcec25 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/bridge/text_bridge.c` | ✅ | 1791040802 | e0f9a66d918448429da40581812b988e200cf6af6a3f698f94469ec9aa6be0b8 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/bridge/text_bridge.h` | ✅ | 1791040802 | 2b47ea8b5dc58a67ac0141d79b652280d597250ff80a2dd08746e5546fcc64bd | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/bridge/window_bridge.c` | ✅ | 1791040802 | 906a005c22c2f1bbc7a49b428c59aba46ea6076ecc7ee1318ad4405c27a5eb08 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/bridge/window_bridge.h` | ✅ | 1791040802 | a51e454d3ce527eef086b15ee0761c53a2585b15415fcb1d4027a672ab147ddf | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/button`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/button/button.c` | ✅ | 1791040802 | 788700dc19345c6116c01f252dd1178ab8a5b499ceea31a70f4e4941590f66c8 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/button/button.h` | ✅ | 1791040802 | d31c44e92d7638919b9d584a46f7eaef4b6d77373853d0430c1515a5f963dd82 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/button/checkbox.c` | ✅ | 1791040802 | 17442edff3ee5b50a836c20883f36202a8c943883c48dd987503df06d74b0c6b | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/button/checkbox.h` | ✅ | 1791040802 | 13f149aa78d81916547e10763871d8ba6153da23090e8cfd6e818ac673fb3850 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/button/switch.c` | ✅ | 1791040802 | 0588965193720903916ceeeacbe42772b8329a4b1578c97b698f5f896c4eb107 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/button/switch.h` | ✅ | 1791040802 | 957c3509d6bc86a648f00ba878524278406371ce402e34d5c97e889fed1c75a6 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
 
 ### `ecosystem/interface/darling-framework/src/c23`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/interface/darling-framework/src/c23/event_invoke.c` | ✅ | 1791038758 | e1c731d2d23b6580d66bd4b5ca0f8a068a06c7afbc8e3c6d0fbe06db47509fed | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/c23/event_invoke.h` | ✅ | 1791038758 | 892755d8bbce1a0ed2f64a4a391bf3b8dc9bfb05c5ca10e527b19e72d2d1b6dd | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/c23/overload.c` | ✅ | 1791038758 | e8d495364c3fc3c2316d8e37535a970a264d4d93d4e8ac932c2b4b215b36d4f3 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/c23/overload.h` | ✅ | 1791038758 | 4be54031bb5412426f9c577a67d5ec80cd123257063abc3e59c0fa77440c5e03 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
+| `ecosystem/interface/darling-framework/src/c23/darling-type.c` | ✅ | 1791040802 | eea2b5a1ced8b62f981db05664a144ba42841e792f9331833194c159c9787407 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/c23/darling-type.h` | ✅ | 1791040802 | 9a505bea024efd27ff40647980e92d34b3f264388b582b4b7f86ad4377b3b397 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/c23/event_invoke.c` | ✅ | 1791045730 | e1c731d2d23b6580d66bd4b5ca0f8a068a06c7afbc8e3c6d0fbe06db47509fed | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_events_test.c']; Apple Silicon macOS; only assertions in tests/darling/panel/panel/panel_events_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel/ScrollPanel event registration and synthetic scroll bubbling with an explicitly wired handler; not automatic ScrollPanel input wiring or OS wheel proof | passed |
+| `ecosystem/interface/darling-framework/src/c23/event_invoke.h` | ✅ | 1791045730 | 892755d8bbce1a0ed2f64a4a391bf3b8dc9bfb05c5ca10e527b19e72d2d1b6dd | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_events_test.c']; Apple Silicon macOS; only assertions in tests/darling/panel/panel/panel_events_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel/ScrollPanel event registration and synthetic scroll bubbling with an explicitly wired handler; not automatic ScrollPanel input wiring or OS wheel proof | passed |
+| `ecosystem/interface/darling-framework/src/c23/overload.c` | ✅ | 1791038758 | e8d495364c3fc3c2316d8e37535a970a264d4d93d4e8ac932c2b4b215b36d4f3 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+| `ecosystem/interface/darling-framework/src/c23/overload.h` | ✅ | 1791038758 | 4be54031bb5412426f9c577a67d5ec80cd123257063abc3e59c0fa77440c5e03 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+
+### `ecosystem/interface/darling-framework/src/canvas`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/canvas/canvas.c` | ✅ | 1791040802 | 9a37471cc9b3cc486a40862452204f07f08a32cd6dc5486df3b3005e08fed3bf | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/canvas/canvas.h` | ✅ | 1791040802 | f54e5c9211ccd24a8e6a2fee81885fa2ef4e317ebff79adeb3edd42737b7119c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/code`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/code/code_field.c` | ✅ | 1791040802 | 70b0ad1cb79c9fe465e1af5cc53925d286a15dbd7cea2d86627dfc0de99e1018 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/code/code_field.h` | ✅ | 1791040802 | 7a15691ea984b68f1e1637702a32b92e9fa9b0b895697d3bf0a5909d13db7ee7 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/color`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/color/color.c` | ✅ | 1791040802 | 5726f1e69722ac877b4c8ea24c4418008a496dddb3a6a51e5202ebc5b90537fa | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/color/color.h` | ✅ | 1791040802 | 594feb754a8de6efb820363febb199e9a356eec5da662e1938008b915f130f93 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/combo`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/combo/select.c` | ✅ | 1791040802 | 2b4e7cfc617789aa135d2650e97d6a4690add7d1282b1077f558737141e66ce0 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/combo/select.h` | ✅ | 1791040802 | 7c2e6f20689b559b7ce0aa33ddc427124c0f797349107481078a7560d154fe3e | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/compositor`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/compositor/compositor.c` | ✅ | 1791040802 | de8a1dbf8ad2bcf7ce41fb6874fb4ebd142250f165c5fcd8427c0820ba14d10d | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/compositor/compositor.h` | ✅ | 1791040802 | 0b7da4bf565102db832bc84d7389e66fc8cc656a1e1bb17bff7765f170c7b622 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/cursor`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/cursor/cursor.c` | ✅ | 1791040802 | ffa42c2bc032e66e82fb87b74eb8668e0acc75448fbdad2cc38b34ab62a4f273 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/cursor/cursor.h` | ✅ | 1791040802 | cc5d5e8548a09e3f57d92499abf78c9c6b90889baa22140b731c48ae2a0d6b44 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/dialog`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/dialog/alert_dialog.c` | ✅ | 1791040802 | 7c5775a52a3bdf25d33b5c17d91f74701d47243c32f206cfdbac712a48ca1b0f | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/alert_dialog.h` | ✅ | 1791040802 | 93c590138ebe4027c62d7febd6fc97b13c73a84d93e46861acbea602618f0748 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/color_dialog.c` | ✅ | 1791040802 | 222c5436afdb9ae890fa0e818c79c93b04e6019a03ecd810955f9564ce40ea9a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/color_dialog.h` | ✅ | 1791040802 | 8872529bd77546ebafbe8cb3d6ab6748778bcb47c30c08cc552c0f2d8428e1e5 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/dialog.c` | ✅ | 1791040802 | c7dbb233ebf5b0ef1c6e5ada0539a4a2ceb17598566cef1962f3373896711db2 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/dialog.h` | ✅ | 1791040802 | a49608037dc23d4f0337b288708217564eba7560f6a8764e4a1c7d7fc182b845 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/file_dialog.c` | ✅ | 1791040802 | 8bd0923be539db097bcd2a7e52c647ded5d80ae7eb10fae47f156b478f4e3381 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/file_dialog.h` | ✅ | 1791040802 | 20dab31eb331366c17d161890338feb795e457e1729c74a02888549072689b25 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/input_dialog.c` | ✅ | 1791040802 | 613a7c5ec7881df2bc540871a2daed0ea53e6d17a47090223cc13cf650a36c4b | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/input_dialog.h` | ✅ | 1791040802 | 652579bdb6635824a0c6eaa5121f190e3964a0414a3218136416a259983a2f56 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/option_dialog.c` | ✅ | 1791040802 | 7fda6c5659280a028df19f5f9599222a980b3a460427e9374e77d542eb0f8bfd | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/dialog/option_dialog.h` | ✅ | 1791040802 | a6fbedc5b0327e4737135a8b769f77a20691a612a09331f2f86bf1f46146b17f | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/drawable`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/drawable/object_3d.c` | ✅ | 1791040802 | 2209006acd9462b39654fc1e074caf736a72f9bcd6d0fe3b280d22613a963d02 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/drawable/object_3d.h` | ✅ | 1791040802 | fdb8d3eda2057011332c8af3ad2f730350ac85f4bafd8130da70877bcea2cf65 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/drawable/picture.c` | ✅ | 1791040802 | 5eee250b6b179f4d879fd6988e03118da8574bb225c6f8aaa53af6506c0f4f33 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/drawable/picture.h` | ✅ | 1791040802 | c2c683cb4ce1d9315b8036288a1e6c4763b20890e6acaa70706d6b4a8a4f0272 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/drawable/viewer_3d.c` | ✅ | 1791040802 | f64b693caec7f2716b6c8145763dc2dfb93d7819313836a0c5de35725140fd2c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/drawable/viewer_3d.h` | ✅ | 1791040802 | 1f2fc3494894d19e4ee16b407aec98f184837218c9fd2711f3616bdcb88df891 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/emoji`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/emoji/emoji.c` | ✅ | 1791040802 | 0b3ef7cb1448d0ba0a11398ae35aa93c656b64f67aefddb6aea22d5329d63a0c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/emoji/emoji.h` | ✅ | 1791040802 | b355bcd364744ffdbec2269add4aa018d2eec2baf9503f9973d09374c5f9c53b | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
 
 ### `ecosystem/interface/darling-framework/src/event`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/interface/darling-framework/src/event/hit.c` | ✅ | 1791038758 | 126583a4958d36b272f30870cab313f7293a3fc3a2a64bacf15bf18b9d4bbb6b | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/event/hit.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/interface/darling-framework/src/event/action.c` | ✅ | 1791040802 | 1fa129dd1858621573e67de9c2aaf6a2fc156557eb86de99120a277f7b188bce | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/action.h` | ✅ | 1791040802 | c60ee0c78907633e4471b864e24ced51ae26b577661bedae175750a12209a810 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/bridge.c` | ✅ | 1791040802 | c3979cc91c3f1025d58e1a8acd58bc21dd7f0c725dec0f6972d5a1d6491f3db9 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/bridge.h` | ✅ | 1791040802 | 11d1c99982fa02c6a1f0832cc2954599137350d2e985d2b521c403c56b7145da | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/document.c` | ✅ | 1791040802 | 12f8c644fa802e142000cd1bae60a30070318c106d1e24f42302652323e4f2ed | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/document.h` | ✅ | 1791040802 | 964cb08a093f7f31cdb9c760127f0b9ec370ea4689dbecaf07e82c9a26471251 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/focus.c` | ✅ | 1791040802 | 25a042827292b70ac95c5fdb1ecc8ff5d87dc26d75453c2b8913281b19466316 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/focus.h` | ✅ | 1791040802 | 84919bc5a2c7944101faca513d8ee036ac403228d569a0905128720f67fac350 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/gesture.c` | ✅ | 1791040802 | d8c92e01bde7375d23d02c03607a995c1655f9cc3e98da11e0ce8a384fbeb4d0 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/gesture.h` | ✅ | 1791040802 | d4369c3bb34f330c9ff9406343db0130a284b160a763ea0b1a798315b91ceccb | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/hit.c` | ✅ | 1791038758 | 126583a4958d36b272f30870cab313f7293a3fc3a2a64bacf15bf18b9d4bbb6b | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+| `ecosystem/interface/darling-framework/src/event/hit.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/interface/darling-framework/src/event/key.c` | ✅ | 1791040802 | 407b85bc28c42a4c3f251578a033a4fc67c43699fab63369d138228ac36b3ae1 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/key.h` | ✅ | 1791040802 | 7c8cd2cda51506522c5fe52914f7e19593afd141c931a4d9dfebe34c5cf35e5a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/tree.c` | ✅ | 1791040802 | c8cab2d362188c20e77a4ecb31dd1bfca3ce500bc65ceb50f159c76405ac9103 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/tree.h` | ✅ | 1791040802 | ba1151d25f7ba1bac981dd1f1b1b1d1e4e6b5a4f09f5b2da195d5b63f623e735 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/value.c` | ✅ | 1791040802 | a02003d3b8e99095c905fac9900e84fbb268da1747ae5056bac8bd337c831852 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/event/value.h` | ✅ | 1791040802 | 635c2d3d2c8412a8b77152e5c122c007529f6b2055c12c78b1ed836dd90ca795 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/export`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/export/html_exporter.c` | ✅ | 1791040802 | 5efef62fd81770d4b90bf43b9729769ee87dd85ff7f52cce7490e94869f0684e | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/export/html_exporter.h` | ✅ | 1791040802 | bf26a09ba269e6b395ab6e19014cf1643bb2bc1db7edaab14852a77a2fbd0fd3 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/feedback`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/feedback/focus_ring.c` | ✅ | 1791040802 | 9f43bd8334f55f449e1044498421e7c19081d0cdbafde0e4d1dcbfab06eb830b | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/feedback/focus_ring.h` | ✅ | 1791040802 | 30e35a21a76222611880f4c029c3494c836e59131b5129a4174bdf5aa023ba3c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/feedback/progress_bar.c` | ✅ | 1791040802 | 31916a484fed6e1d84b78f56efd652caae93588d1c130cd14df9654f39a3eab0 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/feedback/progress_bar.h` | ✅ | 1791040802 | 07290f91820efcea2941130fcfa7aef7308b7e538c57fc79fd9aaf2fd0a4e3e4 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/feedback/skeleton.c` | ✅ | 1791040802 | f461fef06293d1dca9cf2586fc2d1be646ef215a1a32ff3780fdc13fa18ed86e | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/feedback/skeleton.h` | ✅ | 1791040802 | 0a5f7c04039ed2cc8c5ed9b635717db6bbce396224cc47f723769cd6365d5c80 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/feedback/spinner.c` | ✅ | 1791040802 | f7e42fbae61a6a9aed7e01b8f420cad67f9ecfc5be4679709a1f02b9d8486e86 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/feedback/spinner.h` | ✅ | 1791040802 | 5fe28e14b6d784c276eb95f9697b3a0e4227816a8fbb81c401f5144262ec920c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
 
 ### `ecosystem/interface/darling-framework/src/frame`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/interface/darling-framework/src/frame/frame.c` | ✅ | 1791038758 | 5085bfbe96576a2b4b8f2fde3660bf07e06b75bbbb5aa323e7c64de01ff1c837 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/frame/frame.h` | ✅ | 1791038758 | 467654b1db4cdc63e8d3df3ecde17b9ca7839ed4e3bcdc6f34f16b690a85f158 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/frame/frame_internal.h` | ✅ | 1791038758 | 2a7150705375c3d042416581ae8a119cc20871ac13350805e73ce4da243a0e4b | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
+| `ecosystem/interface/darling-framework/src/frame/frame.c` | ✅ | 1791048098 | c49a7d41f80c66e2b11b7a02931d32693f7bf86f0bbff7f22fd7ece63a2353c5 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","run","tests/darling/frame/frame_application_lifecycle_test.c"],check=True); subprocess.run(["./tools/b","run","tests/darling/frame/frame_fps_focus_test.c"],check=True)']; macOS Apple Silicon: worker callback/return, owner invoke-close, hidden vs closed two-window lifetime, close-all/join, Frame attach/detach; native focus requests + deterministic R3 -1/1/120 submission ceilings/coalescing with independent scene worker. Header client/API evidence only; no whole-contract, Linux/Windows, physical display-Hz or visual approval | Application/Frame lifecycle and R3 presentation-cap integration owner tests | passed |
+| `ecosystem/interface/darling-framework/src/frame/frame.h` | ✅ | 1791048098 | 31550f0e8d56c0ed0c973b598bd80dc28d5540da9d7e69240c3551861cfb0a4b | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","run","tests/darling/frame/frame_application_lifecycle_test.c"],check=True); subprocess.run(["./tools/b","run","tests/darling/frame/frame_fps_focus_test.c"],check=True)']; macOS Apple Silicon: worker callback/return, owner invoke-close, hidden vs closed two-window lifetime, close-all/join, Frame attach/detach; native focus requests + deterministic R3 -1/1/120 submission ceilings/coalescing with independent scene worker. Header client/API evidence only; no whole-contract, Linux/Windows, physical display-Hz or visual approval | Application/Frame lifecycle and R3 presentation-cap integration owner tests | passed |
+| `ecosystem/interface/darling-framework/src/frame/frame_internal.h` | ✅ | 1791039443 | 814b60ff3381b40e68e314bd285fcdf2be2fec9392f52aac27b6ff1e513db6e0 | ['./tools/b', 'build']; Automated macOS build only; no runtime resize assertions, real-window tests, interactive demos, or user visual acceptance in this check | Compile and link the Frame size-property migration and its private resize seam | passed |
+
+### `ecosystem/interface/darling-framework/src/game`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/game/cooldown_button.c` | ✅ | 1791040802 | 8bb3d9218a28f186eed9f2e11900bc69c89590c783e7b69b54971a715addbea0 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/cooldown_button.h` | ✅ | 1791040802 | 59e100b6b4c29a88615c72971970a4e6c99c463683a681b4830495beec669cd2 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/damage_numbers.c` | ✅ | 1791040802 | a5af2072a332b737f33d71584a31c1426001c1c13a953a0dd0d82385d173bf8e | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/damage_numbers.h` | ✅ | 1791040802 | e2d1375262676c15335af67ba7423e49c3b00a7347ab1fd982f90130181b9650 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/dialog_box.c` | ✅ | 1791040802 | 49d9c4208f60de51b8b82e96706ddb54823d7ed3280433b34e697f26b43daca1 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/dialog_box.h` | ✅ | 1791040802 | 656c85dca74841232acf39728156ff51d875fc54388a0f0baea49523e622c31e | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/gamepad_nav.c` | ✅ | 1791040802 | 22fd45347f9d669ff6e2edf1a072171a8e7cb1f89cdb7e70d9b63aab6c9e36fa | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/gamepad_nav.h` | ✅ | 1791040802 | b8507ca6ca8a575d90dc9728a13d2e6a9f983b6c0c7ae3009c56c8035efd1e7e | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/hud_bar.c` | ✅ | 1791040802 | f10ad5d9805dbb46d8ded5d2afab9ecebbf1df2e893562013abfc18ccc9fb79a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/hud_bar.h` | ✅ | 1791040802 | e1cc573906976d6ca617e7023a8159a52a199b394ad0f3c7b3db0c0aa3c10453 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/inventory_grid.c` | ✅ | 1791040802 | 456c797f9dba603348ba629635feb6b130df59e1bd181097aa5f1796c5fd68c2 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/inventory_grid.h` | ✅ | 1791040802 | b67d29c65bce92b62d998e13605d061826a581af9998a5fdba2705658c5b4de2 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/minimap.c` | ✅ | 1791040802 | 79c823a54d8d03d8815e177c0d17851c5782cb0a89cb01b7160b870473ec1a00 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/game/minimap.h` | ✅ | 1791040802 | 62bc8ccc00697f5e1251fbd00854323f3202a777b88b88d30e47d9bcb7c97480 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/graph`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/graph/node_editor.c` | ✅ | 1791040802 | cf62b63b59ce0c0d682fed0468fd08fa5d97956ae73de8298d6be9e3c74a519a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/graph/node_editor.h` | ✅ | 1791040802 | c4651013caef1e4cfd71b2170362b572db91c45f34e8e1612de114e883879536 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/graph/plot.c` | ✅ | 1791040802 | 9ea90a9e0cb2b916bd74e5524a8d3a7a244c6833c5f5c2e6880b47544e9162df | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/graph/plot.h` | ✅ | 1791040802 | 5a9501ff48914d234d7a83fec38469382e3ce4a38592dd44b4b7460c3f2629c6 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/history`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/history/history.c` | ✅ | 1791040802 | e27270a0eafae4b401863b473ef56c4a6d4ccf99d54a24376a65b2a36ab946a9 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/history/history.h` | ✅ | 1791040802 | ea18977701ace7b4c7c7c96ca717db37ba1031f7547e3cd04ad41bc333d4a323 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
 
 ### `ecosystem/interface/darling-framework/src/input`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/interface/darling-framework/src/input/pointer.c` | ✅ | 1791038758 | da0e13f50af945cc02e3a08c505bd196875bdf601fc4e842c15ef698511aa658 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/input/pointer.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/interface/darling-framework/src/input/input.c` | ✅ | 1791040802 | fd4c02eefa43ac3a305df6b8e132e86a5563d0ad3578bb52f73c7ed1419f73b1 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/input.h` | ✅ | 1791040802 | 20e756f1e054660112d90464ee49f1ee4131f9aab1cbb2fbce0e1658e7ead834 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/input_otp.c` | ✅ | 1791040802 | 8ce530a47d123c1bcd04a12ffbcc65bf24e656772daaa9e392db21582eadd249 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/input_otp.h` | ✅ | 1791040802 | acf5b599b6debf4fc1a19f51ba69c0b020c26c181d25df31a5ceb82221d8feed | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/knob.c` | ✅ | 1791040802 | 8d9f075d9a09be4aa564a3967b25f5b77563f8d4fd881ece276567957460462d | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/knob.h` | ✅ | 1791040802 | 1316c1ec8cddc027936742e62a20ec4ce609093c052426c060ae768a8bb0b2b8 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/pointer.c` | ✅ | 1791041342 | 453408acef5a7d8fe7124ae9f46c72a8ad28ae4ae8ae3d14bdb640e9bea513df | ['./tools/b', 'build']; Automated macOS compile/link integration only; no real-window runtime, native appearance, pointer-lock or visual acceptance checks | Build automatic Frame pointer attachment and native hover cursor bridge | passed |
+| `ecosystem/interface/darling-framework/src/input/pointer.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/interface/darling-framework/src/input/scroll_bar.c` | ✅ | 1791040802 | 488bd57250b84d5331c62846ca36083e8cf80f1df34cb794c924ad32a7aa090a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/scroll_bar.h` | ✅ | 1791040802 | 970f00eceed9331be07dc8e4bd26b712ace61317a3349d2ddfe6cf93f7df5bda | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/search_field.c` | ✅ | 1791040802 | 0e6b9368c2c34ceb72f290386711146af59d22c2f9eacf03f9c4be38237cf3ed | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/search_field.h` | ✅ | 1791040802 | 97c49675d25dcdfaa56e24fddfd4c2511298d95f71fe318f8e89d1f715de3735 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/slider.c` | ✅ | 1791040802 | 3f5f58134891291f18aba95080e10ecbb37105b8b3dcfd086f61d8d6626f1021 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/slider.h` | ✅ | 1791040802 | 823442739efcc0a1177e85c9b7252d6847c3c7cae272233313ab7bc485b7b794 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/textarea.c` | ✅ | 1791040802 | 6b8850e07aa71eb0aa295a1199e6b81f06c605f9d52e9ee16d6e58b9ae1b21cc | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/input/textarea.h` | ✅ | 1791040802 | 9ddd99d3d0ac0e31d8e1ae197b922b4ecb0c413dc61e4b9d76c572c54505dfbc | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/kit`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/kit/avatar.c` | ✅ | 1791040802 | d00c0a5640bf4236fadfc14743d8714de9a65b595ffc59dbaa4f965a1fe991bf | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/avatar.h` | ✅ | 1791040802 | 4f34344d70f98aeab9b4729d682b9cf512f9d5639a94bd08f1d3721329d76e2a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/badge.c` | ✅ | 1791040802 | 345aa3dae205d0914eff1c4d260f5092cd33ebbd9d17ec0159edf117b05f49c4 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/badge.h` | ✅ | 1791040802 | a6fa839930302fb40c51f89df3dcb9a64ac6c7a60d5f15496d186095fb0f2bee | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/breadcrumb.c` | ✅ | 1791040802 | 3a904daae52c6bd2966b81169a23bbcf198db755e0261467eeb6411d68021efb | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/breadcrumb.h` | ✅ | 1791040802 | a828f2e0a99318983d6dd9b1422cbb630ac94c92cb12d275fd9bf1cf9783f72d | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/chip.c` | ✅ | 1791040802 | 123c8073cd65704a1f37d74b2a65ef2626050d5ce56c8712679540c7dbe873e7 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/chip.h` | ✅ | 1791040802 | c68019e50b8176cb2470affdb795b05d90b1fae7b5d24691b226119f6b5a4975 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/pagination.c` | ✅ | 1791040802 | 58479c7df7c112c4851ebf2a280aab51f4959662398c870140a65790b19fd1a4 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/pagination.h` | ✅ | 1791040802 | d0ba62294feefd09ebf25a653456c5e2c3ede147619b77b38efd929e2bc84884 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/pill.c` | ✅ | 1791040802 | 32fdf3c3bd4a2634b713d131d12a1efc861ed1445f88907051f034b19fa47ae1 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/pill.h` | ✅ | 1791040802 | 1e32034f262112a3e6f4745c4e95e4aba45de23fdd958a374baafec3e57edad4 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/stat_card.c` | ✅ | 1791040802 | 0defcb55ec8c2a1574fc48c307563060a6152a681f9ea07c4cac8065f7ef5b34 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/kit/stat_card.h` | ✅ | 1791040802 | f90494a1a81e690a3a65b2510b73946a4f0f2ad146555ab2c62b799d7e4c677e | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/label`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/label/kbd.c` | ✅ | 1791040802 | 9a80895af4643f331e09dfe700b29735573a1f186fd986f19d5f0b3b9804a2f2 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/label/kbd.h` | ✅ | 1791040802 | c7b55db69d0922832a6ec907d6a2fdfa04ee4a16a5551856bab04bd708f2dab5 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/label/label.c` | ✅ | 1791040802 | 4f05048622e7cc0d7447182ce98c8d342cb960e2edce13fb7ffe44542058540a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/label/label.h` | ✅ | 1791040802 | 8c96bf9f7dfb0916c6f12bcb01041e39899c99bb271d07edd3db14771318229a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/label/rich_label.c` | ✅ | 1791040802 | abbf28fb6598b6a9e16228e9eb82d013389bce5b486756794779633797b869f0 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/label/rich_label.h` | ✅ | 1791040802 | a8b411f5c91c314d82f13c037f6da1703fc0baa8821e707a512f5dbf6e516a57 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/layout`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/layout/container.c` | ✅ | 1791040802 | 9f882694939f37c0283bb715f2c1c9451867694439e1ac4dd65a19434e8aade9 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/layout/container.h` | ✅ | 1791040802 | e27631675ce9b9dd0aa1294ce6a9d3514d268d7218e509d71816649723cbc2f1 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/list`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/list/list_panel.c` | ✅ | 1791040802 | 4a6d41675d5b7a4bb39b5a061e47eec9203e2973ba1fcf0dd0b98d112fa601d9 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/list/list_panel.h` | ✅ | 1791040802 | d1933a06293818204b307e1cd053ab43326c30de0396ad033feb9e8d9b7f494a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/overlay`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/overlay/command_palette.c` | ✅ | 1791040802 | c4c406518628ef60a966192ef066960787359e98faea62dfd847f0e0709f292d | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/command_palette.h` | ✅ | 1791040802 | 6874e85a63caef25ed357983964a0cf5f8cd86f64e379c28e86e9ec1b8989ab1 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/context_menu.c` | ✅ | 1791040802 | b27164bd2b495ca1689c5ebe22df59a6f15e8cc949f47dd01bea6a939b63ab8d | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/context_menu.h` | ✅ | 1791040802 | c60fa309e56d9503dc5ea8779c05fded4d62feae8140d1562cf2e0ef5145bee2 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/menu.c` | ✅ | 1791040802 | 97d7907e5395eaeb60b9ed6f4fccaa585612a3c5828a23f8a12a6071537c9efd | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/menu.h` | ✅ | 1791040802 | 0e5fbfadddb9a9de156446194a547b7bb1486c212643f2f3a424ddba40479f0f | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/overlay_root.c` | ✅ | 1791040802 | 183b5ed080b027316989ac1cb359a0ac4877452f900d78a9c2d42fbf66e58599 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/overlay_root.h` | ✅ | 1791040802 | ecc22b3593cc2ed92cf02e2ed797cb4dbac31cc1cb5b8d34d708c8928678ad6d | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/popover.c` | ✅ | 1791040802 | 11f6f578e02a8eefc506560307e856283f6427d115c5f10a6e9ce2a1b95dae0d | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/popover.h` | ✅ | 1791040802 | e86c97f07f3c5fd0e99fcdb48104f32e15c3f9827788bbcc85b0fb74423707fc | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/toast.c` | ✅ | 1791040802 | e5d3db8f7d9f49348fed40dce3e48ebcb4f2700e216e3a56a374bbab132e1c3f | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/toast.h` | ✅ | 1791040802 | bbedadfc207853286129fdd9223be49e1b76af71baf2ab0317143a20af1bbde5 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/toast_stack.c` | ✅ | 1791040802 | cd7c0366e24bddefe0f748aa9df0eae94e83c87b40cf8e45768dae303f5b6dc6 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/toast_stack.h` | ✅ | 1791040802 | 6cc3fcb5737973d9ee1bdda0c515951deb8e883957a4ced539844b0d783b2717 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/tooltip.c` | ✅ | 1791040802 | 2e08f6ff7dcf5f74540bad462a2accef22be2acf31d04a83b651732f33a6718b | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/overlay/tooltip.h` | ✅ | 1791040802 | 5e54537c173914c04f484ba7ca35cf5a3170047844d0636683c19d1ccd2433c0 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
 
 ### `ecosystem/interface/darling-framework/src/panel`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/interface/darling-framework/src/panel/panel.c` | ✅ | 1791038758 | 13c0ac469632d12a31bb51795ff3024ab524b1a878d7f49a07dfdfc5f9ed363b | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/panel/panel.h` | ✅ | 1791038758 | 2ebff0e65f1c4eef296b75c7b25be3a7f5205e3c6afb92a8c6ba9b16d78506f8 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/panel/panel_internal.h` | ✅ | 1791038758 | d563eed5819ff51b21ca3d46096db6852274b5ce124e7fb08e68166964816f01 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/panel/scroll_panel.c` | ✅ | 1791038758 | 4c9cc2d5c3db5058fd303591d19201a4b401472e251de7aebbe4ce0f6078a765 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/panel/scroll_panel.h` | ✅ | 1791038758 | a193bda638a32b3b32c3dc763fff59077608dc09d478e1653b9c167f7c7f4a25 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
+| `ecosystem/interface/darling-framework/src/panel/accordion.c` | ✅ | 1791040802 | e6d7d4e513a6261821dbad84a859d885a244b8be2391aeb9c4e1df2c92e914ba | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/accordion.h` | ✅ | 1791040802 | eb758e1628dd04e929f194e6146dc4ee0717a3d14839723617aea500554f8349 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/card_panel.c` | ✅ | 1791040802 | d16cd004b9349e0de2a710858c7fe121f7dae3710bba70b2385213af0dc18da1 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/card_panel.h` | ✅ | 1791040802 | 03c26289406dbef66bf2756a4427948a172cb34a2ea62f5a72e37e72bf2b0463 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/dock_panel.c` | ✅ | 1791040802 | 395906787ced80020c46e90d840d7d988684cda03fa2f4c13b0497f9bad089f1 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/dock_panel.h` | ✅ | 1791040802 | 01b7685f9be05320e6ca8bbb6129b5fac54d80aad57a1b55003ba144a1006e96 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/flex_panel.c` | ✅ | 1791040802 | 30abbf064d39915c6194adab8d69f389785069a6189b850449cbf605dd924237 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/flex_panel.h` | ✅ | 1791040802 | c39676f00010357ed25d79b18579e0b59038c22ec806a857aea6b73f1cdb295f | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/grid_panel.c` | ✅ | 1791040802 | d83a8a4ab5b22ccdcba552e959a56f97a3e122917c5ec445e75a8016f2636670 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/grid_panel.h` | ✅ | 1791040802 | 6f03d6addb6d2ca735be65a33fcebfbb509f830a06733a7d810c2d3fd6a6ab28 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/layered_panel.c` | ✅ | 1791040802 | d0c58697ab86991ae36cb0e7a58adfa568f6a696467bdc04ab910557a50f046d | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/layered_panel.h` | ✅ | 1791040802 | 920e91db797a1a7a635d79d480040e3d2ecdd6475bffeddb78e5bcd3ec1768db | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/markdown_panel.c` | ✅ | 1791040802 | 627fd002f4a1615fdd24af9ce4ed84a85cd121cb0e9fcfabd2c55fd5772fb843 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/markdown_panel.h` | ✅ | 1791040802 | 920bceee442235ec3622211e20c6de4c4bcd3d727615ae556b3f306132063c13 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/material_panel.c` | ✅ | 1791040802 | 4661eaeb64b7f26212f484283c8aa50a77f240cfb95f2694d39c1e664e718b55 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/material_panel.h` | ✅ | 1791040802 | c1f6ec132e8465d04e21d627cfef58ea8c0e171b08a70d72972c3f3f682009a8 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/panel.c` | ✅ | 1791045728 | 13c0ac469632d12a31bb51795ff3024ab524b1a878d7f49a07dfdfc5f9ed363b | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_test.c']; Apple Silicon macOS; only assertions in tests/darling/panel/panel/panel_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel wrapper, geometry, display-list paint and tree queries; no OS window or appearance approval | passed |
+| `ecosystem/interface/darling-framework/src/panel/panel.h` | ✅ | 1791045728 | f889f4e410a5729ebc9d95f32f3f850e7080947c2bff4d6093c68a0449835adc | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_test.c']; Apple Silicon macOS; only assertions in tests/darling/panel/panel/panel_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel wrapper, geometry, display-list paint and tree queries; no OS window or appearance approval | passed |
+| `ecosystem/interface/darling-framework/src/panel/panel_internal.h` | ✅ | 1791038758 | d563eed5819ff51b21ca3d46096db6852274b5ce124e7fb08e68166964816f01 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+| `ecosystem/interface/darling-framework/src/panel/rich_text_panel.c` | ✅ | 1791040802 | a909b806bda26448c7047413598ed73e9c1ab213c6b6019b8901ce8a20acb811 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/rich_text_panel.h` | ✅ | 1791040802 | d07de8a507c34f3fed667736c19e860c3f8488e6ebdba8fba290dbf97ce11cfd | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/scroll_panel.c` | ✅ | 1791045729 | 4c9cc2d5c3db5058fd303591d19201a4b401472e251de7aebbe4ce0f6078a765 | ['./tools/b', 'run', 'tests/darling/panel/scrollpanel/scroll_panel_test.c']; Apple Silicon macOS; only assertions in tests/darling/panel/scrollpanel/scroll_panel_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | ScrollPanel viewport/content, offset clamps, negative content placement, shrink reclamping and paint submission; no native wheel input, scrollbar or visual proof | passed |
+| `ecosystem/interface/darling-framework/src/panel/scroll_panel.h` | ✅ | 1791045729 | 12edf50b4b534b7b51b38159c207ae42dbac938f65e0447ce7ae70f9426a14af | ['./tools/b', 'run', 'tests/darling/panel/scrollpanel/scroll_panel_test.c']; Apple Silicon macOS; only assertions in tests/darling/panel/scrollpanel/scroll_panel_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | ScrollPanel viewport/content, offset clamps, negative content placement, shrink reclamping and paint submission; no native wheel input, scrollbar or visual proof | passed |
+| `ecosystem/interface/darling-framework/src/panel/section_panel.c` | ✅ | 1791040802 | c32483ea0014e93a5007bc40f8bee8d46c52dbe0c48818db789868dcf5c56350 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/section_panel.h` | ✅ | 1791040802 | 9051a73de93f773b6536ca205a0f8a6f538454db49ed83e06f502d82b4fa5a1f | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/split_panel.c` | ✅ | 1791040802 | 891037ff78e143cc2fb349416a5373147f33af702314465b782c60a02460920b | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/split_panel.h` | ✅ | 1791040802 | e6d12c428679d0e90c2e0bf9133b19d90ccb1ff5534cfd61dc2016b6da0ba612 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/svg_panel.c` | ✅ | 1791040802 | dbcb8cc0a27d225ab4ad1b34982a6d293a82549cb17f8967f3e66e8a7d81aedd | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/svg_panel.h` | ✅ | 1791040802 | 1f4ae9bf736590e0fb33e4e5eb5cbd5dc088899a7a49ae40d1f76f9399fd71af | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/tab_panel.c` | ✅ | 1791040802 | e41e578809bcac536561721fa7d2d859ee0fa2d32ff8c92a2989389a49960edb | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/tab_panel.h` | ✅ | 1791040802 | 08296f7943b7fc9c0b6a009d80c0163b82a7e6483d5ed3c0711e92db028a0431 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/table_panel.c` | ✅ | 1791040802 | c47d0fce4bb402d7c9d5e083c5e2af645d43af88725946b379c4e57bd320ba2c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/table_panel.h` | ✅ | 1791040802 | a84f582cb6fb3d6640150fd6c71381cced6bc536b4b6bdaaac991cda49f09058 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/tree_panel.c` | ✅ | 1791040802 | 1a6c58e514637b367809e6fc289f6e53dbe4826e0e879b5266f19ceddafaef0b | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/tree_panel.h` | ✅ | 1791040802 | ea5bd6d44083c7cd40c944a07b4b4586cef20b3a2f5b62790e2d3bc4e52e7492 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/video_panel.c` | ✅ | 1791040802 | b83c94a272afed7af8c66d7e1b85c4afb07d2d82042e0f50fb7dc424921a8612 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/video_panel.h` | ✅ | 1791040802 | fcf9cbcfbdb72fab956f6c03741d01fd7e5a4996fa8da19524dd5180a0cc2e32 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/web_panel.c` | ✅ | 1791040802 | 354429eeee3997738be911c2a13293100f78ffe58d1aa0f9aa8485da52ec6581 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/panel/web_panel.h` | ✅ | 1791040802 | c3d5a4c2c59bb9b2c9749ac09c3ad65d4e0b74261bd2a448c72c299c86b3071f | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/picker`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/picker/color_picker.c` | ✅ | 1791040802 | bdd5d15345083ffb1a82b49af2f4d8ddddd18ffdb3e65e77d53aba96caa314e1 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/picker/color_picker.h` | ✅ | 1791040802 | bcdc906c929c10f9a2da9a2ec0f47c23e5ba9f96a9acc233689cb87487035d46 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/picker/color_swatch.c` | ✅ | 1791040802 | fe368457de9c54abca8a979ab21dff9b31ca9bd1dc3952091587f231016887e8 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/picker/color_swatch.h` | ✅ | 1791040802 | 0c27cc8b41bfbe8935f65c47c98286f28e795ec6807d485e8ae0ef8c8c8c29c5 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/picker/date_picker.c` | ✅ | 1791040802 | 660326ed97123d1582ffbbc28d8614fe17e5c00b01a4c031bca168b2e35d5929 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/picker/date_picker.h` | ✅ | 1791040802 | 9067dd7cc3c30a6f425620d3940f4dce7a45252f2546917965cfc4389588ed28 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
 
 ### `ecosystem/interface/darling-framework/src/properties`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/interface/darling-framework/src/properties/add.c` | ✅ | 1791038758 | 182878b0f6ee3b3aa405b6d6bc2764697eecfb01291d2557570c78256e275c35 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/add.h` | ✅ | 1791038758 | eca0bf588c7454acacff34772674ec82a6cb23d0259d87d1836a77f13f7b2c3a | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/remove.c` | ✅ | 1791038758 | b4683ae1b4cdfd203d6055ae9e114693cd4d0443238c375dcf2ab938f1561355 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/remove.h` | ✅ | 1791038758 | 5b925969bce1302e98dd713eebfb13bfcd29b6ab4284d391cdd848d13019f99a | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/revalidate.c` | ✅ | 1791038758 | 30a3759bab9fbb18a340b1c29c463d9072fe56b08c3ff91e24da33f66a0d336a | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/revalidate.h` | ✅ | 1791038758 | 1af11f7e77d7f9bd0954e6fa1307bdb25508390435a38c88472ab11dd632f415 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/set_corner_radius.c` | ✅ | 1791038758 | 24cd17f12e6f969528a0dccbec550868c72ddf9eec1bd28b144d9ae7673f7d46 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/set_corner_radius.h` | ✅ | 1791038758 | 1bf14edb8c99cff8ffe1bf526f716b80c39e59f0d0089b111ed19e2aa8edfe72 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/set_location.c` | ✅ | 1791038758 | 82284bc16f22ad1ff93a016d7cd97b6c88a2cf2fe39116880bcc0684fbae2106 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/set_location.h` | ✅ | 1791038758 | 3401a3c6e4375e635ee7d50b0eb25a65059e1f80259700120df3a418edea97a3 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/set_maximum_size.c` | ✅ | 1791038758 | 0f2db3792011315ea6ce2ef280aa48739e56e9db1e2ba4c4c252e09dfca8b592 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/set_maximum_size.h` | ✅ | 1791038758 | 382731b9a44fb370438670952137a1f42ec0887883bc0e0a640631dc03adaa88 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/set_minimum_size.c` | ✅ | 1791038758 | 19ede377c6a8f50a05980fc6794ddbd744a681f96dec9e13acbc46f175ec5355 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/set_minimum_size.h` | ✅ | 1791038758 | b590e20cd1000f507a75b1572ee3f38e389774d53e70ae993e5a799530afbec1 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/set_size.c` | ✅ | 1791038758 | 9fa3e78464bd4b0b800bef4f06211cbe2da5cb771c570f9c3e4f316f19bb20ed | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `ecosystem/interface/darling-framework/src/properties/set_size.h` | ✅ | 1791038758 | a551b66952d7d2ced333c1ceb4ed2808eaed9155650c56e764426d8fb49a3cb4 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
+| `ecosystem/interface/darling-framework/src/properties/add.c` | ✅ | 1791045731 | 182878b0f6ee3b3aa405b6d6bc2764697eecfb01291d2557570c78256e275c35 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/add.h` | ✅ | 1791045731 | eca0bf588c7454acacff34772674ec82a6cb23d0259d87d1836a77f13f7b2c3a | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/remove.c` | ✅ | 1791045731 | b4683ae1b4cdfd203d6055ae9e114693cd4d0443238c375dcf2ab938f1561355 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/remove.h` | ✅ | 1791045731 | 5b925969bce1302e98dd713eebfb13bfcd29b6ab4284d391cdd848d13019f99a | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/revalidate.c` | ✅ | 1791038758 | 30a3759bab9fbb18a340b1c29c463d9072fe56b08c3ff91e24da33f66a0d336a | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+| `ecosystem/interface/darling-framework/src/properties/revalidate.h` | ✅ | 1791038758 | 1af11f7e77d7f9bd0954e6fa1307bdb25508390435a38c88472ab11dd632f415 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_alignment.c` | ✅ | 1791040802 | e5a4bbe39678026b1f2265fa55fcd854ba84085e829b37e194683ed86e4af6b0 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_alignment.h` | ✅ | 1791040802 | 987a9989380b9fc41a2e34eafa078ef44dff49880a8c6aa3acc28fe770bc8afc | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_anchor.c` | ✅ | 1791040802 | 1859657acdbf1e8458f456966086a74607af2f67fdf56ff96e6fab2aa1e6fe72 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_anchor.h` | ✅ | 1791040802 | ea3449919310e1d114c577d0699b5d111b6ca549944f0ee2c72016ed2e566330 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_background_color.c` | ✅ | 1791040802 | 960910d35f59bc76392ec9ded0fe472b42006aed8941093d907d674563258adc | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_background_color.h` | ✅ | 1791040802 | cfba6dc226dea4f36b4ea60366b47712f986be2c439efda482fe7cf7163377ec | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_blur.c` | ✅ | 1791040802 | 91d1eaa69c045899d1b984ecab1a64e99d1f71da131c05f46cf240555ebdd2a2 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_blur.h` | ✅ | 1791040802 | 32389fa863570c40b501c9e3986b53bca06c7b6150313a3d48eb2e8aad0a660a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_border.c` | ✅ | 1791040802 | 060d746c795107a3f4b4c3d46375b385c5e7f5a27149b0722d0235220dec1648 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_border.h` | ✅ | 1791040802 | 453a7bf5a3ad07feb243423d4a40a6087f807684dc0a0f1de4cd1f8ff1469c53 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_corner_radius.c` | ✅ | 1791045731 | 24cd17f12e6f969528a0dccbec550868c72ddf9eec1bd28b144d9ae7673f7d46 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_corner_radius.h` | ✅ | 1791045731 | 1bf14edb8c99cff8ffe1bf526f716b80c39e59f0d0089b111ed19e2aa8edfe72 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_cursor.c` | ✅ | 1791045732 | 62ea405d4431915fc53aafd75fd5d1df61c5a92e15a44d72af95a9c9994ac802 | ['./tools/b', 'run', 'tests/darling/cursor/set_cursor_test.c']; Apple Silicon macOS; only assertions in tests/darling/cursor/set_cursor_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Cursor selection, inheritance, masked hits, invalid/null inputs and lifetime; native bridge/appearance not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_cursor.h` | ✅ | 1791045732 | 698dedaa3e77b589df80b736c14b8299fe2a7ff3ddd0e42c56b538fa68ed678c | ['./tools/b', 'run', 'tests/darling/cursor/set_cursor_test.c']; Apple Silicon macOS; only assertions in tests/darling/cursor/set_cursor_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Cursor selection, inheritance, masked hits, invalid/null inputs and lifetime; native bridge/appearance not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_enabled.c` | ✅ | 1791040802 | e5b9c78f339c1ae2d6235786a67321c95795135b95a9702c3992c32b198632b4 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_enabled.h` | ✅ | 1791040802 | 0ad57baceae846fe1680b2921bc93135e0833d3fefe34411c42b78c7deafa5b7 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_focus.c` | ✅ | 1791040802 | 021c8345c7572529468026a4c2886eae9aeb2a82997a52f56c21577ddd63a6f6 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_focus.h` | ✅ | 1791040802 | d6120c4d68fbc50e8db86235d7bac9347c2ff984edba9a33b233060705f43044 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_font.c` | ✅ | 1791040802 | afb97a107d692e4a3bf345ded9e93a17e8d9ee641c175c0abe0e9397d10d594c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_font.h` | ✅ | 1791040802 | fa49085181c45e2dd938b30f7814255f2b3735a09972cda1f7a73b0b52c1b3a6 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_gap.c` | ✅ | 1791040802 | 9511db6c49cd9457342aca2b8722bfef7be791da8796e5aedea2d282d383cc66 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_gap.h` | ✅ | 1791040802 | 786a71557a76509b5999b4ad496910a43499aeee8c8b015c1da8a256dc791ad2 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_location.c` | ✅ | 1791045731 | 82284bc16f22ad1ff93a016d7cd97b6c88a2cf2fe39116880bcc0684fbae2106 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_location.h` | ✅ | 1791045731 | 3401a3c6e4375e635ee7d50b0eb25a65059e1f80259700120df3a418edea97a3 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_margin.c` | ✅ | 1791040802 | 40af3a238dd0b0fb74e781f7cf9f22528b6035165834e4a4de103dea59744530 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_margin.h` | ✅ | 1791040802 | 5ca9a2daf3061eeed0b56d39bd18513d0c19bade3d91ba47cade23283d6a56b7 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_maximum_size.c` | ✅ | 1791045731 | 0f2db3792011315ea6ce2ef280aa48739e56e9db1e2ba4c4c252e09dfca8b592 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_maximum_size.h` | ✅ | 1791045731 | 382731b9a44fb370438670952137a1f42ec0887883bc0e0a640631dc03adaa88 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_minimum_size.c` | ✅ | 1791045731 | 19ede377c6a8f50a05980fc6794ddbd744a681f96dec9e13acbc46f175ec5355 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_minimum_size.h` | ✅ | 1791045731 | b590e20cd1000f507a75b1572ee3f38e389774d53e70ae993e5a799530afbec1 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_padding.c` | ✅ | 1791040802 | 3146ea4d0184f0fd126d23acf1fb7e1a2e6a3a84d245545a050df3dd054ca9bd | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_padding.h` | ✅ | 1791040802 | a77fff2efb6e72d0e860f5bef3aa7314f6f3582dcdc6811fa952029629a386de | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_pivot.c` | ✅ | 1791040802 | c593a2a7e5f82105355302c18fab3a88c01a447c283befd9d0118d2978d9eb64 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_pivot.h` | ✅ | 1791040802 | 45e25043444777904b7400e3e919f167ce7abff47ffafd2abbf98e2390dfa71a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_scroll_offset.c` | ✅ | 1791040802 | b1dbc5c9bf8942df0bedc714a9f1200341dfa0bd7f5bd1c9d485433788283962 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_scroll_offset.h` | ✅ | 1791040802 | f7880c6c22dfc2849ed08f961d9cf0aacd9878e78e5f3fd157b236aeed620dad | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_shadow.c` | ✅ | 1791040802 | a1e14848cdd66efc0b7e2a69da9c068a5a2f49ec0e421299d18cb33fbbd35c33 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_shadow.h` | ✅ | 1791040802 | 5bf955d0eef76567556b81babc5fafeafd2c5ff106a7884fa63dda1608a5bb5a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_size.c` | ✅ | 1791045731 | 20a913f5e6918ad6d1f683502f880cbe7c5ee21e2870b49f899bd995f7bb93ca | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_size.h` | ✅ | 1791045731 | 8e4a1d27de3cab5c9eb5b62387d5e9ab5e744930168407f3292957b32c19d3f2 | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; Apple Silicon macOS; only assertions in tests/darling/properties/properties_test.c; header evidence is client compilation/API use; no full-contract, other-platform or visual approval | Panel shared properties: add/remove ownership, arity location, corner radius, min/max size clamps; Frame branches not executed | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_sizing_mode.c` | ✅ | 1791040802 | 55df14cdecfa771623627cb7430cd4862df578df6298ce4270d7b5352587361e | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_sizing_mode.h` | ✅ | 1791040802 | fc0e7b60b3ea43e177a93416b9faa340c3eb07de36a5ab8df0354e40c5d2b83a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_text.c` | ✅ | 1791040802 | 4b403ca38af145b1fb26cd5decb252100546f5cc14621f4c49785c75563c59ed | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_text.h` | ✅ | 1791040802 | a959d54e086d143579cde17caf76045416732ee1d9f5e89a3195098849fd8ec6 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_theme.c` | ✅ | 1791040802 | 298804379b7cbaeb3fa7cc1e96abd9b4d92ccde390ad8d50c78358c9f440a718 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_theme.h` | ✅ | 1791040802 | e4c734555a6a94f40d4ac673ffd152648ad32b8abcc26000364190ac5999f167 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_value.c` | ✅ | 1791040802 | 249752d602c4fec5618ca56afc07220bc61a203772fcfcaf0c3f64fe5d891807 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_value.h` | ✅ | 1791040802 | 44938176ef7baab16882205a16b723c06bfb971c811e6ab6af3845838a80f654 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_visible.c` | ✅ | 1791040802 | 8b04829351d8b9233b592cd02543616740b21cdb6dd38f7976b8683fdd7e2858 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/properties/set_visible.h` | ✅ | 1791040802 | 2fe9b526fbd065f43135798be5755775e9d672f3bc5e09bc6472bf3089453ad5 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/radio`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/radio/radio_group.c` | ✅ | 1791040802 | ae37d0f97662b868214851df0648c9789fa9dafbc894e1c1c8803835ce74a6a6 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/radio/radio_group.h` | ✅ | 1791040802 | ebdff48e77f8ff23b6e38f54d22bd0dc2a8045358969d85ccf451cafd543b0cf | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/scene`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/scene/scene.c` | ✅ | 1791040802 | bd75fcf4805486b32e861bc601dc0987d3b1ebf88d8dd94e09b1a6853ee09b79 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/scene/scene.h` | ✅ | 1791040802 | 9ca9f984fcafac8eec0bae608d93bb3c70fc07c347adc698ae3212b0958b74ce | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/scene/scene_2d.c` | ✅ | 1791040802 | c29f9f8f0adafb633b3d04fb1e676ff3248417c0c48ce970f7ebf8b2e2d9746c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/scene/scene_2d.h` | ✅ | 1791040802 | 1b685801b7e97ab21918548ceeef36941581dc3460691bfc0e9a9e53a34de359 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/scene/scene_3d.c` | ✅ | 1791040802 | dc4b2653f31fd837d85a1911bfbbaac9129347f68d758c5d5c42cda1b49e9e24 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/scene/scene_3d.h` | ✅ | 1791040802 | fde3f84cdd49024bef2295b8ad8daa2702ffee77c5d76d4d6041bdd146924a33 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/shape`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/shape/icon_image.c` | ✅ | 1791040802 | 0337f80ac056f5a0c7509cc315b685156a13d4ae8f7b1284ba1c2b14e6b3975c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/shape/icon_image.h` | ✅ | 1791040802 | 79093c5a899bbeb966fe0703eb2ae3ba7d0eb0bb144ba3fb86f565d987ef9ed3 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/spatial`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/spatial/property_inspector.c` | ✅ | 1791040802 | 35f0416d94c230996bad3d484896301bd5ac1b21245ec88995e5f96a405f37be | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/spatial/property_inspector.h` | ✅ | 1791040802 | 650e00af718a97ec08c518d04ce71e6dc5220706472d7322dec2d882e446bdc3 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/spatial/spatial_canvas.c` | ✅ | 1791040802 | 44a401feffc6639e13d8ef176ac71cbf6d7caf4ec36700ba5a931a0fa70aa462 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/spatial/spatial_canvas.h` | ✅ | 1791040802 | fab06fef40b2e8f368b7d06e796f6c3970d26344a4aa5b83b58a66554645ae2a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/spatial/transform_box.c` | ✅ | 1791040802 | caaab77590f0726efeda3100667448bfd653f7ed2d7d0a2e041505703e5cbedf | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/spatial/transform_box.h` | ✅ | 1791040802 | f88aaf9f7d79806ce23768b74963ca8aa696ba1315e8416b239310fa8675265e | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/text`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/text/text_core.c` | ✅ | 1791040802 | cb1c2cfba7a41df81ea8e517dd14a9c5a5681274bdef89800d9f9b4ed010916c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/text/text_core.h` | ✅ | 1791040802 | d995b26e386c62d8e8f99ea553788a1badf4e10d6aa52ea1fec2bf9fd6c02093 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/text/typography.c` | ✅ | 1791040802 | 53968b76aa5d8fc1a6b945167e180548d1c143a94c229a2d83c1638e32679699 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/text/typography.h` | ✅ | 1791040802 | f6e852ae34fa564b6f60b571b8e67bf10f6ba8327b139ef94ccca0ae9b3df265 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+
+### `ecosystem/interface/darling-framework/src/theme`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/interface/darling-framework/src/theme/theme.c` | ✅ | 1791040802 | b1757e24711afb0c848f3c16098f4eccd634f9857e901ae798c0ebf0e85ddd8a | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
+| `ecosystem/interface/darling-framework/src/theme/theme.h` | ✅ | 1791040802 | ff88c864258016ee1409f7a5a54e8a2f0b8916dfc75ce149eeec848815a31752 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
 
 ## ecosystem/interface/sesh
 
 ### `ecosystem/interface/sesh`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/interface/sesh/.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/interface/sesh/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/interface/sesh/LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/interface/sesh/README.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/interface/sesh/sesh-preferences.md` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/interface/sesh/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/interface/sesh/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/interface/sesh/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/interface/sesh/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/interface/sesh/sesh-preferences.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ## ecosystem/vexspoke
 
 ### `ecosystem/vexspoke`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/README.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/preferences.md` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/vexspoke-preferences.md` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/preferences.md` | ✅ | 1791048306 | a94db25eb86f9b256d34d737e2b55f9370ad6ed0db8cb90f0d9c0cc679625dd5 | ['python3', '-B', 'tests/tools/darling_lifecycle_test.py']; Three structural/documentation checks: all C starters use Application, no test-written pump loop, sample compiles freshly with C23 warnings-as-errors, links/README command homes and amended lifecycle-law phrases. No full documentation correctness, runtime or visual proof | Darling starter migration inventory and documented lifecycle API compilation | passed |
+| `ecosystem/vexspoke/vexspoke-preferences.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/algo`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/algo/bvh.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/bvh.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/dijkstra.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/dijkstra.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/draft_sort.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/draft_sort.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/kd_tree.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/kd_tree.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/radix_sort.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/radix_sort.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/segment_index.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/segment_index.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/tree_sit.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/algo/tree_sit.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/algo/bvh.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/bvh.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/dijkstra.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/dijkstra.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/draft_sort.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/draft_sort.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/kd_tree.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/kd_tree.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/radix_sort.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/radix_sort.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/segment_index.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/segment_index.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/tree_sit.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/algo/tree_sit.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/annotation`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/annotation/checker.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/definition.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/draft.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/getter.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/hotcode.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/incomplete.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/inherits.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/intention.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/overview.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/platform_exclusive.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/setter.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/annotation/what.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/annotation/checker.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/definition.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/draft.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/getter.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/hotcode.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/incomplete.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/inherits.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/intention.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/overview.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/platform_exclusive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/setter.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/annotation/what.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/atomic`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/atomic/registry.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/atomic/registry.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/atomic/ring.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/atomic/ring.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/atomic/spin.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/atomic/spin.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/atomic/registry.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/atomic/registry.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/atomic/ring.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/atomic/ring.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/atomic/spin.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/atomic/spin.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/audio`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/audio/audio.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/audio/audio_hal.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/audio/audio_hal_stub.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/audio/audio_stub.c` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/audio/audio.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/audio/audio_hal.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/audio/audio_hal_stub.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/audio/audio_stub.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/bit`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/bit/bit.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/bit/bit.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/bit/bit.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/bit/bit.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/c23`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/c23/constructor.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/c23/equals.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/c23/equals.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/c23/fn.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/c23/free.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/c23/free.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/c23/overload.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/c23/zero.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/c23/constructor.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/c23/equals.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/c23/equals.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/c23/fn.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/c23/free.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/c23/free.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/c23/overload.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/c23/zero.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/cli`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/cli/command.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/command.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/commandparser.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/commandparser.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/commandregistry.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/commandregistry.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/console.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/console.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/logcommands.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/logcommands.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/scanner.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/cli/scanner.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/cli/command.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/command.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/commandparser.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/commandparser.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/commandregistry.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/commandregistry.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/console.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/console.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/logcommands.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/logcommands.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/scanner.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/cli/scanner.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/deferred`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/deferred/dispatch.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/deferred/dispatch.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/deferred/dispatch.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/deferred/dispatch.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/engine`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/engine/loop.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/engine/loop.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/engine/loop.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/engine/loop.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/event`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/event/keyhandler.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/event/mousehandler.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/event/touchhandler.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/event/keyhandler.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/event/mousehandler.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/event/touchhandler.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/exception`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/exception/exception.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/exception/exception.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/exception/throw.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/exception/try.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/exception/try_code.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/exception/try_code.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/exception/try_ptr.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/exception/try_ptr.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/exception/try_value.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/exception/try_value.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/exception/exception.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/exception/exception.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/exception/throw.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/exception/try.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/exception/try_code.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/exception/try_code.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/exception/try_ptr.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/exception/try_ptr.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/exception/try_value.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/exception/try_value.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/input`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/input/focus.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/focus.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/gamepad.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/gamepad.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/gesture.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/gesture.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/hardware_event.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/hardware_event.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/key.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/key.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/key_map.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/key_map.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/mouse.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/mouse.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/piano_key.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/piano_key.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/touch.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/touch.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/turntable.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/input/turntable.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/input/focus.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/focus.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/gamepad.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/gamepad.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/gesture.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/gesture.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/hardware_event.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/hardware_event.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/key.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/key.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/key_map.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/key_map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/mouse.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/mouse.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/piano_key.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/piano_key.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/touch.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/touch.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/turntable.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/input/turntable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/io`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/io/cache.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/cache.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/clipboard.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/clipboard_stub.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/file.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/file.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/filewriter.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/filewriter.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/hot_file.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/hot_file.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/log.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/log.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/logkind.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/logparser.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/logparser.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/process_spawn.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/process_spawn.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/vexhome.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/vexhome.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/ws_client.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/io/ws_client.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/io/cache.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/cache.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/clipboard.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/clipboard_stub.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/file.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/file.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/filewriter.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/filewriter.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/hot_file.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/hot_file.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/log.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/log.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/logkind.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/logparser.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/logparser.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/process_spawn.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/process_spawn.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/vexhome.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/vexhome.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/ws_client.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/io/ws_client.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/lang`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/lang/mat4.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/mat4.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/str.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/str.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec2.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec2.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec3.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec3.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec4.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec4.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/lang/mat4.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/mat4.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/str.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/str.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec2.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec2.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec3.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec3.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec4.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec4.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/lang/point`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/lang/point/point.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/point/point.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/lang/point/point.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/point/point.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/lang/rect`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/lang/rect/rectangle.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/rect/rectangle.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/lang/rect/rectangle.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/rect/rectangle.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/lang/vec2`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/lang/vec2/vec2.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec2/vec2.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec2/vec2d.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec2/vec2d.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/lang/vec2/vec2.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec2/vec2.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec2/vec2d.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec2/vec2d.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/lang/vec3`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/lang/vec3/vec3.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec3/vec3.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec3/vec3_int_float.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec3/vec3_int_float.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec3/vec3_long_double.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec3/vec3_long_double.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec3/vec3d.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec3/vec3d.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/lang/vec3/vec3.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec3/vec3.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec3/vec3_int_float.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec3/vec3_int_float.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec3/vec3_long_double.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec3/vec3_long_double.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec3/vec3d.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec3/vec3d.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/lang/vec4`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/lang/vec4/vec4.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec4/vec4.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec4/vec4d.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/lang/vec4/vec4d.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/lang/vec4/vec4.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec4/vec4.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec4/vec4d.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/lang/vec4/vec4d.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/math`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/math/coord_frame.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/math/coord_frame.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/math/fast_math.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/math/fast_math.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/math/math.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/math/math.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/math/strict_math.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/math/strict_math.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/math/coord_frame.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/math/coord_frame.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/math/fast_math.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/math/fast_math.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/math/math.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/math/math.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/math/strict_math.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/math/strict_math.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/net`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/net/download.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/download.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/http.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/http.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/json.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/json.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/net.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/netfacade.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/tls.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/tls_curl.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/url.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/net/url.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/net/download.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/download.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/http.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/http.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/json.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/json.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/net.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/netfacade.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/tls.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/tls_curl.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/url.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/net/url.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/nio`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/nio/mem.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/nio/mem.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/nio/mem.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/nio/mem.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/objc`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/objc/audio_cocoa.m` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objc/audio_hal_mac.m` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objc/clipboard_mac.m` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objc/discovery.m` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objc/tls_apple.m` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objc/touchid_cocoa.m` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/objc/audio_cocoa.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objc/audio_hal_mac.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objc/clipboard_mac.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objc/discovery.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objc/tls_apple.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objc/touchid_cocoa.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/objects`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/objects/choice.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/choice.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/future.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/future.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/global.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/global.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/local.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/local.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/passive.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/passive.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/probable.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/probable.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/probable_objects.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/probable_objects.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/objects/reactive.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/objects/choice.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/choice.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/future.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/future.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/global.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/global.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/local.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/local.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/passive.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/passive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/probable.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/probable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/probable_objects.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/probable_objects.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/objects/reactive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/oop`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/oop/stride.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/oop/stride.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/oop/type.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/oop/type.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/oop/stride.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/oop/stride.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/oop/type.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/oop/type.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/primitive`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/primitive/bool.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/bool.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/brain.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/brain.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/byte.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/byte.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/double.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/double.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/fixed32.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/fixed32.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/fixed64.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/fixed64.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/float.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/float.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/int.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/int.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/int_double.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/int_double.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/int_float.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/int_float.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/long.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/long.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/long_double.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/long_double.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/long_float.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/long_float.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/pack.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/pack.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/short.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/short.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/string.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/primitive/string.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/primitive/bool.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/bool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/brain.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/brain.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/byte.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/byte.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/double.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/double.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/fixed32.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/fixed32.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/fixed64.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/fixed64.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/float.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/float.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/int.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/int.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/int_double.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/int_double.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/int_float.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/int_float.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/long.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/long.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/long_double.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/long_double.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/long_float.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/long_float.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/pack.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/pack.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/short.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/short.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/string.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/primitive/string.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/reactive`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/reactive/dispatch.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/generic.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive_object.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive_object.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive_primitive.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive_primitive.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive_probable.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive_probable.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive_probable_tmpl.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive_probable_tmpl.inc` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive_tmpl.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reactive/reactive_tmpl.inc` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/reactive/dispatch.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/generic.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive_object.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive_object.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive_primitive.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive_primitive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive_probable.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive_probable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive_probable_tmpl.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive_probable_tmpl.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive_tmpl.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reactive/reactive_tmpl.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/reflection`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/reflection/class.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reflection/class.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reflection/field.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reflection/field.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reflection/method.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reflection/method.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reflection/struct.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reflection/struct.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reflection/variable.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/reflection/variable.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/reflection/class.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reflection/class.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reflection/field.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reflection/field.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reflection/method.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reflection/method.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reflection/struct.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reflection/struct.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reflection/variable.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/reflection/variable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/relational`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/relational/cell.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/cell.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/relational.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/relational.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/shelf.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/shelf.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/symbol_table.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/symbol_table.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/variable_hash_map.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/variable_hash_map.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/variable_mini_map.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/variable_mini_map.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/variable_pool.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/variable_pool.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/variable_slot.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/relational/variable_slot.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/relational/cell.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/cell.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/relational.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/relational.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/shelf.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/shelf.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/symbol_table.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/symbol_table.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/variable_hash_map.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/variable_hash_map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/variable_mini_map.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/variable_mini_map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/variable_pool.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/variable_pool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/variable_slot.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/relational/variable_slot.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/search`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/search/calc.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/search/calc.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/search/find.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/search/find.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/search/spotlight.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/search/spotlight.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/search/calc.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/search/calc.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/search/find.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/search/find.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/search/spotlight.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/search/spotlight.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/security`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/security/crypto.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/security/crypto.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/security/secure_random.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/security/secure_random.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/security/touchid.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/security/touchid.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/security/crypto.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/security/crypto.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/security/secure_random.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/security/secure_random.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/security/touchid.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/security/touchid.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/spoke`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/spoke/bespoke.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/spoke/bespoke.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/spoke/bespoke.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/spoke/bespoke.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/struct`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/struct/array.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/array.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/chunked_list.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/chunked_list.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/circle_array.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/circle_array.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/collection.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/collection.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/deque.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/deque.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/list.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/list.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/map.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/map.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/minheap.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/minheap.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/octree.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/octree.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/queue.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/queue.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/set.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/set.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/sparseset.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/sparseset.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/sphere_array.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/sphere_array.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/stack.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/struct/stack.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/struct/array.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/array.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/chunked_list.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/chunked_list.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/circle_array.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/circle_array.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/collection.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/collection.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/deque.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/deque.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/list.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/list.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/map.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/minheap.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/minheap.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/octree.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/octree.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/queue.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/queue.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/set.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/set.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/sparseset.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/sparseset.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/sphere_array.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/sphere_array.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/stack.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/struct/stack.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/system`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/system/app_detect.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/app_detect.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/capture_tool.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/capture_tool.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/discovery.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/display_info.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/display_info.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/display_monitor.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/display_monitor.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/graphics_info.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/graphics_info.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/hardware_info.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/hardware_info.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/image_mac.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/image_mac.m` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/process_probe.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/process_probe.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/system.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/system.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/system/app_detect.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/app_detect.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/capture_tool.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/capture_tool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/discovery.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/display_info.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/display_info.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/display_monitor.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/display_monitor.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/graphics_info.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/graphics_info.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/hardware_info.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/hardware_info.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/image_mac.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/image_mac.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/process_probe.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/process_probe.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/system.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/system.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/system/data`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/system/data/apps.inc` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/system/data/capture_tools.inc` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/system/data/apps.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/system/data/capture_tools.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/thread`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/thread/compute.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/compute.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/draw.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/draw.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/event.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/event.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/networking.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/networking.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/reactive.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/reactive.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/scripting.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/scripting.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/thread.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/thread.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/ui.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/thread/ui.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/thread/compute.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/compute.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/draw.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/draw.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/event.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/event.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/networking.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/networking.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/reactive.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/reactive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/scripting.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/scripting.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/thread.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/thread.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/ui.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/thread/ui.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/time`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/time/calendar.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/time/calendar.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/time/clock.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/time/clock.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/time/datetime.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/time/datetime.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/time/nanotime.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/time/nanotime.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/time/calendar.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/time/calendar.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/time/clock.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/time/clock.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/time/datetime.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/time/datetime.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/time/nanotime.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/time/nanotime.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/vexspoke/src/util`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/vexspoke/src/util/arrays.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/util/arrays.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/util/hash.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/util/hash.h` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/util/random.c` | ❌ | — | — | No executed evidence | — | untested |
-| `ecosystem/vexspoke/src/util/random.h` | ❌ | — | — | No executed evidence | — | untested |
+| `ecosystem/vexspoke/src/util/arrays.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/util/arrays.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/util/hash.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/util/hash.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/util/random.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/vexspoke/src/util/random.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+## projects/anti
+
+### `projects/anti`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `projects/anti/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `projects/anti/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `projects/anti/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+## projects/drawling
+
+### `projects/drawling`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `projects/drawling/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `projects/drawling/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `projects/drawling/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+## projects/impedance
+
+### `projects/impedance`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `projects/impedance/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `projects/impedance/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `projects/impedance/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+### `projects/impedance/src`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `projects/impedance/src/impedance.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `projects/impedance/src/impedance.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `projects/impedance/src/main.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+## projects/semicolon
+
+### `projects/semicolon`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `projects/semicolon/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `projects/semicolon/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `projects/semicolon/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+## repos/.ecosystem
+
+### `repos/.ecosystem`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `repos/.ecosystem/Home.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/_Sidebar.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/anti.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/api-haven.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/darkbase.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/darling-editor.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/darling.md` | ❌ | 1791040802 | 8fa7c0a30f00addc6b4432e6399fcad34db4992ceed4a67ccbb3aa3d00f7c3e3 | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | stale — content changed; rerun required |
+| `repos/.ecosystem/drawling.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/graphvex.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/hotcwap.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/impedance.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/language.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/samplerate.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/semicolon.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/sesh.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/.ecosystem/vexspoke.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+### `repos/.ecosystem/tools`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `repos/.ecosystem/tools/validate_tables.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+## repos/.github
+
+### `repos/.github/profile`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `repos/.github/profile/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+## repos/.vexgraph-dev
+
+### `repos/.vexgraph-dev`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `repos/.vexgraph-dev/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ## tests
 
 ### `tests`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/README.md` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/run.sh` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/test-preferences.md` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/test_support.h` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/README.md` | ✅ | 1791048810 | 629ea96b5614dc684b78e2a3c1efba41993e41ee35db1b754a489c9286196b7c | ['python3', '-B', 'tests/tools/clion_adapter_test.py']; Five adapter checks plus two headless CTest targets; compiles UI target only, no UI/manual viewing or visual approval | CLion CMake metadata adapter regression checks before publication | passed |
+| `tests/run.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/test-preferences.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/test_support.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/api-haven`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/api-haven/ai_chat_sisters_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/ai_provider_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/ai_sse_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/app_broker_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/asset_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/db_provider_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/db_sqlite_file_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/harness_run_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/haven_ws_fanout_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/json_flex_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/mcp_server_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/probe_consumer_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/api-haven/webhook_loopback_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/api-haven/ai_chat_sisters_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/ai_provider_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/ai_sse_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/app_broker_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/asset_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/db_provider_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/db_sqlite_file_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/harness_run_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/haven_ws_fanout_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/json_flex_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/mcp_server_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/probe_consumer_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/api-haven/webhook_loopback_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/BATTLE_TESTS.md` | ✅ | 1791038820 | 46881e2ccfb859a39db083403200e9e21ecadff0bffe1709e510853f58a4f614 | ['python3', '-B', '-c', 'from pathlib import Path; p=Path("tests/darling/BATTLE_TESTS.md"); s=p.read_text(); assert "All 15" in s; assert len(list(Path("tests/darling").rglob("ui_*test.c"))) == 15; assert Path("_notes/darling/ui-battle-testing.md").is_file(); assert "207 passed" in s and "timed out" in s; print("UI battle documentation inventory and references consistent")']; Documentation-only inventory/link/count consistency: confirms 15 ui_ source targets and referenced local notes exist; not independent execution evidence or proof of every prose claim. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `tests/darling/darling_tests.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/BATTLE_TESTS.md` | ✅ | 1791038820 | 46881e2ccfb859a39db083403200e9e21ecadff0bffe1709e510853f58a4f614 | ['python3', '-B', '-c', 'from pathlib import Path; p=Path("tests/darling/BATTLE_TESTS.md"); s=p.read_text(); assert "All 15" in s; assert len(list(Path("tests/darling").rglob("ui_*test.c"))) == 15; assert Path("_notes/darling/ui-battle-testing.md").is_file(); assert "207 passed" in s and "timed out" in s; print("UI battle documentation inventory and references consistent")']; Documentation-only inventory/link/count consistency: confirms 15 ui_ source targets and referenced local notes exist; not independent execution evidence or proof of every prose claim. | Automated lab evidence only; visual approval not recorded | passed |
+| `tests/darling/darling_tests.c` | ✅ | 1791048317 | 03128d839a736fcf302440a27f8887c521f52ab58dca50fd6a752a9e9a734a12 | ['./tools/b', 'build', 'darling']; Incremental C23 -Wall -Wextra -Werror Darling targets, including interactive branches and hello/gallery app bundles; no manual viewer/app launched, no runtime or visual acceptance for those demos | Umbrella Darling compile/link and app packaging with shared Application starter include paths | passed |
+| `tests/darling/test_application.h` | ✅ | 1791048098 | 614f2113af2943db02254c043211541a68541c5405af88baf6c79f2d5f5a2dd9 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","run","tests/darling/frame/frame_application_lifecycle_test.c"],check=True); subprocess.run(["./tools/b","run","tests/darling/frame/frame_fps_focus_test.c"],check=True)']; macOS Apple Silicon: worker callback/return, owner invoke-close, hidden vs closed two-window lifetime, close-all/join, Frame attach/detach; native focus requests + deterministic R3 -1/1/120 submission ceilings/coalescing with independent scene worker. Header client/API evidence only; no whole-contract, Linux/Windows, physical display-Hz or visual approval | Application/Frame lifecycle and R3 presentation-cap integration owner tests | passed |
 
 ### `tests/darling/capture`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/capture/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/capture/ui_clip_restore_battle_test.c` | ✅ | 1791038696 | db360f79b144b3a1bb1e759605ba7efa48414692efa5e748890f94d97822ae0a | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `tests/darling/capture/ui_clip_scope_battle_test.c` | ✅ | 1791038696 | c9c4de40ec7aaeee6996f97536dae1de0269b9e5bd9e96cb8cbec944a13fe7df | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `tests/darling/capture/ui_multiple_masks_pixels_test.c` | ✅ | 1791038696 | deafbea36103aee8a715343d60375f7e16b18fcf426136577a6f4ebf3b9c2f39 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `tests/darling/capture/ui_nested_clip_battle_test.c` | ✅ | 1791038696 | 26f47bf7f4f1b1394417fda4000aae0d97c297f61b4a172ae3d0578bbc37cabc | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `tests/darling/capture/ui_rounded_clip_battle_test.c` | ✅ | 1791038696 | 8e3955c94bc46882add60d026f84965c8555cc44caebfd26ec11be8f9d62cfe0 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `tests/darling/capture/ui_rounded_hit_battle_test.c` | ✅ | 1791038696 | 6e505a963ad39f6f604beda618642b8b89bb5a764c61e517421390592a925ce6 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
+| `tests/darling/capture/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/darling/capture/ui_clip_restore_battle_test.c` | ✅ | 1791047986 | 992496b66b1aa69422721bf9c9f9f138d32741f0f5829f8374965b1f0e9669a8 | ['./tools/b', 'run', 'tests/darling/capture/ui_clip_restore_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/capture/ui_clip_scope_battle_test.c` | ✅ | 1791047988 | df188636b4a3a4e15ca44de8e1da51c50b0a2cb18cb30ea16794ff2a7fa07149 | ['./tools/b', 'run', 'tests/darling/capture/ui_clip_scope_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/capture/ui_multiple_masks_pixels_test.c` | ✅ | 1791047989 | 9ce1ca323a9e7154067813af9195c7c275272a522e1d21e1bb423a4144b1b0b7 | ['./tools/b', 'run', 'tests/darling/capture/ui_multiple_masks_pixels_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/capture/ui_nested_clip_battle_test.c` | ✅ | 1791047991 | 19ed297ff79efd8ca9dc9546b954971503871c7cf2deb3d255c376f1a440ce94 | ['./tools/b', 'run', 'tests/darling/capture/ui_nested_clip_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/capture/ui_rounded_clip_battle_test.c` | ✅ | 1791047992 | 11c2d74a470913f88bfa5d69801045a5ad5319a9447abfb09ba24504bc7b950e | ['./tools/b', 'run', 'tests/darling/capture/ui_rounded_clip_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/capture/ui_rounded_hit_battle_test.c` | ✅ | 1791047994 | e0c0307d4677aa18709fba25f814c410c7080bc4233080f011998aff2eea1ac3 | ['./tools/b', 'run', 'tests/darling/capture/ui_rounded_hit_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
 
 ### `tests/darling/codefield/languages`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/codefield/languages/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/codefield/languages/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/color`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/color/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/color/ui_border_pixels_battle_test.c` | ✅ | 1791038696 | 09c6e98da0d726ef9f189af600b3fb883422952b6f4a03d75cf92b9ef78fa899 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `tests/darling/color/ui_visual_state_pixels_test.c` | ✅ | 1791038696 | f15dd97baa018daeb51fd91d5814115ab9154b828e1dc9e6964a4ad8502451b1 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
+| `tests/darling/color/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/darling/color/ui_border_pixels_battle_test.c` | ✅ | 1791047995 | 8eebce211e4907880e28a08dc65d5c4473f2ee2220bfef3e8550fa3f932844d2 | ['./tools/b', 'run', 'tests/darling/color/ui_border_pixels_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/color/ui_visual_state_pixels_test.c` | ✅ | 1791047996 | 1f065345ed706859fb8bfd597601b740abb860c41f460b0c347f17a3109d81f5 | ['./tools/b', 'run', 'tests/darling/color/ui_visual_state_pixels_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+
+### `tests/darling/cursor`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `tests/darling/cursor/set_cursor_test.c` | ✅ | 1791047998 | b90cd72acfe8919dcafa62ebf7a258d5fd3406be6004dc4fb5c861487449e98e | ['./tools/b', 'run', 'tests/darling/cursor/set_cursor_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
 
 ### `tests/darling/dialog`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/dialog/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/dialog/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/event`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/event/event_invoke_test.c` | ✅ | 1791038758 | 605a6ed13b91119dfd5fa67652b7bdc465e76f3b7503d297f8b88dd086e3c05f | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `tests/darling/event/event_kinds_test.c` | ✅ | 1791038758 | d25280c9b95cb7ea98998a13c224493392113f753f9a981af7208a10d8874854 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
+| `tests/darling/event/event_invoke_test.c` | ✅ | 1791047999 | 8328c76ac6ef903c86ec4946e934baf577416e169460770ff0d5b54c2df4d570 | ['./tools/b', 'run', 'tests/darling/event/event_invoke_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/event/event_kinds_test.c` | ✅ | 1791048001 | 5c7fd313ff21019ef55b3b6b558e8102c0a1bb1147934ea8a4a79118688e1efa | ['./tools/b', 'run', 'tests/darling/event/event_kinds_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
 
 ### `tests/darling/event/document`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/event/document/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/event/document/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/event/focus`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/event/focus/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/event/focus/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/event/key`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/event/key/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/event/key/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/event/mouse`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/event/mouse/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/event/mouse/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/frame`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/frame/frame_resize_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/frame/frame_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/frame/hello_window.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/frame/liquid_glass_frame_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/frame/ui_matryoshka_battle_test.c` | ✅ | 1791038696 | c5665f2d4c3adf7212660e24f6b6dc4a75a5ca7f6bc04310536e95a6bad841c6 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `tests/darling/frame/ui_revalidate_cascade_battle_test.c` | ✅ | 1791038696 | 6d6fb190cd96b9bb57b84ffa2f8535164286c3aec1031461cabd3b739529ff76 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-| `tests/darling/frame/ui_wide_tree_battle_test.c` | ✅ | 1791038696 | fe45e8d7b8cb0293bceddd46f4c6ddddbb156c8983c04075a6898286ab30fb67 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
+| `tests/darling/frame/README.md` | ✅ | 1791048306 | b89448c5f8f27f8e8365e8e4a39d333745b588978efffcadd42057eec1a596e1 | ['python3', '-B', 'tests/tools/darling_lifecycle_test.py']; Three structural/documentation checks: all C starters use Application, no test-written pump loop, sample compiles freshly with C23 warnings-as-errors, links/README command homes and amended lifecycle-law phrases. No full documentation correctness, runtime or visual proof | Darling starter migration inventory and documented lifecycle API compilation | passed |
+| `tests/darling/frame/borderless_frame_test.c` | ✅ | 1791048002 | 6b15a1ecaf644e377f58a235e83c6e6de11e12e4c30c0a0158177e736f6abf7b | ['./tools/b', 'run', 'tests/darling/frame/borderless_frame_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/frame/frame_application_lifecycle_test.c` | ✅ | 1791048004 | 105b67b02f60084f1b62082b28059f86d7df9767411d3f9b37a5c8a0f6fc8112 | ['./tools/b', 'run', 'tests/darling/frame/frame_application_lifecycle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/frame/frame_chrome_lab.h` | ❌ | 1791046167 | fdb31bc8d15e1d7e4f6189d12a12c2923786e744e783d4455b89aa71c5e78075 | ['python3', '-B', '-c', 'import subprocess; targets=("naked_frame_test", "borderless_frame_test", "traffic_light_frame_test"); [subprocess.run(["./tools/b", "test", t], check=True) for t in targets]']; macOS; C23 -Wall -Wextra -Werror. Empty-content pixel samples, capture dimensions, resize, paint/transparency independence, reversible mode changes; macOS traffic-light visibility preferences/header position/floating state. Interactive branches built but not manually executed. No native chrome pixel oracle, focus/input automation, Window Server appearance or visual approval; existing Liquid Glass harness not exercised. | Three live Frame chrome tests: naked, borderless and traffic-light modes. | stale — content changed; rerun required |
+| `tests/darling/frame/frame_drag_lab.h` | ✅ | 1791046178 | e8233e3abea9bc1920fac2def301e22c1e2a03071eb1560645f685d41b79cb63 | ['./tools/b', 'test', 'ui_matryoshka_battle_test']; macOS live Frame; 96 captured rings, mutation/hit/resize, scripted down/drag/up through Element_dispatchEvent, selected subtree offset and before/after pixel assertions, release off selected panel inside Frame, PropertyPool reclamation. Interactive mode compiled, not manually viewed. No outside-window pointer capture, native physical-device automation, keyboard focus or visual acceptance. | Matryoshka nested-panel capture and dispatcher-driven drag regression. | passed |
+| `tests/darling/frame/frame_fps_focus_test.c` | ✅ | 1791048005 | 107792d27ba1b4409254538289761668a2953a0e277ff37b82cef8eb08ad291f | ['./tools/b', 'run', 'tests/darling/frame/frame_fps_focus_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/frame/frame_resize_test.c` | ✅ | 1791048007 | 4f0ad626469f36dab01699cf82f552da29a7a31db078d4c7aaf2f44a9fe61843 | ['./tools/b', 'run', 'tests/darling/frame/frame_resize_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/frame/frame_test.c` | ✅ | 1791048008 | b7a5699cfe72ca151c5e26d4c4cc60d5b74f56c136f4521b351dd9011de69b0e | ['./tools/b', 'run', 'tests/darling/frame/frame_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/frame/hello_window.c` | ✅ | 1791048317 | b4e1f7117e65ec72a57962693b82685f8a184cc8e238f0b40c69eaa39db4062b | ['./tools/b', 'build', 'darling']; Incremental C23 -Wall -Wextra -Werror Darling targets, including interactive branches and hello/gallery app bundles; no manual viewer/app launched, no runtime or visual acceptance for those demos | Umbrella Darling compile/link and app packaging with shared Application starter include paths | passed |
+| `tests/darling/frame/liquid_glass_frame_test.c` | ✅ | 1791048211 | a94f2dfd543048b9199c68f6c736fb58da883d26e265c168c7dc7b32964e1bd1 | ['./tools/b', 'run', 'tests/darling/frame/liquid_glass_frame_test.c']; macOS; descriptor/tree/capture assertions only, not Liquid Glass/anchor appearance or manual visual approval | Application-owned bounded default mode; interactive lifetime compiled but not entered | passed |
+| `tests/darling/frame/naked_frame_test.c` | ✅ | 1791048010 | a91abcb1b760f4ad3c779f7f4c7091485b64718c1a775bb793916e191189342b | ['./tools/b', 'run', 'tests/darling/frame/naked_frame_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/frame/traffic_light_frame_test.c` | ✅ | 1791048011 | 0b367bfd95f36acfa7f9c09ff6c0770e643e6d4f6657e98a7ca13ed7da5729c8 | ['./tools/b', 'run', 'tests/darling/frame/traffic_light_frame_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/frame/ui_matryoshka_battle_test.c` | ✅ | 1791048013 | 5622df499b1479e2b718e4b77773a39af32db1e781190fe889165c82a7a7eb8a | ['./tools/b', 'run', 'tests/darling/frame/ui_matryoshka_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/frame/ui_revalidate_cascade_battle_test.c` | ✅ | 1791048014 | 176437dc9b3fc459cb2b92dae3b9b134ffe21cc7c58cb961ff4c807640d78b57 | ['./tools/b', 'run', 'tests/darling/frame/ui_revalidate_cascade_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/frame/ui_wide_tree_battle_test.c` | ✅ | 1791048017 | 6717152c4a997a2558529fd77c6ee10904c940c38bb19528b938291887206dd4 | ['./tools/b', 'run', 'tests/darling/frame/ui_wide_tree_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
 
 ### `tests/darling/graph`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/graph/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/graph/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/kinematics/anchor`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/kinematics/anchor/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/kinematics/anchor/ui_anchor_pivot_pixels_test.c` | ✅ | 1791038696 | 311c31167cc46f0e5742de18bc9d865a7946ed3fd225f781fc04fbe557ff2704 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
+| `tests/darling/kinematics/anchor/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/darling/kinematics/anchor/ui_anchor_pivot_pixels_test.c` | ✅ | 1791048019 | 07bf7604580ff6f728c4d04fb6eaff0d90e96057afce088c777fd53eff433da3 | ['./tools/b', 'run', 'tests/darling/kinematics/anchor/ui_anchor_pivot_pixels_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
 
 ### `tests/darling/kinematics/pivot`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/kinematics/pivot/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/kinematics/pivot/ui_size_limits_pixels_test.c` | ✅ | 1791038696 | 37750dabb8a32e4526373d619e2bca1d4805effacdcb3abbca88ed27f5c3c0b9 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
-
-### `tests/darling/panel`
-
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/panel/panel_add_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/panel/panel_anchor_corner_radius_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/panel/panel_corner_radius_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/panel/panel_events_test.c` | ✅ | 1791038758 | 8b6bed7389434d859ed0f14a33ec4c140b925aa922a6e29f9845697a52cefaa1 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `tests/darling/panel/panel_matryoshka_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/panel/panel_shadow_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/panel/panel_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/panel/properties_test.c` | ✅ | 1791038758 | 33274bf82cc9c48d607a1bdcdf50d8b160d6c8fd2aacfd0a5c452c044c1571d0 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `tests/darling/panel/scroll_panel_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/kinematics/pivot/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/darling/kinematics/pivot/ui_size_limits_pixels_test.c` | ✅ | 1791048021 | a9af8e221919a4a9d211f0252db904892e46946c1e196b45fcc31e8b02593890 | ['./tools/b', 'run', 'tests/darling/kinematics/pivot/ui_size_limits_pixels_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
 
 ### `tests/darling/panel/flexpanel`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/panel/flexpanel/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/panel/flexpanel/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/panel/panel`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/panel/panel/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/panel/panel/panel_add_test.c` | ✅ | 1791048022 | 22fa8c15736614376bd2138314e91e16439345be0813977db57829c1a03060a6 | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_add_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/panel/panel/panel_anchor_corner_radius_test.c` | ✅ | 1791048213 | 0eb175d1177d4ede685e484d788e5b1f1fc280007e67e6adf89ba4b352b713e4 | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_anchor_corner_radius_test.c']; macOS; descriptor/tree/capture assertions only, not Liquid Glass/anchor appearance or manual visual approval | Application-owned bounded default mode; interactive lifetime compiled but not entered | passed |
+| `tests/darling/panel/panel/panel_corner_radius_test.c` | ✅ | 1791048023 | 3e85c1e4697226a1dce7fe78fe7c707b4498da2dbaa42f115ceb44e9c6c61722 | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_corner_radius_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/panel/panel/panel_events_test.c` | ✅ | 1791048025 | 05acb1b99d47153b72e421fcac6fdf661ea5295cff1f4fd53d00128215c956aa | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_events_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/panel/panel/panel_matryoshka_test.c` | ✅ | 1791048026 | 981ffb6a615e87306374f1ef49efd172cc44ef424d36eea141af956fa15005a4 | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_matryoshka_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/panel/panel/panel_shadow_test.c` | ✅ | 1791048028 | 55a2128e3840d59f32c363589fa99ddd0b8c3ed7216bd564883edc15437174c0 | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_shadow_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/panel/panel/panel_test.c` | ✅ | 1791048029 | dec46d6886cfb8160cb9722e6c147f34206d2c004e793ff9a3945a984608fa33 | ['./tools/b', 'run', 'tests/darling/panel/panel/panel_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
 
 ### `tests/darling/panel/scrollpanel`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/panel/scrollpanel/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/panel/scrollpanel/ui_scroll_capture_battle_test.c` | ✅ | 1791038696 | e910e4ab3b5be2e4fafc26ee12f9d4c8e2307926ebe0154284c9b71e75ac4164 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
+| `tests/darling/panel/scrollpanel/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/darling/panel/scrollpanel/scroll_panel_test.c` | ✅ | 1791048031 | d0efce8ae3735df3c67292d48fe2d2dbc67b45cba10d9073dee8624e97a94e16 | ['./tools/b', 'run', 'tests/darling/panel/scrollpanel/scroll_panel_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+| `tests/darling/panel/scrollpanel/ui_scroll_capture_battle_test.c` | ✅ | 1791048032 | 17688bce9ceed67bcda741043efbba2ba40c6e2c8cac8979b536311979804220 | ['./tools/b', 'run', 'tests/darling/panel/scrollpanel/ui_scroll_capture_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
 
 ### `tests/darling/panel/shared`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/panel/shared/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/darling/panel/shared/ui_element_contract_battle_test.c` | ✅ | 1791038696 | 99a50df8819881c96c1b5e2ed2143c9f821662fceaa1df14ea77169c3db9fd77 | ['./tools/b', 'test', 'ui_']; Apple Silicon macOS, raster + Vulkan/MoltenVK: execute 15 UI battle targets; public Element operations, shared size clamps, independent captured-pixel mask/border/geometry oracles, caller clip recovery, 50k visible children, 96-level tree, Frame cascade, scroll capture and pool reclamation. Header evidence is client compilation/API invocation. Shader evidence is rendered GPU pixels, not all shader branches. No sanitizer/OOM/concurrency/Windows/Linux/performance proof; not blanket battle-tested readiness. | ui-battle-tests (agent ses_f02e90dd8ffeWregsJGm76hQM1) | passed |
+| `tests/darling/panel/shared/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/darling/panel/shared/ui_element_contract_battle_test.c` | ✅ | 1791048034 | 4566fbf3f110a5e94d008ec702bd2aca53d0568aaf506e9a72ca9a580312aba9 | ['./tools/b', 'run', 'tests/darling/panel/shared/ui_element_contract_battle_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
 
 ### `tests/darling/picker`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/picker/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/picker/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+### `tests/darling/properties`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `tests/darling/properties/properties_test.c` | ✅ | 1791048035 | b3fa38d7ec52b9a678ab3da44920bdf439da5e8595e789fdf63f3954e2fe344a | ['./tools/b', 'run', 'tests/darling/properties/properties_test.c']; macOS Apple Silicon; only this test assertions, no physical display-Hz, other-platform or visual approval | Darling owner assertions under blocking Application lifetime; native windows, no manual viewing | passed |
+
+### `tests/darling/scaffold`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `tests/darling/scaffold/scaffold_lab_test.py` | ✅ | 1791040802 | adb6d18b955550b1d29ac8891b048fc2a140c271822238e78a340507e5124a0c | ['python3', '-B', 'tests/darling/scaffold/scaffold_lab_test.py']; 126 draft/incomplete pairs: manifest/blueprint/path/include-guard checks, no callable stub APIs/storage/event opt-ins, aggregate header coexistence and fresh syntax compilation of each .c with -std=gnu23 -Wall -Wextra -Werror. Documentation evidence checks source rows only, not historical prose or ratings. No runtime/layout/input/render/lifetime/performance or visual acceptance proof. | Draft scaffold structure, current source-map consistency and fresh C23 compilation; no component implementation. | passed |
 
 ### `tests/darling/scene/2d`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/scene/2d/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/scene/2d/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/scene/3d`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/scene/3d/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/scene/3d/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/scene/properties`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/scene/properties/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/scene/properties/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/text/emoji`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/text/emoji/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/text/emoji/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/text/label`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/text/label/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/text/label/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/text/markdown`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/text/markdown/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/text/markdown/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/text/richtext`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/text/richtext/.gitkeep` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/darling/text/richtext/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/graphvex`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/graphvex/board_test.c` | ✅ | 1791038758 | bc172367bdeb85f0783ffe8887072c13897bc7df247d7e5b36679b6f51095290 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `tests/graphvex/element_property_test.c` | ✅ | 1791038758 | d01c6a47a5abb7322bea757780519e8d253443527e2340e3f6c05693bbfa8743 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `tests/graphvex/element_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/image_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/graphvex/board_test.c` | ✅ | 1791038758 | bc172367bdeb85f0783ffe8887072c13897bc7df247d7e5b36679b6f51095290 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+| `tests/graphvex/element_property_test.c` | ✅ | 1791038758 | d01c6a47a5abb7322bea757780519e8d253443527e2340e3f6c05693bbfa8743 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | Automated lab evidence only; visual approval not recorded | passed |
+| `tests/graphvex/element_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/image_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/graphvex/graphics`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/graphvex/graphics/capture_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/graphics/graphics_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/graphics/render_loop_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/graphics/viewport_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/graphvex/graphics/capture_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/graphics/graphics_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/graphics/render_loop_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/graphics/viewport_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/graphvex/nio`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/graphvex/nio/pool_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/nio/property_pool_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/graphvex/nio/pool_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/nio/property_pool_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/graphvex/vulkan`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/graphvex/vulkan/clip_rounded_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/vulkan/gpu_render_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/vulkan/iosurface_host.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/vulkan/iosurface_host.h` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/vulkan/pipeline_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/vulkan/resize_clip_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/vulkan/surface_gpu_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/vulkan/surface_test.c` | ✅ | 1791038758 | a7f59df29ec8509e8a6bae4ddbf794c3178ece49cb117b3d6b9c5c3e56b3f7b3 | ['./tools/b', 'test']; full suite via ./tools/b test (209 pass/0 fail/0 timeout at record time); integration pass, not a per-file contract proof | agent (agent ses_f049e2312ffeDf099dn5rnqQjG) | passed |
-| `tests/graphvex/vulkan/vk_batch_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/graphvex/vulkan/vk_renderer_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/graphvex/vulkan/clip_rounded_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/vulkan/gpu_render_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/vulkan/iosurface_host.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/vulkan/iosurface_host.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/vulkan/pipeline_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/vulkan/resize_clip_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/vulkan/surface_gpu_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/vulkan/surface_test.c` | ✅ | 1791048396 | a7f59df29ec8509e8a6bae4ddbf794c3178ece49cb117b3d6b9c5c3e56b3f7b3 | ['./tools/b', 'run', 'tests/graphvex/vulkan/surface_test.c']; Surface original APIs/borrowed boards and host seam only; no native FPS or appearance proof | Existing uncapped Surface contract regression check | passed |
+| `tests/graphvex/vulkan/vk_batch_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/graphvex/vulkan/vk_renderer_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/hotcwap/capability`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/hotcwap/capability/capability_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/hotcwap/capability/capability_test.c` | ✅ | 1791039324 | c8be61831e72eea78183bb911ef820a4c6aafcbdc63ca5caec98d4e4efbf6bbc | ['./tools/b', 'run', 'capability_test']; Apple Silicon macOS; only assertions in tests/hotcwap/capability/capability_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | capability_test: automated headless/prompt-free contract assertions; no visual approval | passed |
 
 ### `tests/hotcwap/hot`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/hotcwap/hot/hot_behavior_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/hot_retire_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/hot_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/hot_trampoline_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/ledger_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/loader_trust_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/manifest_adversarial_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/manifest_hot_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/manifest_rollback_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/manifest_uninstall_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/retire_ring_overflow_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/shutdown_order_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/throwable_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/two_dylib_swap_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/uninstall_guard_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/hot/wrong_binary_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/hotcwap/hot/hot_behavior_test.c` | ✅ | 1791039325 | 594ca42f4a5a76dafb0ceb6cb03df5178affbf220c66aa06cfc07b32a26ec482 | ['./tools/b', 'run', 'hot_behavior_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/hot_behavior_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | hot_behavior_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/hot_retire_test.c` | ✅ | 1791039325 | 820e5f6ea2b666c6c4f18051498655cfba85c68a2e90cbef7ee9a778d21ed843 | ['./tools/b', 'run', 'hot_retire_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/hot_retire_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | hot_retire_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/hot_test.c` | ✅ | 1791039326 | 7927c3519648c6d0f0aafd8d2ffd377ba31d141fe8c24cd6a6e93e95cbb3ee8b | ['./tools/b', 'run', 'hot_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/hot_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | hot_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/hot_trampoline_test.c` | ✅ | 1791039327 | d038bfb6a0a426e665b0375152b74ac6d6474dba40612e80d5e0546adc272acb | ['./tools/b', 'run', 'hot_trampoline_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/hot_trampoline_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | hot_trampoline_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/ledger_test.c` | ✅ | 1791039327 | 0d383d949c3bf66716c5a9c2cd25674a276f855ec278fc1073c894e723957a54 | ['./tools/b', 'run', 'ledger_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/ledger_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | ledger_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/loader_trust_test.c` | ✅ | 1791039328 | 5e56bd77a89fbfdb32cfe1178bb23558d304a26d24a917397b6ca27512aa981e | ['./tools/b', 'run', 'loader_trust_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/loader_trust_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | loader_trust_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/manifest_adversarial_test.c` | ✅ | 1791039328 | 3760d1890e8dc5dcd199df435093c3d618feb068d704149b29c1fc332cf265e1 | ['./tools/b', 'run', 'manifest_adversarial_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/manifest_adversarial_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | manifest_adversarial_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/manifest_hot_test.c` | ✅ | 1791039329 | cc397107ed06ea98d163a605c7399144bdaed866d4250970c71b49d38af523e0 | ['./tools/b', 'run', 'manifest_hot_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/manifest_hot_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | manifest_hot_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/manifest_rollback_test.c` | ✅ | 1791039330 | 170c571bb704dc01b465ec76ba7673413f86e6cd5df3ac5e8eed96f7531d6253 | ['./tools/b', 'run', 'manifest_rollback_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/manifest_rollback_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | manifest_rollback_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/manifest_uninstall_test.c` | ✅ | 1791039331 | 986cbd770ed660fdfd95e6dfd87f34934f36d4b1cfb7bd9cfd9eff5d5959d920 | ['./tools/b', 'run', 'manifest_uninstall_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/manifest_uninstall_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | manifest_uninstall_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/retire_ring_overflow_test.c` | ✅ | 1791039334 | 92ef1d0bb7b5ade5c93e9770c68be9413bf1f9e8709037942c67dfccba6423d4 | ['./tools/b', 'run', 'retire_ring_overflow_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/retire_ring_overflow_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | retire_ring_overflow_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/shutdown_order_test.c` | ✅ | 1791039335 | a3165d8ed12038888e77ccfef713aefbb7f50532c296ba9e140e05ac3d86c017 | ['./tools/b', 'run', 'shutdown_order_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/shutdown_order_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | shutdown_order_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/throwable_test.c` | ✅ | 1791039335 | 9d172a7db4b4e2dedb48b99830403634b1b06ae3c32eee0def03c1d08dd33237 | ['./tools/b', 'run', 'throwable_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/throwable_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | throwable_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/two_dylib_swap_test.c` | ✅ | 1791039336 | c2f0c7cac03b0eda5e9cf22f8dc43eebbc975846599d501616460ba60d359924 | ['./tools/b', 'run', 'two_dylib_swap_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/two_dylib_swap_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | two_dylib_swap_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/uninstall_guard_test.c` | ✅ | 1791039337 | badec767f4afde39760c144061541bf6b9daa56998ad1fd1bfdc01113552fac3 | ['./tools/b', 'run', 'uninstall_guard_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/uninstall_guard_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | uninstall_guard_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/hot/wrong_binary_test.c` | ✅ | 1791039337 | 6288d13c1fb8d24bfdb2c52e8928176f8bb32d669af76b574f1a7d42ca2a01ea | ['./tools/b', 'run', 'wrong_binary_test']; Apple Silicon macOS; only assertions in tests/hotcwap/hot/wrong_binary_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | wrong_binary_test: automated headless/prompt-free contract assertions; no visual approval | passed |
 
 ### `tests/hotcwap/kernel`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/hotcwap/kernel/application_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/kernel/console_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/kernel/kernel_function_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/kernel/kernel_lifecycle_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/kernel/process_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/hotcwap/kernel/application_test.c` | ✅ | 1791047639 | d95ed03de723da19526a18de87d1dd6b80c53116ee141842de53caa27912733d | ['./tools/b', 'run', 'tests/hotcwap/kernel/application_test.c']; macOS Apple Silicon; only executed assertion branches, no full-contract/platform/visual proof | Lifecycle compatibility/owner assertions after blocking-start migration | passed |
+| `tests/hotcwap/kernel/console_test.c` | ✅ | 1791039338 | 205ecabaf8b32e9bd797b94a456bc65f5a43428dc2011c1037ddc5ffb8b127ae | ['./tools/b', 'run', 'console_test']; Apple Silicon macOS; only assertions in tests/hotcwap/kernel/console_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | console_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/kernel/kernel_function_test.c` | ✅ | 1791047640 | e59b07f2e16150ead878bb9aaa1d8daae1548a9e8905db83ee8f7dcc4f78f89d | ['./tools/b', 'run', 'tests/hotcwap/kernel/kernel_function_test.c']; macOS Apple Silicon; only executed assertion branches, no full-contract/platform/visual proof | Lifecycle compatibility/owner assertions after blocking-start migration | passed |
+| `tests/hotcwap/kernel/kernel_lifecycle_test.c` | ✅ | 1791047641 | eaf8bbe5bbbf1dde56ad082216539c7a903c9ba8a81e066bcbd97104b8babb2e | ['./tools/b', 'run', 'tests/hotcwap/kernel/kernel_lifecycle_test.c']; macOS Apple Silicon; only executed assertion branches, no full-contract/platform/visual proof | Lifecycle compatibility/owner assertions after blocking-start migration | passed |
+| `tests/hotcwap/kernel/process_test.c` | ✅ | 1791039340 | 3ad6c0677b3eb2069b6ab1f48c0ce93b96f5183feda13e439fe52426e04d09a8 | ['./tools/b', 'run', 'process_test']; Apple Silicon macOS; only assertions in tests/hotcwap/kernel/process_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | process_test: automated headless/prompt-free contract assertions; no visual approval | passed |
 
 ### `tests/hotcwap/permission`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/hotcwap/permission/permission_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/hotcwap/permission/permission_test.c` | ✅ | 1791039341 | 6ef5e3e42f5ab7d47241291a164ada1919cc57f19ff9ca3b408c7e890108ad6a | ['./tools/b', 'run', 'permission_test']; Apple Silicon macOS; only assertions in tests/hotcwap/permission/permission_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | permission_test: automated headless/prompt-free contract assertions; no visual approval | passed |
 
 ### `tests/hotcwap/spoke`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/hotcwap/spoke/spoke_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/hotcwap/spoke/spoke_test.c` | ✅ | 1791039341 | 6d7e7a491a226d7e4e254add46903129f0369eb5ae267d8eb9ecc17d4d2a6d98 | ['./tools/b', 'run', 'spoke_test']; Apple Silicon macOS; only assertions in tests/hotcwap/spoke/spoke_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | spoke_test: automated headless/prompt-free contract assertions; no visual approval | passed |
 
 ### `tests/hotcwap/window`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/hotcwap/window/bridge_seam_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/window/present_surface_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/window/traffic_light_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/window/window_event_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/hotcwap/window/window_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/hotcwap/window/bridge_seam_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/hotcwap/window/present_surface_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/hotcwap/window/traffic_light_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/hotcwap/window/window_event_test.c` | ✅ | 1791039342 | 81a0118c2b6887d7f05a36a03fbb15c940f673cc0d9253294b4aab8417cd9f12 | ['./tools/b', 'run', 'window_event_test']; Apple Silicon macOS; only assertions in tests/hotcwap/window/window_event_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | window_event_test: automated headless/prompt-free contract assertions; no visual approval | passed |
+| `tests/hotcwap/window/window_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/tools`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/tools/agents_test.py` | ✅ | 1791038534 | 4fad586bf1ac5311304b3835c4a19da804056bb39c3ddf329e71583a794363a3 | ['python3', '-B', 'tests/tools/agents_test.py']; macOS; 5 offline fake-API tests: signed say/tell, exclude self, raw opt-out, persisted name/env override, bus attribution; live API delivery not proved | agent (agent ses_efdd52f7affe7Nv6yn5GrSHEk9) | passed |
-| `tests/tools/test_checklist_test.py` | ✅ | 1791038528 | 7d4638afa52ffa2e933982e5d6a6d5ec8989ad76c2b6465f07f95028b743f274 | ['python3', '-B', 'tests/tools/test_checklist_test.py']; macOS; 6 offline tests: inventory, unknown status, Unix timestamp, command failure/skip, stale content, missing rows, Markdown escaping, mutation during test; no framework runtime proof | agent (agent ses_efdd52f7affe7Nv6yn5GrSHEk9) | passed |
+| `tests/tools/agents_test.py` | ✅ | 1791048984 | 4fad586bf1ac5311304b3835c4a19da804056bb39c3ddf329e71583a794363a3 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/agents_test.py"],check=True); subprocess.run(["python3","-B","tests/tools/test_checklist_test.py"],check=True)']; Five agent bus tests and eleven checklist tests, including invalidation, privacy, bounded execution and rejection of visual evidence; no live remote messaging correctness claim | Offline agent signatures and timestamped checklist regression tests before publication | passed |
+| `tests/tools/clion_adapter_test.py` | ✅ | 1791048810 | 5d57fc7b3dce79d3241be199e37c96c3094c561620732f958392f9c589f9a584 | ['python3', '-B', 'tests/tools/clion_adapter_test.py']; Five adapter checks plus two headless CTest targets; compiles UI target only, no UI/manual viewing or visual approval | CLion CMake metadata adapter regression checks before publication | passed |
+| `tests/tools/darling_lifecycle_test.py` | ✅ | 1791048306 | 6914811cb9717a764a7d5412c265f3dd0c4667fef854055fa157de3271bbe6eb | ['python3', '-B', 'tests/tools/darling_lifecycle_test.py']; Three structural/documentation checks: all C starters use Application, no test-written pump loop, sample compiles freshly with C23 warnings-as-errors, links/README command homes and amended lifecycle-law phrases. No full documentation correctness, runtime or visual proof | Darling starter migration inventory and documented lifecycle API compilation | passed |
+| `tests/tools/test_checklist_test.py` | ✅ | 1791048984 | 3a47e83fdbcc750b4a9cc7d2bd8d9a49145f290a96a2438b7cb5e85ecf5480a2 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/agents_test.py"],check=True); subprocess.run(["python3","-B","tests/tools/test_checklist_test.py"],check=True)']; Five agent bus tests and eleven checklist tests, including invalidation, privacy, bounded execution and rejection of visual evidence; no live remote messaging correctness claim | Offline agent signatures and timestamped checklist regression tests before publication | passed |
 
 ### `tests/vexspoke`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/coverage_baseline.txt` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/function_baseline.txt` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/mirror_exceptions.txt` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/surface_baseline.txt` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/coverage_baseline.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/function_baseline.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/mirror_exceptions.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/surface_baseline.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/algo`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/algo/algo_suite_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/algo/bvh_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/algo/dijkstra_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/algo/draft_sort_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/algo/kd_tree_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/algo/radix_sort_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/algo/segment_index_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/algo/tree_sit_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/algo/algo_suite_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/algo/bvh_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/algo/dijkstra_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/algo/draft_sort_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/algo/kd_tree_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/algo/radix_sort_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/algo/segment_index_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/algo/tree_sit_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/atomic`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/atomic/registry_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/atomic/ring_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/atomic/spin_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/atomic/registry_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/atomic/ring_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/atomic/spin_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/bit`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/bit/bit_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/bit/bit_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/c23`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/c23/equals_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/c23/free_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/c23/equals_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/c23/free_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/deferred`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/deferred/dispatch_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/deferred/dispatch_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/demo`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/demo/touchid_demo.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/demo/touchid_demo.mm` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/demo/touchid_demo.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/demo/touchid_demo.mm` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/exception`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/exception/throw_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/exception/try_code_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/exception/try_ptr_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/exception/try_value_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/exception/throw_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/exception/try_code_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/exception/try_ptr_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/exception/try_value_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/input`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/input/hardware_input_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/input/input_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/input/key_map_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/input/hardware_input_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/input/input_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/input/key_map_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/io`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/io/cache_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/io/clipboard_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/io/file_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/io/filewriter_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/io/log_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/io/logparser_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/io/vexhome_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/io/cache_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/io/clipboard_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/io/file_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/io/filewriter_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/io/log_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/io/logparser_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/io/vexhome_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/lang`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/lang/mat4_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/lang/vec2_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/lang/vec3_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/lang/vec4_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/lang/mat4_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/lang/vec2_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/lang/vec3_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/lang/vec4_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/math`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/math/coord_frame_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/math/fast_math_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/math/math_coord_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/math/math_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/math/strict_math_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/math/coord_frame_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/math/fast_math_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/math/math_coord_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/math/math_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/math/strict_math_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/misc`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/misc/header_veto_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/misc/header_veto_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/net`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/net/net_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/net/url_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/net/net_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/net/url_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/nio`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/nio/mem_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/nio/transient_lifetime_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/nio/mem_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/nio/transient_lifetime_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/objects`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/objects/choice_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/objects/future_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/objects/global_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/objects/local_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/objects/passive_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/objects/probable_objects_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/objects/probable_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/objects/choice_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/objects/future_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/objects/global_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/objects/local_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/objects/passive_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/objects/probable_objects_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/objects/probable_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/oop`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/oop/stride_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/oop/type_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/oop/stride_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/oop/type_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/primitive`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/primitive/bool_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/brain_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/byte_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/double_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/fixed32_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/fixed64_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/float_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/int_double_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/int_float_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/int_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/long_double_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/long_float_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/long_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/pack_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/short_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/primitive/string_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/primitive/bool_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/brain_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/byte_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/double_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/fixed32_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/fixed64_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/float_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/int_double_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/int_float_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/int_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/long_double_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/long_float_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/long_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/pack_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/short_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/primitive/string_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/reactive`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/reactive/reactive_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/reactive/reactive_typed_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/reactive/reactive_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/reactive/reactive_typed_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/reflection`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/reflection/reflection_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/reflection/reflection_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/relational`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/relational/cell_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/relational/class_relational_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/relational/shelf_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/relational/symbol_table_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/relational/variable_hash_map_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/relational/variable_mini_map_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/relational/variable_pool_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/relational/variable_slot_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/relational/variable_strict_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/relational/cell_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/class_relational_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/shelf_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/symbol_table_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/variable_hash_map_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/variable_mini_map_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/variable_pool_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/variable_slot_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/variable_strict_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/search`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/search/find_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/search/search_calc_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/search/spotlight_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/search/find_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/search/search_calc_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/search/spotlight_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/security`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/security/crypto_security_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/security/crypto_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/security/secure_random_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/security/crypto_security_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/security/crypto_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/security/secure_random_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/struct`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/struct/array_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/chunked_list_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/chunked_paged_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/circle_array_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/collection_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/deque_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/list_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/map_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/minheap_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/octree_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/queue_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/set_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/sparseset_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/spatial_struct_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/sphere_array_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/struct/stack_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/struct/array_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/chunked_list_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/chunked_paged_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/circle_array_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/collection_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/deque_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/list_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/map_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/minheap_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/octree_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/queue_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/set_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/sparseset_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/spatial_struct_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/sphere_array_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/struct/stack_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/system`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/system/app_detect_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/system/capture_tool_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/system/display_info_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/system/display_monitor_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/system/graphics_info_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/system/hardware_info_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/system/process_probe_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/system/system_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/system/app_detect_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/system/capture_tool_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/system/display_info_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/system/display_monitor_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/system/graphics_info_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/system/hardware_info_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/system/process_probe_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/system/system_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/thread`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/thread/compute_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/thread/thread_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/thread/compute_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/thread/thread_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/time`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/time/calendar_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/time/clock_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/time/datetime_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/time/nanotime_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/time/time_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/time/calendar_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/time/clock_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/time/datetime_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/time/nanotime_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/time/time_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/util`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/util/arrays_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/util/hash_test.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tests/vexspoke/util/random_test.c` | ❌ | — | — | No executed evidence | — | untested |
+| `tests/vexspoke/util/arrays_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/util/hash_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/util/random_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ## workspace
 
 ### `.`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `.gitignore` | ❌ | — | — | No executed evidence | — | untested |
-| `AGENTS.md` | ❌ | — | — | No executed evidence | — | untested |
-| `LICENSE` | ❌ | — | — | No executed evidence | — | untested |
-| `README.md` | ❌ | — | — | No executed evidence | — | untested |
-| `darling-test-thought` | ❌ | — | — | No executed evidence | — | untested |
-| `deferred system.txt` | ❌ | — | — | No executed evidence | — | untested |
-| `functions-for-darling.txt` | ❌ | — | — | No executed evidence | — | untested |
-| `preferences.md` | ❌ | — | — | No executed evidence | — | untested |
-| `prune-opencode-projects.sh` | ❌ | — | — | No executed evidence | — | untested |
+| `.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `AGENTS.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `CMakeLists.txt` | ✅ | 1791048810 | 51b3e84f952d041655a689d278adc63ecee05a92e4514f66ed51ce4427309e2a | ['python3', '-B', 'tests/tools/clion_adapter_test.py']; Five adapter checks plus two headless CTest targets; compiles UI target only, no UI/manual viewing or visual approval | CLion CMake metadata adapter regression checks before publication | passed |
+| `LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `README.md` | ✅ | 1791048810 | cfc6c98c4c7f55a298ba9978ba960b0944111df2fc23401363a8a29bad3f9171 | ['python3', '-B', 'tests/tools/clion_adapter_test.py']; Five adapter checks plus two headless CTest targets; compiles UI target only, no UI/manual viewing or visual approval | CLion CMake metadata adapter regression checks before publication | passed |
+| `preferences.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `prune-opencode-projects.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `.opencode`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `.opencode/opencode.json` | ❌ | — | — | No executed evidence | — | untested |
+| `.opencode/opencode.json` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `.opencode/plugins/agent-bus`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `.opencode/plugins/agent-bus/index.ts` | ❌ | — | — | No executed evidence | — | untested |
+| `.opencode/plugins/agent-bus/index.ts` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `run`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `run/hello.c` | ❌ | — | — | No executed evidence | — | untested |
+| `run/hello.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tools`
 
-| Filename | Tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Written by | Result |
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tools/agents.sh` | ✅ | 1791038534 | 7561e1a0ada9781376bae821ae2cf68c008d76382fce9214e605d6c81edb9e83 | ['python3', '-B', 'tests/tools/agents_test.py']; macOS; 5 offline fake-API tests: signed say/tell, exclude self, raw opt-out, persisted name/env override, bus attribution; live API delivery not proved | agent (agent ses_efdd52f7affe7Nv6yn5GrSHEk9) | passed |
-| `tools/b` | ❌ | — | — | No executed evidence | — | untested |
-| `tools/b.c` | ❌ | — | — | No executed evidence | — | untested |
-| `tools/darling-gallery.sh` | ❌ | — | — | No executed evidence | — | untested |
-| `tools/debug_compile.sh` | ❌ | — | — | No executed evidence | — | untested |
-| `tools/linter.py` | ❌ | — | — | No executed evidence | — | untested |
-| `tools/make_code_txt.sh` | ❌ | — | — | No executed evidence | — | untested |
-| `tools/make_vkapp.sh` | ❌ | — | — | No executed evidence | — | untested |
-| `tools/run.sh` | ❌ | — | — | No executed evidence | — | untested |
-| `tools/run_debug.sh` | ❌ | — | — | No executed evidence | — | untested |
-| `tools/spv_header.py` | ❌ | — | — | No executed evidence | — | untested |
-| `tools/test_checklist.py` | ✅ | 1791038528 | a1ec94fd34c45842c77881119389ef8a9603cf0cb69d7d042fc598818937fffa | ['python3', '-B', 'tests/tools/test_checklist_test.py']; macOS; 6 offline tests: inventory, unknown status, Unix timestamp, command failure/skip, stale content, missing rows, Markdown escaping, mutation during test; no framework runtime proof | agent (agent ses_efdd52f7affe7Nv6yn5GrSHEk9) | passed |
+| `tools/agents.sh` | ✅ | 1791048984 | 7561e1a0ada9781376bae821ae2cf68c008d76382fce9214e605d6c81edb9e83 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/agents_test.py"],check=True); subprocess.run(["python3","-B","tests/tools/test_checklist_test.py"],check=True)']; Five agent bus tests and eleven checklist tests, including invalidation, privacy, bounded execution and rejection of visual evidence; no live remote messaging correctness claim | Offline agent signatures and timestamped checklist regression tests before publication | passed |
+| `tools/b` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tools/b.c` | ✅ | 1791048810 | 3330bbdfd8ed95d765e8bb2b275c020dde61b98717ec052a0708ae7729a6b221 | ['python3', '-B', 'tests/tools/clion_adapter_test.py']; Five adapter checks plus two headless CTest targets; compiles UI target only, no UI/manual viewing or visual approval | CLion CMake metadata adapter regression checks before publication | passed |
+| `tools/darling-gallery.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tools/debug_compile.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tools/linter.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tools/make_code_txt.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tools/make_vkapp.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tools/run.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tools/run_debug.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tools/spv_header.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tools/test_checklist.py` | ✅ | 1791048984 | e7587b75b412827906a174242321f893d890be2149743a23701af591af7adeaf | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/agents_test.py"],check=True); subprocess.run(["python3","-B","tests/tools/test_checklist_test.py"],check=True)']; Five agent bus tests and eleven checklist tests, including invalidation, privacy, bounded execution and rejection of visual evidence; no live remote messaging correctness claim | Offline agent signatures and timestamped checklist regression tests before publication | passed |

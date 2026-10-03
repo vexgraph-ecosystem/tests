@@ -5,6 +5,18 @@ source file is **not** evidence that its target was built or executed.
 
 ## Run
 
+### CLion
+
+Open the **workspace root** (the parent of this checkout) as a CMake project
+and reload CMake. Select a native test target such as
+`ui_anchor_pivot_pixels_test` from the Run/Debug dropdown. Do not use CLion's
+standalone C-file runner: it does not know the framework include paths/libraries.
+The root `CMakeLists.txt` imports their configuration from `b`; CLion's bundled
+Ninja is supported. Window/UI/GPU CTest execution is opt-in; manual Run/Debug
+targets remain available. See the workspace README for setup and lab limits.
+
+### Terminal
+
 ```sh
 tests/run.sh              # list the friendly names
 tests/run.sh <name>       # build + run one target through the umbrella `b`
@@ -15,6 +27,28 @@ replaces the former C runner (`main.c`). `b` compiles on demand; see the
 umbrella `README.md`. `b test [substr]` builds and runs every test target; the
 static proof gate below runs first, so a suite cannot go green while a unit
 lacks an owner or a public function goes uninvoked.
+
+## Timestamped checklist
+
+`test-checklist.md` inventories every framework, with directory tables and one
+row per file, plus shared tests and workspace tools. ✅ means its automated lab
+command passed for its recorded hash and scope, not universal battle readiness
+or visual approval. The user tests visual appearance and reports defects.
+Descriptions replace authorship; no agent names or session IDs are stored.
+
+```sh
+python3 tools/test_checklist.py sync
+python3 tools/test_checklist.py run --file tools/agents.sh --scope 'Bash syntax only; runtime unproved' -- bash -n tools/agents.sh
+python3 tools/test_checklist.py check
+python3 tests/tools/test_checklist_test.py
+python3 tests/tools/agents_test.py
+python3 tests/tools/clion_adapter_test.py  # CMake adapter lab; no UI test execution
+```
+
+Consult and update it in the same work cycle, per the Timestamped Test Checklist
+Law. Timestamps are actual Unix seconds, not estimates. File changes invalidate
+old greens; failures and skips stay ❌. The ledger itself is a generated test
+report, not a manually maintained source file.
 
 ## Proof gates
 

@@ -17,6 +17,13 @@ never a number (the Law Identity Doctrine).
    **mapped but unwired** → **failing** → **passing with stated gaps** → **battle tested**.
 5. **Never promote a whole layer from partial file results.** A subsystem is battle tested only when
    every applicable law here has executed evidence.
+6. **Read and maintain `tests/test-checklist.md` across every part**, per the
+   Timestamped Test Checklist Law in workspace `preferences.md`. Record actual
+   Unix timestamps, subject hashes, command/scope, result, and description after
+   each automated lab check. Do not record authors or session identifiers.
+   Visual appearance is user-tested; manual visual checks are outside this ledger.
+   Unknown, failed, skipped, or stale evidence is ❌; a scoped ✅ is not automatically
+   battle-tested readiness or visual acceptance.
 
 Part I binds everything. Part II specializes for a subsystem. Part III governs repos that are still
 blueprints, so their first real commit lands already governed.
