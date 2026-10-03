@@ -11,10 +11,10 @@ CPU/GPU, visual paint-state pixels, actual ScrollPanel captured bands, a real
 Frame with 50,000 visible children, and a 96-level nested Panel tree.
 
 The original four red regressions now pass after fixes to nested clip intersection,
-clip restoration, clipped-child hit testing and CPU/GPU borders. Three further
+clip restoration, clipped-child hit testing and CPU/GPU borders. Four further
 oracles cover distinct overlapping rounded masks, caller clip scope/malformed
-list recovery, and the Frame -> Surface -> Board -> tree/present cascade. All
-14 `ui_` targets pass; none of their expected pixels were weakened.
+list recovery, the Frame -> Surface -> Board -> tree/present cascade, and shared min/max
+size bounds. All 15 `ui_` targets pass; none of their expected pixels were weakened.
 
 Full-suite verification: 207 passed, zero failed, one existing visual test
 (`panel_anchor_corner_radius_test`) timed out at 30 seconds. Its focused rerun
