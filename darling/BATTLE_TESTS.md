@@ -10,10 +10,15 @@ anchor/pivot combinations, oversized children clipped by rounded parents on
 CPU/GPU, visual paint-state pixels, actual ScrollPanel captured bands, a real
 Frame with 50,000 visible children, and a 96-level nested Panel tree.
 
-Four additional regressions expose nested clip intersection, enclosing clip
-restoration, clipped-child hit-testing and missing raster borders. Those failing
-targets remain uncommitted pending implementation fixes; do not weaken their
-oracles or count them as passing coverage.
+The original four red regressions now pass after fixes to nested clip intersection,
+clip restoration, clipped-child hit testing and CPU/GPU borders. Three further
+oracles cover distinct overlapping rounded masks, caller clip scope/malformed
+list recovery, and the Frame -> Surface -> Board -> tree/present cascade. All
+14 `ui_` targets pass; none of their expected pixels were weakened.
+
+Full-suite verification: 207 passed, zero failed, one existing visual test
+(`panel_anchor_corner_radius_test`) timed out at 30 seconds. Its focused rerun
+passed. Do not describe that full run as 208/208 green.
 
 For PNG evidence, set `UI_BATTLE_ARTIFACT_DIR` to an existing writable directory.
 Pixel failures emit capture paths; clipped-hit tests save their image before
@@ -22,4 +27,5 @@ rounded-boundary oracle omits only the antialias fringe.
 
 Tests are compiled/discovered by the umbrella build with C23 and warnings as
 errors. Added through shell fallback because the authoring session lacked direct
-write/edit tools. No library source was modified by this test lane.
+write/edit tools. Follow-through fixed the demonstrated library defects and wired the Frame cascade;
+the sibling agent owns the subsequent Frame/properties migration.
