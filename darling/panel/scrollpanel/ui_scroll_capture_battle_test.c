@@ -53,6 +53,8 @@ static inline Image *rasterCapture(Element *root, int width, int height) {
 
 #include "panel/scroll_panel.h"
 
+#define DARLING_TEST_HAS_FRAMES
+#include "darling/test_application.h"
 int main(void) {
     uint32_t baseline = PropertyPool_live(PropertyPool_default());
     Frame *frame = Frame("scroll capture battle", 96, 64);

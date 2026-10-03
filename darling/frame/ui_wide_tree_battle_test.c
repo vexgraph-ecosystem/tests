@@ -39,6 +39,8 @@ static inline void pixel(const Image *image, int x, int y, Color expected) {
 #define CHILDREN 50000
 #define COLUMNS 250
 #define TILE 2
+#define DARLING_TEST_HAS_FRAMES
+#include "darling/test_application.h"
 int main(void) {
     uint32_t baseline = PropertyPool_live(PropertyPool_default());
     Frame *frame = Frame("50k children battle", COLUMNS * TILE, CHILDREN / COLUMNS * TILE);

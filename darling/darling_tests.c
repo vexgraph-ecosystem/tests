@@ -53,6 +53,8 @@ static const TestInfo kInfos[] = {
 static const int kCount = (int)(sizeof kInfos / sizeof kInfos[0]);
 static TestCase kCases[sizeof kInfos / sizeof kInfos[0]];
 
+#define DARLING_TEST_HAS_FRAMES
+#include "darling/test_application.h"
 int main(void) {
     Frame *m = Frame("darling — tests", 460, 700);
 
@@ -72,6 +74,6 @@ int main(void) {
     Pointer_track(m);   // optional: route the real mouse into the pointer actions
 
     Frame_savePNG(m, "/tmp/darling_tests.png");
-    Frame_run(m);   // closes when the main window closes (*). children go too
+    Darling_testKeepOpen(); // Application_start waits for ALL attached windows.
     return 0;
 }

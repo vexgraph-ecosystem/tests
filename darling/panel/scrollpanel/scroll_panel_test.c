@@ -19,6 +19,7 @@ static int g_fail = 0;
 
 static bool near(float a, float b) { return (a > b ? a - b : b - a) < 0.01f; }
 
+#include "darling/test_application.h"
 int main(void) {
     ScrollPanel *sp = ScrollPanel(200, 150);
     CHECK(sp != NULL);

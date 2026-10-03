@@ -8,18 +8,13 @@
 
 #include <stdio.h>
 
-#include "window/window.h"
+#include "frame/frame.h"
+#define DARLING_TEST_HAS_FRAMES
+#include "darling/test_application.h"
 
 int main(void) {
-    Window *w = Window_create("hello from b", 900, 600);
-    Window_show(w);
-
-    while (!Window_shouldClose(w)) {
-        Window_pollEvents();
-        Window_dispatchEvents(w);
-    }
-
-    Window_destroy(w);
-    printf("hello_window: closed cleanly\n");
+    Frame *frame = Frame("hello from b", 900, 600);
+    if (!frame) return B_TEST_SKIP;
+    Darling_testKeepOpen();
     return 0;
 }

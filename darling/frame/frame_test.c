@@ -23,6 +23,8 @@ static void onClosed(Frame *frame, void *ud) {
     *(int *)ud += 1;
 }
 
+#define DARLING_TEST_HAS_FRAMES
+#include "darling/test_application.h"
 int main(void) {
     Frame *f = Frame("frame test", 400, 300);
     CHECK(f != NULL);

@@ -37,6 +37,7 @@ static inline void pixel(const Image *image, int x, int y, Color expected) {
 
 
 
+#include "darling/test_application.h"
 int main(void) {
     CHECK(Graphics_use(BACKEND_RASTER) && Graphics_resize(64, 64));
     Rect outer = {16, 16, 32, 32};

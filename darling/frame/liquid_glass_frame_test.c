@@ -8,6 +8,7 @@
 // false, the chrome falls back to Frame_setBlur, and the test still passes.
 
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "frame/frame.h"
@@ -26,9 +27,13 @@ static int g_fail = 0;
 
 #define GLASS_WINDOW_WIDTH  900
 #define GLASS_WINDOW_HEIGHT 600
-#define GLASS_HOLD_MS       12000
 
-int main(void) {
+#define DARLING_TEST_HAS_FRAMES
+#define DARLING_TEST_WITH_ARGS
+#include "darling/test_application.h"
+int main(int argc, char **argv) {
+    bool interactive = argc == 2 && strcmp(argv[1], "--interactive") == 0;
+    if (argc > 1 && !interactive) { fprintf(stderr, "usage: %s [--interactive]\n", argv[0]); return 1; }
     printf("=== LiquidGlassFrame (visual) ===\n");
 
     // 1. An empty, naked, see-through window: transparent content, no opaques.
@@ -68,18 +73,14 @@ int main(void) {
     CHECK(got.cornerRadius == 24.0f);
     CHECK(got.tintColor == 0x00000000u);
 
-    // 3. Show and hold so the glass is visible; repaint each step.
+    // 3. Show, then return to Application lifetime until actual window closure.
     Frame_show(f);
     // The glass is composited by the window server, independently of us; the
     // content here is empty and static, so there is nothing to repaint per step.
-    // Just pump events and wait — spamming Frame_render (software raster) every
+    // Application services events — spamming Frame_render (software raster) every
     // 16ms was pure busywork and made the window feel laggy.
-    for (int i = 0; i < GLASS_HOLD_MS / 16; i++) {
-        Window_pollEvents();
-        usleep(16000);
-    }
-
-    Frame_close(f);
+    if (interactive) Darling_testKeepOpen(); // lives until the user CLOSES it
+    else Frame_destroy(f); // automated descriptor checks explicitly end their window
     printf("liquid_glass_frame_test: %s\n", g_fail == 0 ? "ALL PASS" : "FAILURES");
     return g_fail == 0 ? 0 : 1;
 }

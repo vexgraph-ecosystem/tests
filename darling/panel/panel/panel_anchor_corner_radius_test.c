@@ -2,12 +2,13 @@
 //
 // VISUAL: nine Panels, one per PARENT anchor (row-major PART_*), each a fat
 // rounded rect with a shadow, added to a Frame through the Panel API. Saves a
-// PNG, then holds the window briefly so a human can see the placement.
+// PNG, then returns to Application lifetime until the user closes the window.
 //
 // (Split from the old "gallery" so this test proves exactly two things at once:
 // anchoring and corner radius.)
 
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "frame/frame.h"
@@ -24,7 +25,12 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
-int main(void) {
+#define DARLING_TEST_HAS_FRAMES
+#define DARLING_TEST_WITH_ARGS
+#include "darling/test_application.h"
+int main(int argc, char **argv) {
+    bool interactive = argc == 2 && strcmp(argv[1], "--interactive") == 0;
+    if (argc > 1 && !interactive) { fprintf(stderr, "usage: %s [--interactive]\n", argv[0]); return 1; }
     Frame *f = Frame("panel — anchor + corner radius", 1200, 820);
     CHECK(f != NULL);
     Frame_setBackgroundColor(f, COLOR_CLEAR);   // clear paint (alpha is paint only)
@@ -52,11 +58,8 @@ int main(void) {
     CHECK(Frame_savePNG(f, "/tmp/panel_anchor_corner_radius.png"));   // CAPTURE
 
     Frame_show(f);
-    for (int i = 0; i < 6000 / 16; i++) {
-        Window_pollEvents();
-        usleep(16000);
-    }
-    Frame_close(f);
+    if (interactive) Darling_testKeepOpen(); // wait for actual closure, no timed hold
+    else Frame_destroy(f);
 
     if (g_fail == 0) printf("panel_anchor_corner_radius_test: ALL PASS\n");
     return g_fail == 0 ? 0 : 1;

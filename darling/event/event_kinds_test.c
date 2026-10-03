@@ -44,6 +44,7 @@ static bool dispatch(Element *root, int kind, float x, float y) {
     return Element_dispatchEvent(root, &ev);
 }
 
+#include "darling/test_application.h"
 int main(void) {
     ElementDesc dd = {0};
     dd.width = 200; dd.height = 200;

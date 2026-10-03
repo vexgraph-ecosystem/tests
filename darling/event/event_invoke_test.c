@@ -58,6 +58,7 @@ static void on_document_changed(Element *e, const Document *d, void *ud) {
     push((Trace *)ud, 6);
 }
 
+#include "darling/test_application.h"
 int main(void) {
     ElementDesc dd = {0};
     dd.width = 200; dd.height = 200;

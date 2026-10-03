@@ -19,6 +19,8 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+#define DARLING_TEST_HAS_FRAMES
+#include "darling/test_application.h"
 int main(void) {
     Frame *f = Frame("resize", 800, 600);
     CHECK(f != NULL);

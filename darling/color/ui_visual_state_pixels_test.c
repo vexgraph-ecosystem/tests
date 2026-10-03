@@ -52,6 +52,7 @@ static inline Image *rasterCapture(Element *root, int width, int height) {
 }
 
 
+#include "darling/test_application.h"
 int main(void) {
     ElementDesc desc1 = {.width = 96, .height = 96};
     Element *root = Element(&desc1);

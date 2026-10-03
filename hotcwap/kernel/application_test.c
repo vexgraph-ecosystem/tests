@@ -60,18 +60,20 @@ int main(void) {
     CHECK(strcmp(Application_getIconPath(a), "icons/app.png") == 0);
 
     // Lifecycle flags.
-    Application_start(a);
+    CHECK(Application_begin(a));
     CHECK(Application_isRunning(a));
     Application_stop(a);
+    Application_finish(a);
     CHECK(!Application_isRunning(a));
 
     // Completion predicate: null is finished; not-running is finished;
     // running with no windows is NOT finished (nothing ends it).
     CHECK(Application_isFinished(nullptr));
     CHECK(Application_isFinished(a));
-    Application_start(a);
+    CHECK(Application_begin(a));
     CHECK(!Application_isFinished(a));
     Application_stop(a);
+    Application_finish(a);
 
     // Window registry with opaque sentinel handles (never dereferenced here).
     Window *w1 = (Window*) (uintptr_t) 0x1;
@@ -120,10 +122,12 @@ int main(void) {
     Window *rw = Window_create("app_test", 200, 150);
     if (rw) {
         CHECK(Application_addWindow(app, rw));
-        Application_start(app);
+        CHECK(Application_begin(app));
         CHECK(!Application_isFinished(app));         // window still open
         Window_setShouldClose(rw, true);
         CHECK(Application_isFinished(app));          // every window closed
+        Application_finish(app);
+        Application_removeWindow(app, rw);
         Window_destroy(rw);
     } else {
         printf("application_test: SKIP real-window isFinished (no window server)\n");

@@ -51,6 +51,8 @@ static inline Image *rasterCapture(Element *root, int width, int height) {
     return image;
 }
 
+#define DARLING_TEST_HAS_FRAMES
+#include "darling/test_application.h"
 int main(void) {
     ElementDesc desc1 = {.width = 128, .height = 128};
     Element *root = Element(&desc1);

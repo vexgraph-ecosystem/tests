@@ -25,6 +25,7 @@ static void px(const Image *img, int x, int y, int *r, int *g, int *b, int *a) {
     *r = p[0]; *g = p[1]; *b = p[2]; *a = p[3];
 }
 
+#include "darling/test_application.h"
 int main(void) {
     CHECK(Graphics_use(BACKEND_RASTER));
     CHECK(Graphics_resize(64, 64));

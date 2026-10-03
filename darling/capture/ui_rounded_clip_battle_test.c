@@ -63,6 +63,8 @@ static void verify(Image *shot) {
         }
     }
 }
+#define DARLING_TEST_HAS_FRAMES
+#include "darling/test_application.h"
 int main(void) {
     Frame *frame = Frame("rounded clipping battle", EXTENT, EXTENT);
     CHECK(frame);

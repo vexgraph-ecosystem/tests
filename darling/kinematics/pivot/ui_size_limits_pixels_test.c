@@ -52,6 +52,7 @@ static inline Image *rasterCapture(Element *root, int width, int height) {
 }
 
 
+#include "darling/test_application.h"
 int main(void) {
     uint32_t baseline = PropertyPool_live(PropertyPool_default());
     ElementDesc rd = {.width = 192, .height = 128};

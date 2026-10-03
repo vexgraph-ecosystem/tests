@@ -55,8 +55,15 @@ static void observe(Board *board, void *userdata) {
     Frame *frame = userdata;
     CHECK(!Element_isDirty(Frame_element(frame))); // content board must run first
 }
+#define DARLING_TEST_HAS_FRAMES
+#include "darling/test_application.h"
 int main(void) {
     Frame *frame = Frame("revalidate cascade battle", 240, 160); CHECK(frame);
+    // This oracle proves synchronous cascade ordering, not paced publication.
+    // Explicitly use the supported uncapped policy; keep all assertions intact.
+    Frame_setFPSCap(frame, -1);
+    Frame_setFPSCapWhenFocusGain(frame, 0);
+    Frame_setFPSCapWhenFocusLost(frame, 0);
     Frame_setBackground(frame, COLOR_BLACK);
     Panel *parent = Panel(240, 160), *child = Panel(40, 30);
     CHECK(parent && child); Panel_setBackground(parent, COLOR_CLEAR);

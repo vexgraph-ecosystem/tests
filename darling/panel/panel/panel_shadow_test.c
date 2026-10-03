@@ -19,6 +19,7 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+#include "darling/test_application.h"
 int main(void) {
     Panel *p = Panel();
     Panel_setSize(p, 100, 50);

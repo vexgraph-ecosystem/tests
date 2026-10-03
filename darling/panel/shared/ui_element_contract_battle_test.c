@@ -12,6 +12,7 @@
 
 
 
+#include "darling/test_application.h"
 int main(void) {
     uint32_t baseline = PropertyPool_live(PropertyPool_default());
     Element *root = Element();

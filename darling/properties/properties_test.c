@@ -25,6 +25,7 @@ static int g_fail = 0;
 
 static bool near(float a, float b) { return (a > b ? a - b : b - a) < 0.01f; }
 
+#include "darling/test_application.h"
 int main(void) {
     Panel *root = Panel(200, 200);
     Panel *a = Panel(50, 50);

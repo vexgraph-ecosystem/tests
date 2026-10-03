@@ -19,6 +19,7 @@ static Element *ExampleWidget_graphics(const ExampleWidget *self) {
 DECLARE_CURSOR(ExampleWidget);
 IMPLEMENT_CURSOR(ExampleWidget)
 
+#include "darling/test_application.h"
 int main(void) {
     Panel *parent = Panel(200, 100);
     Panel *child = Panel(50, 50);

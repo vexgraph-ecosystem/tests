@@ -67,6 +67,8 @@ static void verify(Image *shot) {
         }
     }
 }
+#define DARLING_TEST_HAS_FRAMES
+#include "darling/test_application.h"
 int main(void) {
     ElementDesc od = {.width = 96, .height = 96, .offsetX = 16, .offsetY = 16, .radius = 30};
     ElementDesc id = {.width = 88, .height = 88, .offsetX = 16, .offsetY = -8, .radius = 28};
