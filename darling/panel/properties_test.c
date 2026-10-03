@@ -65,6 +65,13 @@ int main(void) {
     Panel_setCornerRadius(a, 12.0f);
     CHECK(near(Element_radius(Panel_graphics(a)), 12.0f));
 
+    // min/max size modulate the EFFECTIVE size (clamped on the bound)
+    Panel_setSize(a, 300, 40);
+    Panel_setMinimumSize(a, 80, 90);
+    Panel_setMaximumSize(a, 200, 0);        // width ceiling; height unbounded
+    CHECK(near(Element_width(Panel_graphics(a)), 200.0f));
+    CHECK(near(Element_height(Panel_graphics(a)), 90.0f));
+
     // destroying the root frees a/b and their Elements in one pass
     Panel_destroy(root);
 

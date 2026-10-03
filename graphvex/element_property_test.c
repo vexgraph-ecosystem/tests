@@ -83,6 +83,34 @@ int main(void) {
     Image_destroy(img);
     DisplayList_free(dl);
 
+    // 4. min/max size clamp MODULATES layout at read time
+    Element *sized = Element();
+    Element_setSize(sized, 300, 40);
+    Element_setMinimumSize(sized, 80, 90);       // floor
+    Element_setMaximumSize(sized, 200, 0);       // width ceiling; height unbounded
+    CHECK(Element_width(sized) == 200.0f);       // 300 clamped down
+    CHECK(Element_height(sized) == 90.0f);       // 40 clamped up
+    Rect sr = Element_resolve(sized, (Rect){0, 0, 1000, 1000});
+    CHECK(sr.w == 200.0f && sr.h == 90.0f);      // resolve uses the clamp
+
+    // a floor set after the size still applies: the clamp is on the BOUND
+    Element_setSize(sized, 10, 10);
+    CHECK(Element_width(sized) == 80.0f);        // 10 -> floor 80
+    Element_setMaximumSize(sized, 0, 0);         // clear ceilings
+    Element_setMinimumSize(sized, 0, 0);         // clear floors
+    CHECK(Element_width(sized) == 10.0f);
+
+    // sharing: an aliasing element clamps identically through the shared bound
+    Element *alias = Element();
+    Element_setProperty(alias, Element_property(sized));   // borrow
+    Element_setMaximumSize(sized, 60, 60);
+    CHECK(Element_width(alias) == 10.0f);        // 10 < 60, unchanged
+    Element_setSize(sized, 500, 500);
+    CHECK(Element_width(alias) == 60.0f);        // ceiling seen via the alias
+    CHECK(Element_height(alias) == 60.0f);
+    Element_destroy(alias);
+    Element_destroy(sized);
+
     Element_destroy(b);
     Element_destroy(clipParent);   // frees big
     Element_destroy(root);         // frees a
