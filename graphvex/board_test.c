@@ -16,6 +16,12 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// recording revalidate steps, to prove order + count
+static int g_steps[8];
+static int g_stepCount = 0;
+static void step1(Board *board, void *ud) { (void)board; (void)ud; g_steps[g_stepCount++] = 1; }
+static void step2(Board *board, void *ud) { (void)board; (void)ud; g_steps[g_stepCount++] = 2; }
+
 int main(void) {
     Board *b = Board_2(8, 8);
     CHECK(b != NULL);
@@ -46,6 +52,25 @@ int main(void) {
     Board *d = Board_0();
     CHECK(Board_width(d) == 1 && Board_height(d) == 1);
     Board_destroy(d);
+
+    // revalidation: steps run in registration order, then the board publishes
+    uint64_t genBefore = Board_generation(b);
+    Board_addRevalidator(b, step1, NULL);
+    Board_addRevalidator(b, step2, NULL);
+    Board_revalidate(b);
+    CHECK(g_stepCount == 2 && g_steps[0] == 1 && g_steps[1] == 2);
+    CHECK(Board_generation(b) == genBefore + 1);
+
+    // clearing drops every step; revalidate then runs none
+    g_stepCount = 0;
+    Board_clearRevalidators(b);
+    Board_revalidate(b);
+    CHECK(g_stepCount == 0);
+
+    // null-safe
+    Board_addRevalidator(NULL, step1, NULL);
+    Board_clearRevalidators(NULL);
+    Board_revalidate(NULL);            // must not crash
 
     // null-safe
     CHECK(!Board_isValid(NULL));

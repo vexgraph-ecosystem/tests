@@ -30,6 +30,9 @@ static bool recordPresent(Surface *surface, void *userdata) {
     return g_blitOk;
 }
 
+// a board revalidate step, recorded
+static void countReval(Board *board, void *ud) { (void)board; (*(int *)ud)++; }
+
 int main(void) {
     Surface *s = Surface_2((void *)0xCAFE, 100, 50);
     CHECK(s != NULL);
@@ -67,6 +70,29 @@ int main(void) {
     CHECK(Surface_resize(s, 200, 100));
     CHECK(Surface_width(s) == 200 && Surface_height(s) == 100);
     CHECK(Image_width(Surface_presentImage(s)) == 200);
+
+    // revalidation cascade: Surface_revalidate runs each attached board's steps,
+    // then presents the finished image
+    Surface_onPresent(s, recordPresent, &hits);   // reinstall a passing blit
+    Board *bd = Board_2(100, 50);
+    int stepRuns = 0;
+    Board_addRevalidator(bd, countReval, &stepRuns);
+    Surface_addBoard(s, bd);
+    int callsBefore = g_presentCalls;
+    Surface_revalidate(s);
+    CHECK(stepRuns == 1);                          // board revalidated first
+    CHECK(g_presentCalls == callsBefore + 1);      // then presented
+
+    // a detached board is no longer revalidated
+    Surface_removeBoard(s, bd);
+    Surface_revalidate(s);
+    CHECK(stepRuns == 1);
+    Board_destroy(bd);
+
+    // null-safe
+    Surface_addBoard(NULL, NULL);
+    Surface_removeBoard(NULL, NULL);
+    Surface_revalidate(NULL);          // must not crash
 
     // a null native handle is a valid offscreen surface
     Surface *off = Surface_0();
