@@ -825,6 +825,11 @@ a real window**, shows **many variations of the same element**, and proves **foc
 ### Window-First Law
 **Proves:** behavior is shown in a real window, not a mock.
 - Every component test mounts and renders inside a window.
+- Every widget's openable gallery is an Application with an attached Darling
+  Frame, not merely a raw starter Window. One gallery may compare variants in
+  one Frame. Keep the Application alive until all registered windows are closed;
+  hiding a window is not closing it. Legacy raw-Window test starters do not prove
+  this gallery contract and need migration separately.
 - A headless probe is used only for deterministic logic and is never presented as proof of hardware
   behavior.
 
