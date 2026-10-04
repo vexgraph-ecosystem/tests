@@ -58,6 +58,35 @@ class CliTest(unittest.TestCase):
     def require_rust(self):
         self.require_tool("rustc", "--version")
 
+    def require_python(self):
+        self.require_tool("python3", "--version")
+
+    def test_python_instance_shorthand_and_arg_passthrough(self):
+        self.require_python()
+        self.source("hello.py", 'import sys\n'
+                    'print(" ".join(sys.argv[1:]))\n'
+                    'sys.exit(3)\n')
+        for arguments in (("run", "instance", "hello.py"), ("python", "hello.py")):
+            result = self.invoke(*arguments, "--", "hello", "py", expected=3)
+            self.assertEqual(result.stdout.strip(), "hello py")
+        self.assertFalse(list(self.project.rglob("__pycache__")))
+
+    def test_python_exec_runs_interpreted_source(self):
+        self.require_python()
+        self.source("hello.py", 'print("exec py")\n')
+        self.assertEqual(self.invoke("run", "exec", "hello.py").stdout.strip(), "exec py")
+
+    def test_python_build_keeps_bytecode_out_of_source(self):
+        self.require_python()
+        self.source("hello.py", 'print("built")\n')
+        output = Path(self.invoke("build", "python").stdout.strip())
+        self.assertTrue(output.is_relative_to(self.home / "state"))
+        self.assertTrue(any(path.suffix == ".pyc" for path in output.rglob("*.pyc")))
+        self.assertFalse(list(self.project.rglob("__pycache__")))
+
+    def test_python_build_without_sources(self):
+        self.invoke("build", "python", expected=1)  # no .py -> cannot enumerate
+
     def test_rust_exec_builds_then_runs(self):
         self.require_rust()
         self.source("hello.rs", 'fn main() {\n'

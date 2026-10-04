@@ -14,7 +14,7 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn("C is the implementation language, not a restriction", text)
         for command in ("b run <exec|instance>", "b build <language>", "b export <manifestmainfile>"):
             self.assertIn(command, text)
-        for language in ("C++", "Rust", "C#", "Java", "JavaScript", "TypeScript", "HTML"):
+        for language in ("C++", "Rust", "Python", "C#", "Java", "JavaScript", "TypeScript", "HTML"):
             self.assertIn(language, text)
         for comparison in ("nob", "IntelliJ", "Maven", "Gradle", "vexgraph"):
             self.assertNotIn(comparison, text)
@@ -26,6 +26,8 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn("builds a runnable source artifact first", text)
         self.assertIn("b build rust ./crate", text)
         self.assertIn("requires a `rustc` on `PATH`", text)
+        self.assertIn("b python ./app.py", text)
+        self.assertIn("adding a language is one file pair", text.lower())
         self.assertNotIn("instance supervision", text)
         workspace = (ROOT / "README.md").read_text()
         self.assertIn("`run instance` runs directly", workspace)
