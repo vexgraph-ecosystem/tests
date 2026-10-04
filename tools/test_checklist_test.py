@@ -45,6 +45,18 @@ class ChecklistTest(unittest.TestCase):
         self.assertNotIn(CHECKLIST.REPORT.as_posix(), records)
         self.assertEqual(self.run_cli(["check"]), 0)
 
+    def test_standalone_b_repo_owns_its_inventory(self):
+        subprocess.run(["git", "init", "-q", str(self.root / "b")], check=True)
+        (self.root / "b/b.c").write_text("int main(void) { return 0; }\n")
+        (self.root / "b/.gitignore").write_text("b.json\n")
+        (self.root / "b/b.json").write_text("generated\n")
+        with (self.root / ".gitignore").open("a") as ignore:
+            ignore.write("b/\n")
+        groups = CHECKLIST.inventory(self.root)
+        self.assertIn("b/b.c", groups["b"])
+        self.assertNotIn("b/b.json", groups["b"])
+        self.assertNotIn("b/b.c", groups["workspace"])
+
     def test_ignored_wiki_and_project_repos_use_their_own_ignores(self):
         with (self.root / ".gitignore").open("a") as ignore:
             ignore.write("repos/\nprojects/\n")
