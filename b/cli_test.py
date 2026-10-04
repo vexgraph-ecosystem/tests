@@ -6,6 +6,7 @@ Java needs an installed JDK; other platforms and instance/export remain gaps.
 
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -42,14 +43,43 @@ class CliTest(unittest.TestCase):
         path.write_text(text)
         return path
 
-    def require_java(self):
+    def require_tool(self, executable, *probe):
         try:
-            result = subprocess.run(["javac", "-version"], capture_output=True,
+            result = subprocess.run([executable, *probe], capture_output=True,
                                     text=True, timeout=15)
         except (OSError, subprocess.TimeoutExpired):
-            self.skipTest("installed JDK unavailable")
+            self.skipTest(f"{executable} toolchain unavailable")
         if result.returncode != 0:
-            self.skipTest("installed JDK unavailable")
+            self.skipTest(f"{executable} toolchain unavailable")
+
+    def require_java(self):
+        self.require_tool("javac", "-version")
+
+    def require_rust(self):
+        self.require_tool("rustc", "--version")
+
+    def test_rust_exec_builds_then_runs(self):
+        self.require_rust()
+        self.source("hello.rs", 'fn main() {\n'
+                    '    let args: Vec<String> = std::env::args().skip(1).collect();\n'
+                    '    println!("{}", args.join(" "));\n'
+                    '    std::process::exit(5);\n}\n')
+        result = self.invoke("run", "exec", "hello.rs", "--", "hello", "rust", expected=5)
+        self.assertEqual(result.stdout.strip(), "hello rust")
+
+    def test_rust_instance_rejects_without_compiling(self):
+        self.source("hello.rs", 'fn main() {}\n')
+        result = self.invoke("run", "instance", "hello.rs", expected=1)
+        self.assertIn("no source runtime", result.stderr)
+
+    def test_rust_directory_build_and_documented_missing_toolchain(self):
+        self.source("hello.rs", 'fn main() {}\n')
+        if shutil.which("rustc") is None:
+            result = self.invoke("build", "rust", expected=1)
+            self.assertIn("cannot launch rustc", result.stderr)
+            return
+        output = Path(self.invoke("build", "rust").stdout.strip())
+        self.assertTrue(output.is_file())
 
     def test_help_and_invalid_grammar(self):
         help_text = self.invoke("--help").stdout
@@ -114,7 +144,7 @@ class CliTest(unittest.TestCase):
         result = self.invoke("build", "c", environment=environment, expected=1)
         self.assertIn("cannot launch", result.stderr)
 
-    def test_instance_and_export_reject_without_side_effects(self):
+    def test_c_instance_and_export_reject_without_side_effects(self):
         source = self.source(text='int main(void) { return 23; }\n')
         self.invoke("run", "instance", source, expected=1)
         manifest = self.project / "manifest.json"
@@ -124,13 +154,31 @@ class CliTest(unittest.TestCase):
             self.invoke("export", manifest, destination, kind, expected=1)
             self.assertFalse(destination.exists())
 
-    def test_java_source_alias_and_explicit_run(self):
+    def test_java_source_alias_and_direct_instance(self):
         self.require_java()
         self.source("Hello.java", 'class Hello { public static void main(String[] args) {'
                     'System.out.println(args[0]); System.exit(6); } }\n')
-        for arguments in (("java", "Hello.java"), ("run", "exec", "Hello.java")):
+        before = set((self.home / "state").rglob("*.class"))
+        for arguments in (("java", "Hello.java"), ("run", "instance", "Hello.java")):
             result = self.invoke(*arguments, "--", "hello world", expected=6)
             self.assertEqual(result.stdout.strip(), "hello world")
+        self.assertFalse(list(self.project.rglob("*.class")))
+        self.assertEqual(set((self.home / "state").rglob("*.class")), before)
+
+    def test_java_exec_builds_classes_then_runs(self):
+        self.require_java()
+        self.source("Hello.java", 'class Hello { public static void main(String[] args) {'
+                    'System.out.println(args[0]); System.exit(6); } }\n')
+        before = set((self.home / "state").rglob("Hello.class"))
+        result = self.invoke("run", "exec", "Hello.java", "--", "built artifact", expected=6)
+        self.assertEqual(result.stdout.strip(), "built artifact")
+        self.assertTrue(set((self.home / "state").rglob("Hello.class")) - before)
+
+    def test_existing_executable_instance_needs_no_compiler(self):
+        self.source(text='int main(void) { return 9; }\n')
+        output = self.invoke("build", "c").stdout.strip()
+        environment = dict(self.environment, CC="missing-b-test-compiler")
+        self.invoke("run", "instance", output, environment=environment, expected=9)
 
     def test_java_directory_build(self):
         self.require_java()

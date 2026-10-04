@@ -22,6 +22,14 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn("serving and web builds are **not implemented yet**", text)
         self.assertIn("../tests/b/cli_test.py", text)
         self.assertIn("compatibility adapter, not b's general project model", text)
+        self.assertIn("runs a file as-is through its runtime", text)
+        self.assertIn("builds a runnable source artifact first", text)
+        self.assertIn("b build rust ./crate", text)
+        self.assertIn("requires a `rustc` on `PATH`", text)
+        self.assertNotIn("instance supervision", text)
+        workspace = (ROOT / "README.md").read_text()
+        self.assertIn("`run instance` runs directly", workspace)
+        self.assertIn("`run exec` builds the source artifact", workspace)
 
 
 if __name__ == "__main__":
