@@ -5,15 +5,12 @@ source file is **not** evidence that its target was built or executed.
 
 ## Run
 
-### CLion
+### Editor
 
-Open the **workspace root** (the parent of this checkout) as a CMake project
-and reload CMake. Select a native test target such as
-`ui_anchor_pivot_pixels_test` from the Run/Debug dropdown. Do not use CLion's
-standalone C-file runner: it does not know the framework include paths/libraries.
-The root `CMakeLists.txt` imports their configuration from `b`; CLion's bundled
-Ninja is supported. Window/UI/GPU CTest execution is opt-in; manual Run/Debug
-targets remain available. See the workspace README for setup and lab limits.
+The workspace build system is `b` (standalone repo at `b/`); it is the source of
+truth for include paths, libraries, and targets. The former CMake/CTest adapter
+is retired. Run targets from the terminal with `./tools/b run <target>` or
+`tests/run.sh <name>`.
 
 ### Terminal
 
@@ -42,7 +39,6 @@ python3 tools/test_checklist.py run --file tools/agents.sh --scope 'Bash syntax 
 python3 tools/test_checklist.py check
 python3 tests/tools/test_checklist_test.py
 python3 tests/tools/agents_test.py
-python3 tests/tools/clion_adapter_test.py  # CMake adapter lab; no UI test execution
 ```
 
 Consult and update it in the same work cycle, per the Timestamped Test Checklist
@@ -53,8 +49,8 @@ report, not a manually maintained source file.
 ## Proof gates
 
 The Per-File Battle Test Law and the Public Surface Proof Law are enforced in
-the C23 build tool (`tools/b.c`), not by a script. The baselines are data files
-under `tests/vexspoke/`; each **may only shrink**.
+the C23 build tool (the workspace engine at `b/workspace.c`), not by a script.
+The baselines are data files under `tests/vexspoke/`; each **may only shrink**.
 
 ```sh
 b check                    # static: every compiled unit has an owner test, and
