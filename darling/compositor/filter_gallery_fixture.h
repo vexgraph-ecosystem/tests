@@ -2,14 +2,16 @@
 #define DARLING_FILTER_GALLERY_FIXTURE_H
 
 // Deterministic picture and captions for the gallery, not production image/font
-// loading. All three views execute Graphvex's actual CPU scope compositor.
-#include "compositor/compositor_image.h"
-#include "compositor/compositor_scope.h"
+// loading. All three views execute Graphvex's real Vulkan scoped scatter pass.
+#include "compositor/gpu_scope.h"
 #include "image.h"
 
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-enum { FILTER_GALLERY_WIDTH = 360, FILTER_GALLERY_HEIGHT = 300 };
+enum { FILTER_GALLERY_WIDTH = 360, FILTER_GALLERY_HEIGHT = 300,
+       FILTER_GALLERY_GPU_PIXEL_BUDGET = 262144 }; // explicit cold allocation/work safety budget
 
 static inline void FilterGallery_pixel(Image *image, unsigned x, unsigned y, Color color) {
     if (x >= Image_width(image) || y >= Image_height(image))
@@ -81,74 +83,52 @@ static inline Image *FilterGallery_landscape(unsigned width, unsigned height) {
     return image;
 }
 
-static inline CompositorStatus FilterGallery_make(unsigned which, Image **out) {
-    if (which > 2 || !out)
-        return COMPOSITOR_INVALID;
+static inline bool FilterGallery_shaderDirectory(char *dest,size_t cap) {
+    const char *home=getenv("B_HOME");
+    int length;
+    if (home)
+        length=snprintf(dest,cap,"%s/out/debug/shader/compositor",home);
+    else
+        length=snprintf(dest,cap,"%s/Library/Application Support/vexgraph/b/out/debug/shader/compositor",getenv("HOME"));
+    return length>=0 && (size_t) length<cap;
+}
+
+static inline bool FilterGallery_render(GpuScope *gpu,unsigned which,Image **out) {
+    if (which > 2 || !out || !gpu)
+        return false;
     Image *baseline = FilterGallery_landscape(FILTER_GALLERY_WIDTH, FILTER_GALLERY_HEIGHT);
     Image *photo = nullptr, *decorationImage = nullptr;
-    CompositorSurface *prior = nullptr, *decoration = nullptr, *foreground = nullptr, *result = nullptr;
     if (!baseline)
-        return COMPOSITOR_NO_MEMORY;
+        return false;
     if (which) {
         for (unsigned y = 0; y < FILTER_GALLERY_HEIGHT; ++y)
             for (unsigned x = 0; x < FILTER_GALLERY_WIDTH; ++x)
                 FilterGallery_pixel(baseline, x, y, (x / 12 + y / 12) % 2 ?
                     COLOR_RGBA(39, 45, 61, 255) : COLOR_RGBA(27, 33, 47, 255));
     }
-    CompositorStatus status = CompositorSurface_fromImage(baseline, 0, 0, &prior);
-    if (status != COMPOSITOR_OK)
-        goto cleanup;
+    bool status=false;
     decorationImage = Image_2(296, 180);
     if (!decorationImage || !Image_ensureShadow(decorationImage, 296, 180)) {
-        status = COMPOSITOR_NO_MEMORY;
         goto cleanup;
     }
     Image_fill(decorationImage, which == 0 ? COLOR_RGBA(225, 239, 255, 80) :
                which == 1 ? COLOR_RGBA(69, 93, 141, 255) : COLOR_RGBA(138, 76, 119, 255));
-    status = CompositorSurface_fromImage(decorationImage, 32, 78, &decoration);
-    if (status != COMPOSITOR_OK)
-        goto cleanup;
     if (which) {
         photo = FilterGallery_landscape(296, 132);
         if (!photo) {
-            status = COMPOSITOR_NO_MEMORY;
             goto cleanup;
         }
-        status = CompositorSurface_fromImage(photo, 32, 100, &foreground);
     } else {
         photo = Image_2(154, 24);
         if (!photo || !Image_ensureShadow(photo, 154, 24)) {
-            status = COMPOSITOR_NO_MEMORY;
             goto cleanup;
         }
         Image_fill(photo, COLOR_CLEAR);
         FilterGallery_text(photo, 2, 2, "GLASS", 3, COLOR_RGBA(12, 37, 65, 255));
-        status = CompositorSurface_fromImage(photo, 110, 154, &foreground);
     }
-    if (status != COMPOSITOR_OK)
-        goto cleanup;
-    const CompositorSurface *content[] = {foreground};
-    FilterToken blur = Filter_scatterBlur(8);
-    CompositorScopeDesc desc = {.priorScene = prior, .decoration = decoration,
-        .foreground = content, .foregroundCount = 1, .panelBounds = {32, 78, 296, 180}};
-    if (which == 0) {
-        desc.backdropFilters = &blur;
-        desc.backdropFilterCount = 1;
-    } else if (which == 1) {
-        desc.foregroundFilters = &blur;
-        desc.foregroundFilterCount = 1;
-    } else {
-        desc.elementFilters = &blur;
-        desc.elementFilterCount = 1;
-    }
-    status = Compositor_scopedScene(&desc, &result);
-    if (status == COMPOSITOR_OK)
-        status = CompositorSurface_toImage(result, out);
+    status=GpuScope_render(gpu,which,baseline,decorationImage,32,78,
+        photo,which ? 32 : 110,which ? 100 : 154,8,out);
 cleanup:
-    CompositorSurface_destroy(result);
-    CompositorSurface_destroy(foreground);
-    CompositorSurface_destroy(decoration);
-    CompositorSurface_destroy(prior);
     Image_destroy(photo);
     Image_destroy(decorationImage);
     Image_destroy(baseline);
@@ -156,7 +136,7 @@ cleanup:
 }
 
 static inline Image *FilterGallery_caption(unsigned which) {
-    static const char *titles[] = {"BACKDROP", "FOREGROUND", "ELEMENT"};
+    static const char *titles[] = {"GPU BACKDROP", "GPU FOREGROUND", "GPU ELEMENT"};
     static const char *details[] = {"BEHIND PANEL", "CHILD BLUR CLIPPED", "WHOLE PANEL BLUR"};
     if (which > 2)
         return nullptr;
