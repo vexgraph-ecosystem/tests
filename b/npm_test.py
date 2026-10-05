@@ -50,7 +50,11 @@ class NpmTest(AdapterCase):
         self.manifest.write_text("not json\n")
         self.invoke("build", "npm", self.project, expected=None)
         wrong = self.source("badpackage.json", "{}\n")
-        self.assertIn("requires", self.invoke("npm", wrong, expected=1).stderr)
+        # Manifest selectors now match exact basenames at registry admission,
+        # rather than reaching npm's second validation via a suffix false-match.
+        rejected = self.invoke("npm", wrong, expected=1)
+        self.assertIn("not an executable or a supported source", rejected.stderr)
+        self.assertEqual(rejected.stderr.count("[vex]"), 1)
         self.manifest.unlink()
         self.assertIn("requires", self.invoke("build", "npm", self.project, expected=1).stderr)
 
