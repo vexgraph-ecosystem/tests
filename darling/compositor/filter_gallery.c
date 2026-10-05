@@ -10,17 +10,25 @@
 
 // Interactive gallery, intentionally not an automatically registered _test.
 // --smoke performs native captured-pixel checks then closes; it is lab proof,
-// never user appearance approval. All filters run in CPU reference preparation.
+// never user appearance approval. All filters/composition run in Vulkan shaders;
+// one final readback bridges each static output to the existing Picture API.
 typedef struct FilterGalleryState {
     Picture *pictures[6];
     Image *images[6];
     Panel *cards[3]; // borrowed from Frame; anchors resolved by the real tree
+    Device *device;
+    GpuScope *gpu;
 } FilterGalleryState;
 static FilterGalleryState gallery;
 
 static void galleryClosed(Frame *frame, void *userdata) {
     (void) frame;
     FilterGalleryState *state = userdata;
+    if (GpuScope_destroy((*state).gpu)) {
+        (*state).gpu=nullptr;
+        Device_destroy((*state).device);
+        (*state).device=nullptr;
+    } // unsignaled GPU job/device remain alive; never free under outstanding work
     for (unsigned i = 0; i < 6; ++i) {
         Picture_destroy((*state).pictures[i]);
         (*state).pictures[i] = nullptr;
@@ -82,8 +90,18 @@ int main(int argc, char **argv) {
     // The gallery rests when clean. Do not impose a 30 Hz content ceiling on
     // native resize; changed geometry is published immediately by Frame_setSize.
     Frame_onClose(frame, galleryClosed, &gallery);
+    Device *device=Device_create(false);
+    char shaderDirectory[2048];
+    GpuScope *gpu=nullptr;
+    if (Device_isValid(device) && FilterGallery_shaderDirectory(shaderDirectory,sizeof shaderDirectory))
+        gpu=GpuScope(device,shaderDirectory,FILTER_GALLERY_GPU_PIXEL_BUDGET);
+    gallery.device=device;
+    gallery.gpu=gpu;
+    if (!gpu) {
+        Frame_destroy(frame); return 1;
+    }
     for (unsigned i = 0; i < 3; ++i) {
-        if (FilterGallery_make(i, &gallery.images[i * 2]) != COMPOSITOR_OK) {
+        if (!FilterGallery_render(gpu,i,&gallery.images[i * 2])) {
             Frame_destroy(frame);
             return 1;
         }
@@ -120,6 +138,12 @@ int main(int argc, char **argv) {
             Element_add(Panel_graphics(card), Picture_graphics(picture));
         }
     }
+    if (!GpuScope_destroy(gpu)) {
+        Frame_destroy(frame); return 1; // never free borrowed device under live GPU work
+    }
+    gallery.gpu=nullptr;
+    Device_destroy(device);
+    gallery.device=nullptr;
     Frame_show(frame);
     if (smoke)
         Surface_setClock(Frame_surface(frame), galleryFrozenClock, nullptr);
@@ -159,7 +183,7 @@ int main(int argc, char **argv) {
         Frame_destroy(frame);
         puts("filter_gallery: PASS (left/center/right anchors, four extents, frozen-clock native publication)");
     } else {
-        puts("Gallery open: backdrop LEFT; child blur CENTER; element blur RIGHT. Drag the window edges to compare anchors.");
+        puts("GPU-filtered gallery: backdrop LEFT; child blur CENTER; element blur RIGHT. Drag window edges to compare anchors.");
         Darling_testKeepOpen();
     }
     return 0;
