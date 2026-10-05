@@ -46,11 +46,11 @@ class ReadmeTest(unittest.TestCase):
         self.assertEqual(markup.stack, [])
         self.assertEqual(len(markup.images), 5)
         header, parents = markup.images[0]
-        self.assertEqual(header, {"src": "resources/vexgraph-header.png", "alt": "vexgraph", "width": "800"})
+        self.assertEqual(header, {"src": "resources/vexgraph.png", "alt": "vexgraph", "width": "800"})
         self.assertEqual(parents, [("p", {"align": "center"})])
         self.assertIn("\n# hey! vex here! 🦊\n", text)
         self.assertIn("\n### i make stuff unseriously in java and c23, and others too in my spare time\n", text)
-        self.assertLess(text.index("vexgraph-header.png"), text.index("hey! vex here!"))
+        self.assertLess(text.index("vexgraph.png"), text.index("hey! vex here!"))
         self.assertLess(text.index("spare time"), text.index("personal-projects.png"))
         for (image, parents), (filename, alt, href) in zip(markup.images[1:], CARDS):
             self.assertEqual(image, {"src": f"resources/{filename}", "alt": alt, "width": "23%"})
@@ -59,7 +59,7 @@ class ReadmeTest(unittest.TestCase):
         self.assertNotIn("<style", text.lower())
 
     def test_all_referenced_pngs_have_valid_chunks_and_decodable_pixels(self):
-        for filename in ["vexgraph-header.png", *(card[0] for card in CARDS)]:
+        for filename in ["vexgraph.png", *(card[0] for card in CARDS)]:
             with self.subTest(image=filename):
                 data = (ROOT / "resources" / filename).read_bytes()
                 self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n")
