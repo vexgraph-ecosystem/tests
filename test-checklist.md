@@ -1616,13 +1616,25 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
 | `repos/.github/profile/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
-## repos/.vex-graph
+## repos/vex-graph
 
-### `repos/.vex-graph`
+### `repos/vex-graph`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `repos/.vex-graph/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/vex-graph/.DS_Store` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/vex-graph/README.md` | ✅ | 1791185457 | 1246d3c951aeb797ef2a864ba16cca2ffcb5ce42b5a795fd254f9954c773bbc5 | ['python3', 'tests/repos/vex-graph/readme_test.py']; Offline HTML/link-target and PNG integrity assertions on macOS; no GitHub rendering, responsive appearance approval or network destination availability proof. Original artwork unchanged. | Profile layout contract: centered header, requested intro, ordered linked image cards; supplied PNG chunk CRCs, dimensions and decompression validated. | passed |
+
+### `repos/vex-graph/resources`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `repos/vex-graph/resources/.DS_Store` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `repos/vex-graph/resources/b.png` | ✅ | 1791185457 | e8693048051aea9363c97c18442b788de6fb90532342a5cbd454d7d8f0f6cf0f | ['python3', 'tests/repos/vex-graph/readme_test.py']; Offline HTML/link-target and PNG integrity assertions on macOS; no GitHub rendering, responsive appearance approval or network destination availability proof. Original artwork unchanged. | Profile layout contract: centered header, requested intro, ordered linked image cards; supplied PNG chunk CRCs, dimensions and decompression validated. | passed |
+| `repos/vex-graph/resources/ecosystem.png` | ✅ | 1791185457 | 54bec86e4a57792346d9a02b0234fccb75796aaae441b3ece192ba5741e3ea30 | ['python3', 'tests/repos/vex-graph/readme_test.py']; Offline HTML/link-target and PNG integrity assertions on macOS; no GitHub rendering, responsive appearance approval or network destination availability proof. Original artwork unchanged. | Profile layout contract: centered header, requested intro, ordered linked image cards; supplied PNG chunk CRCs, dimensions and decompression validated. | passed |
+| `repos/vex-graph/resources/personal-projects.png` | ✅ | 1791185457 | bce1cdc0f75e616b4251a618b49c13f7bc8881aa6c1a4914c82539787c19d9e0 | ['python3', 'tests/repos/vex-graph/readme_test.py']; Offline HTML/link-target and PNG integrity assertions on macOS; no GitHub rendering, responsive appearance approval or network destination availability proof. Original artwork unchanged. | Profile layout contract: centered header, requested intro, ordered linked image cards; supplied PNG chunk CRCs, dimensions and decompression validated. | passed |
+| `repos/vex-graph/resources/preferences-dot-md.png` | ✅ | 1791185457 | 858ad19249633ca027f5450115c727411d27d79c9a5f6938f0ad7b91084f7d10 | ['python3', 'tests/repos/vex-graph/readme_test.py']; Offline HTML/link-target and PNG integrity assertions on macOS; no GitHub rendering, responsive appearance approval or network destination availability proof. Original artwork unchanged. | Profile layout contract: centered header, requested intro, ordered linked image cards; supplied PNG chunk CRCs, dimensions and decompression validated. | passed |
+| `repos/vex-graph/resources/vexgraph-header.png` | ✅ | 1791185457 | d9c5dc13c3ebfd38bf545dd96cec20e68dc51510b340fb3bfb0195c9684c7403 | ['python3', 'tests/repos/vex-graph/readme_test.py']; Offline HTML/link-target and PNG integrity assertions on macOS; no GitHub rendering, responsive appearance approval or network destination availability proof. Original artwork unchanged. | Profile layout contract: centered header, requested intro, ordered linked image cards; supplied PNG chunk CRCs, dimensions and decompression validated. | passed |
 
 ## tests
 
@@ -2035,6 +2047,12 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `tests/hotcwap/window/traffic_light_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/hotcwap/window/window_event_test.c` | ✅ | 1791039342 | 81a0118c2b6887d7f05a36a03fbb15c940f673cc0d9253294b4aab8417cd9f12 | ['./tools/b', 'run', 'window_event_test']; Apple Silicon macOS; only assertions in tests/hotcwap/window/window_event_test.c; .h evidence is client compile/API use; integration scope where multiple subjects are named; no visual tour, OS prompts, sanitizer, full public-surface, or other-platform proof | window_event_test: automated headless/prompt-free contract assertions; no visual approval | passed |
 | `tests/hotcwap/window/window_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+### `tests/repos/vex-graph`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `tests/repos/vex-graph/readme_test.py` | ✅ | 1791185457 | 031952fd9a2806b278bf94c71fb7121f41e180cd48a2562df129e30fa747bef9 | ['python3', 'tests/repos/vex-graph/readme_test.py']; Offline HTML/link-target and PNG integrity assertions on macOS; no GitHub rendering, responsive appearance approval or network destination availability proof. Original artwork unchanged. | Profile layout contract: centered header, requested intro, ordered linked image cards; supplied PNG chunk CRCs, dimensions and decompression validated. | passed |
 
 ### `tests/tools`
 
