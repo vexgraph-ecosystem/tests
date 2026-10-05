@@ -19,15 +19,15 @@ class ReadmeTest(unittest.TestCase):
         readme = (ROOT / "README.md").read_text()
         self.assertIn("[command tree and examples](TREE.md)", readme)
         text = (ROOT / "TREE.md").read_text()
-        for phrase in ("build <language-or-backend>", "exec <file>", "instance <file>",
+        for phrase in ("build <adapter>", "exec <file>", "instance <file>",
                        "upload", "--port <port>", "--fqbn <matching-board>",
                        "PLANNED", "not implemented", "workspace <workspace-directory>",
                        "B_SQL_DATABASE", "no default database", "not a sandbox",
                        "not type-checking", "file suffix", "./tools/b targets",
                        "[Back to README](README.md)", "b run exec ./hello.c"):
             self.assertIn(phrase, text)
-        for source in (ROOT / "languages").glob("*.c"):
-            for name in re.findall(r'const Language \w+ = \{\s*"([^"]+)"', source.read_text()):
+        for source in (ROOT / "adapters").glob("*.c"):
+            for name in re.findall(r'const Adapter \w+ = \{\s*"([^"]+)"', source.read_text()):
                 self.assertIn(f"`{name}`", text, f"Missing adapter name from {source.name}")
         for command in ("build", "run", "test", "check", "coverage", "list", "targets",
                         "ide", "watch", "cc", "clean", "doctor"):
@@ -37,7 +37,7 @@ class ReadmeTest(unittest.TestCase):
         text = (ROOT / "README.md").read_text()
         for phrase in ("general-purpose, language-agnostic build system", "Tsoding",
                        "nob", "git clone https://github.com/vex-graph/b.git",
-                       "b run <exec|instance>", "b build <language>",
+                        "b run <exec|instance>", "b build <adapter>",
                        "b export <manifestmainfile>", "JETBRAINS.md",
                        "No export format or manifest schema is implemented yet",
                        "parse-only", "exactly one", "SDK 10+", "main.rs",
