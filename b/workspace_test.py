@@ -88,6 +88,7 @@ class WorkspaceTest(unittest.TestCase):
             names = ["scatter.vert", "scatter.frag", "resolve.vert", "resolve.frag", "color.frag"]
             for name in names:
                 shutil.copyfile(owner / "shaders/compositor" / name, shaders / name)
+            self.assertIn('#include "filter/filter_type.h"', (shaders / "color.frag").read_text())
             header = base / "filter/filter_type.h"
             shutil.copyfile(owner / "filter/filter_type.h", header)
             for path in [header, *(shaders / name for name in names)]:
@@ -112,6 +113,14 @@ int main(int argc, char **argv) {
             continue;
         if (strstr(g_gens[i].src, "/filter/filter_type.h") != nullptr)
             ++headers;
+        char *includeRoot = strf("-I%s/ecosystem/drivers/graphvex/src", g_root);
+        const Cmd *command = &g_gens[i].cmd;
+        bool hasCanonicalRoot = false;
+        for (int k = 0; k < (*command).count; ++k)
+            if (!strcmp((*command).items[k], includeRoot))
+                hasCanonicalRoot = true;
+        free(includeRoot);
+        assert(hasCanonicalRoot);
         g_gens[count++] = g_gens[i];
     }
     assert(count == 6 && headers == 1);
