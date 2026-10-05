@@ -34,7 +34,9 @@ class WorkspaceTest(unittest.TestCase):
         engine = (ROOT / "b/workspace.c").read_text()
         for module in ("scatter.vert", "scatter.frag", "resolve.vert", "resolve.frag"):
             self.assertIn(module, engine)
-        self.assertIn("forwarding compatibility launcher", (ROOT / "README.md").read_text())
+        readme = (ROOT / "README.md").read_text()
+        self.assertIn("`tools/b`", readme)
+        self.assertIn("forwarding launcher", readme)
 
     def test_registered_cpu_target_still_builds_and_runs(self):
         self.assertIn("PASS", self.invoke("test", "compositor_scope_test"))
