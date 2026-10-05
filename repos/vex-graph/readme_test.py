@@ -11,7 +11,7 @@ import zlib
 
 ROOT = Path(__file__).resolve().parents[3] / "repos/vex-graph"
 CARDS = [
-    ("personal-projects.png", "personal projects", "https://github.com/vexgraph-dev?tab=repositories"),
+    ("personal-projects.png", "personal projects", "https://github.com/vex-graph?tab=repositories"),
     ("ecosystem.png", "ecosystem", "https://github.com/vexgraph-ecosystem"),
     ("b.png", "b — build, breeze, box!", "https://github.com/vex-graph/b"),
     ("preferences-dot-md.png", "preferences.md", "https://github.com/vexgraph-ecosystem/vexspoke/blob/main/preferences.md"),
@@ -48,9 +48,9 @@ class ReadmeTest(unittest.TestCase):
         header, parents = markup.images[0]
         self.assertEqual(header, {"src": "resources/vexgraph-header.png", "alt": "vexgraph", "width": "800"})
         self.assertEqual(parents, [("p", {"align": "center"})])
-        self.assertIn("hey, vex here! 🦊", text)
-        self.assertIn("i make stuff unseriously in java and c23, and others too in my spare time", text)
-        self.assertLess(text.index("vexgraph-header.png"), text.index("hey, vex here!"))
+        self.assertIn("\n# hey! vex here! 🦊\n", text)
+        self.assertIn("\n### i make stuff unseriously in java and c23, and others too in my spare time\n", text)
+        self.assertLess(text.index("vexgraph-header.png"), text.index("hey! vex here!"))
         self.assertLess(text.index("spare time"), text.index("personal-projects.png"))
         for (image, parents), (filename, alt, href) in zip(markup.images[1:], CARDS):
             self.assertEqual(image, {"src": f"resources/{filename}", "alt": alt, "width": "23%"})
