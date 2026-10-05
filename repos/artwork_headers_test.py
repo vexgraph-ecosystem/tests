@@ -59,7 +59,7 @@ class ArtworkHeadersTest(unittest.TestCase):
     def test_ecosystem_combined_row_links_only_vexgraph(self):
         images, body = header("repos/.github/profile/README.md")
         self.assertEqual(images, [
-            ({"src": ARTWORK + "vexgraph-header.png", "alt": "vexgraph", "width": "48%"},
+            ({"src": ARTWORK + "vexgraph.png", "alt": "vexgraph", "width": "48%"},
              [("p", {"align": "center"}), ("a", {"href": "https://github.com/vex-graph"})]),
             ({"src": ARTWORK + "ecosystem.png", "alt": "ecosystem", "width": "48%"},
              [("p", {"align": "center"})]),
