@@ -91,7 +91,7 @@ class CompositorContractTest(unittest.TestCase):
 
     def test_filter_vocabulary_documents_encoding_not_effect_support(self):
         documentation = (GRAPHVEX / "FILTERS.md").read_text()
-        for clause in ("only the listed CPU effects execute",
+        for clause in ("Color effects execute in Vulkan shaders",
                        "No typed parameter pool exists yet", "vertex → fragment",
                        "Graphics blend state does not protect compute writes",
                        "Automatic Element attachment APIs", "HSL and HSV remain distinct"):
@@ -102,9 +102,9 @@ class CompositorContractTest(unittest.TestCase):
         readiness = (ROOT / "repos/.ecosystem/graphvex.md").read_text()
         self.assertIn("### Filter vocabulary (`src/filter/`)", readiness)
         self.assertIn("typed parameter allocation/COW/migration", readiness)
-        self.assertIn("compositor_color_test.c", readiness)
-        for clause in ("linear Rec.709", "preserve alpha and world bounds",
-                       "nonfinite/out-of-range", "GPU runtime remain unproved"):
+        self.assertIn("color_pass_test.c", readiness)
+        for clause in ("linear Rec.709", "preserve alpha and extents",
+                       "nonfinite/out-of-range", "Never sample the current destination"):
             self.assertIn(clause, documentation)
         registry = (GRAPHVEX / "src/filter/filter_type.h").read_text()
         ids = re.findall(r"^#define ([A-Z_]+_ID) (0x[0-9a-f]+u)$", registry, re.M)
@@ -140,6 +140,30 @@ class CompositorContractTest(unittest.TestCase):
                     text=True, capture_output=True, timeout=30)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertRegex(result.stderr, r"too (few|many) arguments")
+
+    def test_gpu_color_pass_public_arity_and_no_cpu_extension(self):
+        command = ["cc", "-std=gnu23", "-Wall", "-Wextra", "-Werror",
+                   "-fsyntax-only", "-x", "c", "-", "-I", str(GRAPHVEX / "src")]
+        prefix = '#include "compositor/color_pass.h"\n'
+        positive = prefix + 'ColorPass *empty(void) { return ColorPass(); }\n'
+        positive += 'ColorPass *six(Device *d, void *p, const uint32_t *v, size_t n) { return ColorPass(d,p,v,n,v,n); }\n'
+        result = subprocess.run(command, input=positive, text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        for call in ("ColorPass(1)", "ColorPass(1,2,3,4,5)"):
+            result = subprocess.run(command, input=prefix + f'ColorPass *bad(void) {{ return {call}; }}\n',
+                                    text=True, capture_output=True, timeout=30)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("ColorPass_invalidArity", result.stderr)
+        cpu = (GRAPHVEX / "src/compositor/compositor.c").read_text()
+        self.assertNotIn("case BRIGHTNESS_ID", cpu)
+        self.assertNotIn("static void pointwise", cpu)
+        gpu = (GRAPHVEX / "src/compositor/color_pass.c").read_text()
+        self.assertIn("vkCreateGraphicsPipelines", gpu)
+        self.assertIn("vkCmdDraw", gpu)
+        self.assertNotIn("vkCmdCopyImageToBuffer", gpu)
+        shader = (GRAPHVEX / "src/shaders/compositor/color.frag").read_text()
+        self.assertIn('#include "filter/filter_type.h"', shader)
+        self.assertIn("texelFetch(sourceColor", shader)
 
 
 if __name__ == "__main__":
