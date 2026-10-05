@@ -1,37 +1,57 @@
-"""Documentation proof for b's general build-system identity and honest scope."""
-
+"""Offline documentation contracts; no claim of GUI or cross-platform proof."""
 from pathlib import Path
+import re
 import unittest
+import xml.etree.ElementTree as ET
 
-
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[2] / "b"
 
 
 class ReadmeTest(unittest.TestCase):
-    def test_identity_command_contract_and_adapter_gaps(self):
-        text = (ROOT / "b/README.md").read_text()
-        self.assertIn("general-purpose, language-agnostic build system", text)
-        self.assertIn("C is the implementation language, not a restriction", text)
-        for command in ("b run <exec|instance>", "b build <language>", "b export <manifestmainfile>"):
-            self.assertIn(command, text)
-        for language in ("C++", "Rust", "Python", "C#", "Java", "JavaScript", "TypeScript", "HTML"):
+    def test_readme_identity_usage_and_honest_scope(self):
+        text = (ROOT / "README.md").read_text()
+        for phrase in ("general-purpose, language-agnostic build system", "Tsoding",
+                       "nob", "git clone https://github.com/vex-graph/b.git",
+                       "b run <exec|instance>", "b build <language>",
+                       "b export <manifestmainfile>", "JETBRAINS.md",
+                       "No export format or manifest schema is implemented yet",
+                       "parse-only", "exactly one", "SDK 10+", "main.rs",
+                       "../tests/b/cli_test.py", "ecosystem/vexspoke/preferences.md"):
+            self.assertIn(phrase, text)
+        for language in ("C /", "Java /", "Python /", "Rust /", "C# /", "R /", "Arduino /"):
             self.assertIn(language, text)
-        for comparison in ("nob", "IntelliJ", "Maven", "Gradle", "vexgraph"):
-            self.assertNotIn(comparison, text)
-        self.assertIn("No export format or manifest schema is implemented yet", text)
-        self.assertIn("serving and web builds are **not implemented yet**", text)
-        self.assertIn("../tests/b/cli_test.py", text)
-        self.assertIn("compatibility adapter, not b's general project model", text)
-        self.assertIn("runs a file as-is through its runtime", text)
-        self.assertIn("builds a runnable source artifact first", text)
-        self.assertIn("b build rust ./crate", text)
-        self.assertIn("requires a `rustc` on `PATH`", text)
-        self.assertIn("b python ./app.py", text)
-        self.assertIn("adding a language is one file pair", text.lower())
-        self.assertNotIn("instance supervision", text)
-        workspace = (ROOT / "README.md").read_text()
-        self.assertIn("`run instance` runs directly", workspace)
-        self.assertIn("`run exec` builds the source artifact", workspace)
+        self.assertIn("b build cmake", text)
+        self.assertIn("orchestrator on top", text)
+        self.assertIn(";;OVERVIEW", text)
+
+    def test_jetbrains_external_tool_instructions(self):
+        text = (ROOT / "JETBRAINS.md").read_text()
+        for phrase in ("Tools → External Tools", "Program", "Arguments", "Working directory",
+                       'run exec "$FilePath$"', "$FileDir$", "$ProjectFileDir$",
+                       "Keymap", "Before launch", "debugger", "PATH", "save",
+                       "CLion", "IntelliJ IDEA", "Rider", "PyCharm"):
+            self.assertIn(phrase, text)
+        self.assertNotIn("$USER_HOME$/vexgraph", text)
+        self.assertIn('upload arduino "$FilePath$" --port', text)
+        self.assertIn('// b_build("arduino:avr:uno")', text)
+        self.assertIn("Serial Monitor", text)
+
+    def test_jetbrains_two_methods_and_xml_reference_consistency(self):
+        text = (ROOT / "JETBRAINS.md").read_text()
+        self.assertIn("Method 1: manual UI", text)
+        self.assertIn("Method 2: inspectable XML", text)
+        self.assertIn(".idea/runConfigurations/", text)
+        self.assertIn("IDE-level settings", text)
+        blocks = re.findall(r"```xml\n(.*?)\n```", text, re.S)
+        self.assertEqual(len(blocks), 2)
+        tools, run = map(ET.fromstring, blocks)
+        tool = tools.find("tool")
+        action = run.find(".//option[@name='ToolBeforeRunTask']")
+        self.assertEqual(action.get("actionId"), f"Tool_{tools.get('name')}_{tool.get('name')}")
+        options = {item.get("name"): item.get("value") for item in tool.findall("exec/option")}
+        self.assertEqual(options["PARAMETERS"], 'upload arduino "$FilePath$" --port /dev/cu.YOUR_BOARD')
+        self.assertEqual(options["WORKING_DIRECTORY"], "$FileDir$")
+        self.assertEqual(run.find(".//option[@name='SCRIPT_TEXT']").get("value"), ":")
 
 
 if __name__ == "__main__":
