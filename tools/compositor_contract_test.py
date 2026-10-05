@@ -91,7 +91,7 @@ class CompositorContractTest(unittest.TestCase):
 
     def test_filter_vocabulary_documents_encoding_not_effect_support(self):
         documentation = (GRAPHVEX / "FILTERS.md").read_text()
-        for clause in ("newly named effects are not implemented",
+        for clause in ("only the listed CPU effects execute",
                        "No typed parameter pool exists yet", "vertex → fragment",
                        "Graphics blend state does not protect compute writes",
                        "Automatic Element attachment APIs", "HSL and HSV remain distinct"):
@@ -101,7 +101,11 @@ class CompositorContractTest(unittest.TestCase):
         self.assertIn("FILTERS.md", (GRAPHVEX / "COMPOSITOR.md").read_text())
         readiness = (ROOT / "repos/.ecosystem/graphvex.md").read_text()
         self.assertIn("### Filter vocabulary (`src/filter/`)", readiness)
-        self.assertIn("New effect pixels, typed parameter allocation/COW/migration", readiness)
+        self.assertIn("typed parameter allocation/COW/migration", readiness)
+        self.assertIn("compositor_color_test.c", readiness)
+        for clause in ("linear Rec.709", "preserve alpha and world bounds",
+                       "nonfinite/out-of-range", "GPU runtime remain unproved"):
+            self.assertIn(clause, documentation)
         registry = (GRAPHVEX / "src/filter/filter_type.h").read_text()
         ids = re.findall(r"^#define ([A-Z_]+_ID) (0x[0-9a-f]+u)$", registry, re.M)
         self.assertEqual(len(ids), 53)
