@@ -40,7 +40,7 @@ class WorkspaceTest(unittest.TestCase):
         entries = re.search(r"const char \*compositorShaders\[\] = \{(.*?)\};", engine, re.S)
         self.assertIsNotNone(entries)
         self.assertEqual(re.findall(r'"([^"]+)"', entries.group(1)),
-                         ["scatter.vert", "scatter.frag", "resolve.vert", "resolve.frag", "color.frag"])
+                         ["scatter.vert", "scatter.frag", "resolve.vert", "resolve.frag", "color.frag", "scope.frag"])
         self.assertIn('if (!strcmp(compositorShaders[i], "color.frag"))\n'
                       '            add_gen(strf("%s/src/filter/filter_type.h", base), out, g);', engine)
         readme = (ROOT / "README.md").read_text()
@@ -51,8 +51,60 @@ class WorkspaceTest(unittest.TestCase):
         self.assertIn("PASS", self.invoke("test", "compositor_scope_test"))
 
     def test_color_pass_target_has_vulkan_headers_and_loader_link(self):
+        self.assert_vulkan_target_client("color_pass_test")
+
+    def test_filter_gallery_target_has_vulkan_headers_and_loader_link(self):
+        self.assert_vulkan_target_client("filter_gallery_fixture_test")
+        engine = (ROOT / "b/workspace.c").read_text()
+        apps = engine.split("static void setup_apps(", 1)[1].split("static void setup_graphvex(", 1)[0]
+        for flag in ("-L/opt/homebrew/lib", "-lvulkan", "-Wl,-rpath,/opt/homebrew/lib"):
+            self.assertIn(f'strl_push(&(*t).syslibs, "{flag}");', apps)
+
+    def test_gpu_scope_target_has_vulkan_headers_and_loader_link(self):
+        # Registration proof needs only filenames, not a partly authored GPU
+        # implementation. The real loader clients above prove header/link flags.
+        with tempfile.TemporaryDirectory(prefix="b Vulkan targets ") as scratch:
+            home = Path(scratch)
+            owner = home / "tests/graphvex/compositor"
+            owner.mkdir(parents=True)
+            names = ["vk_renderer_test", "device_test", "gpu_render_test", "resize_clip_test",
+                     "surface_gpu_test", "clip_rounded_test", "color_pass_test", "gpu_scope_test",
+                     "filter_gallery_fixture_test", "cpu_only_test"]
+            for name in names:
+                (owner / (name + ".c")).write_text("")
+            client = home / "targets.c"
+            client.write_text(r'''
+#define main workspaceEntry
+#include "workspace.c"
+#undef main
+#include <assert.h>
+int main(int argc, char **argv) {
+    assert(argc == 2);
+    g_root = argv[1];
+    TargetList targets = {0};
+    setup_graphvex_tests(&targets);
+    assert(targets.count == 10);
+    for (int i = 0; i < targets.count; ++i) {
+        const Target *target = &targets.items[i];
+        assert((*target).is_test);
+        bool vulkan = strcmp((*target).name, "cpu_only_test") != 0;
+        assert(sl_has(&(*target).includes, "/opt/homebrew/include") == vulkan);
+        assert(sl_has(&(*target).syslibs, "-L/opt/homebrew/lib") == vulkan);
+        assert(sl_has(&(*target).syslibs, "-lvulkan") == vulkan);
+        assert(sl_has(&(*target).syslibs, "-Wl,-rpath,/opt/homebrew/lib") == vulkan);
+    }
+    return 0;
+}
+''')
+            binary = home / "targets"
+            subprocess.run([os.environ.get("CC", "cc"), "-std=gnu23", "-Wall", "-Wextra", "-Werror",
+                            "-I", str(ROOT / "b"), str(client), "-o", str(binary)],
+                           capture_output=True, check=True, timeout=120)
+            subprocess.run([str(binary), str(home)], capture_output=True, check=True, timeout=30)
+
+    def assert_vulkan_target_client(self, name):
         metadata = json.loads(self.invoke("ide"))
-        target = next(test for test in metadata["tests"] if test["name"] == "color_pass_test")
+        target = next(test for test in metadata["tests"] if test["name"] == name)
         self.assertIn("/opt/homebrew/include", target["includes"])
         loader_flags = ["-L/opt/homebrew/lib", "-lvulkan", "-Wl,-rpath,/opt/homebrew/lib"]
         for flag in loader_flags:
@@ -85,7 +137,7 @@ class WorkspaceTest(unittest.TestCase):
             shaders.mkdir(parents=True)
             (base / "filter").mkdir()
             owner = ROOT / "ecosystem/drivers/graphvex/src"
-            names = ["scatter.vert", "scatter.frag", "resolve.vert", "resolve.frag", "color.frag"]
+            names = ["scatter.vert", "scatter.frag", "resolve.vert", "resolve.frag", "color.frag", "scope.frag"]
             for name in names:
                 shutil.copyfile(owner / "shaders/compositor" / name, shaders / name)
             self.assertIn('#include "filter/filter_type.h"', (shaders / "color.frag").read_text())
@@ -123,7 +175,7 @@ int main(int argc, char **argv) {
         assert(hasCanonicalRoot);
         g_gens[count++] = g_gens[i];
     }
-    assert(count == 6 && headers == 1);
+    assert(count == 7 && headers == 1);
     g_genCount = count;
     run_gens();
     return 0;
@@ -151,14 +203,17 @@ int main(int argc, char **argv) {
             os.utime(header, ns=(13 * 10**17, 13 * 10**17))
             rebuilt = generate().stdout
             self.assertIn("color.frag.spv", rebuilt)
-            for name in names[:-1]:
+            for name in names:
+                if name == "color.frag":
+                    continue
                 self.assertNotIn(name + ".spv", rebuilt)
             self.assertEqual(generate().stdout, "")
             color = shaders / "color.frag"
             original = color.read_text()
             color.write_text(original + "\ninvalid GLSL syntax !!!\n")
             os.utime(color, ns=(14 * 10**17, 14 * 10**17))
-            os.utime(outputs[-1], ns=(12 * 10**17, 12 * 10**17))
+            color_output = outputs[names.index("color.frag")]
+            os.utime(color_output, ns=(12 * 10**17, 12 * 10**17))
             self.assertIn("command failed", generate(expected=1).stderr)
             color.write_text(original)
             os.utime(color, ns=(14 * 10**17, 14 * 10**17))
