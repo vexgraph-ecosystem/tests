@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[2] / "b"
 
 class BlueprintTest(unittest.TestCase):
     def test_every_implementation_lists_its_actual_functions_near_start(self):
-        for path in sorted(ROOT.glob("*.c")) + sorted((ROOT / "languages").glob("*.c")):
+        for path in sorted(ROOT.glob("*.c")) + sorted((ROOT / "adapters").glob("*.c")):
             with self.subTest(file=path.name):
                 text = path.read_text()
                 first = "\n".join(text.splitlines()[:150])
@@ -21,7 +21,7 @@ class BlueprintTest(unittest.TestCase):
                     self.assertRegex(overview, rf"\b{re.escape(name)}\b")
 
     def test_public_headers_carry_contract_blueprints(self):
-        for path in [ROOT / "b.h", *sorted((ROOT / "languages").glob("*.h"))]:
+        for path in [ROOT / "b.h", ROOT / "inspect.h", *sorted((ROOT / "adapters").glob("*.h"))]:
             with self.subTest(file=path.name):
                 text = path.read_text()
                 self.assertIn(";;DEFINITION", text)
