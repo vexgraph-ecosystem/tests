@@ -8,6 +8,13 @@ ROOT = Path(__file__).resolve().parents[2] / "b"
 
 
 class ReadmeTest(unittest.TestCase):
+    def test_build_breeze_box_artwork_precedes_title(self):
+        text = (ROOT / "README.md").read_text()
+        self.assertTrue(text.startswith('<p align="center">\n'))
+        self.assertIn('src="https://raw.githubusercontent.com/vex-graph/vex-graph/main/resources/b.png"', text)
+        self.assertIn('alt="build, breeze, box!"', text)
+        self.assertLess(text.index("resources/b.png"), text.index("# b\n"))
+
     def test_command_tree_link_names_and_honest_modes(self):
         readme = (ROOT / "README.md").read_text()
         self.assertIn("[command tree and examples](TREE.md)", readme)
