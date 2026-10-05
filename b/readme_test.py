@@ -18,11 +18,15 @@ class ReadmeTest(unittest.TestCase):
                        "parse-only", "exactly one", "SDK 10+", "main.rs",
                        "../tests/b/cli_test.py", "ecosystem/vexspoke/preferences.md"):
             self.assertIn(phrase, text)
-        for language in ("C /", "Java /", "Python /", "Rust /", "C# /", "R /", "Arduino /"):
+        for language in ("C /", "Java /", "Python /", "Rust /", "C# /", "R /", "Arduino /",
+                         "Swift /", "Objective-C /", "JavaScript /", "TypeScript /", "PHP /", "SQL /", "C++ /", "POSIX shell /"):
             self.assertIn(language, text)
         self.assertIn("b build cmake", text)
         self.assertIn("orchestrator on top", text)
         self.assertIn(";;OVERVIEW", text)
+        for claim in ("Build, breeze, box", "B_SQL_DATABASE", "not a sandbox",
+                      "not type-checking", "b build npm", "no default database"):
+            self.assertIn(claim.lower(), text.lower())
 
     def test_jetbrains_external_tool_instructions(self):
         text = (ROOT / "JETBRAINS.md").read_text()
@@ -35,6 +39,8 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn('upload arduino "$FilePath$" --port', text)
         self.assertIn('// b_build("arduino:avr:uno")', text)
         self.assertIn("Serial Monitor", text)
+        self.assertIn("b does not add those IDE features", text)
+        self.assertIn("export is still planned", text)
 
     def test_jetbrains_two_methods_and_xml_reference_consistency(self):
         text = (ROOT / "JETBRAINS.md").read_text()
