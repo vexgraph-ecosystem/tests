@@ -21,7 +21,7 @@ class CompositorShaderTest(unittest.TestCase):
         # other platforms can use their configured standard temporary directory.
         directory = str(TEMP_ROOT) if TEMP_ROOT.is_dir() else None
         with tempfile.TemporaryDirectory(prefix="compositor-shaders-", dir=directory) as tmp:
-            for name in ("scatter.vert", "scatter.frag", "resolve.vert", "resolve.frag", "color.frag"):
+            for name in ("scatter.vert", "scatter.frag", "resolve.vert", "resolve.frag", "color.frag", "scope.frag"):
                 with self.subTest(shader=name):
                     output = Path(tmp) / (name + ".spv")
                     result = subprocess.run([compiler, "-V", "-I" + str(SHADERS.parents[1]), str(SHADERS / name),
