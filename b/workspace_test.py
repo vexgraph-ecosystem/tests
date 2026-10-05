@@ -50,6 +50,26 @@ class WorkspaceTest(unittest.TestCase):
     def test_registered_cpu_target_still_builds_and_runs(self):
         self.assertIn("PASS", self.invoke("test", "compositor_scope_test"))
 
+    def test_color_pass_target_has_vulkan_headers_and_loader_link(self):
+        metadata = json.loads(self.invoke("ide"))
+        target = next(test for test in metadata["tests"] if test["name"] == "color_pass_test")
+        self.assertIn("/opt/homebrew/include", target["includes"])
+        loader_flags = ["-L/opt/homebrew/lib", "-lvulkan", "-Wl,-rpath,/opt/homebrew/lib"]
+        for flag in loader_flags:
+            self.assertIn(flag, target["libraries"])
+        with tempfile.TemporaryDirectory(prefix="b Vulkan link ") as scratch:
+            home = Path(scratch)
+            client = home / "loader.c"
+            client.write_text('#include <vulkan/vulkan.h>\n'
+                              'int main(void) { return vkGetInstanceProcAddr(VK_NULL_HANDLE, "vkCreateInstance") == 0; }\n')
+            binary = home / "loader"
+            command = [os.environ.get("CC", "cc"), "-std=gnu23", "-Wall", "-Wextra", "-Werror"]
+            for directory in target["includes"]:
+                command.extend(["-I", directory])
+            command.extend([str(client), *loader_flags, "-o", str(binary)])
+            subprocess.run(command, capture_output=True, check=True, timeout=120)
+            subprocess.run([str(binary)], capture_output=True, check=True, timeout=30)
+
     def test_compositor_generators_compile_and_header_changes_invalidate(self):
         """Execute setup_graphvex/run_gens only, without building adjacent passes.
 
