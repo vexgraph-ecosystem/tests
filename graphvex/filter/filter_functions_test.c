@@ -1,7 +1,6 @@
 /* Owner: filter/filter_functions.h. Every public constructor and extraction
  * form exercised. Pure encoding preserves invalid scalars/reference values;
- * implemented inline forms validate at submission; unimplemented reference
- * forms reject without touching output. Pixel behavior has a compositor owner.
+ * all new operations must reject in CPU submission without touching output.
  * No allocator, owned entries, renderer effects or legal shared state offered.
  * Recipe pool lifecycle belongs to filter_pool_test, not these reference bits. */
 #include "filter/filter_functions.h"
@@ -12,26 +11,15 @@
 #include <math.h>
 #include <stdio.h>
 
-static void submission(FilterToken token, CompositorStatus expected) {
+static void unsupported(FilterToken token) {
     CompositorBounds before = {42, 43, 7, 9};
     CompositorBounds out = before;
-    assert(Compositor_filterBounds((CompositorBounds) {0}, &token, 1, &out) == expected);
-    if (expected == COMPOSITOR_OK)
-        assert(out.width == 0 && out.height == 0);
-    else {
-        assert(out.x == before.x && out.y == before.y);
-        assert(out.width == before.width && out.height == before.height);
-    }
+    assert(Compositor_filterBounds((CompositorBounds) {0}, &token, 1, &out) == COMPOSITOR_UNSUPPORTED);
+    assert(out.x == before.x && out.y == before.y);
+    assert(out.width == before.width && out.height == before.height);
     CompositorSurface *surface = NULL;
-    assert(Compositor_compose(NULL, 0, &token, 1, &surface) == expected);
-    if (expected == COMPOSITOR_OK)
-        CompositorSurface_destroy(surface);
-    else
-        assert(surface == NULL);
-}
-
-static void unsupported(FilterToken token) {
-    submission(token, COMPOSITOR_UNSUPPORTED);
+    assert(Compositor_compose(NULL, 0, &token, 1, &surface) == COMPOSITOR_UNSUPPORTED);
+    assert(surface == NULL);
 }
 
 int main(void) {
@@ -52,9 +40,7 @@ int main(void) {
             FilterToken token = scalars[i](values[j]);
             assert(Filter_id(token) == scalarIds[i]);
             assert(Filter_payload(token) == bits);
-            bool valid = isfinite(values[j]) && values[j] >= (i == 0 ? -1 : 0) &&
-                (i == 1 || values[j] <= 1);
-            submission(token, valid ? COMPOSITOR_OK : COMPOSITOR_INVALID);
+            unsupported(token);
         }
     }
     const uint32_t colors[] = {0, 1, UINT32_C(0x12345678), UINT32_MAX};
@@ -71,7 +57,7 @@ int main(void) {
     for (size_t i = 0; i < sizeof empty / sizeof empty[0]; ++i) {
         assert(Filter_id(empty[i]) == emptyIds[i]);
         assert(Filter_payload(empty[i]) == 0);
-        submission(empty[i], COMPOSITOR_OK);
+        unsupported(empty[i]);
     }
 #define CHECK_REFERENCE(name, id) do { \
     const uint32_t indices[] = {0, 1, UINT32_MAX}; \
