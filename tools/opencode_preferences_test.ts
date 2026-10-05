@@ -43,7 +43,8 @@ test("context hook resolves ancestors, preserves existing prompt and reloads cha
   const first = { system: [{ type: "text", text: "existing" }] }
   await hook!(first)
   expect(first.system).toHaveLength(2)
-  expect(first.system[0].text).toBe("existing")
+  expect(first.system[0].text).toContain("UNIVERSAL_COMPLETE")
+  expect(first.system[1].text).toBe("existing")
   await writeFile(join(root, "preferences.md"), "UPDATED_COMPLETE")
   const second = { system: [] as Array<{ type: string; text: string }> }
   await hook!(second)
@@ -64,4 +65,39 @@ test("actual workspace constitution and test lawbook are included verbatim", asy
   expect(prompt).toContain(await readFile(join(root, "preferences.md"), "utf8"))
   expect(prompt).toContain(await readFile(join(root, "tests/test-preferences.md"), "utf8"))
   expect(prompt).toContain(await readFile(join(root, "ecosystem/drivers/graphvex/graphvex-preferences.md"), "utf8"))
+})
+
+test("constitution precedes proof and repo laws, with mandatory read-first guidance", async () => {
+  const root = await fixture()
+  const prompt = await buildPreferencesPrompt(root)
+  expect(prompt.indexOf("UNIVERSAL_COMPLETE")).toBeLessThan(prompt.indexOf("PROOF_COMPLETE"))
+  expect(prompt.indexOf("PROOF_COMPLETE")).toBeLessThan(prompt.indexOf("LOCAL_COMPLETE"))
+  expect(prompt).toContain("Read the complete constitution first")
+  expect(prompt).toContain("Inspect existing implementation")
+})
+
+test("project config declares constitution and AGENTS supplies V2 fallback", async () => {
+  const root = resolve(import.meta.dir, "../..")
+  const config = JSON.parse(await readFile(join(root, ".opencode/opencode.json"), "utf8"))
+  expect(config.instructions[0]).toBe("preferences.md")
+  expect(config.permissions).toContainEqual({ action: "execute", resource: "*", effect: "deny" })
+  const agents = await readFile(join(root, "AGENTS.md"), "utf8")
+  expect(agents).toContain("Every primary agent and subagent")
+  expect(agents).toContain("explicitly\nread `preferences.md` before proceeding")
+  const readme = await readFile(join(root, ".opencode/README.md"), "utf8")
+  expect(readme).toContain("does not resolve the `instructions` config field")
+  expect(readme).toContain("prepends its block")
+  expect(readme).toContain("outside this workspace")
+})
+
+test("canonical constitution requires implementation, adversarial proof and per-class records", async () => {
+  const root = resolve(import.meta.dir, "../..")
+  const constitution = await readFile(join(root, "preferences.md"), "utf8")
+  expect(constitution).toContain("| 30 | Feature Implementation and Adversarial Proof Law |")
+  for (const clause of ["Implement accepted intent", "Attack the implemented contract",
+    "Execute, repair, repeat", "Close with evidence", "Commit per class in its own repository",
+    "not required to form an independently buildable, bisectable stream"])
+    expect(constitution).toContain(clause)
+  expect(constitution).not.toContain("Keep broken intermediate states uncommitted")
+  expect(constitution).not.toContain("Related class pairs may land together")
 })
