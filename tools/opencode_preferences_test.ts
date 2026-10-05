@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from "bun:test"
-import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises"
+import { mkdtemp, mkdir, readFile, readdir, rm, symlink, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import plugin, { buildPreferencesPrompt } from "../../.opencode/plugins/preferences/index"
@@ -100,4 +100,37 @@ test("canonical constitution requires implementation, adversarial proof and per-
     expect(constitution).toContain(clause)
   expect(constitution).not.toContain("Keep broken intermediate states uncommitted")
   expect(constitution).not.toContain("Related class pairs may land together")
+})
+
+test("taxonomy links every existing repo lawbook, resolves canonical paths and requires chained reading", async () => {
+  const root = resolve(import.meta.dir, "../..")
+  const constitution = await readFile(join(root, "preferences.md"), "utf8")
+  const map = constitution.split("### Repository preferences: mandatory reading chain")[1]?.split("## 1. Semantic Consistency Law")[0]
+  expect(map).toBeDefined()
+  expect(map).toContain("complete constitution first")
+  expect(map).toContain("owning repository's complete")
+  expect(map).toContain("every repository being changed")
+  expect(map).toContain("missing local")
+  expect(constitution).toContain("**Mandatory chained reading:**")
+  const found: string[] = []
+  async function scan(directory: string) {
+    for (const entry of await readdir(join(root, directory), { withFileTypes: true })) {
+      if (entry.name.startsWith(".") || entry.name === "node_modules") continue
+      const path = join(directory, entry.name)
+      if (entry.isDirectory()) await scan(path)
+      else if (entry.name.endsWith("-preferences.md")) found.push(path)
+    }
+  }
+  await scan("ecosystem")
+  const linked: string[] = []
+  for (const match of map!.matchAll(/\[([^\]]+-preferences\.md)\]\(([^)]+)\) \| `([^`]+)`/g)) {
+    const canonical = resolve(root, "ecosystem/vexspoke", match[2])
+    expect(canonical).toBe(resolve(root, match[3]))
+    expect(await readFile(canonical, "utf8")).not.toBe("")
+    linked.push(match[3])
+  }
+  expect(linked.sort()).toEqual(found.sort())
+  expect(new Set(linked).size).toBe(linked.length)
+  const agents = await readFile(join(root, "AGENTS.md"), "utf8")
+  expect(agents).toContain("Follow the repository reading map")
 })
