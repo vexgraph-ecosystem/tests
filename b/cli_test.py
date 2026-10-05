@@ -21,7 +21,8 @@ class CliTest(unittest.TestCase):
         cls.scratch = tempfile.TemporaryDirectory(prefix="b-cli-")
         cls.addClassCleanup(cls.scratch.cleanup)
         cls.home = Path(cls.scratch.name)
-        cls.environment = dict(os.environ, B_HOME=str(cls.home / "state"))
+        cls.environment = dict(os.environ, B_HOME=str(cls.home / "state"),
+                               DOTNET_NOLOGO="1", DOTNET_CLI_TELEMETRY_OPTOUT="1")
         subprocess.run([str(ROOT / "b"), "--help"], env=cls.environment,
                        check=True, capture_output=True, timeout=60)
 
@@ -34,7 +35,7 @@ class CliTest(unittest.TestCase):
         result = subprocess.run([str(ROOT / "b"), *map(str, arguments)],
                                 cwd=cwd or self.project,
                                 env=environment or self.environment,
-                                capture_output=True, text=True, timeout=60)
+                                capture_output=True, text=True, timeout=120)
         self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
         return result
 
@@ -100,6 +101,81 @@ class CliTest(unittest.TestCase):
         self.source("hello.rs", 'fn main() {}\n')
         result = self.invoke("run", "instance", "hello.rs", expected=1)
         self.assertIn("no source runtime", result.stderr)
+
+    def test_rust_directory_modules_and_ambiguous_roots(self):
+        self.require_rust()
+        self.source("main.rs", 'mod value; fn main() { println!("{}", value::get()); }\n')
+        self.source("value.rs", 'pub fn get() -> i32 { 42 }\n')
+        output = self.invoke("build", "rust").stdout.strip()
+        self.assertEqual(self.invoke("run", "exec", output).stdout.strip(), "42")
+        (self.project / "main.rs").rename(self.project / "other.rs")
+        self.assertIn("crate root", self.invoke("build", "rust", expected=1).stderr)
+
+    def test_rust_failure_does_not_run_previous_artifact(self):
+        self.require_rust()
+        source = self.source("hello.rs", 'fn main() { println!("old"); }\n')
+        self.invoke("run", "exec", source)
+        source.write_text("not rust\n")
+        self.assertNotIn("old", self.invoke("run", "exec", source, expected=1).stdout)
+
+    def test_csharp_hello_modes_arguments_and_exit(self):
+        self.require_tool("dotnet", "--version")
+        self.source("hello with spaces.cs", 'using System;\n'
+                    'Console.WriteLine(string.Join("|", args));\nreturn 4;\n')
+        for mode in ("instance", "exec"):
+            result = self.invoke("run", mode, "hello with spaces.cs", "--",
+                                 "Hello World", "$(touch NEVER)", expected=4)
+            self.assertEqual(result.stdout.strip(), "Hello World|$(touch NEVER)")
+        self.assertFalse((self.project / "NEVER").exists())
+        self.assertFalse((self.project / "bin").exists())
+        self.assertFalse((self.project / "obj").exists())
+
+    def test_csharp_build_failure_recovery_and_multiple_entries(self):
+        self.require_tool("dotnet", "--version")
+        self.invoke("build", "csharp", expected=1)
+        source = self.source("hello.cs", 'System.Console.WriteLine("Hello World");\n')
+        output = Path(self.invoke("build", "csharp").stdout.strip())
+        self.assertTrue(output.is_relative_to(self.home / "state"))
+        result = subprocess.run(["dotnet", str(output)], env=self.environment,
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "Hello World")
+        source.write_text("not C sharp\n")
+        self.assertNotIn("Hello World", self.invoke("run", "exec", source, expected=1).stdout)
+        source.write_text('System.Console.WriteLine("recovered");\n')
+        self.assertEqual(self.invoke("csharp", source).stdout.strip(), "recovered")
+        self.source("second.cs", "// ambiguous entry\n")
+        self.assertIn("exactly one", self.invoke("build", "csharp", expected=1).stderr)
+
+    def test_r_hello_modes_arguments_exit_and_lowercase_extension(self):
+        self.require_tool("Rscript", "--version")
+        for extension in ("R", "r"):
+            source = self.source(f"hello with spaces.{extension}",
+                                 'cat(paste(commandArgs(trailingOnly=TRUE), collapse="|"), "\\n", sep="")\n'
+                                 'quit(status=5)\n')
+            for command in (("r", source), ("run", "instance", source), ("run", "exec", source)):
+                result = self.invoke(*command, "--", "Hello World", "$(touch NEVER)", expected=5)
+                self.assertEqual(result.stdout.strip(), "Hello World|$(touch NEVER)")
+        self.assertFalse((self.project / "NEVER").exists())
+
+    def test_r_parse_only_build_failure_and_recovery(self):
+        self.require_tool("Rscript", "--version")
+        self.invoke("build", "r", expected=1)
+        source = self.source("hello.R", 'stop("must not execute during build")\n')
+        self.source("helper.r", 'x <- 1\n')
+        self.assertEqual(Path(self.invoke("build", "r").stdout.strip()), self.project.resolve())
+        source.write_text("x <- (\n")
+        self.invoke("build", "r", expected=1)
+        source.write_text('cat("recovered\\n")\n')
+        self.assertEqual(self.invoke("R", source).stdout.strip(), "recovered")
+
+    def test_python_syntax_failure_and_recovery(self):
+        self.require_python()
+        source = self.source("hello.py", "def broken(\n")
+        self.invoke("build", "python", expected=1)
+        source.write_text('print("Hello World")\n')
+        self.invoke("build", "python")
+        self.assertEqual(self.invoke("python", source).stdout.strip(), "Hello World")
 
     def test_rust_directory_build_and_documented_missing_toolchain(self):
         self.source("hello.rs", 'fn main() {}\n')
