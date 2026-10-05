@@ -1,6 +1,10 @@
 # Prerequisites
 *.d
 
+# Generated Python test bytecode, not test sources.
+__pycache__/
+*.py[cod]
+
 # Object files
 *.o
 *.ko
