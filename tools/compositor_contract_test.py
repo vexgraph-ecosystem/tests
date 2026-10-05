@@ -34,7 +34,7 @@ class CompositorContractTest(unittest.TestCase):
         self.assertNotIn("Frame_capture(frame)", gallery)
         documentation = (GRAPHVEX / "COMPOSITOR.md").read_text()
         self.assertIn("not automatic", documentation)
-        self.assertIn("CPU scope", documentation)
+        self.assertIn("GPU scope", documentation)
         self.assertIn("backdrop left, foreground centered, element right", documentation)
         self.assertIn("bypasses the content/focus FPS cap", documentation)
 
@@ -164,6 +164,36 @@ class CompositorContractTest(unittest.TestCase):
         shader = (GRAPHVEX / "src/shaders/compositor/color.frag").read_text()
         self.assertIn('#include "filter/filter_type.h"', shader)
         self.assertIn("texelFetch(sourceColor", shader)
+
+    def test_gallery_uses_gpu_scope_not_cpu_fixture(self):
+        gallery = (ROOT / "tests/darling/compositor/filter_gallery.c").read_text()
+        fixture = (ROOT / "tests/darling/compositor/filter_gallery_fixture.h").read_text()
+        self.assertNotIn("FilterGallery_make", gallery + fixture)
+        self.assertNotIn("Compositor_scopedScene", fixture)
+        self.assertNotIn("CompositorSurface_", fixture)
+        self.assertIn("FilterGallery_render(gpu", gallery)
+        self.assertIn("GpuScope_render", fixture)
+        gpu = (GRAPHVEX / "src/compositor/gpu_scope.c").read_text()
+        for clause in ("VK_BLEND_FACTOR_ONE", "vkCmdDraw", "GPU_WAIT_NS", "(*self).pending=true"):
+            self.assertIn(clause, gpu)
+        self.assertNotIn("vkDeviceWaitIdle", gpu)
+        self.assertNotIn("vkQueueWaitIdle", gpu)
+        doc = (GRAPHVEX / "COMPOSITOR.md").read_text()
+        self.assertIn("not zero-copy presentation", doc)
+        self.assertIn("Previous `--smoke` evidence", doc)
+        law = (GRAPHVEX / "graphvex-preferences.md").read_text()
+        self.assertIn("GPU execution truth", law)
+        self.assertIn("never CPU filtering/composition", law)
+        command = ["cc", "-std=gnu23", "-Wall", "-Wextra", "-Werror",
+                   "-fsyntax-only", "-x", "c", "-", "-I", str(GRAPHVEX / "src")]
+        prefix = '#include "compositor/gpu_scope.h"\n'
+        result = subprocess.run(command, input=prefix + 'GpuScope *zero(void) { return GpuScope(); }\n',
+                                text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        result = subprocess.run(command, input=prefix + 'GpuScope *wrong(void) { return GpuScope(1); }\n',
+                                text=True, capture_output=True, timeout=30)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("GpuScope_invalidArity", result.stderr)
 
 
 if __name__ == "__main__":
