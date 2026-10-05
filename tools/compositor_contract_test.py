@@ -89,6 +89,54 @@ class CompositorContractTest(unittest.TestCase):
                 with self.subTest(path=str(path), target=target):
                     self.assertTrue((path.parent / target).is_file())
 
+    def test_filter_vocabulary_documents_encoding_not_effect_support(self):
+        documentation = (GRAPHVEX / "FILTERS.md").read_text()
+        for clause in ("newly named effects are not implemented",
+                       "No typed parameter pool exists yet", "vertex → fragment",
+                       "Graphics blend state does not protect compute writes",
+                       "Automatic Element attachment APIs", "HSL and HSV remain distinct"):
+            self.assertIn(clause, documentation)
+        for name in ("filter_type.h", "filter_functions.h"):
+            self.assertTrue((GRAPHVEX / "src/filter" / name).is_file())
+        self.assertIn("FILTERS.md", (GRAPHVEX / "COMPOSITOR.md").read_text())
+        readiness = (ROOT / "repos/.ecosystem/graphvex.md").read_text()
+        self.assertIn("### Filter vocabulary (`src/filter/`)", readiness)
+        self.assertIn("New effect pixels, typed parameter allocation/COW/migration", readiness)
+        registry = (GRAPHVEX / "src/filter/filter_type.h").read_text()
+        ids = re.findall(r"^#define ([A-Z_]+_ID) (0x[0-9a-f]+u)$", registry, re.M)
+        self.assertEqual(len(ids), 53)
+        self.assertEqual(len({int(value.rstrip("u"), 0) for _, value in ids}), 53)
+        self.assertIn("#define GAUSSIAN_BLUR_ID 0x0014u", registry)
+        self.assertIn("#define FILTER_GAIN GAIN_ID", registry)
+        law = (GRAPHVEX / "graphvex-preferences.md").read_text()
+        self.assertIn("`FILTERNAME_ID`", law)
+        self.assertIn("`filter/filter_type.h`", law)
+        owner = (ROOT / "tests/graphvex/filter/filter_type_test.c").read_text()
+        for name, _ in ids:
+            self.assertIn(name, owner)
+        functions = (GRAPHVEX / "src/filter/filter_functions.h").read_text()
+        owner = (ROOT / "tests/graphvex/filter/filter_functions_test.c").read_text()
+        references = re.findall(r"GRAPHVEX_FILTER_REFERENCE\((\w+), [A-Z_]+_ID\)", functions)
+        self.assertEqual(len(references), 40)
+        for name in references:
+            self.assertIn(f"CHECK_REFERENCE({name},", owner)
+        shim = (GRAPHVEX / "src/lang/filter.h").read_text()
+        self.assertIn('#include "filter/filter_functions.h"', shim)
+        self.assertNotIn("#define FILTER_", shim)
+
+    def test_filter_constructor_arity_is_rejected_for_intended_reason(self):
+        prefix = '#include "filter/filter_functions.h"\n'
+        for call in ("Filter_dithering()", "Filter_hsl(1)", "Filter_hsv(1, 2, 3)",
+                     "Filter_grayscale(1)", "Filter_brightness()"):
+            with self.subTest(call=call):
+                result = subprocess.run(
+                    ["cc", "-std=gnu23", "-Wall", "-Wextra", "-Werror",
+                     "-fsyntax-only", "-x", "c", "-", "-I", str(GRAPHVEX / "src")],
+                    input=prefix + f"FilterToken probe(void) {{ return {call}; }}\n",
+                    text=True, capture_output=True, timeout=30)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertRegex(result.stderr, r"too (few|many) arguments")
+
 
 if __name__ == "__main__":
     unittest.main()
