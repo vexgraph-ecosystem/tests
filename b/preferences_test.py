@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 import unittest
 
-ROOT = Path(__file__).resolve().parents[2] / "b"
+ROOT = Path(__file__).resolve().parents[2] / "personal/b"
 TOKENS = re.compile(r'//[^\n]*|/\*.*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|->', re.S)
 
 
@@ -32,9 +32,10 @@ class PreferencesTest(unittest.TestCase):
         self.assertEqual(member_arrows('"escaped \\" ->"; // ->\n'), [])
 
     def test_constitution_is_referenced_at_both_entry_surfaces(self):
-        for name in ("workspace.c", "b.h"):
-            text = (ROOT / name).read_text()
-            self.assertIn("ecosystem/vexspoke/preferences.md", text)
+        for path, reference in ((ROOT / "b.h", "ecosystem/vexspoke/preferences.md"),
+                                (ROOT.parents[1] / "tools/workspace.c", "workspace-root preferences.md")):
+            text = path.read_text()
+            self.assertIn(reference, text)
             self.assertIn("Semantic Consistency Law (Reference form)", text)
 
 
