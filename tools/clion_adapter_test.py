@@ -111,6 +111,22 @@ class ClionAdapterTest(unittest.TestCase):
         self.assertIn(str(ROOT / "tools/workspace.c"), ninja)
         self.assertIn(str(ROOT / "tools/build_annotation.h"), ninja)
 
+    def test_tests_checkout_has_its_own_c23_project_entry(self):
+        standalone = BUILD / "tests-entry"
+        run(["cmake", "-S", str(ROOT / "tests"), "-B", str(standalone),
+             "-G", "Ninja", f"-DCMAKE_MAKE_PROGRAM={NINJA or 'ninja'}"])
+        database = json.loads((standalone / "compile_commands.json").read_text())
+        source = ROOT / "tests/vexspoke/algo/bvh_test.c"
+        # This owner may be co-owned by the algorithm suite instead.
+        if not source.exists():
+            source = ROOT / "tests/vexspoke/algo/algo_suite_test.c"
+        entry = next(item for item in database if Path(item["file"]) == source)
+        self.assertIn("-std=gnu23", entry["command"])
+        self.assertIn(str(ROOT / "ecosystem/repos/vexspoke/src"), entry["command"])
+        documentation = (ROOT / "tests/README.md").read_text()
+        self.assertIn("VEXGRAPH_WORKSPACE_ROOT", documentation)
+        self.assertIn("CMake is an IDE adapter", documentation)
+
 
 if __name__ == "__main__":
     if not shutil.which("cmake") or not shutil.which("ctest"):
