@@ -1005,7 +1005,8 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/.gitignore` | ✅ | 1791275083 | 8cf46984457865da19f07cd60bd58b400a4467fa12a5b835382bb78d2b192ad4 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","build"],check=True); subprocess.run(["python3","-B","tests/b/workspace_test.py"],check=True); subprocess.run(["python3","-B","tests/vexspoke/backend_contract_test.py"],check=True)']; macOS b build plus eight workspace regressions and two backend-document/copy checks. 610 registered compilation units; imported reference bytes preserved. Source-empty repos are not builds; no Rust backend, standalone per-repo, Windows or visual approval. | Integrated build repair and unchanged C-backend restoration | passed |
+| `ecosystem/repos/vexspoke/BACKEND.md` | ✅ | 1791275083 | 7d8691ed8013a3d8dea0d4d6a7c24f42fe9bec79bbe279d614247d17447473c9 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","build"],check=True); subprocess.run(["python3","-B","tests/b/workspace_test.py"],check=True); subprocess.run(["python3","-B","tests/vexspoke/backend_contract_test.py"],check=True)']; macOS b build plus eight workspace regressions and two backend-document/copy checks. 610 registered compilation units; imported reference bytes preserved. Source-empty repos are not builds; no Rust backend, standalone per-repo, Windows or visual approval. | Integrated build repair and unchanged C-backend restoration | passed |
 | `ecosystem/repos/vexspoke/CONTRIBUTING.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `ecosystem/repos/vexspoke/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `ecosystem/repos/vexspoke/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
@@ -1166,6 +1167,32 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `ecosystem/repos/vexspoke/src/input/turntable.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `ecosystem/repos/vexspoke/src/input/turntable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
+### `ecosystem/repos/vexspoke/src/io`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/repos/vexspoke/src/io/cache.c` | ✅ | 1791275016 | 6435274eb70c4f86dc539e2558b7786d7d89e63f14e30c65ea9d53cd1a6f5030 | ['./tools/b', 'test', 'cache_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend cache registered regression | passed |
+| `ecosystem/repos/vexspoke/src/io/cache.h` | ✅ | 1791275016 | 9e62f519040ca6eb9a7e1ec1e915c538ecd9c16ba176db3841629b4d37ee3ae8 | ['./tools/b', 'test', 'cache_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend cache registered regression | passed |
+| `ecosystem/repos/vexspoke/src/io/clipboard.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/clipboard_stub.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/file.c` | ✅ | 1791275014 | 42b964f3786f06b0e9f292e1f9fb0a4891a7319799794f5294bf1d77638acce4 | ['./tools/b', 'test', 'file_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend file registered regression | passed |
+| `ecosystem/repos/vexspoke/src/io/file.h` | ✅ | 1791275014 | 7542231ad45ff2df96fe2b12f8d876846baa0ade2df1fbb6f3e6d97d8caf90d1 | ['./tools/b', 'test', 'file_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend file registered regression | passed |
+| `ecosystem/repos/vexspoke/src/io/filewriter.c` | ✅ | 1791275015 | b117c58fdd1539053e3ceedaeb7e63b79c555e71b7c63f5bbdf960479d576792 | ['./tools/b', 'test', 'filewriter_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend filewriter registered regression | passed |
+| `ecosystem/repos/vexspoke/src/io/filewriter.h` | ✅ | 1791275015 | af126ec31e9098426470c85c0e8f5dcb096aa0a9609bc1463297085899b2a6c8 | ['./tools/b', 'test', 'filewriter_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend filewriter registered regression | passed |
+| `ecosystem/repos/vexspoke/src/io/hot_file.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/hot_file.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/log.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/log.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/logkind.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/logparser.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/logparser.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/process_spawn.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/process_spawn.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/vexhome.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/vexhome.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/ws_client.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/io/ws_client.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
 ### `ecosystem/repos/vexspoke/src/lang`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
@@ -1255,6 +1282,13 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `ecosystem/repos/vexspoke/src/net/tls_curl.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `ecosystem/repos/vexspoke/src/net/url.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `ecosystem/repos/vexspoke/src/net/url.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+### `ecosystem/repos/vexspoke/src/nio`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/repos/vexspoke/src/nio/mem.c` | ✅ | 1791274974 | 96a7f1249f8d3ae61a7dd2dd288be6b95d542c67ba21567abeb487161135c194 | ['./tools/b', 'test', 'mem_test']; macOS registered mem_test, built with C23 warnings denied and assertions active; no Rust delegation, other-platform or complete concurrency proof | Restored C allocator compatibility backend owner regression | passed |
+| `ecosystem/repos/vexspoke/src/nio/mem.h` | ✅ | 1791274974 | 7f31e649b4a28b6767e523a141503dce7bd900320ba41a1f6d35ea8e80b45d53 | ['./tools/b', 'test', 'mem_test']; macOS registered mem_test, built with C23 warnings denied and assertions active; no Rust delegation, other-platform or complete concurrency proof | Restored C allocator compatibility backend owner regression | passed |
 
 ### `ecosystem/repos/vexspoke/src/objc`
 
@@ -1351,6 +1385,42 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `ecosystem/repos/vexspoke/src/reactive/reactive_probable_tmpl.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `ecosystem/repos/vexspoke/src/reactive/reactive_tmpl.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `ecosystem/repos/vexspoke/src/reactive/reactive_tmpl.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+### `ecosystem/repos/vexspoke/src/reflection`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/repos/vexspoke/src/reflection/class.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/reflection/class.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/reflection/field.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/reflection/field.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/reflection/method.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/reflection/method.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/reflection/struct.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/reflection/struct.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/reflection/variable.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/reflection/variable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+### `ecosystem/repos/vexspoke/src/relational`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/repos/vexspoke/src/relational/cell.c` | ✅ | 1791275020 | 4e0eca5567fa500993d8e4cd76385629ff11623578eb54981afbab04dbc5eef0 | ['./tools/b', 'test', 'cell_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend cell registered regression | passed |
+| `ecosystem/repos/vexspoke/src/relational/cell.h` | ✅ | 1791275020 | 4f9910e159a65d0a6f814b1547d3c15e284c31600ed392d5fe2451c738ac0974 | ['./tools/b', 'test', 'cell_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend cell registered regression | passed |
+| `ecosystem/repos/vexspoke/src/relational/relational.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/relational/relational.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/relational/shelf.c` | ✅ | 1791275021 | 7e45d2bd5b870a6d1d449ba2e3ac2ef2aa41af08c3116d34b08980610e32369d | ['./tools/b', 'test', 'shelf_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend shelf registered regression | passed |
+| `ecosystem/repos/vexspoke/src/relational/shelf.h` | ✅ | 1791275021 | 06f13f980f4e7e831a474917b55809d82006ad02a723be8ce65c57a24f0119ba | ['./tools/b', 'test', 'shelf_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend shelf registered regression | passed |
+| `ecosystem/repos/vexspoke/src/relational/symbol_table.c` | ✅ | 1791275017 | 4f5c3ac5cb41c09a3c6382c9a8243e5b7c3518b42ad576c4f78385a8768030ec | ['./tools/b', 'test', 'symbol_table_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend symbol_table registered regression | passed |
+| `ecosystem/repos/vexspoke/src/relational/symbol_table.h` | ✅ | 1791275017 | d9cae7a8e4d66afa848e6d80f756dbaebbb66307d01036ad94b1f2a8b4e754f4 | ['./tools/b', 'test', 'symbol_table_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend symbol_table registered regression | passed |
+| `ecosystem/repos/vexspoke/src/relational/variable_hash_map.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/relational/variable_hash_map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/relational/variable_mini_map.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/relational/variable_mini_map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/relational/variable_pool.c` | ✅ | 1791275018 | 2ede5385fdfc0617a5aba2f8957dd3a394497359f8fe31bf797a38babbbc58de | ['./tools/b', 'test', 'variable_pool_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend variable_pool registered regression | passed |
+| `ecosystem/repos/vexspoke/src/relational/variable_pool.h` | ✅ | 1791275018 | 526c4afff14e94e4b146191d2b3d458147b5ee846efbee90b87e7944fffea7d7 | ['./tools/b', 'test', 'variable_pool_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend variable_pool registered regression | passed |
+| `ecosystem/repos/vexspoke/src/relational/variable_slot.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/vexspoke/src/relational/variable_slot.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `ecosystem/repos/vexspoke/src/search`
 
@@ -1509,7 +1579,7 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `personal/b/inspect.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `personal/b/inspect.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `personal/b/util.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/workspace.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `personal/b/workspace.c` | ✅ | 1791275083 | 973d3ffbd17c3d204d429d607f7ca07cec48b4fc126ca1e07856a223a49e267e | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","build"],check=True); subprocess.run(["python3","-B","tests/b/workspace_test.py"],check=True); subprocess.run(["python3","-B","tests/vexspoke/backend_contract_test.py"],check=True)']; macOS b build plus eight workspace regressions and two backend-document/copy checks. 610 registered compilation units; imported reference bytes preserved. Source-empty repos are not builds; no Rust backend, standalone per-repo, Windows or visual approval. | Integrated build repair and unchanged C-backend restoration | passed |
 
 ### `personal/b/adapters`
 
@@ -1745,7 +1815,7 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `tests/b/typescript_test.py` | ✅ | 1791173599 | 470778b9bab585279038f11e971c80eb329feb46a4f46c20f9609b19d438d85b | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | passed |
 | `tests/b/util_test.c` | ✅ | 1791173599 | 13f3569b866a91265f5c8cc3bf292406e4278b9f5f15b31319ed8647ef3581fd | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | passed |
 | `tests/b/util_test.py` | ✅ | 1791173599 | ae1e1b14354257064a27129ea89fcbec24a6c577cdca9072b88e6197e05ab52b | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | passed |
-| `tests/b/workspace_test.py` | ✅ | 1791192414 | 62f0c092e8024feecd7fbaeb360ff6762bb1937c42ed414d75e01b3b7141dbe3 | ['python3', '-m', 'unittest', 'workspace_test.WorkspaceTest.test_compositor_generators_compile_and_header_changes_invalidate', 'workspace_test.WorkspaceTest.test_metadata_and_preserved_shader_wiring', 'workspace_test.WorkspaceTest.test_doctor_resolves_worktree_not_checkout', 'workspace_test.WorkspaceTest.test_color_pass_target_has_vulkan_headers_and_loader_link', 'workspace_test.WorkspaceTest.test_filter_gallery_target_has_vulkan_headers_and_loader_link', 'workspace_test.WorkspaceTest.test_gpu_scope_target_has_vulkan_headers_and_loader_link', '-v']; Current macOS arm64 strict C23 -Wall -Wextra -Werror. Actual generator execution on copied GLSL/header with fixed mtimes, header-only invalidation/skip/failure/recovery; isolated target-registration filenames and real Vulkan loader header/link/client probes from metadata. No GPU owner test, interactive gallery or appearance execution. Installed loader targets macOS26; macOS14 runtime floor and other platforms unproved. Python import path tests/b; Graphvex runtime evidence owned separately. | Gallery GPU build wiring: six compositor shaders compile with canonical roots; only color watches filter IDs; gpu_scope_test and gallery fixture receive Vulkan headers/loader, existing branches preserved and CPU-only target excluded; gallery app loader flags retained. | passed |
+| `tests/b/workspace_test.py` | ✅ | 1791275083 | f09a961dcd8468e17ebcbf639c3d214fa9a3a35e57c313f0652228beb5ce53dd | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","build"],check=True); subprocess.run(["python3","-B","tests/b/workspace_test.py"],check=True); subprocess.run(["python3","-B","tests/vexspoke/backend_contract_test.py"],check=True)']; macOS b build plus eight workspace regressions and two backend-document/copy checks. 610 registered compilation units; imported reference bytes preserved. Source-empty repos are not builds; no Rust backend, standalone per-repo, Windows or visual approval. | Integrated build repair and unchanged C-backend restoration | passed |
 
 ### `tests/b/adapters`
 
@@ -2143,6 +2213,7 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `tests/vexspoke/backend_contract_test.py` | ✅ | 1791275083 | 9de3bdf4f9866726d168bff199435c404a9ff71828f10a5cc62400e994a031bf | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","build"],check=True); subprocess.run(["python3","-B","tests/b/workspace_test.py"],check=True); subprocess.run(["python3","-B","tests/vexspoke/backend_contract_test.py"],check=True)']; macOS b build plus eight workspace regressions and two backend-document/copy checks. 610 registered compilation units; imported reference bytes preserved. Source-empty repos are not builds; no Rust backend, standalone per-repo, Windows or visual approval. | Integrated build repair and unchanged C-backend restoration | passed |
 | `tests/vexspoke/coverage_baseline.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/vexspoke/function_baseline.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/vexspoke/mirror_exceptions.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
@@ -2216,10 +2287,10 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/io/cache_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/io/cache_test.c` | ✅ | 1791275016 | b873af094441e395c5dd2b6528e98dc8858dd23ed6beab951ab5e0f14d09620a | ['./tools/b', 'test', 'cache_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend cache registered regression | passed |
 | `tests/vexspoke/io/clipboard_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/vexspoke/io/file_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/vexspoke/io/filewriter_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/io/file_test.c` | ✅ | 1791275014 | 91f358d7227a2ba7caa67ea6dcaeee643fb741deb23bf772ab0e7b4c4f7e7c94 | ['./tools/b', 'test', 'file_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend file registered regression | passed |
+| `tests/vexspoke/io/filewriter_test.c` | ✅ | 1791275015 | 4efceacf8451c6a6fc6ccf662f65a5ff59e9e1039aee8788f98ba6c3c61af273 | ['./tools/b', 'test', 'filewriter_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend filewriter registered regression | passed |
 | `tests/vexspoke/io/log_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/vexspoke/io/logparser_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/vexspoke/io/vexhome_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
@@ -2260,7 +2331,7 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/nio/mem_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/nio/mem_test.c` | ✅ | 1791274974 | 0edbebc58c35a75ef1b3d4de88e602bbf07704699890c762ff60a2139ac8a442 | ['./tools/b', 'test', 'mem_test']; macOS registered mem_test, built with C23 warnings denied and assertions active; no Rust delegation, other-platform or complete concurrency proof | Restored C allocator compatibility backend owner regression | passed |
 | `tests/vexspoke/nio/transient_lifetime_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/objects`
@@ -2320,13 +2391,13 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/relational/cell_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/cell_test.c` | ✅ | 1791275020 | 15521aea46e2bcc2e87f5e19233905b82c2b4204bf976a2d3fd41a999cd6fc72 | ['./tools/b', 'test', 'cell_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend cell registered regression | passed |
 | `tests/vexspoke/relational/class_relational_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/vexspoke/relational/shelf_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/vexspoke/relational/symbol_table_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/shelf_test.c` | ✅ | 1791275021 | 110caf6ea25223d73ccaee239f7a109aee506f70e4070e9df634675da5722c07 | ['./tools/b', 'test', 'shelf_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend shelf registered regression | passed |
+| `tests/vexspoke/relational/symbol_table_test.c` | ✅ | 1791275017 | 3ffb297771a74dae500e0089fb2759e0dba256ddb8f5c82a04ff4e5b06799901 | ['./tools/b', 'test', 'symbol_table_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend symbol_table registered regression | passed |
 | `tests/vexspoke/relational/variable_hash_map_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/vexspoke/relational/variable_mini_map_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/vexspoke/relational/variable_pool_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/vexspoke/relational/variable_pool_test.c` | ✅ | 1791275018 | c90b851ea422b625f525664c6fc1afb6eb85e40a3ae93b4e5dfe78ed683aa760 | ['./tools/b', 'test', 'variable_pool_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend variable_pool registered regression | passed |
 | `tests/vexspoke/relational/variable_slot_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/vexspoke/relational/variable_strict_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
@@ -2422,7 +2493,7 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
 | `tools/agents.sh` | ✅ | 1791048984 | 7561e1a0ada9781376bae821ae2cf68c008d76382fce9214e605d6c81edb9e83 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/agents_test.py"],check=True); subprocess.run(["python3","-B","tests/tools/test_checklist_test.py"],check=True)']; Five agent bus tests and eleven checklist tests, including invalidation, privacy, bounded execution and rejection of visual evidence; no live remote messaging correctness claim | Offline agent signatures and timestamped checklist regression tests before publication | passed |
-| `tools/b` | ❌ | 1791274644 | c23143f1840b426edbc0c56270d016b4a26c88f493d316a18744f6e61fa340e2 | ['./tools/b', 'build']; macOS: compatibility launcher execution only; expected to expose stale checkout path. Failure does not prove linked production sources. | Workspace build attempt after repository reorganization | failed (exit 1) |
+| `tools/b` | ✅ | 1791275083 | 43261682cba42c7e8860bdff2e00cb81afa50bfdbd2ae672370cefb6c9964987 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","build"],check=True); subprocess.run(["python3","-B","tests/b/workspace_test.py"],check=True); subprocess.run(["python3","-B","tests/vexspoke/backend_contract_test.py"],check=True)']; macOS b build plus eight workspace regressions and two backend-document/copy checks. 610 registered compilation units; imported reference bytes preserved. Source-empty repos are not builds; no Rust backend, standalone per-repo, Windows or visual approval. | Integrated build repair and unchanged C-backend restoration | passed |
 | `tools/darling-gallery.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tools/debug_compile.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tools/linter.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
