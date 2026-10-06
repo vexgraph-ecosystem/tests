@@ -36,7 +36,7 @@ class WorkspaceTest(unittest.TestCase):
         metadata = json.loads(self.invoke("ide"))
         self.assertIsInstance(metadata, dict)
         self.assertIn("vexspoke", json.dumps(metadata))
-        engine = (ROOT / "personal/b/workspace.c").read_text()
+        engine = (ROOT / "tools/workspace.c").read_text()
         entries = re.search(r"const char \*compositorShaders\[\] = \{(.*?)\};", engine, re.S)
         self.assertIsNotNone(entries)
         self.assertEqual(re.findall(r'"([^"]+)"', entries.group(1)),
@@ -69,7 +69,7 @@ class WorkspaceTest(unittest.TestCase):
 
     def test_filter_gallery_target_has_vulkan_headers_and_loader_link(self):
         self.assert_vulkan_target_client("filter_gallery_fixture_test")
-        engine = (ROOT / "personal/b/workspace.c").read_text()
+        engine = (ROOT / "tools/workspace.c").read_text()
         apps = engine.split("static void setup_apps(", 1)[1].split("static void setup_graphvex(", 1)[0]
         for flag in ("-L/opt/homebrew/lib", "-lvulkan", "-Wl,-rpath,/opt/homebrew/lib"):
             self.assertIn(f'strl_push(&(*t).syslibs, "{flag}");', apps)
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
 ''')
             binary = home / "targets"
             subprocess.run([os.environ.get("CC", "cc"), "-std=gnu23", "-Wall", "-Wextra", "-Werror",
-                            "-I", str(ROOT / "personal/b"), str(client), "-o", str(binary)],
+                            "-I", str(ROOT / "tools"), str(client), "-o", str(binary)],
                            capture_output=True, check=True, timeout=120)
             subprocess.run([str(binary), str(home)], capture_output=True, check=True, timeout=30)
 
@@ -197,7 +197,7 @@ int main(int argc, char **argv) {
 ''')
             binary = home / "generators"
             subprocess.run([os.environ.get("CC", "cc"), "-std=gnu23", "-Wall", "-Wextra", "-Werror",
-                            "-I", str(ROOT / "personal/b"), str(client), "-o", str(binary)],
+                            "-I", str(ROOT / "tools"), str(client), "-o", str(binary)],
                            capture_output=True, check=True, timeout=120)
             out = home / "out"
 
