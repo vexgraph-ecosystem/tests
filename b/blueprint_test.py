@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 import unittest
 
-ROOT = Path(__file__).resolve().parents[2] / "b"
+ROOT = Path(__file__).resolve().parents[2] / "personal/b"
 
 
 class BlueprintTest(unittest.TestCase):
