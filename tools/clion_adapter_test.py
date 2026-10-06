@@ -40,6 +40,8 @@ class ClionAdapterTest(unittest.TestCase):
         cls.targets = {t["name"]: t for t in cls.graph["tests"]}
         cls.ctest = json.loads(run(["ctest", "--test-dir", str(BUILD), "--show-only=json-v1"]))
         cls.tests = {t["name"]: t for t in cls.ctest["tests"]}
+        run(["cmake", "-S", str(ROOT / "tests"), "-B", str(BUILD / "tests-entry"),
+             "-G", "Ninja", f"-DCMAKE_MAKE_PROGRAM={NINJA or 'ninja'}"])
 
     def test_anchor_has_transitive_includes_and_libraries(self):
         target = self.targets["ui_anchor_pivot_pixels_test"]
@@ -111,10 +113,41 @@ class ClionAdapterTest(unittest.TestCase):
         self.assertIn(str(ROOT / "tools/workspace.c"), ninja)
         self.assertIn(str(ROOT / "tools/build_annotation.h"), ninja)
 
+    def test_gallery_and_shared_helpers_have_owned_contexts(self):
+        import shlex
+        indexed = {item["name"]: item for item in self.graph["index"]}
+        for target in ("filter_gallery", "darling_tests"):
+            self.assertIn(target, indexed)
+            self.assertNotIn(target, self.tests)
+            for repo in ("darling-framework/src", "graphvex/src", "hotcwap",
+                         "vexspoke/src"):
+                self.assertIn(str(ROOT / "ecosystem/repos" / repo), indexed[target]["includes"])
+        database = json.loads((BUILD / "compile_commands.json").read_text())
+        sources = indexed["filter_gallery"]["sources"]
+        self.assertIn(str(ROOT / "tests/darling/compositor/filter_gallery.c"), sources)
+        # This gallery's fixture is header-only; compilation checks that helper
+        # through its actual main. Iterate all TUs for apps with shared sources.
+        for source in sources:
+            entry = next(item for item in database if item["file"] == source and
+                         "vexgraph_index_filter_gallery.dir" in item["command"])
+            self.assertIn("-std=gnu23", entry["command"])
+            result = subprocess.run(shlex.split(entry["command"]), cwd=entry["directory"],
+                                    text=True, capture_output=True, timeout=120)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        documentation = (ROOT / "tools/BUILD.md").read_text()
+        self.assertIn("tests/darling/compositor/filter_gallery.c", documentation)
+        self.assertIn("gallery indexing does not register or launch it", documentation)
+
+    def test_every_exported_source_has_a_compilation_context(self):
+        for build in (BUILD, BUILD / "tests-entry"):
+            database = json.loads((build / "compile_commands.json").read_text())
+            compiled = {item["file"] for item in database}
+            for target in self.graph["tests"] + self.graph["index"]:
+                self.assertTrue(set(target["sources"]) <= compiled,
+                                f"{build}: {target['name']} has unmodeled sources")
+
     def test_tests_checkout_has_its_own_c23_project_entry(self):
         standalone = BUILD / "tests-entry"
-        run(["cmake", "-S", str(ROOT / "tests"), "-B", str(standalone),
-             "-G", "Ninja", f"-DCMAKE_MAKE_PROGRAM={NINJA or 'ninja'}"])
         database = json.loads((standalone / "compile_commands.json").read_text())
         source = ROOT / "tests/vexspoke/algo/bvh_test.c"
         # This owner may be co-owned by the algorithm suite instead.
@@ -126,6 +159,10 @@ class ClionAdapterTest(unittest.TestCase):
         documentation = (ROOT / "tests/README.md").read_text()
         self.assertIn("VEXGRAPH_WORKSPACE_ROOT", documentation)
         self.assertIn("CMake is an IDE adapter", documentation)
+        source = ROOT / "tests/darling/compositor/filter_gallery.c"
+        entry = next(item for item in database if Path(item["file"]) == source)
+        self.assertIn("vexgraph_index_filter_gallery", entry["command"])
+        self.assertIn(str(ROOT / "ecosystem/repos/darling-framework/src"), entry["command"])
 
 
 if __name__ == "__main__":
