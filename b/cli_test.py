@@ -12,7 +12,7 @@ import tempfile
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[2] / "b"
+ROOT = Path(__file__).resolve().parents[2] / "personal/b"
 
 
 class CliTest(unittest.TestCase):
