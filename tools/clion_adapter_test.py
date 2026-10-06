@@ -43,8 +43,8 @@ class ClionAdapterTest(unittest.TestCase):
 
     def test_anchor_has_transitive_includes_and_libraries(self):
         target = self.targets["ui_anchor_pivot_pixels_test"]
-        self.assertIn(str(ROOT / "ecosystem/interface/darling-framework/src"), target["includes"])
-        self.assertIn(str(ROOT / "ecosystem/drivers/graphvex/src"), target["includes"])
+        self.assertIn(str(ROOT / "ecosystem/repos/darling-framework/src"), target["includes"])
+        self.assertIn(str(ROOT / "ecosystem/repos/graphvex/src"), target["includes"])
         self.assertIn("UNDEBUG", target["definitions"])
         self.assertIn("-std=gnu23", target["options"])
         archives = [Path(p).name for p in target["libraries"] if p.endswith(".a")]
@@ -89,6 +89,27 @@ class ClionAdapterTest(unittest.TestCase):
         self.assertIn("100% tests passed", output)
         self.assertIn("2/2", output)
         print(output)
+
+    def test_production_bvh_has_an_owned_c23_code_model(self):
+        database = json.loads((BUILD / "compile_commands.json").read_text())
+        source = ROOT / "ecosystem/repos/vexspoke/src/algo/bvh.c"
+        entry = next(item for item in database if Path(item["file"]) == source)
+        command = entry["command"]
+        self.assertIn("vexgraph_index_vexspoke", command)
+        for flag in ("-std=gnu23", "-Werror", "-mcpu=apple-m1", "DEBUG_BORROW_CHECK=1"):
+            self.assertIn(flag, command)
+        self.assertIn(str(ROOT / "ecosystem/repos/vexspoke/src"), command)
+        # Execute the actual indexing command for the reported problem file.
+        import shlex
+        result = subprocess.run(shlex.split(command), cwd=entry["directory"],
+                                text=True, capture_output=True, timeout=120)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("index", self.graph)
+
+    def test_coordinator_edits_trigger_cmake_reload(self):
+        ninja = (BUILD / "build.ninja").read_text()
+        self.assertIn(str(ROOT / "tools/workspace.c"), ninja)
+        self.assertIn(str(ROOT / "tools/build_annotation.h"), ninja)
 
 
 if __name__ == "__main__":
