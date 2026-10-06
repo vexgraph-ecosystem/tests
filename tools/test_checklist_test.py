@@ -59,8 +59,8 @@ class ChecklistTest(unittest.TestCase):
 
     def test_ignored_wiki_and_project_repos_use_their_own_ignores(self):
         with (self.root / ".gitignore").open("a") as ignore:
-            ignore.write("repos/\nprojects/\n")
-        for relative in ("repos/.ecosystem", "projects/demo"):
+            ignore.write("repos/\nprojects/\npersonal/\n")
+        for relative in ("repos/.ecosystem", "projects/demo", "personal/demo"):
             repo = self.root / relative
             subprocess.run(["git", "init", "-q", str(repo)], check=True)
             (repo / ".gitignore").write_text("ignored.txt\n")
@@ -71,7 +71,7 @@ class ChecklistTest(unittest.TestCase):
             with (repo / ".gitignore").open("a") as ignore:
                 ignore.write("tracked.txt\n")
         groups = CHECKLIST.inventory(self.root)
-        for relative in ("repos/.ecosystem", "projects/demo"):
+        for relative in ("repos/.ecosystem", "projects/demo", "personal/demo"):
             self.assertIn(f"{relative}/document.md", groups[relative])
             self.assertIn(f"{relative}/tracked.txt", groups[relative])
             self.assertNotIn(f"{relative}/ignored.txt", groups[relative])
@@ -82,6 +82,7 @@ class ChecklistTest(unittest.TestCase):
         records = CHECKLIST.load(self.root / CHECKLIST.REPORT)
         self.assertIn("repos/.ecosystem/document.md", records)
         self.assertIn("projects/demo/document.md", records)
+        self.assertIn("personal/demo/document.md", records)
         self.assertEqual(self.run_cli(["check"]), 0)
 
     def test_real_run_timestamp_failure_skip_and_invalidation(self):
