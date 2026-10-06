@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 class WorkspaceTest(unittest.TestCase):
     def invoke(self, *arguments):
-        result = subprocess.run([str(ROOT / "tools/b"), *arguments], cwd=ROOT / "b",
+        result = subprocess.run([str(ROOT / "tools/b"), *arguments], cwd=ROOT / "personal/b",
                                 capture_output=True, text=True, timeout=120)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return result.stdout
@@ -36,7 +36,7 @@ class WorkspaceTest(unittest.TestCase):
         metadata = json.loads(self.invoke("ide"))
         self.assertIsInstance(metadata, dict)
         self.assertIn("vexspoke", json.dumps(metadata))
-        engine = (ROOT / "b/workspace.c").read_text()
+        engine = (ROOT / "personal/b/workspace.c").read_text()
         entries = re.search(r"const char \*compositorShaders\[\] = \{(.*?)\};", engine, re.S)
         self.assertIsNotNone(entries)
         self.assertEqual(re.findall(r'"([^"]+)"', entries.group(1)),
@@ -50,12 +50,26 @@ class WorkspaceTest(unittest.TestCase):
     def test_registered_cpu_target_still_builds_and_runs(self):
         self.assertIn("PASS", self.invoke("test", "compositor_scope_test"))
 
+    def test_reorganized_paths_keep_the_c_backend_in_vexspoke(self):
+        metadata = json.dumps(json.loads(self.invoke("ide")))
+        self.assertIn("ecosystem/repos/vexspoke/src", metadata)
+        self.assertIn("ecosystem/repos/graphvex/src", metadata)
+        self.assertIn("ecosystem/repos/hotcwap", metadata)
+        self.assertIn("ecosystem/repos/darling-framework/src", metadata)
+        self.assertNotIn("ecosystem/drivers/", metadata)
+        self.assertNotIn("ecosystem/interface/", metadata)
+        self.assertNotIn("personal/relational-engine", metadata)
+        for part, unit in (("nio", "mem"), ("io", "file"),
+                           ("relational", "symbol_table"), ("reflection", "field")):
+            for suffix in (".c", ".h"):
+                self.assertTrue((ROOT / "ecosystem/repos/vexspoke/src" / part / (unit + suffix)).is_file())
+
     def test_color_pass_target_has_vulkan_headers_and_loader_link(self):
         self.assert_vulkan_target_client("color_pass_test")
 
     def test_filter_gallery_target_has_vulkan_headers_and_loader_link(self):
         self.assert_vulkan_target_client("filter_gallery_fixture_test")
-        engine = (ROOT / "b/workspace.c").read_text()
+        engine = (ROOT / "personal/b/workspace.c").read_text()
         apps = engine.split("static void setup_apps(", 1)[1].split("static void setup_graphvex(", 1)[0]
         for flag in ("-L/opt/homebrew/lib", "-lvulkan", "-Wl,-rpath,/opt/homebrew/lib"):
             self.assertIn(f'strl_push(&(*t).syslibs, "{flag}");', apps)
@@ -98,7 +112,7 @@ int main(int argc, char **argv) {
 ''')
             binary = home / "targets"
             subprocess.run([os.environ.get("CC", "cc"), "-std=gnu23", "-Wall", "-Wextra", "-Werror",
-                            "-I", str(ROOT / "b"), str(client), "-o", str(binary)],
+                            "-I", str(ROOT / "personal/b"), str(client), "-o", str(binary)],
                            capture_output=True, check=True, timeout=120)
             subprocess.run([str(binary), str(home)], capture_output=True, check=True, timeout=30)
 
@@ -132,11 +146,11 @@ int main(int argc, char **argv) {
             self.skipTest("glslangValidator unavailable")
         with tempfile.TemporaryDirectory(prefix="b shader wiring ") as scratch:
             home = Path(scratch)
-            base = home / "ecosystem/drivers/graphvex/src"
+            base = home / "ecosystem/repos/graphvex/src"
             shaders = base / "shaders/compositor"
             shaders.mkdir(parents=True)
             (base / "filter").mkdir()
-            owner = ROOT / "ecosystem/drivers/graphvex/src"
+            owner = ROOT / "ecosystem/repos/graphvex/src"
             names = ["scatter.vert", "scatter.frag", "resolve.vert", "resolve.frag", "color.frag", "scope.frag"]
             for name in names:
                 shutil.copyfile(owner / "shaders/compositor" / name, shaders / name)
@@ -165,7 +179,7 @@ int main(int argc, char **argv) {
             continue;
         if (strstr(g_gens[i].src, "/filter/filter_type.h") != nullptr)
             ++headers;
-        char *includeRoot = strf("-I%s/ecosystem/drivers/graphvex/src", g_root);
+        char *includeRoot = strf("-I%s/ecosystem/repos/graphvex/src", g_root);
         const Cmd *command = &g_gens[i].cmd;
         bool hasCanonicalRoot = false;
         for (int k = 0; k < (*command).count; ++k)
@@ -183,7 +197,7 @@ int main(int argc, char **argv) {
 ''')
             binary = home / "generators"
             subprocess.run([os.environ.get("CC", "cc"), "-std=gnu23", "-Wall", "-Wextra", "-Werror",
-                            "-I", str(ROOT / "b"), str(client), "-o", str(binary)],
+                            "-I", str(ROOT / "personal/b"), str(client), "-o", str(binary)],
                            capture_output=True, check=True, timeout=120)
             out = home / "out"
 
