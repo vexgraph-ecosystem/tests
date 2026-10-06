@@ -62,9 +62,15 @@ class C23MigrationTest(unittest.TestCase):
         if not clangd.exists():
             self.skipTest("CLion bundled clangd unavailable on this host")
         for source in ("ecosystem/repos/vexspoke/src/algo/bvh.c",
-                       "tests/vexspoke/algo/algo_suite_test.c"):
+                       "tests/vexspoke/algo/algo_suite_test.c",
+                       "tests/darling/compositor/filter_gallery.c",
+                       "tests/darling/darling_tests.c"):
             with self.subTest(source=source):
+                # Scope this proof to parsing/diagnostics, not clangd refactoring
+                # tools. SwapBinaryOperands' self-test fails on valid COLOR_RGBA
+                # macro expansions (overlapping edits), unrelated to the model.
                 result = subprocess.run([str(clangd), "--enable-config",
+                                         "--tweaks=ExpandAutoType",
                                          "--check=" + str(ROOT / source)],
                                         cwd=ROOT, text=True, capture_output=True, timeout=120)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
