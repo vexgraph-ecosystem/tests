@@ -4,7 +4,7 @@ import re
 import unittest
 import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[2] / "b"
+ROOT = Path(__file__).resolve().parents[2] / "personal/b"
 
 
 class ReadmeTest(unittest.TestCase):
@@ -21,7 +21,7 @@ class ReadmeTest(unittest.TestCase):
         text = (ROOT / "TREE.md").read_text()
         for phrase in ("build <adapter>", "exec <file>", "instance <file>",
                        "upload", "--port <port>", "--fqbn <matching-board>",
-                       "PLANNED", "not implemented", "workspace <workspace-directory>",
+                        "PLANNED", "not implemented", "tools/workspace.c",
                        "B_SQL_DATABASE", "no default database", "not a sandbox",
                        "not type-checking", "file suffix", "./tools/b targets",
                        "[Back to README](README.md)", "b run exec ./hello.c"):
@@ -41,7 +41,7 @@ class ReadmeTest(unittest.TestCase):
                        "b export <manifestmainfile>", "JETBRAINS.md",
                        "No export format or manifest schema is implemented yet",
                        "parse-only", "exactly one", "SDK 10+", "main.rs",
-                       "../tests/b/cli_test.py", "ecosystem/vexspoke/preferences.md"):
+                        "../../tests/b/cli_test.py", "ecosystem/vexspoke/preferences.md"):
             self.assertIn(phrase, text)
         for language in ("C /", "Java /", "Python /", "Rust /", "C# /", "R /", "Arduino /",
                          "Swift /", "Objective-C /", "JavaScript /", "TypeScript /", "PHP /", "SQL /", "C++ /", "POSIX shell /"):
