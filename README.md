@@ -7,9 +7,14 @@ source file is **not** evidence that its target was built or executed.
 
 ### Editor
 
-The workspace build system is `b` (standalone repo at `b/`); it is the source of
-truth for include paths, libraries, and targets. The former CMake/CTest adapter
-is retired. Run targets from the terminal with `./tools/b run <target>` or
+The workspace build system is `b` (standalone repo at `personal/b/`); it is the
+source of truth for include paths, libraries, and targets. Open either the
+workspace-root `CMakeLists.txt` or this repository's `CMakeLists.txt` in CLion
+for C23 syntax analysis and native test Run/Debug targets. Both consume the
+same `b ide` metadata; CMake is an IDE adapter, not another build graph.
+The tests-only entry requires the parent workspace, or an explicit
+`-DVEXGRAPH_WORKSPACE_ROOT=/path/to/vexgraph`. Window/GPU/UI CTest execution is
+disabled by default. Terminal execution remains `./tools/b run <target>` or
 `tests/run.sh <name>`.
 
 ### Terminal
@@ -49,7 +54,7 @@ report, not a manually maintained source file.
 ## Proof gates
 
 The Per-File Battle Test Law and the Public Surface Proof Law are enforced in
-the C23 build tool (the workspace engine at `b/workspace.c`), not by a script.
+the C23 build tool (the workspace engine at `tools/workspace.c`), not by a script.
 The baselines are data files under `tests/vexspoke/`; each **may only shrink**.
 
 ```sh
