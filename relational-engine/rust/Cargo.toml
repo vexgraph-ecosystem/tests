@@ -5,7 +5,7 @@ edition = "2024"
 publish = false
 
 [dependencies]
-relational-engine-scratchpad = { path = "../../../personal/relational-engine/rust" }
+relational-engine-scratchpad = { path = "../../../ecosystem/repos/relational-engine/rust" }
 
 [[test]]
 name = "memory_owner"
@@ -22,3 +22,23 @@ path = "primitives/atomic_string_test.rs"
 [[test]]
 name = "ffi_memory_owner"
 path = "ffi/memory_test.rs"
+
+[[test]]
+name = "chunk_owner"
+path = "nio/chunk_test.rs"
+
+[[test]]
+name = "chunked_list_owner"
+path = "struct/chunked_list_test.rs"
+
+[[test]]
+name = "variable_slot_owner"
+path = "variable/variable_slot_test.rs"
+
+[[test]]
+name = "variable_registry_owner"
+path = "variable/variable_registry_test.rs"
+
+[[test]]
+name = "ffi_variable_registry_owner"
+path = "ffi/variable_registry_test.rs"
