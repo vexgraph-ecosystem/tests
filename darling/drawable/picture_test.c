@@ -120,9 +120,37 @@ static void invalid(void) {
     Image_destroy(bgra);
 }
 
+static unsigned textureReferences;
+static bool retainTexture(void *texture) {
+    assert(texture == &textureReferences);
+    ++textureReferences;
+    return true;
+}
+static bool releaseTexture(void *texture) {
+    assert(texture == &textureReferences && textureReferences);
+    --textureReferences;
+    return true;
+}
+static void gpuOnlyAdmission(void) {
+    // Headless widget admission only; actual texture pixels are proven by R3.
+    Image *image = Image(8, 4);
+    assert(Image_bindGpu(image, &textureReferences, image, image, retainTexture, releaseTexture));
+    Picture *picture = Picture(image), *empty = Picture();
+    assert(picture && empty && !Image_pixels(image));
+    assert(Picture_width(picture) == 8 && Picture_height(picture) == 4);
+    Picture_setImage(empty, image);
+    assert(Picture_image(empty) == image);
+    Picture_destroy(picture);
+    Picture_destroy(empty);
+    assert(textureReferences == 1); // both widgets borrow the Image
+    Image_destroy(image);
+    assert(!textureReferences);
+}
+
 int main(void) {
     widget();
     invalid();
+    gpuOnlyAdmission();
     puts("picture_test: PASS (borrowed-image widget, normal paint, detach lifetime)");
     return 0;
 }
