@@ -41,7 +41,8 @@ class ReadmeTest(unittest.TestCase):
                        "b export <manifestmainfile>", "JETBRAINS.md",
                        "No export format or manifest schema is implemented yet",
                        "parse-only", "exactly one", "SDK 10+", "main.rs",
-                        "../../tests/b/cli_test.py", "ecosystem/vexspoke/preferences.md"):
+                         "../../tests/b/cli_test.py", "../../preferences.md",
+                         "https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a"):
             self.assertIn(phrase, text)
         for language in ("C /", "Java /", "Python /", "Rust /", "C# /", "R /", "Arduino /",
                          "Swift /", "Objective-C /", "JavaScript /", "TypeScript /", "PHP /", "SQL /", "C++ /", "POSIX shell /"):
