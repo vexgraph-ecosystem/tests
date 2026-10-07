@@ -127,16 +127,20 @@ int main(void) {
     FILE *errors=tmpfile(); assert(errors); int saved=dup(STDERR_FILENO); assert(saved>=0);
     assert(dup2(fileno(errors),STDERR_FILENO)>=0);
     Image *unchanged=prior;
-    assert(!GpuScope_render(nullptr,0,prior,deco,PX,PY,fore,FX,FY,1,&unchanged));
-    assert(!GpuScope_render(gpu,3,prior,deco,PX,PY,fore,FX,FY,1,&unchanged));
-    assert(!GpuScope_render(gpu,0,nullptr,deco,PX,PY,fore,FX,FY,1,&unchanged));
-    assert(!GpuScope_render(gpu,0,prior,nullptr,PX,PY,fore,FX,FY,1,&unchanged));
-    assert(!GpuScope_render(gpu,0,prior,deco,PX,PY,nullptr,FX,FY,1,&unchanged));
-    assert(!GpuScope_render(gpu,0,prior,deco,PX,PY,fore,FX,FY,1,nullptr));
-    assert(!GpuScope_render(gpu,0,prior,deco,-1,PY,fore,FX,FY,1,&unchanged));
-    assert(!GpuScope_render(gpu,0,prior,deco,WIDTH,PY,fore,FX,FY,1,&unchanged));
-    assert(!GpuScope_render(gpu,0,prior,deco,PX,PY,fore,FX,FY,17,&unchanged));
-    assert(!GpuScope_render(gpu,0,prior,deco,PX,PY,fore,INT32_MAX,FY,1,&unchanged));
+    __typeof__(&GpuScope_render) forms[] = {GpuScope_render,GpuScope_renderSampled};
+    for (unsigned form = 0; form < 2; ++form) {
+        assert(!forms[form](nullptr,0,prior,deco,PX,PY,fore,FX,FY,1,&unchanged));
+        assert(!forms[form](gpu,3,prior,deco,PX,PY,fore,FX,FY,1,&unchanged));
+        assert(!forms[form](gpu,0,nullptr,deco,PX,PY,fore,FX,FY,1,&unchanged));
+        assert(!forms[form](gpu,0,prior,nullptr,PX,PY,fore,FX,FY,1,&unchanged));
+        assert(!forms[form](gpu,0,prior,deco,PX,PY,nullptr,FX,FY,1,&unchanged));
+        assert(!forms[form](gpu,0,prior,deco,PX,PY,fore,FX,FY,1,nullptr));
+        assert(!forms[form](gpu,0,prior,deco,-1,PY,fore,FX,FY,1,&unchanged));
+        assert(!forms[form](gpu,0,prior,deco,WIDTH,PY,fore,FX,FY,1,&unchanged));
+        assert(!forms[form](gpu,0,prior,deco,PX,PY,fore,FX,FY,17,&unchanged));
+        assert(!forms[form](gpu,0,prior,deco,PX,PY,fore,INT32_MAX,FY,1,&unchanged));
+        assert(unchanged == prior);
+    }
     assert(!GpuScope_3(nullptr,directory,4096));
     assert(!GpuScope_3(device,nullptr,4096));
     assert(!GpuScope_3(device,directory,0));
@@ -153,7 +157,7 @@ int main(void) {
     fflush(stderr); assert(dup2(saved,STDERR_FILENO)>=0); close(saved); rewind(errors);
     unsigned count=0;
     while (fgets(text,sizeof text,errors)) { assert(strstr(text,"[vex]") && strstr(text,"GpuScope")); ++count; }
-    assert(count==18); fclose(errors);
+    assert(count==28); fclose(errors);
     assert(unchanged==prior && !memcmp(snapshot,Image_pixels(prior),sizeof snapshot));
     assert(GpuScope_render(gpu,2,prior,deco,PX,PY,fore,FX,FY,1,&unchanged));
     Image_destroy(unchanged);
@@ -172,12 +176,12 @@ int main(void) {
     errors=tmpfile(); saved=dup(STDERR_FILENO); assert(errors && saved>=0);
     assert(dup2(fileno(errors),STDERR_FILENO)>=0);
     unchanged=prior; forcedTimeouts=2;
-    assert(!GpuScope_render(gpu,2,prior,deco,PX,PY,fore,FX,FY,1,&unchanged));
+    assert(!GpuScope_renderSampled(gpu,2,prior,deco,PX,PY,fore,FX,FY,1,&unchanged));
     assert(unchanged==prior && GpuScope_isPending(gpu));
     assert(!GpuScope_destroy(gpu) && GpuScope_isPending(gpu));
     fflush(stderr); assert(dup2(saved,STDERR_FILENO)>=0); close(saved);
     rewind(errors); assert(fgets(text,sizeof text,errors) && strstr(text,"[vex]")); assert(!fgets(text,sizeof text,errors)); fclose(errors);
-    assert(GpuScope_render(gpu,2,prior,deco,PX,PY,fore,FX,FY,1,&unchanged));
+    assert(GpuScope_renderSampled(gpu,2,prior,deco,PX,PY,fore,FX,FY,1,&unchanged));
     assert(!GpuScope_isPending(gpu)); Image_destroy(unchanged);
     Image_destroy(fore); Image_destroy(deco); Image_destroy(prior);
     assert(GpuScope_destroy(gpu) && Device_isValid(device));
