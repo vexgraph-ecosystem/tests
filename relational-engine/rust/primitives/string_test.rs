@@ -1,5 +1,5 @@
-// Owner proof for text/string; byte lengths, not character arrays.
-use relational_engine_scratchpad::{bytes, text::string};
+// Owner proof for primitives/string; also prove the old text compatibility path.
+use relational_engine_scratchpad::{bytes, primitives::string};
 
 #[test]
 fn byte_text_contract() {
@@ -8,4 +8,5 @@ fn byte_text_contract() {
     assert_eq!(string::as_text(b"").unwrap(), "");
     assert!(string::as_text(&[0xff]).is_err());
     assert_eq!(relational_engine_scratchpad::string::to_byte_array("hello"), b"hello");
+    assert_eq!(relational_engine_scratchpad::text::string::to_byte_array("hello"), b"hello");
 }
