@@ -1,17 +1,19 @@
 #ifndef DARLING_FILTER_GALLERY_FIXTURE_H
 #define DARLING_FILTER_GALLERY_FIXTURE_H
 
-// Deterministic picture and captions for the gallery, not production image/font
-// loading. All three views execute Graphvex's real Vulkan scoped scatter pass.
+// Bundled photograph and deterministic captions, not a production image loader.
+// All three views execute Graphvex's real Vulkan scoped scatter pass.
 #include "compositor/gpu_scope.h"
 #include "image.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "darling/compositor/gallery_photo.h"
+#include "exception/throw.h"
 
 enum { FILTER_GALLERY_WIDTH = 360, FILTER_GALLERY_HEIGHT = 300,
-       FILTER_GALLERY_GPU_PIXEL_BUDGET = 262144 }; // explicit cold allocation/work safety budget
+       FILTER_GALLERY_GPU_PIXEL_BUDGET = GALLERY_PHOTO_OUTPUT_PIXEL_LIMIT }; // cold allocation/work safety budget
 
 static inline void FilterGallery_pixel(Image *image, unsigned x, unsigned y, Color color) {
     if (x >= Image_width(image) || y >= Image_height(image))
@@ -51,35 +53,35 @@ static inline void FilterGallery_text(Image *image, unsigned x, unsigned y,
     }
 }
 
-static inline Image *FilterGallery_landscape(unsigned width, unsigned height) {
+// Cold Apple fixture decoding only. Bound source/output dimensions before
+// allocating; return nullptr on failure, never synthesize replacement artwork.
+// Draw into a top-left RGBA shadow, then convert premultiplied to straight alpha.
+static inline Image *FilterGallery_photoFromPath(const char *path, unsigned width, unsigned height) {
+    if (!width || !height || (uint64_t) width * height > FILTER_GALLERY_GPU_PIXEL_BUDGET)
+        return nullptr;
     Image *image = Image_2(width, height);
     if (!image || !Image_ensureShadow(image, width, height)) {
         Image_destroy(image);
         return nullptr;
     }
-    for (unsigned y = 0; y < height; ++y) {
-        for (unsigned x = 0; x < width; ++x) {
-            unsigned nx = x * 360 / width, ny = y * 300 / height;
-            Color color = COLOR_RGBA(56 + ny / 4, 132 + ny / 5, 204, 255);
-            int dx = (int) nx - 270, dy = (int) ny - 56;
-            if (dx * dx + dy * dy < 23 * 23)
-                color = COLOR_RGBA(255, 216, 104, 255);
-            unsigned mountain = nx < 150 ? (nx > 70 ? nx - 70 : 70 - nx) :
-                                 (nx > 250 ? nx - 250 : 250 - nx);
-            if (ny > 76 + mountain / 2 && ny < 178)
-                color = COLOR_RGBA(35, 67, 98, 255);
-            if (ny >= 178)
-                color = (ny / 6 + nx / 26) % 3 ? COLOR_RGBA(37, 133, 149, 255) :
-                                               COLOR_RGBA(122, 205, 202, 255);
-            if (ny > 242)
-                color = COLOR_RGBA(27, 72, 57, 255);
-            if ((nx % 36 < 5 && ny > 215) || (ny > 230 && ny < 235))
-                color = COLOR_RGBA(231, 161, 85, 255);
-            if (nx < 76 && ny > 35 && ny < 100)
-                color = (nx / 8 + ny / 8) % 2 ? COLOR_WHITE : COLOR_RGBA(24, 39, 61, 255);
-            FilterGallery_pixel(image, x, y, color);
-        }
+    Image_fill(image, COLOR_CLEAR);
+    if (!GalleryPhoto_decode(path, width, height, Image_pixels(image), Image_stride(image))) {
+        Image_destroy(image);
+        return nullptr;
     }
+    return image;
+}
+
+static inline Image *FilterGallery_photo(unsigned width, unsigned height) {
+#ifdef FILTER_GALLERY_SOURCE_RESOURCE
+    // Owner test only: the application has no Downloads/CWD/source-tree fallback.
+    const char *path = FILTER_GALLERY_SOURCE_RESOURCE;
+#else
+    const char *path = nullptr;
+#endif
+    Image *image = FilterGallery_photoFromPath(path, width, height);
+    if (!image)
+        THROW("filter gallery sunflower resource missing or invalid");
     return image;
 }
 
@@ -96,7 +98,7 @@ static inline bool FilterGallery_shaderDirectory(char *dest,size_t cap) {
 static inline bool FilterGallery_render(GpuScope *gpu,unsigned which,Image **out) {
     if (which > 2 || !out || !gpu)
         return false;
-    Image *baseline = FilterGallery_landscape(FILTER_GALLERY_WIDTH, FILTER_GALLERY_HEIGHT);
+    Image *baseline = FilterGallery_photo(FILTER_GALLERY_WIDTH, FILTER_GALLERY_HEIGHT);
     Image *photo = nullptr, *decorationImage = nullptr;
     if (!baseline)
         return false;
@@ -114,7 +116,7 @@ static inline bool FilterGallery_render(GpuScope *gpu,unsigned which,Image **out
     Image_fill(decorationImage, which == 0 ? COLOR_RGBA(225, 239, 255, 80) :
                which == 1 ? COLOR_RGBA(69, 93, 141, 255) : COLOR_RGBA(138, 76, 119, 255));
     if (which) {
-        photo = FilterGallery_landscape(296, 132);
+        photo = FilterGallery_photo(296, 132);
         if (!photo) {
             goto cleanup;
         }
