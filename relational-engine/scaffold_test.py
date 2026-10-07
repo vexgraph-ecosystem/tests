@@ -46,6 +46,7 @@ def main():
         assert not (ROOT / "rust/src" / old).exists()
     assert "https://gist.github.com/vex-graph/" in (ROOT / "CONTRIBUTING.md").read_text()
     assert "tests/relational-engine/" in (ROOT / "CONTRIBUTING.md").read_text()
+    assert "relational-engine-preferences.md" in (ROOT / "CONTRIBUTING.md").read_text()
     assert (ROOT / "src/LICENSE").read_text().startswith("Boost Software License")
     assert (ROOT / "LICENSE").read_text().startswith("MIT License")
     assert "EXCLUDE_FROM_ALL" in (ROOT / "CMakeLists.txt").read_text()
