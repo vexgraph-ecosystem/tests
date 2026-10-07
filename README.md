@@ -7,6 +7,11 @@ source file is **not** evidence that its target was built or executed.
 
 ### Editor
 
+Build/run with [b](https://github.com/vex-graph/b). The CMake adapters provide
+CLion navigation, diagnostics and inlay hints; they do not replace b's graph.
+Unlike the per-repo metadata-only object targets, this existing test adapter
+also offers native test Run/Debug targets. That opt-in testing seam is retained.
+
 The workspace build system is `b` (standalone repo at `personal/b/`); it is the
 source of truth for include paths, libraries, and targets. Open either the
 workspace-root `CMakeLists.txt` or this repository's `CMakeLists.txt` in CLion
