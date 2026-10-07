@@ -35,7 +35,22 @@ umbrella `README.md`. `b test [substr]` builds and runs every test target; the
 static proof gate below runs first, so a suite cannot go green while a unit
 lacks an owner or a public function goes uninvoked.
 
-## Timestamped checklist
+## R2 ownership and proof
+
+R2 has two cooperating owners: Vexspoke CPU computation, math, algorithms,
+synchronization and behavior, and Relational Engine memory/storage, stable rows,
+variable bindings and native C search over Rust-owned spans. Migration is staged;
+retained Vexspoke memory/container ABI and default allocator still need their
+existing owners. Engine tests do not confer allocator parity, C/Rust atomic-layout
+equivalence, automatic schema migration or R1 reload integration.
+
+Engine owner/build instructions live in [relational-engine/README.md](relational-engine/README.md).
+Use `python3 tests/relational-engine/rust/run.py` from the workspace root; do not
+assume `b test` or the Vexspoke-only gates below include every Rust/C owner.
+R1 owns residency/lifetimes; GPU shaders/dispatch remain Graphvex R3. The R5 apps
+are unfinished, and a passing documentation check proves no application runtime.
+
+## Timestamped evidence ledger
 
 `test-checklist.md` inventories every framework, with directory tables and one
 row per file, plus shared tests and workspace tools. ✅ means its automated lab
