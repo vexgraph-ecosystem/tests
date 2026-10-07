@@ -1,4 +1,4 @@
-// Shared compile-negative proof: a live borrow prevents releasing its owner block.
+// nio/mem compile-negative proof: a live borrow prevents releasing its block.
 use relational_engine_scratchpad::Memory;
 fn main() {
     let mut memory = Memory::new();
