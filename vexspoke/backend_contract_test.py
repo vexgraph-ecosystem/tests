@@ -11,7 +11,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 VEX = ROOT / "ecosystem/repos/vexspoke"
-ENGINE = ROOT / "personal/relational-engine"
+ENGINE = ROOT / "ecosystem/repos/relational-engine"
 
 
 class BackendContractTest(unittest.TestCase):
@@ -30,12 +30,22 @@ class BackendContractTest(unittest.TestCase):
 
     def test_documented_backend_is_not_a_rust_wrapper_claim(self):
         text = (VEX / "BACKEND.md").read_text()
-        for phrase in ("restored unchanged", "no allocator", "no claim",
-                       "without a dependency", "./tools/b build"):
+        for phrase in ("restored unchanged", "no allocator", "not a default",
+                        "without a dependency", "./tools/b build"):
             self.assertIn(phrase, text)
         result = subprocess.run(["git", "check-ignore", "--no-index", "BACKEND.md"],
                                 cwd=VEX, capture_output=True, timeout=10)
         self.assertEqual(result.returncode, 1, result.stderr.decode())
+
+    def test_optional_engine_boundary_is_not_default_migration(self):
+        content = (VEX / "BACKEND.md").read_text()
+        header = (VEX / "src/nio/relational_memory.h").read_text()
+        self.assertIn("partial storage C ABI", content)
+        self.assertIn("staged", content)
+        self.assertIn("R1 owns", content)
+        self.assertIn("automatic schema migration", content)
+        self.assertIn('relational_engine/memory.h', header)
+        self.assertIn("NOT the default", header)
 
 
 if __name__ == "__main__":
