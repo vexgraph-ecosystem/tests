@@ -23,7 +23,7 @@ CODE = {
     "ecosystem/repos/darling-framework": "src/panel/panel.c",
     "ecosystem/projects/impedance": "src/impedance.c",
     "personal/b": "b.c",
-    "personal/relational-engine": "src/io/file.c",
+    "ecosystem/repos/relational-engine": "src/io/file.c",
 }
 EMPTY = (
     "ecosystem/repos/darkbase", "ecosystem/repos/language",
