@@ -16,5 +16,9 @@ name = "string_owner"
 path = "text/string_test.rs"
 
 [[test]]
+name = "atomic_string_owner"
+path = "text/atomic_string_test.rs"
+
+[[test]]
 name = "ffi_memory_owner"
 path = "ffi/memory_test.rs"
