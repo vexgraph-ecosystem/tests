@@ -36,6 +36,14 @@ def main():
         assert "tests/rust/run.py" not in doc.read_text()
     assert "[[test]]" not in (ROOT / "rust/Cargo.toml").read_text()
     assert 'name = "memory_owner"' in (SUITE / "rust/Cargo.toml").read_text()
+    for module, unit in (("nio", "mem"), ("text", "string"), ("ffi", "memory")):
+        assert (ROOT / "rust/src" / module / "mod.rs").is_file()
+        assert (ROOT / "rust/src" / module / f"{unit}.rs").is_file()
+        assert (SUITE / "rust" / module / f"{unit}_test.rs").is_file()
+        assert f'{module}/{unit}_test.rs' in (SUITE / "rust/Cargo.toml").read_text()
+        assert f'src/{module}/{unit}.rs' in (ROOT / "rust/README.md").read_text()
+    for old in ("mem.rs", "string.rs", "ffi.rs"):
+        assert not (ROOT / "rust/src" / old).exists()
     assert "https://gist.github.com/vex-graph/" in (ROOT / "CONTRIBUTING.md").read_text()
     assert "tests/relational-engine/" in (ROOT / "CONTRIBUTING.md").read_text()
     assert (ROOT / "src/LICENSE").read_text().startswith("Boost Software License")
