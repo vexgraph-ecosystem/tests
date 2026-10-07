@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 
 WORKSPACE = Path(__file__).resolve().parents[2]
-ROOT = WORKSPACE / "personal/relational-engine"
+ROOT = WORKSPACE / "ecosystem/repos/relational-engine"
 prefs = (ROOT / "relational-engine-preferences.md").read_text()
 for title in ("Resident Storage Boundary Law", "Cross-Language Atomic Access Law",
               "One Rust Class Per File Law", "CamelCase Rust Constructor Macro Law",
@@ -12,7 +12,7 @@ for title in ("Resident Storage Boundary Law", "Cross-Language Atomic Access Law
 assert "4132a6c45cb6d3797c3e8eff2e94035a" in prefs
 assert "record-schema migration" in prefs and "not" in prefs
 constitution = (WORKSPACE / "preferences.md").read_text()
-assert "personal/relational-engine/relational-engine-preferences.md" in constitution
+assert "ecosystem/repos/relational-engine/relational-engine-preferences.md" in constitution
 assert "No C/Rust atomic-layout compatibility is assumed" in constitution
 for path in (ROOT / "rust/src").rglob("*.rs"):
     if path.name == "helloworld.rs":
@@ -37,4 +37,18 @@ assert "No codecs are implemented" in (ROOT / "rust/src/compress/mod.rs").read_t
 for part in ("search", "search/primitives"):
     assert "no" in (ROOT / "src" / part / "README.md").read_text().lower()
 assert not (ROOT / "rust/src/compute").exists()
+assert "### Stable Row and Variable Binding Law" in prefs
+assert "borrowed VALUE" in prefs
+assert "self" in prefs and "not" in prefs
+for module, unit in (("nio", "chunk"), ("struct", "chunked_list"),
+                     ("variable", "variable_slot"), ("variable", "variable_registry")):
+    assert (ROOT / "rust/src" / module / f"{unit}.rs").is_file()
+    assert (WORKSPACE / "tests/relational-engine/rust" / module / f"{unit}_test.rs").is_file()
+assert "VariableRegistry" in (ROOT / "rust/README.md").read_text()
+assert "nine independent owner targets" in (WORKSPACE / "tests/relational-engine/README.md").read_text()
+assert "buffered readers/writers" in prefs
+assert "Manifest-backed persistence remains proposed" in prefs
+assert "No runtime file API" in (ROOT / "rust/src/io/mod.rs").read_text()
+assert "re_name_search" in (ROOT / "src/search/primitives/README.md").read_text()
+assert "BORROW" in (ROOT / "rust/include/relational_engine/variable_registry.h").read_text().upper()
 print("PASS: resident/atomic contracts, reading map and one named Rust type per file")
