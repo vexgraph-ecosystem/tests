@@ -10,6 +10,9 @@ static Color pixel(const Image *image, unsigned x, unsigned y) {
 }
 
 int main(void) {
+    assert(!FilterGallery_photoFromPath("/nonexistent-filter-gallery-photo.png", 1, 1));
+    assert(!FilterGallery_photoFromPath(nullptr, 0, 1));
+    assert(!FilterGallery_photoFromPath(nullptr, UINT32_MAX, UINT32_MAX));
     Device *device=Device_create(false);
     if (!Device_isValid(device)) {
         fprintf(stderr,"filter_gallery_fixture_test: SKIP Vulkan unavailable\n");
@@ -20,7 +23,7 @@ int main(void) {
     GpuScope *gpu=GpuScope(device,directory,FILTER_GALLERY_GPU_PIXEL_BUDGET);
     assert(gpu);
     Image *views[3] = {nullptr};
-    Image *original = FilterGallery_landscape(FILTER_GALLERY_WIDTH, FILTER_GALLERY_HEIGHT);
+    Image *original = FilterGallery_photo(FILTER_GALLERY_WIDTH, FILTER_GALLERY_HEIGHT);
     assert(original);
     for (unsigned i = 0; i < 3; ++i) {
         assert(FilterGallery_render(gpu,i,&views[i]));
