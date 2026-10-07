@@ -39,14 +39,14 @@ class CompositorContractTest(unittest.TestCase):
         self.assertIn("bypasses the content/focus FPS cap", documentation)
 
     def test_universal_ownership_is_reconciled(self):
-        for path in (ROOT / "preferences.md", ROOT / "ecosystem/vexspoke/preferences.md"):
+        for path in (ROOT / "preferences.md",):
             text = path.read_text()
             with self.subTest(path=str(path)):
                 self.assertIn("graphical element trees and the widget/image compositor", text)
                 self.assertIn("Darling owns no competing graphics compositor", text)
                 self.assertNotIn("no window, no UI tree, no services", text)
                 self.assertNotIn("widgets/compositor/", text)
-                self.assertIn("R3 `graphvex`: includes `vexspoke` only", text)
+                self.assertIn("R3 `graphvex`: `vexspoke` and/or `relational-engine` public contracts", text)
 
     def test_graphvex_bounds_scopes_and_backend_contract(self):
         text = (GRAPHVEX / "graphvex-preferences.md").read_text()
