@@ -9,4 +9,12 @@ relational-engine-scratchpad = { path = "../../../personal/relational-engine/rus
 
 [[test]]
 name = "memory_owner"
-path = "mem_test.rs"
+path = "nio/mem_test.rs"
+
+[[test]]
+name = "string_owner"
+path = "text/string_test.rs"
+
+[[test]]
+name = "ffi_memory_owner"
+path = "ffi/memory_test.rs"
