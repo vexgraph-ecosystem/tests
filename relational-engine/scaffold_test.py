@@ -5,7 +5,7 @@ import os
 import subprocess
 import tempfile
 
-ROOT = Path(__file__).resolve().parents[2] / "personal" / "relational-engine"
+ROOT = Path(__file__).resolve().parents[2] / "ecosystem" / "repos" / "relational-engine"
 SUITE = Path(__file__).resolve().parent
 
 
@@ -45,7 +45,7 @@ def main():
     for old in ("mem.rs", "string.rs", "ffi.rs"):
         assert not (ROOT / "rust/src" / old).exists()
     assert "https://gist.github.com/vex-graph/" in (ROOT / "CONTRIBUTING.md").read_text()
-    assert "tests/relational-engine/" in (ROOT / "CONTRIBUTING.md").read_text()
+    assert "tests/relational-engine" in (ROOT / "CONTRIBUTING.md").read_text()
     assert "relational-engine-preferences.md" in (ROOT / "CONTRIBUTING.md").read_text()
     assert (ROOT / "src/LICENSE").read_text().startswith("Boost Software License")
     assert (ROOT / "LICENSE").read_text().startswith("MIT License")
