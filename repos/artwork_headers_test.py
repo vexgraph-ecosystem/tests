@@ -45,19 +45,19 @@ def header(path):
 class ArtworkHeadersTest(unittest.TestCase):
     def test_single_artwork_headers_preserve_document_titles(self):
         for path, filename, alt, title in (
-            ("b/README.md", "b.png", "build, breeze, box!", "# b\n"),
-            ("ecosystem/vexspoke/preferences.md", "preferences-dot-md.png", "preferences.md",
-             "# vexgraph's vexspoke — C23 Engine & Multi-Repo Preferences\n"),
+            ("personal/b/README.md", "b.png", "build, breeze, box!", "# b\n"),
+            ("preferences.md", "preferences-dot-md.png", "preferences.md",
+             "# vexgraph — C23/Rust Ecosystem & Multi-Repo Preferences\n"),
         ):
             with self.subTest(document=path):
                 images, body = header(path)
                 self.assertEqual(images, [({"src": ARTWORK + filename, "alt": alt, "width": "800"},
                                            [("p", {"align": "center"})])])
                 self.assertTrue(body.startswith(title))
-                self.assertTrue((ROOT / "repos/vex-graph/resources" / filename).is_file())
+                self.assertTrue((ROOT / "personal/vex-graph/resources" / filename).is_file())
 
     def test_ecosystem_combined_row_links_only_vexgraph(self):
-        images, body = header("repos/.github/profile/README.md")
+        images, body = header("ecosystem/.github/profile/README.md")
         self.assertEqual(images, [
             ({"src": ARTWORK + "vexgraph.png", "alt": "vexgraph", "width": "48%"},
              [("p", {"align": "center"}), ("a", {"href": "https://github.com/vex-graph"})]),
@@ -67,7 +67,7 @@ class ArtworkHeadersTest(unittest.TestCase):
         self.assertTrue(body.startswith("# vexgraph-ecosystem\n"))
 
     def test_profile_heading_and_subheading_still_precede_cards(self):
-        text = (ROOT / "repos/vex-graph/README.md").read_text()
+        text = (ROOT / "personal/vex-graph/README.md").read_text()
         self.assertIn("\n# hey! vex here! 🦊\n", text)
         self.assertIn("\n### i make stuff unseriously in java and c23, and others too in my spare time\n", text)
         self.assertLess(text.index("spare time"), text.index("personal-projects.png"))
