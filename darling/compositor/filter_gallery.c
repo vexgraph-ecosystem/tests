@@ -5,16 +5,18 @@
 #include "drawable/picture.h"
 #include "frame/frame.h"
 #include "panel/panel.h"
+#include "vulkan/vulkan_backend.h"
 #include "darling/compositor/filter_gallery_fixture.h"
 
 
 // Interactive gallery, intentionally not an automatically registered _test.
 // --smoke performs native captured-pixel checks then closes; it is lab proof,
-// never user appearance approval. All filters/composition run in Vulkan shaders;
-// one final readback bridges each static output to the existing Picture API.
+// never user appearance approval. Filter outputs remain sampled GPU textures;
+// only explicitly requested smoke-test oracles/capture perform readback.
 typedef struct FilterGalleryState {
     Picture *pictures[6];
     Image *images[6];
+    Image *oracles[3]; // smoke-only CPU references; absent in interactive gallery
     Panel *cards[3]; // borrowed from Frame; anchors resolved by the real tree
     Device *device;
     GpuScope *gpu;
@@ -26,7 +28,6 @@ static void galleryClosed(Frame *frame, void *userdata) {
     FilterGalleryState *state = userdata;
     if (GpuScope_destroy((*state).gpu)) {
         (*state).gpu=nullptr;
-        Device_destroy((*state).device);
         (*state).device=nullptr;
     } // unsignaled GPU job/device remain alive; never free under outstanding work
     for (unsigned i = 0; i < 6; ++i) {
@@ -35,6 +36,8 @@ static void galleryClosed(Frame *frame, void *userdata) {
         Image_destroy((*state).images[i]);
         (*state).images[i] = nullptr;
     }
+    for (unsigned i = 0; i < 3; ++i)
+        Image_destroy((*state).oracles[i]);
 }
 
 static bool sampleMatches(const Image *capture, const Image *source,
@@ -90,7 +93,7 @@ int main(int argc, char **argv) {
     // The gallery rests when clean. Do not impose a 30 Hz content ceiling on
     // native resize; changed geometry is published immediately by Frame_setSize.
     Frame_onClose(frame, galleryClosed, &gallery);
-    Device *device=Device_create(false);
+    Device *device=VulkanBackend_device(); // borrowed same-device texture sampling
     char shaderDirectory[2048];
     GpuScope *gpu=nullptr;
     if (Device_isValid(device) && FilterGallery_shaderDirectory(shaderDirectory,sizeof shaderDirectory))
@@ -101,12 +104,18 @@ int main(int argc, char **argv) {
         Frame_destroy(frame); return 1;
     }
     for (unsigned i = 0; i < 3; ++i) {
-        if (!FilterGallery_render(gpu,i,&gallery.images[i * 2])) {
+        if (!FilterGallery_renderSampled(gpu,i,&gallery.images[i * 2]) ||
+            (smoke && !FilterGallery_render(gpu,i,&gallery.oracles[i]))) {
             Frame_destroy(frame);
             return 1;
         }
         gallery.images[i * 2 + 1] = FilterGallery_caption(i);
         if (!gallery.images[i * 2 + 1]) {
+            Frame_destroy(frame);
+            return 1;
+        }
+        if (!VulkanBackend_prepareImage(gallery.images[i * 2]) ||
+            !VulkanBackend_prepareImage(gallery.images[i * 2 + 1])) {
             Frame_destroy(frame);
             return 1;
         }
@@ -142,7 +151,6 @@ int main(int argc, char **argv) {
         Frame_destroy(frame); return 1; // never free borrowed device under live GPU work
     }
     gallery.gpu=nullptr;
-    Device_destroy(device);
     gallery.device=nullptr;
     Frame_show(frame);
     if (smoke)
@@ -170,8 +178,8 @@ int main(int argc, char **argv) {
                 float expected = i == 0 ? 10 : i == 1 ? ((float) widths[step] - 372) * 0.5f :
                                                         (float) widths[step] - 382;
                 if (bound.x != expected || bound.y != 14 || bound.w != 372 || bound.h != 394 ||
-                    !sampleMatches(capture, gallery.images[i * 2], (unsigned) expected + 16, 116, 10, 20) ||
-                    !sampleMatches(capture, gallery.images[i * 2], (unsigned) expected + 66, 226, 60, 130)) {
+                    !sampleMatches(capture, gallery.oracles[i], (unsigned) expected + 16, 116, 10, 20) ||
+                    !sampleMatches(capture, gallery.oracles[i], (unsigned) expected + 66, 226, 60, 130)) {
                     fprintf(stderr, "filter_gallery: resized anchor/Picture mismatch in case %u step %u\n", i + 1, step);
                     Image_destroy(capture);
                     Frame_destroy(frame);
