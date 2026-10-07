@@ -36,7 +36,7 @@ def main():
         assert "tests/rust/run.py" not in doc.read_text()
     assert "[[test]]" not in (ROOT / "rust/Cargo.toml").read_text()
     assert 'name = "memory_owner"' in (SUITE / "rust/Cargo.toml").read_text()
-    for module, unit in (("nio", "mem"), ("text", "string"), ("ffi", "memory")):
+    for module, unit in (("nio", "mem"), ("primitives", "string"), ("ffi", "memory")):
         assert (ROOT / "rust/src" / module / "mod.rs").is_file()
         assert (ROOT / "rust/src" / module / f"{unit}.rs").is_file()
         assert (SUITE / "rust" / module / f"{unit}_test.rs").is_file()
