@@ -1,4 +1,4 @@
-/* Shared executable C client of the standalone Rust learning ABI. */
+/* Companion C-client proof for ffi/memory's standalone learning ABI. */
 #include "relational_memory.h"
 #include <assert.h>
 #include <string.h>
