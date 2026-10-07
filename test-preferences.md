@@ -2,7 +2,7 @@
 
 This is the ecosystem's proof lawbook. It defines the evidence required before a production file,
 class, component, or subsystem is called tested across the R1–R5 ecosystem. It governs **proof and
-readiness only**; the universal architecture remains governed by `ecosystem/vexspoke/preferences.md`
+readiness only**; universal architecture is governed by the real workspace-root `preferences.md`
 (the Living Documentation Law). When a test law is cited, cite its **Title** — never a position,
 never a number (the Law Identity Doctrine).
 
@@ -51,7 +51,8 @@ blueprints, so their first real commit lands already governed.
 
 **Part II — Subsystem Test Laws**
 - hotcwap Test Laws (R1 host)
-- vexspoke Test Laws (R2 substrate)
+- vexspoke Test Laws (R2 computation/behavior; retained storage ABI)
+- relational-engine Test Laws (R2 memory/storage/native C search)
 - graphvex Test Laws (R3 GPU)
 - api-haven Test Laws (R3 API)
 - darling Test Laws (R4 UI)
@@ -87,6 +88,10 @@ establish that this file's constructors, operations, failure paths, and cleanup 
   failure state, lifetime, and concurrency contract. It runs independently enough that its result
   identifies the file that failed. Shared fixtures are allowed; a single broad integration test does
   not replace the owner test.
+- For Rust units, mirror each owning module under `tests/relational-engine/rust/`
+  and use its registered Cargo owner target. Test both debug and release with
+  warnings denied. Compile/run native C clients of the public ABI with assertions
+  and `-Wall -Wextra -Werror`; a Cargo build alone proves no C boundary.
 - For an `.h`/`.c` pair, compile the public header as a client and run the implementation behavior.
   Header-only macros and inline functions require compile and runtime proof as applicable.
   Platform-specific implementations require proof on every supported platform or an explicit unproved
@@ -468,8 +473,13 @@ Correct classes can fail when ownership, threading, type identity, pixels, or er
 boundary.
 
 ### The Rule:
-- R2 `vexspoke`: prove memory metadata, type identity, zero and empty values, relational containers,
-  atomic publication, and lifetime.
+- R2 `vexspoke`: prove CPU computation, math, algorithms, synchronization and
+  behavior, plus retained memory/container/type ABI during staged migration.
+- R2 `relational-engine`: prove Rust-owned allocation/storage, stable row chunks,
+  variable bindings, native C search over borrowed spans and lifetime. No default
+  allocator replacement, C/Rust atomic-layout equivalence or automatic schema
+  migration is inferred. R1 residency/consumer reload needs separate integration
+  proof; GPU shaders/dispatch remain Graphvex R3.
 - R3 drivers (`graphvex`, `api-haven`, `language`, `darkbase`): prove protocol parsing, malformed
   input, cancellation, storage durability or GPU resource retirement as applicable, plus their R2
   boundary.
@@ -615,11 +625,13 @@ requires its own host run before it is claimed battle tested.
 
 ---
 
-## vexspoke Test Laws (R2 substrate)
+## vexspoke Test Laws (R2 computation/behavior and retained storage ABI)
 
-The relational memory substrate: arena, type registry, math and vectors, containers, string pool,
-atomics, time, io. Everything here is about **predictable, deterministic calculation** and **pointers
-that lie**.
+Vexspoke owns CPU computation, math, algorithms, synchronization and behavior.
+Existing arena, container, type, string-pool and I/O ABI remains during staged
+migration to the cooperating Relational Engine storage owner. These owner tests
+still prove the retained C implementation; they do not prove a migrated backend.
+Everything here is about **predictable calculation** and **pointers that lie**.
 
 ### Deterministic Calculation Law
 **Proves:** identical input yields identical output, every run.
@@ -685,6 +697,57 @@ that lie**.
 | Hot-Path Guard | `tests/vexspoke/nio/hot_path_guard_test.c` | hot getters, `;;HOTCODE` sites |
 
 ---
+
+## relational-engine Test Laws (R2 memory/storage/native C search)
+
+Relational Engine owns Rust allocation/storage, stable row chunks, named variable
+bindings and native C search over Rust-owned spans. Imported C comparison code
+is not a production implementation. All Part I laws apply; tests must distinguish
+the implemented prototype from future allocator/type/schema parity.
+
+### Rust Ownership and Stable Row Proof Law
+
+- Prove creation/use/drop, empty/one/growth cases, overflow rejection and preserved
+  state after failure. Stable row addresses remain stable across advertised growth.
+- Test the documented row layout and alignment, including 32-byte VariableSlot
+  claims, slot exhaustion/growth and append-only index stability when offered.
+- Compile-negative borrow, move and privacy cases must fail for the intended
+  diagnostic; successful compilation alone is not lifetime proof.
+- Only claim sharing, copy-on-write or schema migration if implemented and tested
+  for isolation, rollback and preserved identity. Mark unavailable forms as gaps.
+
+### Native Span Boundary Proof Law
+
+- Compile/run the engine-owned C header as a real C23 client and exercise native
+  search over valid Rust-owned spans. Prove empty/not-found/normal/boundary input,
+  malformed names, length/stride overflow and output preservation as contracted.
+- Borrow lifetime ends before storage destruction. Never reinterpret Rust atomics
+  as C `_Atomic`; typed engine ABI operations own cross-language publication.
+- Cold lookup resolves once; hot access retains a validated pointer/handle rather
+  than performing reflective name search per frame.
+- Run applicable C-client sanitizers and bounded concurrency/teardown probes.
+  C-client instrumentation does not claim Rust sanitizer instrumentation.
+
+### Resident Backend Proof Law
+
+- Registration/destruction uses documented exclusion; legal concurrent reads and
+  writes prove acquire/release visibility, contention, busy rejection, retention
+  exhaustion and recovery. Retained string snapshots survive replacement.
+- Keep engine code/storage resident across consumer reloads. Prove actual R1
+  integration with reload/teardown tests before claiming it; static linking alone
+  does not prove the Hot loader seam or automatic record-schema migration.
+- Vexspoke default allocation remains unchanged until explicit migration and
+  owner proof. Prove the optional extern header separately from backend owners.
+
+### Seams to Prove
+
+| Seam | Owner location / runner | Scope |
+| :--- | :--- | :--- |
+| Rust memory and primitive/string publication | `tests/relational-engine/rust/`; `python3 tests/relational-engine/rust/run.py` | Registered debug/release owners and doctest; exact targets/results recorded after execution |
+| Stable chunks and named bindings | Mirrored `tests/relational-engine/rust/struct/` and `variable/` owners | Growth, layout, identity and lifetime when implemented; no readiness from a planned owner |
+| Native C ABI/search | `tests/relational-engine/` C clients through the owner runner | Real C23 bridge plus sanitizer scopes; Rust sanitizer gaps explicit |
+| Optional Vexspoke extern header | `tests/vexspoke/nio/relational_memory_test.c` | Opt-in C ABI only, not default allocator replacement |
+| R1 residency/reload/schema migration | Future integration owner | Unproved until executable reload, rollback and reverse teardown evidence exists |
 
 ## graphvex Test Laws (R3 GPU)
 
@@ -947,5 +1010,7 @@ Audio engine (R4/R5).
 
 ---
 
-*This lawbook governs proof and readiness. Universal architecture remains governed by
-`ecosystem/vexspoke/preferences.md`. Cite every law by its Title.*
+*This lawbook governs proof and readiness. Universal architecture is governed by
+the real workspace-root `preferences.md`, published at
+https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a.
+Cite every law by its Title.*
