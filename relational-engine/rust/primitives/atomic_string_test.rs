@@ -1,4 +1,4 @@
-use relational_engine_scratchpad::{MemoryError, text::atomic_string::AtomicString};
+use relational_engine_scratchpad::{MemoryError, primitives::atomic_string::AtomicString};
 use std::sync::{Arc, Barrier};
 
 #[test]
@@ -8,6 +8,8 @@ fn snapshot_lifetime_budget_and_concurrent_publication() {
     const READERS: usize = 4;
     const BUDGET: usize = 1_000_000;
     let string = AtomicString::new(b"old", BUDGET).unwrap();
+    let legacy = relational_engine_scratchpad::text::atomic_string::AtomicString::new(b"compat", BUDGET).unwrap();
+    assert_eq!(legacy.get(), b"compat");
     let old = string.get();
     string.set(b"new and longer\0bytes").unwrap();
     assert_eq!(old, b"old");
