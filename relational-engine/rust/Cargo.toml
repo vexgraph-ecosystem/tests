@@ -1,0 +1,12 @@
+[package]
+name = "relational-engine-owner-tests"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+relational-engine-scratchpad = { path = "../../../personal/relational-engine/rust" }
+
+[[test]]
+name = "memory_owner"
+path = "mem_test.rs"
