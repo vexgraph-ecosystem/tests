@@ -34,3 +34,10 @@ with tempfile.TemporaryDirectory(prefix="relational-owner-", dir=os.environ.get(
         str(target / "debug/librelational_engine_scratchpad.a"), "-o", binary)
     run(binary)
     print("PASS: debug/release owners, executable docs, C ABI, C ASan/UBSan, E0502 borrow rejection")
+    for sanitizers in ([], ["-fsanitize=address,undefined"]):
+        run("clang", "-std=c23", "-Wall", "-Wextra", "-Werror", *sanitizers,
+            "-Irust/include", "-I" + str(WORKSPACE / "ecosystem/repos/vexspoke/src"),
+            str(WORKSPACE / "tests/vexspoke/nio/relational_memory_test.c"),
+            str(target / "debug/librelational_engine_scratchpad.a"), "-o", binary)
+        run(binary)
+    print("PASS: opt-in Vexspoke atomic byte/string extern handshake")
