@@ -7,7 +7,7 @@ import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-GRAPHVEX = ROOT / "ecosystem/drivers/graphvex"
+GRAPHVEX = ROOT / "ecosystem/repos/graphvex"
 
 
 class CompositorContractTest(unittest.TestCase):
@@ -179,7 +179,12 @@ class CompositorContractTest(unittest.TestCase):
         self.assertNotIn("vkDeviceWaitIdle", gpu)
         self.assertNotIn("vkQueueWaitIdle", gpu)
         doc = (GRAPHVEX / "COMPOSITOR.md").read_text()
-        self.assertIn("not zero-copy presentation", doc)
+        self.assertIn("GPU-resident filter-to-Picture bridge", doc)
+        self.assertIn("GpuScope_renderSampled", gallery + fixture)
+        renderer = (GRAPHVEX / "src/vulkan/vk_renderer.c").read_text()
+        self.assertNotIn("ImageRuns_visit", renderer)
+        self.assertIn("SampledImage_retain", renderer)
+        self.assertIn("VulkanBackend_device()", gallery)
         self.assertIn("Previous `--smoke` evidence", doc)
         law = (GRAPHVEX / "graphvex-preferences.md").read_text()
         self.assertIn("GPU execution truth", law)
@@ -194,6 +199,21 @@ class CompositorContractTest(unittest.TestCase):
                                 text=True, capture_output=True, timeout=30)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("GpuScope_invalidArity", result.stderr)
+
+    def test_sampled_image_constructor_dispatch(self):
+        command = ["cc", "-std=gnu23", "-Wall", "-Wextra", "-Werror",
+                   "-fsyntax-only", "-x", "c", "-", "-I", str(GRAPHVEX / "src")]
+        prefix = '#include "vulkan/sampled_image.h"\n'
+        positive = prefix + ('SampledImage *zero(void) { return SampledImage(); }\n'
+                             'SampledImage *upload(Device *d,Image *i) { return SampledImage(d,i); }\n'
+                             'SampledImage *adopt(Device *d,void *i,void *m) { return SampledImage(d,i,m,1,1); }\n')
+        result = subprocess.run(command, input=positive, text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        for call in ("SampledImage(1)", "SampledImage(1,2,3)", "SampledImage(1,2,3,4)", "SampledImage(1,2,3,4,5,6)"):
+            result = subprocess.run(command, input=prefix + f'SampledImage *bad(void) {{ return {call}; }}\n',
+                                    text=True, capture_output=True, timeout=30)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("SampledImage_invalidArity", result.stderr)
 
 
 if __name__ == "__main__":
