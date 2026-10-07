@@ -8,8 +8,14 @@ python3 tests/relational-engine/rust/run.py
 python3 tests/relational-engine/scaffold_test.py
 ```
 
-`rust/Cargo.toml` registers `memory_owner`: byte ownership, growth, stale IDs,
-UTF-8 and macro construction, plus FFI rejection/recovery. The runner executes
+`rust/Cargo.toml` registers three independent owner targets:
+- `memory_owner`: `rust/nio/mem_test.rs` (ownership, growth, stale IDs, macros).
+- `string_owner`: `rust/text/string_test.rs` (byte and UTF-8 projections).
+- `ffi_memory_owner`: `rust/ffi/memory_test.rs` (FFI rejection/recovery).
+
+These directories mirror `rust/src/{nio,text,ffi}` in the engine. The companion
+C client is `rust/ffi/memory_test.c`; the compile-negative borrow fixture is
+`rust/nio/borrow_rejection.rs`. The runner executes
 debug/release tests, the engine doctest, an actual strict C23 static-library
 client, C-client ASan/UBSan and expected E0502 borrow rejection. Subprocesses
 have 90-second watchdogs; generated output stays in temporary directories.
