@@ -32,7 +32,7 @@ class PreferencesTest(unittest.TestCase):
         self.assertEqual(member_arrows('"escaped \\" ->"; // ->\n'), [])
 
     def test_constitution_is_referenced_at_both_entry_surfaces(self):
-        for path, reference in ((ROOT / "b.h", "ecosystem/vexspoke/preferences.md"),
+        for path, reference in ((ROOT / "b.h", "workspace-root preferences.md"),
                                 (ROOT.parents[1] / "tools/workspace.c", "workspace-root preferences.md")):
             text = path.read_text()
             self.assertIn(reference, text)
