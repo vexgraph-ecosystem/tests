@@ -95,7 +95,7 @@ static inline bool FilterGallery_shaderDirectory(char *dest,size_t cap) {
     return length>=0 && (size_t) length<cap;
 }
 
-static inline bool FilterGallery_render(GpuScope *gpu,unsigned which,Image **out) {
+static inline bool FilterGallery_renderForm(GpuScope *gpu,unsigned which,bool sampled,Image **out) {
     if (which > 2 || !out || !gpu)
         return false;
     Image *baseline = FilterGallery_photo(FILTER_GALLERY_WIDTH, FILTER_GALLERY_HEIGHT);
@@ -128,13 +128,23 @@ static inline bool FilterGallery_render(GpuScope *gpu,unsigned which,Image **out
         Image_fill(photo, COLOR_CLEAR);
         FilterGallery_text(photo, 2, 2, "GLASS", 3, COLOR_RGBA(12, 37, 65, 255));
     }
-    status=GpuScope_render(gpu,which,baseline,decorationImage,32,78,
-        photo,which ? 32 : 110,which ? 100 : 154,8,out);
+    if (sampled)
+        status=GpuScope_renderSampled(gpu,which,baseline,decorationImage,32,78,
+            photo,which ? 32 : 110,which ? 100 : 154,8,out);
+    else
+        status=GpuScope_render(gpu,which,baseline,decorationImage,32,78,
+            photo,which ? 32 : 110,which ? 100 : 154,8,out);
 cleanup:
     Image_destroy(photo);
     Image_destroy(decorationImage);
     Image_destroy(baseline);
     return status;
+}
+static inline bool FilterGallery_render(GpuScope *gpu,unsigned which,Image **out) {
+    return FilterGallery_renderForm(gpu,which,false,out);
+}
+static inline bool FilterGallery_renderSampled(GpuScope *gpu,unsigned which,Image **out) {
+    return FilterGallery_renderForm(gpu,which,true,out);
 }
 
 static inline Image *FilterGallery_caption(unsigned which) {
