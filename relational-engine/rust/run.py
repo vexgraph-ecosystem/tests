@@ -20,17 +20,17 @@ with tempfile.TemporaryDirectory(prefix="relational-owner-", dir=os.environ.get(
     run("cargo", "build", "--offline", "--locked", "--manifest-path", "rust/Cargo.toml", env=env)
     binary = str(target / "ffi-test")
     run("clang", "-std=c23", "-Wall", "-Wextra", "-Werror", "-Irust/include",
-        str(SUITE / "ffi_test.c"), str(target / "debug/librelational_engine_scratchpad.a"),
+        str(SUITE / "ffi/memory_test.c"), str(target / "debug/librelational_engine_scratchpad.a"),
         "-o", binary)
     run(binary)
     result = subprocess.run([
-        "rustc", "--edition=2024", str(SUITE / "borrow_rejection.rs"),
+        "rustc", "--edition=2024", str(SUITE / "nio/borrow_rejection.rs"),
         "--extern", f"relational_engine_scratchpad={target}/debug/librelational_engine_scratchpad.rlib",
         "-L", f"dependency={target}/debug/deps", "-o", str(target / "borrow-rejection")],
         cwd=ROOT, capture_output=True, text=True, timeout=90)
     assert result.returncode != 0 and "E0502" in result.stderr, result.stderr
     run("clang", "-std=c23", "-Wall", "-Wextra", "-Werror", "-fsanitize=address,undefined",
-        "-Irust/include", str(SUITE / "ffi_test.c"),
+        "-Irust/include", str(SUITE / "ffi/memory_test.c"),
         str(target / "debug/librelational_engine_scratchpad.a"), "-o", binary)
     run(binary)
     print("PASS: debug/release owners, executable docs, C ABI, C ASan/UBSan, E0502 borrow rejection")
