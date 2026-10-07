@@ -17,7 +17,49 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+static unsigned references, releases;
+static bool refuseRetain, refuseRelease;
+static bool retainResource(void *resource) {
+    CHECK(resource == &references);
+    if (refuseRetain)
+        return false;
+    ++references;
+    return true;
+}
+static bool releaseResource(void *resource) {
+    CHECK(resource == &references);
+    if (refuseRelease)
+        return false;
+    --references;
+    ++releases;
+    return true;
+}
+
 int main(void) {
+    Image *gpu = Image(2, 3);
+    CHECK(!Image_isDrawable(gpu));
+    CHECK(!Image_bindGpu(gpu, nullptr, gpu, gpu, retainResource, releaseResource));
+    CHECK(!Image_bindGpu(gpu, &references, gpu, gpu, nullptr, releaseResource));
+    refuseRetain = true;
+    CHECK(!Image_bindGpu(gpu, &references, gpu, gpu, retainResource, releaseResource));
+    CHECK(!Image_gpuResource(gpu) && !references);
+    refuseRetain = false;
+    CHECK(Image_bindGpu(gpu, &references, gpu, gpu, retainResource, releaseResource));
+    CHECK(Image_isDrawable(gpu) && !Image_pixels(gpu));
+    CHECK(Image_gpuResource(gpu) == &references && Image_gpuDevice(gpu) == gpu && Image_gpuDescriptor(gpu) == gpu);
+    CHECK(Image_bindGpu(gpu, &references, gpu, gpu, retainResource, releaseResource));
+    CHECK(references == 1); // idempotent binding
+    refuseRelease = true;
+    CHECK(!Image_clearGpu(gpu) && Image_isDrawable(gpu));
+    CHECK(!Image_resize(gpu, 4, 4) && Image_width(gpu) == 2);
+    Image_destroy(gpu); // failed release preserves object for retry
+    CHECK(Image_isDrawable(gpu) && references == 1);
+    refuseRelease = false;
+    Image_fill(gpu, COLOR_WHITE); // CPU edit invalidates binding exactly once
+    CHECK(Image_pixels(gpu) && !Image_gpuResource(gpu) && !references && releases == 1);
+    Image_destroy(gpu);
+    CHECK(!Image_clearGpu(nullptr) && !Image_isDrawable(nullptr));
+    CHECK(!Image_gpuResource(nullptr) && !Image_gpuDevice(nullptr) && !Image_gpuDescriptor(nullptr));
     // defaults: 1x1 RGBA8, no shadow, no native handle
     Image *img = Image_0();
     CHECK(img != NULL);
