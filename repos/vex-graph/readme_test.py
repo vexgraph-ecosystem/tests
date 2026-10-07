@@ -9,12 +9,12 @@ import struct
 import unittest
 import zlib
 
-ROOT = Path(__file__).resolve().parents[3] / "repos/vex-graph"
+ROOT = Path(__file__).resolve().parents[3] / "personal/vex-graph"
 CARDS = [
     ("personal-projects.png", "personal projects", "https://github.com/vex-graph?tab=repositories"),
     ("ecosystem.png", "ecosystem", "https://github.com/vexgraph-ecosystem"),
     ("b.png", "b — build, breeze, box!", "https://github.com/vex-graph/b"),
-    ("preferences-dot-md.png", "preferences.md", "https://github.com/vexgraph-ecosystem/vexspoke/blob/main/preferences.md"),
+    ("preferences-dot-md.png", "preferences.md", "https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a"),
 ]
 
 
