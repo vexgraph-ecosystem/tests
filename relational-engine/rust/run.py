@@ -6,7 +6,7 @@ import tempfile
 
 SUITE = Path(__file__).resolve().parent
 WORKSPACE = SUITE.parents[2]
-ROOT = WORKSPACE / "personal" / "relational-engine"
+ROOT = WORKSPACE / "ecosystem" / "repos" / "relational-engine"
 
 def run(*args, env=None):
     subprocess.run(args, cwd=ROOT, env=env, check=True, timeout=90)
@@ -41,3 +41,30 @@ with tempfile.TemporaryDirectory(prefix="relational-owner-", dir=os.environ.get(
             str(target / "debug/librelational_engine_scratchpad.a"), "-o", binary)
         run(binary)
     print("PASS: opt-in Vexspoke atomic byte/string extern handshake")
+    for sanitizers in ([], ["-fsanitize=address,undefined"]):
+        run("clang", "-std=c23", "-Wall", "-Wextra", "-Werror", "-O2", *sanitizers,
+            "-Isrc", str(WORKSPACE / "tests/relational-engine/search/primitives/name_search_test.c"),
+            "src/search/primitives/name_search.c", "-o", binary)
+        result = subprocess.run([binary], cwd=ROOT, capture_output=True, text=True, timeout=90)
+        assert result.returncode == 0, result.stderr
+        lines = result.stderr.splitlines()
+        assert len(lines) == 10 and all(line.startswith("[vex] ") and
+            line.endswith("name search rejected invalid borrowed span") for line in lines), result.stderr
+    print("PASS: native C name-search boundary and exact cold rejection diagnostics")
+    for sanitizers in ([], ["-fsanitize=address,undefined"]):
+        run("clang", "-std=c23", "-Wall", "-Wextra", "-Werror", "-O2", *sanitizers,
+            "-Irust/include", str(SUITE / "ffi/variable_registry_test.c"),
+            str(target / "debug/librelational_engine_scratchpad.a"), "-o", binary)
+        result = subprocess.run([binary], cwd=ROOT, capture_output=True, text=True, timeout=90)
+        assert result.returncode == 0 and result.stderr == "", result.stderr
+    print("PASS: actual C variable registry layout, stable pointers, rebinding and teardown")
+    for form, diagnostic in [("chunk_arity", "no rules expected"), ("list_arity", "no rules expected"),
+        ("slot_arity", "no rules expected"), ("registry_arity", "no rules expected"),
+        ("wrong_capacity", "E0308"), ("chunk_borrow", "E0502"), ("registry_borrow", "E0502")]:
+        result = subprocess.run(["rustc", "--edition=2024", "--cfg", form,
+            str(SUITE / "storage_rejection.rs"), "--extern",
+            f"relational_engine_scratchpad={target}/debug/librelational_engine_scratchpad.rlib",
+            "-L", f"dependency={target}/debug/deps", "-o", str(target / "storage-negative")],
+            cwd=ROOT, capture_output=True, text=True, timeout=90)
+        assert result.returncode != 0 and diagnostic in result.stderr, result.stderr
+    print("PASS: storage arity/type and exclusive-borrow compile-negative contracts")
