@@ -13,11 +13,11 @@ path = "nio/mem_test.rs"
 
 [[test]]
 name = "string_owner"
-path = "text/string_test.rs"
+path = "primitives/string_test.rs"
 
 [[test]]
 name = "atomic_string_owner"
-path = "text/atomic_string_test.rs"
+path = "primitives/atomic_string_test.rs"
 
 [[test]]
 name = "ffi_memory_owner"
