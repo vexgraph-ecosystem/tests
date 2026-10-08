@@ -1,4 +1,5 @@
 #include "nio/mem.h"
+// Relational Engine production transient allocation owner.
 
 #include <assert.h>
 #include <stdio.h>
@@ -137,7 +138,7 @@ int main(void) {
 #if defined(DEBUG_BORROW_CHECK)
     assert((*p) == 0xDD);
     assert(*(p + allocBytes - 1) == 0xDD);
-    printf("  [PASS] 4. Poisoning: used transient bytes poisoned with 0xDD under DEBUG_BORROW_CHECK\n");
+    printf("  [PASS] 4. Poisoning: used transient Bytes poisoned with 0xDD under DEBUG_BORROW_CHECK\n");
 #else
     printf("  [PASS] 4. Poisoning: skipped in release (DEBUG_BORROW_CHECK not defined)\n");
 #endif
