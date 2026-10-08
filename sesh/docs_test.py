@@ -16,6 +16,13 @@ class SnapshotDocsTest(unittest.TestCase):
                        "DirectorySession_rebase", "proposed, not implemented classes",
                        "preserves both versions", "directory-enumeration"):
             self.assertIn(phrase, readme)
+        for phrase in ("Sesh: the session object", "SeshClient", "Sesh_submit", "SESH_REPLAY",
+                       "Queued intent", "Session Composition and Identity Law", "Session Composition Proof Law"):
+            corpus = readme + (ROOT / "ecosystem/repos/sesh/sesh-preferences.md").read_text() + (ROOT / "tests/test-preferences.md").read_text()
+            self.assertIn(phrase, corpus)
+        for name in ("auth_service", "client", "workspace", "resource", "operation", "operations", "sesh"):
+            self.assertTrue((ROOT / f"ecosystem/repos/sesh/src/lang/{name}.h").is_file())
+            self.assertTrue((ROOT / f"ecosystem/repos/sesh/src/session/{name}.c").is_file())
         contributing = (ROOT / "ecosystem/repos/sesh/CONTRIBUTING.md").read_text()
         self.assertIn("caller-buffer snapshot core", contributing)
         self.assertIn("tests/sesh/run.py", contributing)
