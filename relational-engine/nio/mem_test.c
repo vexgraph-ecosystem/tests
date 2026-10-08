@@ -1,4 +1,4 @@
-// tests/vexspoke/nio/mem_test.c — the ForeignMemory owner test
+// Relational Engine production ForeignMemory owner test.
 // (Per-File Battle Test Law). mem.c is the R2 substrate every block rides on,
 // so the battle rows are deliberately harsh:
 //   - VALUE BOUNDARY: 0-length, nullptr getters, exact length round trip;
@@ -45,7 +45,7 @@ int main(void) {
     CHECK(Memory_length(nullptr) == 0);
     CHECK(Memory_type(nullptr) == 0);
     Memory_free(nullptr);                                    // no-op
-    Memory_realloc(nullptr, 0);                              // nullptr source, 0 bytes
+    Memory_realloc(nullptr, 0);                              // nullptr source, 0 Bytes
 
     // --- Happy path + exact length round trip + 16-byte alignment doctrine.
     void *p = Memory_alloc(ID_INT, 16);
@@ -133,6 +133,8 @@ int main(void) {
     CHECK(Memory_alloc(ID_INT, 8) != nullptr);               // default still lives
 
     // --- Transient (frame/scratch) arena: lifetime + generation contract.
+    CHECK(!Memory_initTransient(SIZE_MAX));
+    CHECK(!Memory_initTransient(SIZE_MAX - 1u));
     CHECK(Memory_initTransient(4096));
     void *tp = Transient_alloc(ID_INT, 16);
     CHECK(tp != nullptr);
@@ -151,13 +153,20 @@ int main(void) {
     CHECK(Transient_getGeneration() == gen + 1);
     CHECK(!Transient_contains(tp));                          // frame rewinded
 
-    // --- Overflow Guard Law: Transient_alloc must refuse a size past UINT32_MAX
-    //     exactly as arena_alloc does. Recorded, not asserted, because the guard
-    //     is currently MISSING in mem.c (a stated gap, not a pass).
-    void *huge = Transient_alloc(ID_INT, (size_t) -1);
-    GAP(huge == nullptr,
-        "Transient_alloc(SIZE_MAX) returned non-null: mem.c lacks the "
-        "UINT32_MAX guard the Overflow Guard Law requires");
+    // --- Overflow Guard Law: rejected sizes preserve headers, contents, cursor
+    // and generation, and a later valid scratch allocation still succeeds.
+    uint8_t *before = Transient_alloc(ID_INT, 16);
+    CHECK(before != nullptr);
+    memset(before, 0xA5, 16);
+    gen = Transient_getGeneration();
+    CHECK(Transient_alloc(ID_INT, SIZE_MAX) == nullptr);
+    CHECK(Transient_alloc(ID_INT, SIZE_MAX - 15u) == nullptr);
+    CHECK(Transient_alloc(ID_INT, (size_t) UINT32_MAX + 1u) == nullptr);
+    CHECK(Transient_alloc(ID_INT, UINT32_MAX) == nullptr); // valid width, no capacity
+    CHECK(Memory_length(before) == 16 && before[0] == 0xA5);
+    CHECK(Transient_getGeneration() == gen);
+    uint8_t *after = Transient_alloc(ID_INT, 16);
+    CHECK(after == before + MEMORY_HEADER_SIZE + 16);
     Transient_reset();
 
     // --- Pointer legitimacy in an isolated child: a wild aligned address must
