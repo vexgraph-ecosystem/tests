@@ -60,3 +60,4 @@ with tempfile.TemporaryDirectory(prefix="sesh-owner-", dir=os.environ.get("TMPDI
         result = subprocess.run(command[:-4] + ["-fsyntax-only", str(probe)], capture_output=True, text=True, timeout=10)
         assert result.returncode != 0 and "too many arguments" in result.stderr, result.stderr
 print("PASS: strict + ASan/UBSan, offline only; no engine/Drive/iCloud/durable-journal proof")
+subprocess.run(["python3", str(SUITE / "session_run.py")], check=True, timeout=120)
