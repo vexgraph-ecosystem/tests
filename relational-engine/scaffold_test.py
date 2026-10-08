@@ -19,7 +19,7 @@ def main():
     for part in parts:
         assert (ROOT / "src" / part).is_dir()
         assert not (ROOT / part).exists()
-    sources = sorted((ROOT / "src").rglob("*.c"))
+    sources = sorted([*(ROOT / "src").rglob("*.c"), *(ROOT / "src").rglob("*.m")])
     assert sources
     ignored = ["rust/target/generated.o", "build/generated.o", "cmake-build-debug/CMakeCache.txt",
                ".idea/workspace.xml", "generated.dll", "generated.dSYM/Contents/data"]
@@ -58,7 +58,9 @@ def main():
         assert {Path(entry["file"]).resolve() for entry in commands} == set(sources)
         for entry in commands:
             command = entry["command"]
-            assert all(flag in command for flag in ("-Wall", "-Wextra", "-Werror", "-std=gnu"))
+            assert all(flag in command for flag in ("-Wall", "-Wextra", "-Werror"))
+            if Path(entry["file"]).suffix == ".c":
+                assert "-std=gnu" in command
         env = dict(os.environ, CARGO_TARGET_DIR=str(tmp / "cargo"), RUSTFLAGS="-D warnings")
         run("cargo", "check", "--offline", "--locked", "--manifest-path", "rust/Cargo.toml", env=env)
     print(f"PASS: {len(sources)} C code-model entries, mixed ignores, local layout and Rust scaffold check")
