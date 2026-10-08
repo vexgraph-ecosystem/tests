@@ -1,4 +1,5 @@
 #include <assert.h>
+// Relational Engine owner test for the migrated production clipboard seam.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +8,7 @@
 #include "io/clipboard.h"
 #include "io/cache.h"
 #include "c23/free.h"
+#include "test_support.h"
 
 static void test_clipboard(void) {
     printf("Testing clipboard bridge...\n");
@@ -30,9 +32,9 @@ static void test_cache(void) {
     snprintf(tmpdir, sizeof(tmpdir), "/tmp/vex_cache_test_%d", (int) getpid());
     setenv("VEX_HOME", tmpdir, 1);
 
-    Cache *cache = NULL;
+    Cache *cache = nullptr;
     assert(Cache_open("unit_test_cache", &cache));
-    assert(cache != NULL);
+    assert(cache != nullptr);
 
     const char *key = "https://raw.githubusercontent.com/vexgraph-ecosystem/formula/core.json";
     const char *payload = "{\"name\": \"vexgraph\", \"version\": \"2.0.0\"}";
@@ -50,7 +52,7 @@ static void test_cache(void) {
     assert(strlen(path) > 0);
 
     // Get data
-    void *data = NULL;
+    void *data = nullptr;
     size_t size = 0;
     assert(Cache_get_data(cache, key, &data, &size));
     assert(size == strlen(payload));
@@ -79,11 +81,16 @@ static void test_destructor_dispatch(void) {
     DestructorFn fn = Destructor_lookup(my_type);
     assert(fn == custom_destructor);
 
-    fn(NULL);
+    fn(nullptr);
     assert(custom_dtor_calls == 1);
 }
 
 int main(void) {
+    const char *permission = getenv("RE_TEST_SYSTEM_CLIPBOARD");
+    if (!permission || strcmp(permission, "1") != 0) {
+        fputs("SKIP: system clipboard mutation requires RE_TEST_SYSTEM_CLIPBOARD=1\n", stderr);
+        return B_TEST_SKIP;
+    }
     printf("[Clipboard & Cache Test] Starting test suite...\n");
     test_clipboard();
     test_cache();
