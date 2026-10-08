@@ -35,7 +35,7 @@ int main(void) {
     CHECK(Type_form(id) == FORM_SINGLETON);
     CHECK(Type_project(id) == PROJ_VEXSPOKE);
     CHECK(Type_class(0xFFFFFFFFull) == 0x00FFFFFFu);         // class keeps 24 bits
-    CHECK((SUGAR_BE6C & MASK_SUGAR) == SUGAR_BE6C);          // reserved "векс" slot
+    CHECK((SUGAR_VEX & MASK_SUGAR) == SUGAR_VEX);          // reserved "векс" slot
     CHECK(Type_form(FORM_STRUCT_ARRAY) == FORM_STRUCT_ARRAY);
 
     // --- Form predicates: one true, the disjoint neighbours false.
