@@ -25,9 +25,10 @@ CODE = {
     "personal/b": "b.c",
     "ecosystem/repos/relational-engine": "src/io/file.c",
     "ecosystem/repos/sesh": "src/snapshot/snapshot.c",
+    "ecosystem/repos/darkbase": "src/database/database.c",
 }
 EMPTY = (
-    "ecosystem/repos/darkbase", "ecosystem/repos/language",
+    "ecosystem/repos/language",
     "ecosystem/repos/samplerate",
     "ecosystem/projects/anti", "ecosystem/projects/drawling",
     "ecosystem/projects/semicolon",
