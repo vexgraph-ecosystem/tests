@@ -2,7 +2,7 @@
 //
 // Type is the id algebra every block header rides on, so the battle rows are
 // the VALUE BOUNDARY MATRIX of the bit fields (each field is isolated), the
-// registry seam's ADVERSARIAL rejections (zero/foreign project bytes, nullptr
+// registry seam's ADVERSARIAL rejections (zero/foreign project Bytes, nullptr
 // with a non-zero count, PROJ_VEXSPOKE itself), IDEMPOTENCE, exponential slate
 // growth under many projects, and the FAILURE ATOMICITY of every rejection.
 
@@ -34,7 +34,8 @@ int main(void) {
     CHECK(Type_class(id) == ID_INT);
     CHECK(Type_form(id) == FORM_SINGLETON);
     CHECK(Type_project(id) == PROJ_VEXSPOKE);
-    CHECK(Type_class(0xFFFFFFFFull) == 0xFFFFFFFFu);         // class keeps 32 bits
+    CHECK(Type_class(0xFFFFFFFFull) == 0x00FFFFFFu);         // class keeps 24 bits
+    CHECK((SUGAR_BE6C & MASK_SUGAR) == SUGAR_BE6C);          // reserved "векс" slot
     CHECK(Type_form(FORM_STRUCT_ARRAY) == FORM_STRUCT_ARRAY);
 
     // --- Form predicates: one true, the disjoint neighbours false.

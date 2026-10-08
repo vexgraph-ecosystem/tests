@@ -33,6 +33,7 @@ EMPTY = (
 )
 DEPENDENCIES = {
     "VEXSPOKE_SOURCE_DIR": ROOT / "ecosystem/repos/vexspoke/src",
+    "RELATIONAL_ENGINE_SOURCE_DIR": ROOT / "ecosystem/repos/relational-engine/src",
     "GRAPHVEX_SOURCE_DIR": ROOT / "ecosystem/repos/graphvex/src",
     "HOTCWAP_SOURCE_DIR": ROOT / "ecosystem/repos/hotcwap",
 }
