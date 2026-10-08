@@ -60,7 +60,10 @@ with tempfile.TemporaryDirectory(prefix="relational-owner-", dir=os.environ.get(
     print("PASS: actual C variable registry layout, stable pointers, rebinding and teardown")
     for form, diagnostic in [("chunk_arity", "no rules expected"), ("list_arity", "no rules expected"),
         ("slot_arity", "no rules expected"), ("registry_arity", "no rules expected"),
-        ("wrong_capacity", "E0308"), ("chunk_borrow", "E0502"), ("registry_borrow", "E0502")]:
+        ("wrong_capacity", "E0308"), ("chunk_borrow", "E0502"), ("registry_borrow", "E0502"),
+        ("typed_chunk_arity", "no rules expected"), ("typed_pool_arity", "no rules expected"),
+        ("typed_wrong_capacity", "E0308"), ("typed_chunk_borrow", "E0502"),
+        ("typed_pool_borrow", "E0502"), ("typed_pool_release_borrow", "E0502")]:
         result = subprocess.run(["rustc", "--edition=2024", "--cfg", form,
             str(SUITE / "storage_rejection.rs"), "--extern",
             f"relational_engine_scratchpad={target}/debug/librelational_engine_scratchpad.rlib",
