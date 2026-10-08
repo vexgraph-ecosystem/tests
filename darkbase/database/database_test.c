@@ -3,8 +3,10 @@
 #include "annotation/overview.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <unistd.h>
 
 #include "darkbase/type.h"
 #include "database/database.h"
@@ -191,6 +193,101 @@ static void testDiagnostics(void) {
     Database_free(db);
 }
 
+static void testPersistence(void) {
+    printf("[5] .vexdb save/load round-trip, ownership, checksum, atomicity\n");
+
+    const char *tmp = getenv("TMPDIR");
+    if (tmp == nullptr)
+        tmp = "/tmp";
+    char path[256];
+    snprintf(path, sizeof(path), "%sdarkbase_test_XXXXXX", tmp);
+    int fd = mkstemp(path);
+    CHECK(fd >= 0);
+    if (fd < 0)
+        return;
+    close(fd);
+
+    Database *db = Database();
+    Struct *player = Struct("player");
+    CHECK(db && player);
+    if (!db || !player) {
+        remove(path);
+        Database_free(db);
+        Struct_free(player);
+        return;
+    }
+    Struct_setSize(player, (uint32_t) sizeof(Row));
+    CHECK(Database_define(db, player) == 0);
+
+    Row rows[4];
+    for (uint32_t i = 0u; i < 4u; i++) {
+        rows[i].id = 7u + i;
+        rows[i].health = (int32_t) (i + 1u);
+        CHECK(Database_insert(db, "player", &rows[i]) == (int32_t) i);
+    }
+    CHECK(Database_save(db, path) == DATABASE_OK);
+
+    // A fresh database with the same schema loads the rows back.
+    Database *db2 = Database();
+    Struct *player2 = Struct("player");
+    CHECK(db2 && player2);
+    if (!db2 || !player2) {
+        remove(path);
+        Database_free(db2);
+        Struct_free(player2);
+        Database_free(db);
+        Struct_free(player);
+        return;
+    }
+    Struct_setSize(player2, (uint32_t) sizeof(Row));
+    CHECK(Database_define(db2, player2) == 0);
+    CHECK(Database_load(db2, path) == DATABASE_OK);
+    CHECK(Database_count(db2, "player") == 4u);
+    for (uint32_t i = 0u; i < 4u; i++) {
+        Row *got = (Row*) Database_row(db2, "player", i);
+        CHECK(got != nullptr && got->id == 7u + i && got->health == (int32_t) (i + 1u));
+    }
+
+    // Loaded rows are owned: binding a live row into them rejects.
+    CHECK(Database_insert(db2, "player", &rows[0]) == -1);
+    CHECK(Database_errorCode(db2) == DATABASE_INVALID);
+
+    // Re-loading into a non-empty entity rejects without mutation.
+    CHECK(Database_load(db2, path) == DATABASE_DUPLICATE);
+    CHECK(Database_count(db2, "player") == 4u);
+
+    // Corrupt the trailing checksum: reject and load nothing (atomic).
+    FILE *fp = fopen(path, "r+b");
+    CHECK(fp != nullptr);
+    if (fp) {
+        unsigned char last = 0u;
+        fseek(fp, -1L, SEEK_END);
+        if (fread(&last, 1u, 1u, fp) == 1u) {
+            last ^= 0xFFu;
+            fseek(fp, -1L, SEEK_END);
+            fwrite(&last, 1u, 1u, fp);
+        }
+        fclose(fp);
+    }
+    Database *db3 = Database();
+    Struct *player3 = Struct("player");
+    CHECK(db3 && player3);
+    if (db3 && player3) {
+        Struct_setSize(player3, (uint32_t) sizeof(Row));
+        CHECK(Database_define(db3, player3) == 0);
+        CHECK(Database_load(db3, path) == DATABASE_INVALID);
+        CHECK(Database_count(db3, "player") == 0u); // nothing loaded
+        Database_free(db3);
+    }
+    Struct_free(player3);
+
+    remove(path);
+    Database_free(db2);
+    Struct_free(player2);
+    Database_free(db);
+    Struct_free(player);
+}
+
 int main(void) {
     printf("=== Database Test Suite ===\n\n");
 
@@ -198,6 +295,7 @@ int main(void) {
     testDefineAndLookup();
     testInsertAndRead();
     testDiagnostics();
+    testPersistence();
 
     printf("\n%d checks, %d failed\n", g_checks, g_fail);
     if (g_fail == 0)
