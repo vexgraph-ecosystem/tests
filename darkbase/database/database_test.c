@@ -288,6 +288,88 @@ static void testPersistence(void) {
     Struct_free(player);
 }
 
+static void testSafeSave(void) {
+    printf("[6] atomic save publication (temp write + fsync + rename)\n");
+
+    const char *tmp = getenv("TMPDIR");
+    if (tmp == nullptr)
+        tmp = "/tmp";
+    char path[256];
+    snprintf(path, sizeof(path), "%sdarkbase_save_XXXXXX", tmp);
+    int fd = mkstemp(path);
+    CHECK(fd >= 0);
+    if (fd < 0)
+        return;
+    close(fd);
+
+    char tpath[300];
+    snprintf(tpath, sizeof(tpath), "%s.%ld.tmp", path, (long) getpid());
+
+    // First snapshot: 4 rows.
+    Database *a = Database();
+    Struct *sa = Struct("player");
+    Struct_setSize(sa, (uint32_t) sizeof(Row));
+    CHECK(Database_define(a, sa) == 0);
+    Row ra[4];
+    for (uint32_t i = 0u; i < 4u; i++) {
+        ra[i].id = 1u;
+        ra[i].health = (int32_t) i;
+        Database_insert(a, "player", &ra[i]);
+    }
+    CHECK(Database_save(a, path) == DATABASE_OK);
+    CHECK(access(tpath, F_OK) != 0); // temp is renamed away, never left behind
+
+    // Replace with a bigger snapshot: 6 rows.
+    Database *b = Database();
+    Struct *sb = Struct("player");
+    Struct_setSize(sb, (uint32_t) sizeof(Row));
+    CHECK(Database_define(b, sb) == 0);
+    Row rb[6];
+    for (uint32_t i = 0u; i < 6u; i++) {
+        rb[i].id = 2u;
+        rb[i].health = (int32_t) (10 + i);
+        Database_insert(b, "player", &rb[i]);
+    }
+    CHECK(Database_save(b, path) == DATABASE_OK);
+    CHECK(access(tpath, F_OK) != 0);
+
+    // The destination now holds the new snapshot (atomic replace, not truncate).
+    Database *c = Database();
+    Struct *sc = Struct("player");
+    Struct_setSize(sc, (uint32_t) sizeof(Row));
+    Database_define(c, sc);
+    CHECK(Database_load(c, path) == DATABASE_OK);
+    CHECK(Database_count(c, "player") == 6u);
+    CHECK(((Row*) Database_row(c, "player", 0u))->id == 2u);
+
+    // A rejected save must not touch the destination.
+    Database *d = Database();
+    Struct *sd = Struct("empty"); // stride stays 0 -> save rejects
+    Database_define(d, sd);
+    CHECK(Database_save(d, path) == DATABASE_INVALID);
+    CHECK(access(tpath, F_OK) != 0);
+
+    // The prior snapshot survives the failed save.
+    Database *e = Database();
+    Struct *se = Struct("player");
+    Struct_setSize(se, (uint32_t) sizeof(Row));
+    Database_define(e, se);
+    CHECK(Database_load(e, path) == DATABASE_OK);
+    CHECK(Database_count(e, "player") == 6u);
+
+    remove(path);
+    Database_free(a);
+    Struct_free(sa);
+    Database_free(b);
+    Struct_free(sb);
+    Database_free(c);
+    Struct_free(sc);
+    Database_free(d);
+    Struct_free(sd);
+    Database_free(e);
+    Struct_free(se);
+}
+
 int main(void) {
     printf("=== Database Test Suite ===\n\n");
 
@@ -296,6 +378,7 @@ int main(void) {
     testInsertAndRead();
     testDiagnostics();
     testPersistence();
+    testSafeSave();
 
     printf("\n%d checks, %d failed\n", g_checks, g_fail);
     if (g_fail == 0)
