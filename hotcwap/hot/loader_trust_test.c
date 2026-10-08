@@ -70,7 +70,7 @@ static bool rmtree(const char *path) {
     if (!dir)
         return false;
     struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         if (strcmp((*ent).d_name, ".") == 0 || strcmp((*ent).d_name, "..") == 0)
             continue;
         char child[512];
@@ -149,7 +149,7 @@ int main(void) {
     CHECK(MANIFEST_REFLECT("hot_behavior", emptyPayload), "MANIFEST_REFLECT() failed (empty)");
 
     HotModule *hot = Hot_init("hot_behavior");
-    CHECK(hot != NULL, "Hot_init() returned NULL");
+    CHECK(hot != nullptr, "Hot_init() returned NULL");
     if (!hot) {
         rmtree(base);
         return 1;
@@ -180,7 +180,7 @@ int main(void) {
           "could not create the dangling symlink");
 
     HotModule *hot2 = Hot_init("hot_behavior");
-    CHECK(hot2 != NULL, "Hot_init() #2 returned NULL");
+    CHECK(hot2 != nullptr, "Hot_init() #2 returned NULL");
     if (hot2) {
         saw_error = false;
         for (int i = 0; i < 10 && !saw_error; i++) {

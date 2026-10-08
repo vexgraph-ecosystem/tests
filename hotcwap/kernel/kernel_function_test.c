@@ -52,7 +52,7 @@ static void sampleRunFunction(void *userdata) {
     for (int i = 0; i < 5; i++) {
         atomic_fetch_add_explicit(&(*ctx).counter, 1, memory_order_relaxed);
         struct timespec ts = {0, 10000000L}; // 10ms
-        nanosleep(&ts, NULL);
+        nanosleep(&ts, nullptr);
     }
 }
 

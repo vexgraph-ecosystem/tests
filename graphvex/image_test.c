@@ -62,13 +62,13 @@ int main(void) {
     CHECK(!Image_gpuResource(nullptr) && !Image_gpuDevice(nullptr) && !Image_gpuDescriptor(nullptr));
     // defaults: 1x1 RGBA8, no shadow, no native handle
     Image *img = Image_0();
-    CHECK(img != NULL);
+    CHECK(img != nullptr);
     CHECK(Image_width(img) == 1 && Image_height(img) == 1);
     CHECK(Image_format(img) == IMAGE_FORMAT_RGBA8);
     CHECK(Image_usage(img) == IMAGE_USAGE_NONE);
-    CHECK(Image_pixels(img) == NULL);
+    CHECK(Image_pixels(img) == nullptr);
     CHECK(Image_isValid(img));
-    CHECK(Image_native(img) == NULL && Image_iosurface(img) == NULL);
+    CHECK(Image_native(img) == nullptr && Image_iosurface(img) == nullptr);
 
     // 0 dimensions clamp to 1
     Image *z = Image_2(0, 0);
@@ -77,7 +77,7 @@ int main(void) {
 
     // shadow allocation + stride
     CHECK(Image_ensureShadow(img, 4, 3));
-    CHECK(Image_pixels(img) != NULL);
+    CHECK(Image_pixels(img) != nullptr);
     CHECK(Image_stride(img) == 16);
     CHECK(Image_width(img) == 4 && Image_height(img) == 3);
 
@@ -113,15 +113,15 @@ int main(void) {
     CHECK(Image_iosurface(img) == (void *)0x5678);
 
     Image_destroy(img);
-    Image_destroy(NULL);   // null-safe
-    CHECK(!Image_isValid(NULL));
+    Image_destroy(nullptr);   // null-safe
+    CHECK(!Image_isValid(nullptr));
 
     // null-safe reads
-    CHECK(Image_width(NULL) == 0u);
-    CHECK(Image_pixels(NULL) == NULL);
-    CHECK(Image_native(NULL) == NULL);
-    Image_fill(NULL, COLOR_WHITE);              // must not crash
-    CHECK(!Image_upload(NULL, 1, 1, NULL));
+    CHECK(Image_width(nullptr) == 0u);
+    CHECK(Image_pixels(nullptr) == nullptr);
+    CHECK(Image_native(nullptr) == nullptr);
+    Image_fill(nullptr, COLOR_WHITE);              // must not crash
+    CHECK(!Image_upload(nullptr, 1, 1, nullptr));
 
     printf("image_test: ALL PASS\n");
     return g_fail == 0 ? 0 : 1;

@@ -33,7 +33,7 @@ typedef struct NegativeHeader {
     uint32_t length;
     uint32_t sugar;
 } NegativeHeader;
-_Static_assert(sizeof(NegativeHeader) == 16, "NegativeHeader must stay 16 bytes");
+_Static_assert(sizeof(NegativeHeader) == 16, "NegativeHeader must stay 16 Bytes");
 
 static int g_failures = 0;
 

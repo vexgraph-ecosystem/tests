@@ -73,7 +73,7 @@ static bool rmtree(const char *path) {
     if (!dir)
         return false;
     struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         if (strcmp((*ent).d_name, ".") == 0 || strcmp((*ent).d_name, "..") == 0)
             continue;
         char child[512];
@@ -137,7 +137,7 @@ int main(void) {
           "MANIFEST() failed to mount guard_a");
     CHECK(!UNINSTALL(MANIFEST_APP_DATA, "vexgraph", "guard_b"),
           "UNINSTALL() accepted segments that do not match the mount");
-    CHECK(MANIFEST_ROOT() != NULL,
+    CHECK(MANIFEST_ROOT() != nullptr,
           "a refused UNINSTALL unmounted the manifest");
     char aDir[512];
     snprintf(aDir, sizeof(aDir), "%s/vexgraph/guard_a", app);

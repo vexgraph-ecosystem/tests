@@ -21,8 +21,8 @@ static void test_registry(void) {
     CHECK(Graphics_backendId() == BACKEND_RASTER);
     CHECK(!Graphics_use(9999u));                 // unknown id refused
     CHECK(Graphics_backendId() == BACKEND_RASTER); // previous selection kept
-    CHECK(!Graphics_register(NULL));
-    CHECK(Graphics_current() != NULL && (*Graphics_current()).fillRect != NULL);
+    CHECK(!Graphics_register(nullptr));
+    CHECK(Graphics_current() != nullptr && (*Graphics_current()).fillRect != nullptr);
 }
 
 static void test_fill_and_clear(void) {
@@ -64,14 +64,14 @@ static void test_alpha_blend(void) {
 
 static void test_display_list_and_clip(void) {
     DisplayList *dl = DisplayList_0();
-    CHECK(dl != NULL);
+    CHECK(dl != nullptr);
     CHECK(DisplayList_count(dl) == 0);
     DisplayList_rect(dl, (Rect){0, 0, 8, 8}, &(Brush){COLOR_WHITE, 0, 0, 0, 0});
     DisplayList_clip(dl, (Rect){0, 0, 4, 4});
     DisplayList_rect(dl, (Rect){0, 0, 8, 8}, &(Brush){COLOR_RGBA(255, 0, 0, 255), 0, 0, 0, 0});
     DisplayList_unclip(dl);
     CHECK(DisplayList_count(dl) == 4);
-    CHECK(DisplayList_cmds(dl) != NULL);
+    CHECK(DisplayList_cmds(dl) != nullptr);
 
     CHECK(Graphics_begin());
     CHECK(Graphics_clear(COLOR_BLACK));
@@ -86,7 +86,7 @@ static void test_display_list_and_clip(void) {
     DisplayList_rect(d2, (Rect){0, 0, 0, 5}, &(Brush){COLOR_WHITE, 0, 0, 0, 0});
     CHECK(DisplayList_count(d2) == 0);
     DisplayList_free(d2);
-    DisplayList_free(NULL);   // null-safe
+    DisplayList_free(nullptr);   // null-safe
 }
 
 static void test_color_helpers(void) {

@@ -19,7 +19,7 @@
  * LEVEL: L3 — Module Code (headless Shape-A/B proof, no accounts)
  * ============================================================================
  * Proves the webhook drivers and Rest core against ourselves: a local
- * HttpServer captures the exact bytes each driver emits, and JsonDoc
+ * HttpServer captures the exact Bytes each driver emits, and JsonDoc
  * asserts the payload schema. Zero accounts, zero network, deterministic.
  * Live vendor acceptance stays per-driver LIVE_UNVERIFIED until an env-var
  * run (URL from env, never committed).

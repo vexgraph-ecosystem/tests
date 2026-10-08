@@ -96,7 +96,7 @@ static bool rmtree(const char *path) {
     if (!dir)
         return false;
     struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         if (strcmp((*ent).d_name, ".") == 0 || strcmp((*ent).d_name, "..") == 0)
             continue;
         char child[512];
@@ -172,7 +172,7 @@ int main(void) {
 
     // --- A. Load generation 1 ------------------------------------------------
     HotModule *hot = Hot_init("hot_behavior");
-    CHECK(hot != NULL, "Hot_init() returned NULL");
+    CHECK(hot != nullptr, "Hot_init() returned NULL");
     if (!hot) {
         rmtree(base);
         return 1;
@@ -194,7 +194,7 @@ int main(void) {
 
     // --- C. A fresh instance still works -------------------------------------
     HotModule *hot2 = Hot_init("hot_behavior");
-    CHECK(hot2 != NULL, "re-init returned NULL");
+    CHECK(hot2 != nullptr, "re-init returned NULL");
     if (hot2) {
         loaded = 0;
         r = Hot_poll(hot2, &loaded);

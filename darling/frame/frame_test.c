@@ -27,20 +27,20 @@ static void onClosed(Frame *frame, void *ud) {
 #include "darling/test_application.h"
 int main(void) {
     Frame *f = Frame("frame test", 400, 300);
-    CHECK(f != NULL);
-    CHECK(Frame_window(f) != NULL);
+    CHECK(f != nullptr);
+    CHECK(Frame_window(f) != nullptr);
     CHECK(!Window_isTransparent(Frame_window(f)));
     CHECK(!Frame_isClosed(f));
     CHECK(Frame_active() == f);
 
     // the content element IS the layout root
     Element *root = Frame_element(f);
-    CHECK(root != NULL);
+    CHECK(root != nullptr);
 
     // the present seam is owned and live (its present Image is the target)
     Surface *surf = Frame_surface(f);
-    CHECK(surf != NULL);
-    CHECK(Surface_presentImage(surf) != NULL);
+    CHECK(surf != nullptr);
+    CHECK(Surface_presentImage(surf) != nullptr);
 
     // one resize surface: setSize -> root tracks the new size
     Frame_setSize(f, 400, 300);
@@ -56,9 +56,9 @@ int main(void) {
     // window's CALayer; elsewhere the RGBA fallback leaves the layer untouched
     Frame_render(f);
 #ifdef __APPLE__
-    CHECK(Window_presentSurfaceContents(Frame_window(f)) != NULL);
+    CHECK(Window_presentSurfaceContents(Frame_window(f)) != nullptr);
 #else
-    CHECK(Window_presentSurfaceContents(Frame_window(f)) == NULL);
+    CHECK(Window_presentSurfaceContents(Frame_window(f)) == nullptr);
 #endif
 
     // title / background
@@ -96,10 +96,10 @@ int main(void) {
     d.background = COLOR_RGBA(200, 100, 100, 255);
     Panel *p0 = Frame_addPanel(f, &d);
     Panel *p1 = Frame_addPanel(f, &d);
-    CHECK(p0 != NULL && p1 != NULL);
+    CHECK(p0 != nullptr && p1 != nullptr);
     CHECK(Frame_count(f) == 2);
     CHECK(Frame_panel(f, 0) == p0 && Frame_panel(f, 1) == p1);
-    CHECK(Frame_panel(f, 5) == NULL);
+    CHECK(Frame_panel(f, 5) == nullptr);
     Frame_removePanels(f);
     CHECK(Frame_count(f) == 0);
 
@@ -108,7 +108,7 @@ int main(void) {
     Frame_addPanel(f, &d);
     Frame_render(f);
     Image *shot = Frame_capture(f);
-    CHECK(shot != NULL);
+    CHECK(shot != nullptr);
     CHECK(Image_width(shot) == 640 && Image_height(shot) == 360);
 
     // hide / show don't crash and keep the frame alive

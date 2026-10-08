@@ -13,7 +13,7 @@ static _Atomic unsigned sceneSteps;
 static void *sceneWorker(void *userdata) {
     (void)userdata;
     for (unsigned i = 0; i < 1000; i++) atomic_fetch_add(&sceneSteps, 1);
-    return NULL;
+    return nullptr;
 }
 static bool presented(Surface *surface, void *userdata) {
     (void)surface; (void)userdata; presentations++; return true;
@@ -35,8 +35,8 @@ int main(void) {
     CHECK(Frame_getFPSCap(frame) == 120);
     CHECK(Frame_getFPSCapWhenFocusLost(frame) == 1);
     Surface *surface = Frame_surface(frame);
-    Surface_setClock(surface, clockNow, NULL);
-    Surface_onPresent(surface, presented, NULL); // instrument actual R3 submission seam
+    Surface_setClock(surface, clockNow, nullptr);
+    Surface_onPresent(surface, presented, nullptr); // instrument actual R3 submission seam
     now = 1000000000ULL;
 
     // Native focus request + mirrored focus ID: no sleeps or display-Hz assumptions.
@@ -54,10 +54,10 @@ int main(void) {
     Application_poll(app);
     before = presentations;
     pthread_t scene;
-    int sceneStarted = pthread_create(&scene, NULL, sceneWorker, NULL);
+    int sceneStarted = pthread_create(&scene, nullptr, sceneWorker, nullptr);
     CHECK(sceneStarted == 0);
     for (int i = 0; i < 100; i++) Frame_render(frame); // demand storm, not keep-alive
-    if (sceneStarted == 0) { pthread_join(scene, NULL); CHECK(atomic_load(&sceneSteps) == 1000); }
+    if (sceneStarted == 0) { pthread_join(scene, nullptr); CHECK(atomic_load(&sceneSteps) == 1000); }
     CHECK(presentations == before);
     now += 999999999ULL; Surface_poll(surface);
     CHECK(presentations == before);

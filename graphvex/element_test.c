@@ -42,7 +42,7 @@ int main(void) {
     d.anchor = PART_TOP_LEFT;
     d.pivot = PART_TOP_LEFT;
     Element *p = Element(&d);
-    CHECK(p != NULL && Element_isValid(p));
+    CHECK(p != nullptr && Element_isValid(p));
 
     // --- specific known placements ---
     Rect r = Element_resolve(p, parent);
@@ -131,14 +131,14 @@ int main(void) {
     CHECK(Element_pivot(p) == PART_CENTER);
 
     // null-safe
-    CHECK(!Element_isValid(NULL));
-    CHECK(Element_width(NULL) == 0.0f);
-    CHECK(Element_resolve(NULL, parent).w == 0.0f);
-    Element_paint(NULL, (Rect){0, 0, 1, 1}, dl);       // must not crash
+    CHECK(!Element_isValid(nullptr));
+    CHECK(Element_width(nullptr) == 0.0f);
+    CHECK(Element_resolve(nullptr, parent).w == 0.0f);
+    Element_paint(nullptr, (Rect){0, 0, 1, 1}, dl);       // must not crash
 
     DisplayList_free(dl);
     Element_destroy(p);
-    Element_destroy(NULL);
+    Element_destroy(nullptr);
 
     if (g_fail == 0) printf("element_test: ALL PASS (9 anchors x 9 pivots = 81 combos)\n");
     return g_fail == 0 ? 0 : 1;

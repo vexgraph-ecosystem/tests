@@ -17,9 +17,9 @@ static void unsupported(FilterToken token) {
     assert(Compositor_filterBounds((CompositorBounds) {0}, &token, 1, &out) == COMPOSITOR_UNSUPPORTED);
     assert(out.x == before.x && out.y == before.y);
     assert(out.width == before.width && out.height == before.height);
-    CompositorSurface *surface = NULL;
-    assert(Compositor_compose(NULL, 0, &token, 1, &surface) == COMPOSITOR_UNSUPPORTED);
-    assert(surface == NULL);
+    CompositorSurface *surface = nullptr;
+    assert(Compositor_compose(nullptr, 0, &token, 1, &surface) == COMPOSITOR_UNSUPPORTED);
+    assert(surface == nullptr);
 }
 
 int main(void) {

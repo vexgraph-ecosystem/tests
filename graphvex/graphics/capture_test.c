@@ -48,7 +48,7 @@ int main(void) {
 
     // capture without an active backend / null dest is refused
     Graphics_use(9999u);            // unknown -> keeps raster selected actually
-    CHECK(!Graphics_capture(NULL));
+    CHECK(!Graphics_capture(nullptr));
 
     Image_destroy(shot);
     printf("capture_test: ALL PASS\n");

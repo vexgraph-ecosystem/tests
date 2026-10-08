@@ -15,7 +15,7 @@
 void *IosHost_create(int width, int height);   // an IOSurfaceRef, or NULL
 void  IosHost_release(void *surface);
 
-// Lock for read and return the base address; stride out is bytes/row.
+// Lock for read and return the base address; stride out is Bytes/row.
 // Returns NULL if the lock failed.
 const uint8_t *IosHost_lockRead(void *surface, size_t *outStride);
 void IosHost_unlock(void *surface);

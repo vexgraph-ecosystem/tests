@@ -81,7 +81,7 @@ int main(void) {
     CHECK(p[0] == q[0] && p[1] == q[1] && p[2] == q[2]);
 
     // Beyond the window there is nothing to draw — the crop simply ends.
-    CHECK(Image_pixels(small) != NULL);
+    CHECK(Image_pixels(small) != nullptr);
 
     Image_destroy(big);
     Image_destroy(small);

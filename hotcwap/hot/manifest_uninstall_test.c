@@ -46,7 +46,7 @@ int main(void) {
     // Isolate in scratch dir via VEX_MANIFEST test seam
     char scratchTemplate[] = "/tmp/vex_uninstall_test_XXXXXX";
     char *scratchDir = mkdtemp(scratchTemplate);
-    CHECK(scratchDir != NULL, "Created isolated scratch directory");
+    CHECK(scratchDir != nullptr, "Created isolated scratch directory");
     setenv("VEX_MANIFEST", scratchDir, 1);
     char homeDir[512];
     snprintf(homeDir, sizeof(homeDir), "%s/home", scratchDir);
@@ -57,7 +57,7 @@ int main(void) {
     bool mounted = MANIFEST("appdata", "vexgraph", "test suite");
     CHECK(mounted, "MANIFEST(appdata, vexgraph, test suite) succeeded");
     const char *root = MANIFEST_ROOT();
-    CHECK(root != NULL && dirExists(root), "Manifest root directory exists on disk");
+    CHECK(root != nullptr && dirExists(root), "Manifest root directory exists on disk");
     char savedRoot[1024];
     snprintf(savedRoot, sizeof(savedRoot), "%s", root);
 
@@ -88,7 +88,7 @@ int main(void) {
     bool success = UNINSTALL("appdata", "vexgraph", "test suite");
     CHECK(success, "Exact match UNINSTALL(appdata, vexgraph, test suite) succeeded");
     CHECK(!dirExists(savedRoot), "Root directory completely purged from disk");
-    CHECK(MANIFEST_ROOT() == NULL, "MANIFEST_ROOT() is NULL after uninstall");
+    CHECK(MANIFEST_ROOT() == nullptr, "MANIFEST_ROOT() is NULL after uninstall");
 
     // #8 Second UNINSTALL -> MUST FAIL (not mounted)
     bool fail5 = UNINSTALL("appdata", "vexgraph", "test suite");
@@ -98,7 +98,7 @@ int main(void) {
     bool remount = MANIFEST("appdata", "vexgraph", "test app 2");
     CHECK(remount, "Re-mounted manifest for test app 2");
     const char *root2 = MANIFEST_ROOT();
-    CHECK(root2 != NULL && dirExists(root2), "New root directory created");
+    CHECK(root2 != nullptr && dirExists(root2), "New root directory created");
 
     // Clean up test app 2
     bool clean2 = UNINSTALL("appdata", "vexgraph", "test app 2");

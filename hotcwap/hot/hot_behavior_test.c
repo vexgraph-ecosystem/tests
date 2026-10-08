@@ -97,7 +97,7 @@ int main(void) {
     CHECK(restore(blob, 7) == false);  // unknown length
     CHECK(restore(nullptr, 16) == false);
 
-    // Legacy v1 (8 bytes) and v2 (12 bytes) are adopted.
+    // Legacy v1 (8 Bytes) and v2 (12 Bytes) are adopted.
     uint8_t v1[8] = { 0 };
     uint8_t v2[12] = { 0 };
     CHECK(restore(v1, 8));

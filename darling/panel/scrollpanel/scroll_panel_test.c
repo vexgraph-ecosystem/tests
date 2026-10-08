@@ -22,8 +22,8 @@ static bool near(float a, float b) { return (a > b ? a - b : b - a) < 0.01f; }
 #include "darling/test_application.h"
 int main(void) {
     ScrollPanel *sp = ScrollPanel(200, 150);
-    CHECK(sp != NULL);
-    CHECK(ScrollPanel_graphics(sp) != NULL);
+    CHECK(sp != nullptr);
+    CHECK(ScrollPanel_graphics(sp) != nullptr);
 
     ElementDesc d = {0};
     d.width = 200; d.height = 1000;

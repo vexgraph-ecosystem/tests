@@ -21,8 +21,8 @@ int main(void) {
     Element_revalidate(root);
     assert(!Element_isDirty(root));
     assert(Element_setImage(root, image) == root && Element_isDirty(root));
-    assert(Element_image(root) == image && Element_image(child) == NULL);
-    assert(Element_image(NULL) == NULL && Element_setImage(NULL, image) == NULL);
+    assert(Element_image(root) == image && Element_image(child) == nullptr);
+    assert(Element_image(nullptr) == nullptr && Element_setImage(nullptr, image) == nullptr);
     DisplayList *dl = DisplayList_0();
     assert(dl);
     Element_paint(root, (Rect){2, 2, 8, 4}, dl);
@@ -61,8 +61,8 @@ int main(void) {
     Element_paint(root, (Rect){2, 2, 8, 4}, dl);
     assert(DisplayList_count(dl) == 0);
     Element_setVisible(root, true);
-    Element_setImage(root, NULL);
-    assert(Element_image(root) == NULL && Image_pixels(image)[0] == 255);
+    Element_setImage(root, nullptr);
+    assert(Element_image(root) == nullptr && Image_pixels(image)[0] == 255);
     // Clearing recorded borrows precedes destroying the externally owned asset.
     DisplayList_free(dl);
     Element_destroy(root);

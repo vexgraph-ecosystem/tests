@@ -105,7 +105,7 @@ static bool rmtree(const char *path) {
     if (!dir)
         return false;
     struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         if (strcmp((*ent).d_name, ".") == 0 || strcmp((*ent).d_name, "..") == 0)
             continue;
         char child[512];
@@ -210,7 +210,7 @@ int main(void) {
 
     // --- 4. First load (0 → 1): dlopen + trampoline adopt ------------------
     HotModule *hot = Hot_init("hot_behavior");
-    CHECK(hot != NULL, "Hot_init() returned NULL");
+    CHECK(hot != nullptr, "Hot_init() returned NULL");
     if (!hot) {
         rmtree(loadBase);
         return 1;
@@ -221,7 +221,7 @@ int main(void) {
     CHECK(loaded > 0u, "first Hot_poll loaded %u modules", loaded);
     CHECK(Hot_get_generation(hot) == 1u, "first load generation != 1");
     HotFn pulseFn = Hot_get_symbol(hot, "hot_behavior_pulse");
-    CHECK(pulseFn != NULL, "hot_behavior_pulse unresolved after first load");
+    CHECK(pulseFn != nullptr, "hot_behavior_pulse unresolved after first load");
     if (pulseFn) {
         float v = ((float (*)(double)) pulseFn)(1.0);
         CHECK(v >= 0.0f && v <= 1.0f, "pulse(1.0)=%f out of range", v);
@@ -249,14 +249,14 @@ int main(void) {
 
     // --- 7. Trampolines re-adopted + state survived the swap ----------------
     pulseFn = Hot_get_symbol(hot, "hot_behavior_pulse");
-    CHECK(pulseFn != NULL, "hot_behavior_pulse unresolved after swap");
+    CHECK(pulseFn != nullptr, "hot_behavior_pulse unresolved after swap");
     if (pulseFn) {
         float v = ((float (*)(double)) pulseFn)(1.0);
         CHECK(v >= 0.0f && v <= 1.0f, "post-swap pulse(1.0)=%f out of range", v);
         printf("  generation 2 pulse(1.0) = %f (state restored)\n", v);
     }
     HotFn barFn = Hot_get_symbol(hot, "hot_behavior_bar");
-    CHECK(barFn != NULL, "hot_behavior_bar lost after swap");
+    CHECK(barFn != nullptr, "hot_behavior_bar lost after swap");
 
     HotShutdown(hot);
     unsetenv("VEX_MANIFEST");

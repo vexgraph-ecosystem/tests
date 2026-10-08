@@ -19,13 +19,13 @@ static int g_fail = 0;
 
 int main(void) {
     Window *w = Window_create("present surface", 320, 240);
-    CHECK(w != NULL);
+    CHECK(w != nullptr);
 
 #ifdef __APPLE__
     // two IOSurfaces = the double buffer; the layer shows whichever we publish
     void *front = Window_createPresentSurface(w, 320, 240);
     void *back = Window_createPresentSurface(w, 320, 240);
-    CHECK(front != NULL && back != NULL);
+    CHECK(front != nullptr && back != nullptr);
 
     if (front && back) {
         Window_presentSurface(w, front);
@@ -39,14 +39,14 @@ int main(void) {
     Window_destroyPresentSurface(w, front);
     Window_destroyPresentSurface(w, back);
 #else
-    CHECK(Window_createPresentSurface(w, 320, 240) == NULL);   // capability-gated
+    CHECK(Window_createPresentSurface(w, 320, 240) == nullptr);   // capability-gated
 #endif
 
     // null-safety across the whole seam
-    Window_presentSurface(NULL, NULL);
-    Window_presentSurface(w, NULL);
-    Window_destroyPresentSurface(NULL, NULL);
-    CHECK(Window_presentSurfaceContents(NULL) == NULL);
+    Window_presentSurface(nullptr, nullptr);
+    Window_presentSurface(w, nullptr);
+    Window_destroyPresentSurface(nullptr, nullptr);
+    CHECK(Window_presentSurfaceContents(nullptr) == nullptr);
 
     Window_destroy(w);
     printf("present_surface_test: ALL PASS\n");

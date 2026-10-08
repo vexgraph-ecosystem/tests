@@ -37,7 +37,7 @@ int main(void) {
     CHECK(Panel_childCount(root) == 2);
     CHECK(Panel_childElement(root, 0) == Panel_graphics(a));
     CHECK(Panel_childElement(root, 1) == Panel_graphics(b));
-    CHECK(Panel_childElement(root, 9) == NULL);
+    CHECK(Panel_childElement(root, 9) == nullptr);
     CHECK(Element_find(Panel_graphics(root), "b") == Panel_graphics(b));
 
     // a grandchild added AFTER the child was adopted is still owned downward
@@ -47,10 +47,10 @@ int main(void) {
     CHECK(Panel_childCount(a) == 1);
     CHECK(Panel_childCount(root) == 2);   // direct children only, as the tree reads
 
-    CHECK(Panel_graphics(NULL) == NULL);
-    CHECK(Panel_childCount(NULL) == 0);
-    CHECK(Panel_add(NULL, a) == NULL);
-    CHECK(Panel_add(root, NULL) == NULL);
+    CHECK(Panel_graphics(nullptr) == nullptr);
+    CHECK(Panel_childCount(nullptr) == 0);
+    CHECK(Panel_add(nullptr, a) == nullptr);
+    CHECK(Panel_add(root, nullptr) == nullptr);
 
     Panel_destroy(root);   // frees a, b, c wrappers + the whole Element tree
     if (g_fail == 0) printf("panel_add_test: ALL PASS\n");

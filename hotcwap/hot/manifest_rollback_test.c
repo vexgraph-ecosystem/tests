@@ -112,7 +112,7 @@ static bool rmtree(const char *path) {
     if (!dir)
         return false;
     struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         if (strcmp((*ent).d_name, ".") == 0 || strcmp((*ent).d_name, "..") == 0)
             continue;
         char child[512];
@@ -232,7 +232,7 @@ int main(void) {
 
     // --- 3. First load (0 → 1) + live module state --------------------------
     HotModule *hot = Hot_init("hot_behavior");
-    CHECK(hot != NULL, "Hot_init() returned NULL");
+    CHECK(hot != nullptr, "Hot_init() returned NULL");
     if (!hot) {
         unsetenv("VEX_MANIFEST");
         rmtree(loadBase);
@@ -244,14 +244,14 @@ int main(void) {
     CHECK(Hot_get_generation(hot) == 1u, "first load generation != 1");
     HotFn setFn = Hot_get_symbol(hot, "hot_behavior_set_phase_bias");
     HotFn getFn = Hot_get_symbol(hot, "hot_behavior_get_phase_bias");
-    CHECK(setFn != NULL, "hot_behavior_set_phase_bias unresolved (gen 1)");
-    CHECK(getFn != NULL, "hot_behavior_get_phase_bias unresolved (gen 1)");
+    CHECK(setFn != nullptr, "hot_behavior_set_phase_bias unresolved (gen 1)");
+    CHECK(getFn != nullptr, "hot_behavior_get_phase_bias unresolved (gen 1)");
     if (setFn)
         ((void (*)(float)) setFn)(PHASE_BIAS);
     float bias0 = getFn ? ((float (*)(void)) getFn)() : 0.0f;
     CHECK(bias0 == PHASE_BIAS, "phaseBias not applied in gen 1 (got %f)", bias0);
     HotFn pulseFn = Hot_get_symbol(hot, "hot_behavior_pulse");
-    CHECK(pulseFn != NULL, "hot_behavior_pulse unresolved (gen 1)");
+    CHECK(pulseFn != nullptr, "hot_behavior_pulse unresolved (gen 1)");
     float pulse0 = pulseFn ? ((float (*)(double)) pulseFn)(1.0) : 0.0f;
 
     // --- 4. Promote generation 2 = the BAD (foreign-magic) build ------------
@@ -268,13 +268,13 @@ int main(void) {
     CHECK(r == HOT_ERROR_RESTORE_FAILED,
           "expected HOT_ERROR_RESTORE_FAILED on bad generation, got %d (%s)",
           (int) r, Hot_last_error(hot));
-    CHECK(strstr(Hot_last_error(hot), "Restore rejected") != NULL,
+    CHECK(strstr(Hot_last_error(hot), "Restore rejected") != nullptr,
           "last_error should name the rejected restore: %s", Hot_last_error(hot));
     CHECK(Hot_get_generation(hot) == 1u,
           "generation advanced past a rejected restore (now %llu)",
           (unsigned long long) Hot_get_generation(hot));
     pulseFn = Hot_get_symbol(hot, "hot_behavior_pulse");
-    CHECK(pulseFn != NULL, "pulse symbol lost after rollback (old image dead?)");
+    CHECK(pulseFn != nullptr, "pulse symbol lost after rollback (old image dead?)");
     if (pulseFn) {
         float p = ((float (*)(double)) pulseFn)(1.0);
         CHECK(p == pulse0, "generation-1 pulse changed after rollback (%f != %f)",
@@ -313,7 +313,7 @@ int main(void) {
     CHECK(biasHealed == PHASE_BIAS,
           "phaseBias did not survive the heal swap (got %f)", biasHealed);
     pulseFn = Hot_get_symbol(hot, "hot_behavior_pulse");
-    CHECK(pulseFn != NULL, "pulse symbol lost after heal");
+    CHECK(pulseFn != nullptr, "pulse symbol lost after heal");
     if (pulseFn) {
         float p = ((float (*)(double)) pulseFn)(1.0);
         CHECK(p == pulse0, "pulse changed after heal (%f != %f)", p, pulse0);

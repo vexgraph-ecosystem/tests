@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     bool interactive = argc == 2 && strcmp(argv[1], "--interactive") == 0;
     if (argc > 1 && !interactive) { fprintf(stderr, "usage: %s [--interactive]\n", argv[0]); return 1; }
     Frame *f = Frame("panel — anchor + corner radius", 1200, 820);
-    CHECK(f != NULL);
+    CHECK(f != nullptr);
     Frame_setBackgroundColor(f, COLOR_CLEAR);   // clear paint (alpha is paint only)
     Frame_setTransparent(f, false);              // explicit OS see-through
     Frame_setBlur(f, 30.0f);                    // frosted backdrop

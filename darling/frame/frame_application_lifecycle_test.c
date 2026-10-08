@@ -75,7 +75,7 @@ int main(void) {
     CHECK(Frame_attachApplication(state.first, app));
     CHECK(Frame_attachApplication(state.second, app));
     CHECK(Application_addStartEvent(app, startup, &state));
-    CHECK(!Application_addStartEvent(app, NULL, &state));
+    CHECK(!Application_addStartEvent(app, nullptr, &state));
     CHECK(Application_addPollEvent(app, service, &state));
     Application_start(app); // no test keep-alive loop
     CHECK(state.stage == 2);

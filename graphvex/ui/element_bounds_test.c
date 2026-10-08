@@ -24,7 +24,7 @@ static Element *node(float w, float h, float x, float y) {
     ElementDesc desc = {.width = w, .height = h,
         .offsetX = x, .offsetY = y, .background = COLOR_WHITE};
     Element *e = Element(&desc);
-    CHECK(e != NULL);
+    CHECK(e != nullptr);
     return e;
 }
 
@@ -98,23 +98,23 @@ static void halo_and_hit(void) {
     Element_add(root, child);
     Element_setShadow(child, 10, 0, 2);
     CHECK(same(Element_absoluteBound(root, (Rect){0}), (Rect){0, 0, 57, 30}));
-    CHECK(Element_hit(root, 50, 15) == NULL); // painted halo is not an event region
+    CHECK(Element_hit(root, 50, 15) == nullptr); // painted halo is not an event region
     CHECK(Element_hit(root, 43, 15) == child);
     Element_setClip(root, true);
     CHECK(same(Element_absoluteBound(root, (Rect){0}), (Rect){0, 0, 40, 30}));
-    CHECK(Element_hit(root, 43, 15) == NULL);
+    CHECK(Element_hit(root, 43, 15) == nullptr);
     Element_setClip(root, false);
     Element_setRadius(root, 8);
-    CHECK(Element_hit(root, 0, 0) == NULL);
+    CHECK(Element_hit(root, 0, 0) == nullptr);
     CHECK(same(Element_absoluteBound(root, (Rect){0}), (Rect){0, 0, 40, 30}));
     Element_destroy(root);
 }
 
 static void empty_and_shared(void) {
     Rect parent = {10, 20, 50, 50};
-    CHECK(same(Element_eventBound(NULL, parent), (Rect){0}));
-    CHECK(same(Element_absoluteBound(NULL, parent), (Rect){0}));
-    CHECK(same(Element_bounds(NULL, parent), (Rect){0}));
+    CHECK(same(Element_eventBound(nullptr, parent), (Rect){0}));
+    CHECK(same(Element_absoluteBound(nullptr, parent), (Rect){0}));
+    CHECK(same(Element_bounds(nullptr, parent), (Rect){0}));
     Element *root = node(0, 0, 0, 0);
     Element *child = node(5, 5, 20, 10);
     Element_add(root, child);
@@ -127,7 +127,7 @@ static void empty_and_shared(void) {
     shared.w = 8; // borrowed record observed without a stale bounds cache
     CHECK(same(Element_eventBound(root, parent), (Rect){10, 20, 8, 9}));
     CHECK(same(Element_absoluteBound(root, parent), (Rect){10, 20, 25, 15}));
-    Element_setProperty(root, NULL); // paint also stops the property-less subtree
+    Element_setProperty(root, nullptr); // paint also stops the property-less subtree
     CHECK(same(Element_absoluteBound(root, parent), (Rect){0}));
     CHECK(same(Element_eventBound(root, parent), (Rect){0}));
     Element_destroy(root);

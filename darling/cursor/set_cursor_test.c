@@ -14,7 +14,7 @@ static int failures;
 // Prove that any implemented widget gets its own Class##_setCursor API.
 typedef struct ExampleWidget { Element *element; } ExampleWidget;
 static Element *ExampleWidget_graphics(const ExampleWidget *self) {
-    return self ? (*self).element : NULL;
+    return self ? (*self).element : nullptr;
 }
 DECLARE_CURSOR(ExampleWidget);
 IMPLEMENT_CURSOR(ExampleWidget)
@@ -77,10 +77,10 @@ int main(void) {
         Panel_setCursor(fresh, CURSOR_HIDDEN);
         Panel_destroy(fresh);
     }
-    CHECK(Panel_setCursor(NULL, CURSOR_TEXT) == NULL);
-    CHECK(ScrollPanel_setCursor(NULL, CURSOR_TEXT) == NULL);
-    CHECK(Frame_setCursor(NULL, CURSOR_TEXT) == NULL);
-    CHECK(Element_cursorAt(NULL, 1, 1) == CURSOR_ARROW);
+    CHECK(Panel_setCursor(nullptr, CURSOR_TEXT) == nullptr);
+    CHECK(ScrollPanel_setCursor(nullptr, CURSOR_TEXT) == nullptr);
+    CHECK(Frame_setCursor(nullptr, CURSOR_TEXT) == nullptr);
+    CHECK(Element_cursorAt(nullptr, 1, 1) == CURSOR_ARROW);
     puts(failures ? "set_cursor_test: FAIL" : "set_cursor_test: PASS");
     return failures != 0;
 }

@@ -45,7 +45,7 @@ static void test_radix_sort(void) {
 
 static void test_dijkstra(void) {
     DijkstraGraph *g = Dijkstra_create(6);
-    assert(g != NULL);
+    assert(g != nullptr);
 
     Dijkstra_addEdge(g, 0, 1, 7.0f);
     Dijkstra_addEdge(g, 0, 2, 9.0f);
@@ -81,7 +81,7 @@ static void test_kd_tree(void) {
     }
 
     KdTree *tree = KdTree_build(pts, 10);
-    assert(tree != NULL);
+    assert(tree != nullptr);
 
     float query[3] = { 3.1f, 5.9f, 9.1f };
     KdPoint nearest;

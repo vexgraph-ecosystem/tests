@@ -66,7 +66,7 @@ static bool rmtree(const char *path) {
     if (!dir)
         return false;
     struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         if (strcmp((*ent).d_name, ".") == 0 || strcmp((*ent).d_name, "..") == 0)
             continue;
         char child[512];
@@ -102,7 +102,7 @@ static bool write_file(const char *path, const char *data) {
     return ok;
 }
 
-// True when path's bytes are exactly `data` (length + content). Proves a
+// True when path's Bytes are exactly `data` (length + content). Proves a
 // rejected mount did NOT clobber the existing hostile file.
 static bool file_matches(const char *path, const char *data) {
     FILE *f = fopen(path, "rb");
@@ -166,7 +166,7 @@ int main(void) {
     struct stat st;
     CHECK(stat(okfile, &st) == 0 && S_ISREG((unsigned int) st.st_mode),
           "missing manifest.json was not created on mount");
-    CHECK(MANIFEST_ROOT() != NULL, "MANIFEST_ROOT() null after a good mount");
+    CHECK(MANIFEST_ROOT() != nullptr, "MANIFEST_ROOT() null after a good mount");
     printf("  C. missing manifest.json created on mount\n");
 
     // --- D. Library key gate + fresh generation -----------------------------

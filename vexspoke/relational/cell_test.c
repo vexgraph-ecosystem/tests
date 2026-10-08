@@ -4,7 +4,7 @@
 //   - all three arity constructors (Cell_0/_1/_2) and the Cell(...) chooser
 //     build a cell whose self-describing header carries the caller's typeId;
 //   - Cell_check answers identity from the block header, not a side table;
-//   - sizeof(Cell) stays 16 bytes and the block is 32 bytes (compile-time);
+//   - sizeof(Cell) stays 16 Bytes and the block is 32 Bytes (compile-time);
 //   - value slot set/get round-trips, including 0 and pointer-wide values;
 //   - the toString projections render, null-render "nullptr", and report
 //     truncation when the destination is too small;

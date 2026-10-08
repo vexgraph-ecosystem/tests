@@ -15,7 +15,7 @@ int main(void) {
     printf("  CPU Brand    : %s\n", HardwareInfo_getCpuBrand());
     printf("  CPU Cores    : %d cores, %d threads\n",
            HardwareInfo_getCpuCoreCount(), HardwareInfo_getCpuThreadCount());
-    printf("  Total RAM    : %.2f GB (%" PRIu64 " bytes)\n",
+    printf("  Total RAM    : %.2f GB (%" PRIu64 " Bytes)\n",
            (double)HardwareInfo_getRamTotal() / (1024.0 * 1024.0 * 1024.0),
            HardwareInfo_getRamTotal());
     if (HardwareInfo_hasBattery()) {
@@ -33,7 +33,7 @@ int main(void) {
     printf("  GPU Name     : %s\n", GraphicsInfo_getGpuName());
     printf("  Graphics API : %s\n", GraphicsInfo_getPrimaryGraphicsApi());
     printf("  Unified Mem  : %s\n", GraphicsInfo_getUnifiedMemoryEnabled() ? "Yes" : "No");
-    printf("  VRAM Budget  : %.2f GB (%" PRIu64 " bytes)\n\n",
+    printf("  VRAM Budget  : %.2f GB (%" PRIu64 " Bytes)\n\n",
            (double)GraphicsInfo_getVramTotal() / (1024.0 * 1024.0 * 1024.0),
            GraphicsInfo_getVramTotal());
 

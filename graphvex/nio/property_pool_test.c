@@ -19,12 +19,12 @@ static int g_fail = 0;
 
 int main(void) {
     PropertyPool *pool = PropertyPool_0();
-    CHECK(pool != NULL);
+    CHECK(pool != nullptr);
     CHECK(PropertyPool_live(pool) == 0);
 
     // default
-    Property *a = PropertyPool_alloc(pool, NULL);
-    CHECK(a != NULL);
+    Property *a = PropertyPool_alloc(pool, nullptr);
+    CHECK(a != nullptr);
     CHECK(a->background == COLOR_WHITE);
     CHECK(a->radius == 0.0f);
 
@@ -33,7 +33,7 @@ int main(void) {
     bound.x = 10; bound.y = 20; bound.w = 100; bound.h = 50; bound.radius = 12;
     bound.background = COLOR_RGBA(120, 190, 220, 255);
     Property *b = PropertyPool_alloc(pool, &bound);
-    CHECK(b != NULL);
+    CHECK(b != nullptr);
     CHECK(b->x == 10 && b->y == 20 && b->w == 100 && b->h == 50);
     CHECK(b->radius == 12 && b->background == COLOR_RGBA(120, 190, 220, 255));
     CHECK(PropertyPool_live(pool) == 2);
@@ -45,14 +45,14 @@ int main(void) {
 
     // grow well past the first 64-slot block; earlier records stay put
     Property *kept = a;
-    for (int i = 0; i < 200; i++) CHECK(PropertyPool_alloc(pool, &bound) != NULL);
+    for (int i = 0; i < 200; i++) CHECK(PropertyPool_alloc(pool, &bound) != nullptr);
     CHECK(PropertyPool_live(pool) == 202);
     CHECK(kept->background == COLOR_WHITE);   // never moved
 
     PropertyPool_release(pool, b);
     CHECK(PropertyPool_live(pool) == 201);
     // release then alloc reuses the slot, re-defaulted
-    Property *reused = PropertyPool_alloc(pool, NULL);
+    Property *reused = PropertyPool_alloc(pool, nullptr);
     CHECK(reused == b);
     CHECK(reused->background == COLOR_WHITE && reused->x == 0);
 

@@ -96,7 +96,7 @@ static bool rmtree(const char *path) {
     if (!dir)
         return false;
     struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         if (strcmp((*ent).d_name, ".") == 0 || strcmp((*ent).d_name, "..") == 0)
             continue;
         char child[512];
@@ -185,7 +185,7 @@ int main(void) {
     CHECK(MANIFEST_REFLECT("hot_behavior", payloadDir), "MANIFEST_REFLECT() failed");
 
     HotModule *hot = Hot_init("hot_behavior");
-    CHECK(hot != NULL, "Hot_init() returned NULL");
+    CHECK(hot != nullptr, "Hot_init() returned NULL");
     if (!hot) {
         rmtree(base);
         return 1;
@@ -215,7 +215,7 @@ int main(void) {
     CHECK(Hot_get_generation(hot) == SWAP_COUNT, "final generation %llu != %u",
           (unsigned long long) Hot_get_generation(hot), SWAP_COUNT);
     HotFn pulse = Hot_get_symbol(hot, "hot_behavior_pulse");
-    CHECK(pulse != NULL, "hot_behavior_pulse lost after the overflow run");
+    CHECK(pulse != nullptr, "hot_behavior_pulse lost after the overflow run");
     if (pulse) {
         float v = ((float (*)(double)) pulse)(1.0);
         CHECK(v >= 0.0f && v <= 1.0f, "pulse returned %f after the overflow run", v);

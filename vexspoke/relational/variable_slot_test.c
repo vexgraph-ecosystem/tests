@@ -39,7 +39,7 @@ static int g_failures = 0;
 int main(void) {
     printf("=== Running Variable Slot Test Suite ===\n");
 
-    // section 1 Layout — the atom is exactly 32 bytes (the 24-Byte Variable Slot Law).
+    // section 1 Layout — the atom is exactly 32 Bytes (the 24-Byte Variable Slot Law).
     CHECK("sizeof slot is 32", sizeof(VariableSlot) == 32u);
 
     // section 2 Inline init — validate + fold + bind.

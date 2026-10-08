@@ -118,7 +118,7 @@ static void testStableAddresses(void) {
     CHECK(ChunkedList_capacity(list) >= total);
     CHECK(ChunkedList_getChunkCount(list) == (total + 7u) / 8u);
 
-    // The very first row must be untouched: same address, same bytes.
+    // The very first row must be untouched: same address, same Bytes.
     CHECK(ChunkedList_slot(list, 0u) == first);
     CHECK((*row0).a == 0xA0u);
     CHECK((*row0).b == 0xB0u);
@@ -245,8 +245,8 @@ static void testChunkBytesBudget(void) {
     CHECK(ChunkedList_getRowsPerChunk(list) == 32u);
 
     // One row per chunk when the row is at least as big as the budget: the row
-    // gets a chunk to itself, so neighbours never share that chunk's bytes.
-    // (Chunk alignment stays 16 bytes — owning a chunk is not owning a cache
+    // gets a chunk to itself, so neighbours never share that chunk's Bytes.
+    // (Chunk alignment stays 16 Bytes — owning a chunk is not owning a cache
     // line.)
     ChunkedList *own = ChunkedList_3(ID_INT, 128u, 128u);
     if (own) {

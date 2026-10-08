@@ -97,7 +97,7 @@ int main(void) {
     Frame_setSize(frame, 257, 173); CHECK(Board_generation(content) == before);
     Frame_render(frame); CHECK(Board_generation(content) == before + 1);
     Surface_removeBoard(Frame_surface(frame), observer); Board_destroy(observer);
-    Frame_revalidate(NULL); CHECK(Frame_contentBoard(NULL) == NULL);
+    Frame_revalidate(nullptr); CHECK(Frame_contentBoard(nullptr) == nullptr);
     Frame_destroy(frame);
     puts("ui_revalidate_cascade_battle_test: PASS (ordered board/tree/present without repainting capture)");
     return 0;

@@ -81,7 +81,7 @@ int main(void) {
         pixel(shot, i % COLUMNS * TILE + 1, i / COLUMNS * TILE + 1, COLOR_WHITE);
     }
     Panel *last = children[CHILDREN - 1];
-    CHECK(Panel_remove(last) == last && Panel_parent(last) == NULL);
+    CHECK(Panel_remove(last) == last && Panel_parent(last) == nullptr);
     CHECK(Panel_childCount(parent) == CHILDREN - 1);
     CHECK(Panel_add(parent, last, 0) == last);
     CHECK(Panel_childElement(parent, 0) == Panel_graphics(last));

@@ -8,7 +8,7 @@
 /**
  * ============================================================================
  * MODULE: AiSseTest (src/ai/tests/ai_sse_test.c)
- * LEVEL: L2 — Behavior verification (headless; caller-fed bytes only,
+ * LEVEL: L2 — Behavior verification (headless; caller-fed Bytes only,
  * no sockets, no threads, no network)
  * ============================================================================
  * Executable proof of the AiSse class: incremental data:/event:
@@ -45,9 +45,9 @@ static bool fakeConnect(void *handle) {
     return true;
 }
 
-static bool fakeSend(void *handle, const uint8_t *bytes, uint32_t len) {
+static bool fakeSend(void *handle, const uint8_t *Bytes, uint32_t len) {
     (void)handle;
-    (void)bytes;
+    (void)Bytes;
     (void)len;
     return true;
 }

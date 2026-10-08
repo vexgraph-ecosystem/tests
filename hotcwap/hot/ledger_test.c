@@ -43,7 +43,7 @@ static bool rmtree(const char *path) {
     if (!dir)
         return false;
     struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         if (strcmp((*ent).d_name, ".") == 0 || strcmp((*ent).d_name, "..") == 0)
             continue;
         char child[512];
@@ -92,7 +92,7 @@ int main(void) {
 
     // A. Absent.
     Ledger *ledger = Ledger_open(org, app);
-    CHECK(ledger != NULL, "Ledger_open returned NULL");
+    CHECK(ledger != nullptr, "Ledger_open returned NULL");
     if (!ledger) {
         rmtree(home);
         return 1;

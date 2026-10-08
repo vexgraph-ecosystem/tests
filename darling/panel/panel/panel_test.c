@@ -27,9 +27,9 @@ int main(void) {
 
     // the wrapper owns an attached GraphicsPanel
     Panel *p = Panel(&d);
-    CHECK(p != NULL);
+    CHECK(p != nullptr);
     Element *g = Panel_graphics(p);
-    CHECK(g != NULL);
+    CHECK(g != nullptr);
     CHECK(Element_width(g) == 200.0f && Element_height(g) == 80.0f);
 
     // placement comes from the GraphicsPanel
@@ -52,12 +52,12 @@ int main(void) {
     Element_add(root, a);
     Element_add(root, b);
     CHECK(Element_find(root, "b") == b);
-    CHECK(Element_find(root, "nope") == NULL);
-    CHECK(Element_hit(root, 200, 100) != NULL);   // centre of the tree
+    CHECK(Element_find(root, "nope") == nullptr);
+    CHECK(Element_hit(root, 200, 100) != nullptr);   // centre of the tree
 
     Element_destroy(root);    // frees a + b
     Panel_destroy(p);         // frees the attached GraphicsPanel
-    CHECK(Panel_graphics(NULL) == NULL);
+    CHECK(Panel_graphics(nullptr) == nullptr);
 
     if (g_fail == 0) printf("panel_test: ALL PASS (Panel wraps a GraphicsPanel)\n");
     return g_fail == 0 ? 0 : 1;

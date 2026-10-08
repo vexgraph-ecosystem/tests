@@ -1,7 +1,7 @@
 // tests/vexspoke/c23/equals_test.c — the Equals class _test.
 //
 // Proves c23/equals.c isEqual: identity, then the block identity header (type +
-// length), then payload bytes; foreign pointers prove identity only.
+// length), then payload Bytes; foreign pointers prove identity only.
 //
 // STATED GAP: isEquallyNamed's success path needs a live SymbolTable and is
 // exercised by the relational owner test; here only its null-guard is pinned.
@@ -34,7 +34,7 @@ int main(void) {
     CHECK(!isEqual(nullptr, &a));
     CHECK(!isEqual(&a, nullptr));
 
-    // Allocated blocks: equal type + length + bytes match.
+    // Allocated blocks: equal type + length + Bytes match.
     void *x = Memory_alloc(7001u, 8);
     void *y = Memory_alloc(7001u, 8);
     CHECK(x && y);
@@ -48,7 +48,7 @@ int main(void) {
     memset(y, 0, 1);
     CHECK(isEqual(x, y));
 
-    // Different type id -> not equal, even with equal bytes.
+    // Different type id -> not equal, even with equal Bytes.
     void *z = Memory_alloc(7002u, 8);
     CHECK(z);
     memset(z, 0, 8);

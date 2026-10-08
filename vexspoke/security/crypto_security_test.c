@@ -95,17 +95,17 @@ static void test_prng(void) {
     uint64_t r3 = Crypto_rngNextU64(&rng1);
     TEST_ASSERT(r1 != r3, "successive PRNG integers differ");
 
-    uint8_t bytes[64];
-    memset(bytes, 0, sizeof(bytes));
-    Crypto_randomBytes(bytes, sizeof(bytes));
+    uint8_t Bytes[64];
+    memset(Bytes, 0, sizeof(Bytes));
+    Crypto_randomBytes(Bytes, sizeof(Bytes));
     bool hasNonZero = false;
-    for (size_t i = 0; i < sizeof(bytes); i++) {
-        if (bytes[i] != 0) {
+    for (size_t i = 0; i < sizeof(Bytes); i++) {
+        if (Bytes[i] != 0) {
             hasNonZero = true;
             break;
         }
     }
-    TEST_ASSERT(hasNonZero, "randomBytes filled buffer with non-zero bytes");
+    TEST_ASSERT(hasNonZero, "randomBytes filled buffer with non-zero Bytes");
 }
 
 static void test_hex_conversion(void) {
@@ -117,8 +117,8 @@ static void test_hex_conversion(void) {
 
     uint8_t decoded[4];
     size_t count = Crypto_fromHex(hex, decoded, 4);
-    TEST_ASSERT(count == 4, "fromHex decoded 4 bytes");
-    TEST_ASSERT(memcmp(raw, decoded, 4) == 0, "fromHex decoded bytes match original raw bytes");
+    TEST_ASSERT(count == 4, "fromHex decoded 4 Bytes");
+    TEST_ASSERT(memcmp(raw, decoded, 4) == 0, "fromHex decoded Bytes match original raw Bytes");
 }
 
 static void test_touchid_security(void) {

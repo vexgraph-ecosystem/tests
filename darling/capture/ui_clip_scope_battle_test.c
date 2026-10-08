@@ -66,7 +66,7 @@ int main(void) {
     CHECK(!Graphics_submit(dl)); // unbalanced push rejected
     CHECK(Graphics_clear(COLOR_BLACK) && Graphics_fillRect(&huge, &white) && Graphics_capture(shot));
     pixel(shot, 8, 8, COLOR_BLACK);
-    CHECK(Graphics_clip(NULL));
+    CHECK(Graphics_clip(nullptr));
     DisplayList_clear(dl); DisplayList_rect(dl, huge, &white);
     CHECK(Graphics_submit(dl) && Graphics_capture(shot)); pixel(shot, 8, 8, COLOR_WHITE);
     Image_destroy(shot); DisplayList_free(dl);

@@ -88,7 +88,7 @@ int main(void) {
         CHECK(Element_hit(root, 16 + w, 16 + h) == root);
         Image_destroy(shot);
     }
-    CHECK(!Element_setMinimumSize(NULL, 1, 1) && !Element_setMaximumSize(NULL, 1, 1));
+    CHECK(!Element_setMinimumSize(nullptr, 1, 1) && !Element_setMaximumSize(nullptr, 1, 1));
     Element_setMinimumSize(a, -1, -1); Element_setMaximumSize(a, 0, 0);
     CHECK(Element_width(a) == 80 && Element_height(a) == 90);
     Element_ownProperty(b); // detach borrow before owner's pooled record is released

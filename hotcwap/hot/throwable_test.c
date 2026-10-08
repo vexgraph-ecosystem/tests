@@ -92,7 +92,7 @@ int main(void) {
     largeMsg[sizeof(largeMsg) - 1] = '\0';
     Exception bigEx;
     Exception_init(&bigEx, EXCEPTION_RUNTIME, "BigTest", __FILE__, __LINE__, "%s", largeMsg);
-    CHECK(bigEx.message != NULL && strlen(bigEx.message) == sizeof(largeMsg) - 1, "Dynamic Exception message scaled to 5000 bytes without truncation");
+    CHECK(bigEx.message != nullptr && strlen(bigEx.message) == sizeof(largeMsg) - 1, "Dynamic Exception message scaled to 5000 Bytes without truncation");
     Exception_free(&bigEx);
 
     // Test 7: Graphics-category Exception — the category contract lives in R2
@@ -104,7 +104,7 @@ int main(void) {
     Exception_init(&gfxEx, EXCEPTION_GRAPHICS, "Pipeline::create", __FILE__, __LINE__,
                    "Failed to compile pipeline shader");
     CHECK(gfxEx.category == EXCEPTION_GRAPHICS, "Graphics-category Exception records the failure family");
-    CHECK(gfxEx.message != NULL && strstr(gfxEx.message, "pipeline") != NULL, "Exception message formatted");
+    CHECK(gfxEx.message != nullptr && strstr(gfxEx.message, "pipeline") != nullptr, "Exception message formatted");
     Exception_free(&gfxEx);
 
     // Test 8: fatal reporting is distinct, loud, and exits after teardown.
@@ -138,8 +138,8 @@ int main(void) {
             ssize_t count = read(reportPipe[0], report, sizeof(report) - 1);
             CHECK(count > 0, "Fatal diagnostic was written");
             if (count > 0) {
-                CHECK(strstr(report, "RUNTIME EXCEPTION") != NULL, "Fatal banner was emitted");
-                CHECK(strstr(report, "Intentional fatal exception for test") != NULL,
+                CHECK(strstr(report, "RUNTIME EXCEPTION") != nullptr, "Fatal banner was emitted");
+                CHECK(strstr(report, "Intentional fatal exception for test") != nullptr,
                       "Fatal reason was emitted");
             }
         } else {

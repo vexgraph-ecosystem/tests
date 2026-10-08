@@ -36,7 +36,7 @@ int main(void) {
     CHECK(Graphics_fillRect(&(Rect){16, 0, 16, 32}, &(Brush){COLOR_RGBA(0, 0, 255, 255), 0, 0, 0, 0}));
 
     const VkBatch *batch = VulkanBackend_batch();
-    CHECK(batch != NULL);
+    CHECK(batch != nullptr);
     CHECK((*batch).count == 2);                          // two rects, no clear quad
     CHECK(Graphics_end());
 
@@ -60,7 +60,7 @@ int main(void) {
     CHECK((*b2).quads[0].cx0 == 0.0f && (*b2).quads[0].cx1 == 8.0f);    // clip baked local
     CHECK((*b2).quads[0].cy0 == 0.0f && (*b2).quads[0].cy1 == 8.0f);
     CHECK(Graphics_end());
-    CHECK(VulkanBackend_lastError() != NULL);
+    CHECK(VulkanBackend_lastError() != nullptr);
 
     printf("vk_renderer_test: ALL PASS\n");
     return g_fail == 0 ? 0 : 1;

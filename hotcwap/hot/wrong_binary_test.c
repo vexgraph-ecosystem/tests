@@ -97,7 +97,7 @@ static bool rmtree(const char *path) {
     if (!dir)
         return false;
     struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         if (strcmp((*ent).d_name, ".") == 0 || strcmp((*ent).d_name, "..") == 0)
             continue;
         char child[512];
@@ -210,7 +210,7 @@ int main(void) {
     CHECK(stage_good(base), "stage good #1 failed");
     CHECK(MANIFEST_REFLECT("hot_behavior", payloadDir), "MANIFEST_REFLECT() failed");
     HotModule *hot = Hot_init("hot_behavior");
-    CHECK(hot != NULL, "Hot_init() returned NULL");
+    CHECK(hot != nullptr, "Hot_init() returned NULL");
     if (!hot) {
         rmtree(base);
         return 1;
@@ -241,7 +241,7 @@ int main(void) {
           "generation advanced on a bad binary (now %llu)",
           (unsigned long long) Hot_get_generation(hot));
     HotFn pulse = Hot_get_symbol(hot, "hot_behavior_pulse");
-    CHECK(pulse != NULL, "old code lost after a refused swap");
+    CHECK(pulse != nullptr, "old code lost after a refused swap");
     if (pulse) {
         float v = ((float (*)(double)) pulse)(1.0);
         CHECK(v >= 0.0f && v <= 1.0f, "old code returned %f after a refused swap", v);

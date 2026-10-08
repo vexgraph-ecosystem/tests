@@ -24,7 +24,7 @@ static int g_fail = 0;
 
 int main(void) {
     void *surf = IosHost_create(32, 32);
-    CHECK(surf != NULL);
+    CHECK(surf != nullptr);
     if (!surf) { printf("surface_gpu_test: IOSurfaceCreate failed\n"); return 1; }
 
     CHECK(Graphics_register(VulkanBackend_row()));
@@ -48,7 +48,7 @@ int main(void) {
     // read the IOSurface exactly as CoreAnimation/WindowServer would
     size_t stride = 0;
     const uint8_t *base = IosHost_lockRead(surf, &stride);
-    CHECK(base != NULL);
+    CHECK(base != nullptr);
     if (base) {
         const uint8_t *left = base + (size_t)16 * stride + (size_t)8 * 4;
         const uint8_t *right = base + (size_t)16 * stride + (size_t)24 * 4;

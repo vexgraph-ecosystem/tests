@@ -1,7 +1,7 @@
 // tests/darling/frame/frame_resize_test.c — mirrors darling-framework/src/frame
 //
 // The GPU seam rebuilds an IOSurface per resize (an IOSurface cannot grow), so
-// walk a spread of sizes — including widths whose row bytes are NOT already
+// walk a spread of sizes — including widths whose row Bytes are NOT already
 // aligned — and render each. A Metal stride-validation abort here means the
 // IOSurface stride is wrong; this is the zoom/live-resize crash in the shell.
 
@@ -23,7 +23,7 @@ static int g_fail = 0;
 #include "darling/test_application.h"
 int main(void) {
     Frame *f = Frame("resize", 800, 600);
-    CHECK(f != NULL);
+    CHECK(f != nullptr);
     if (!f) return 1;
 
     static const int sizes[][2] = {
@@ -36,7 +36,7 @@ int main(void) {
         Frame_render(f);
         CHECK(Frame_root(f).w == (float)sizes[i][0]);
 #ifdef __APPLE__
-        CHECK(Window_presentSurfaceContents(Frame_window(f)) != NULL);
+        CHECK(Window_presentSurfaceContents(Frame_window(f)) != nullptr);
 #endif
     }
 

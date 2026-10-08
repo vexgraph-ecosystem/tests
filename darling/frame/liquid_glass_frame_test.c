@@ -38,12 +38,12 @@ int main(int argc, char **argv) {
 
     // 1. An empty, naked, see-through window: transparent content, no opaques.
     Frame *f = Frame("liquid glass", GLASS_WINDOW_WIDTH, GLASS_WINDOW_HEIGHT);
-    CHECK(f != NULL);
-    if (f == NULL)
+    CHECK(f != nullptr);
+    if (f == nullptr)
         return 1;
 
     Window *w = Frame_window(f);
-    CHECK(w != NULL);
+    CHECK(w != nullptr);
     Window_setUndecorated(w, WINDOW_UNDECORATED_NAKED);  // transparent top bar, traffic lights kept
     Frame_setBackground(f, COLOR_CLEAR);                 // clear paint; explicit opt-in below
     Frame_setTransparent(f, true);

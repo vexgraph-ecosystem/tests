@@ -52,9 +52,9 @@ int main(void) {
     CHECK(Viewport_x(&v, 7.0f) == 7.0f);
 
     // null-safe reads
-    CHECK(Viewport_isEmpty(NULL));
-    CHECK(Viewport_x(NULL, 5.0f) == 5.0f);
-    Viewport_toPoints(NULL, 10, 20, &px, &py);   // must not crash
+    CHECK(Viewport_isEmpty(nullptr));
+    CHECK(Viewport_x(nullptr, 5.0f) == 5.0f);
+    Viewport_toPoints(nullptr, 10, 20, &px, &py);   // must not crash
     CHECK(px == 10.0f && py == 20.0f);
 
     printf("viewport_test: ALL PASS\n");

@@ -24,12 +24,12 @@ static void step2(Board *board, void *ud) { (void)board; (void)ud; g_steps[g_ste
 
 int main(void) {
     Board *b = Board_2(8, 8);
-    CHECK(b != NULL);
+    CHECK(b != nullptr);
     CHECK(Board_isValid(b));
     CHECK(Board_width(b) == 8 && Board_height(b) == 8);
     CHECK(Board_generation(b) == 0);             // never published
-    CHECK(Board_image(b) != NULL);
-    CHECK(Board_native(b) == NULL);
+    CHECK(Board_image(b) != nullptr);
+    CHECK(Board_native(b) == nullptr);
 
     // every publish advances the generation by exactly one
     Board_publish(b);
@@ -40,7 +40,7 @@ int main(void) {
     // the retained image is the board's own pixels
     Board_fill(b, COLOR_RGBA(1, 2, 3, 4));
     uint8_t *px = Image_pixels(Board_image(b));
-    CHECK(px != NULL);
+    CHECK(px != nullptr);
     CHECK(px[0] == 1 && px[1] == 2 && px[2] == 3 && px[3] == 4);
 
     // resize recreates at the new size; same-size is a no-op true
@@ -55,8 +55,8 @@ int main(void) {
 
     // revalidation: steps run in registration order, then the board publishes
     uint64_t genBefore = Board_generation(b);
-    Board_addRevalidator(b, step1, NULL);
-    Board_addRevalidator(b, step2, NULL);
+    Board_addRevalidator(b, step1, nullptr);
+    Board_addRevalidator(b, step2, nullptr);
     Board_revalidate(b);
     CHECK(g_stepCount == 2 && g_steps[0] == 1 && g_steps[1] == 2);
     CHECK(Board_generation(b) == genBefore + 1);
@@ -68,19 +68,19 @@ int main(void) {
     CHECK(g_stepCount == 0);
 
     // null-safe
-    Board_addRevalidator(NULL, step1, NULL);
-    Board_clearRevalidators(NULL);
-    Board_revalidate(NULL);            // must not crash
+    Board_addRevalidator(nullptr, step1, nullptr);
+    Board_clearRevalidators(nullptr);
+    Board_revalidate(nullptr);            // must not crash
 
     // null-safe
-    CHECK(!Board_isValid(NULL));
-    CHECK(Board_width(NULL) == 0u);
-    CHECK(Board_generation(NULL) == 0u);
-    CHECK(Board_image(NULL) == NULL);
-    CHECK(!Board_resize(NULL, 4, 4));
-    Board_publish(NULL);            // must not crash
-    Board_fill(NULL, COLOR_WHITE);
-    Board_destroy(NULL);
+    CHECK(!Board_isValid(nullptr));
+    CHECK(Board_width(nullptr) == 0u);
+    CHECK(Board_generation(nullptr) == 0u);
+    CHECK(Board_image(nullptr) == nullptr);
+    CHECK(!Board_resize(nullptr, 4, 4));
+    Board_publish(nullptr);            // must not crash
+    Board_fill(nullptr, COLOR_WHITE);
+    Board_destroy(nullptr);
 
     Board_destroy(b);
     printf("board_test: ALL PASS\n");

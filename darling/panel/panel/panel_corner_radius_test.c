@@ -40,7 +40,7 @@ int main(void) {
     CHECK(Panel_radius(circle) == 32.0f);
 
     DisplayList *dl = DisplayList_0();
-    CHECK(dl != NULL);
+    CHECK(dl != nullptr);
     Element_paint(Panel_graphics(circle), (Rect){0, 0, 64, 64}, dl);
     CHECK(DisplayList_count(dl) >= 1);
 

@@ -44,7 +44,7 @@ static void darling_test_start(Application *application, void *userdata) {
 int main(int argc, char **argv) {
     Application *application = Application(argv[0]);
     if (!application) return 1;
-    Window *starter = NULL;
+    Window *starter = nullptr;
 #ifndef DARLING_TEST_HAS_FRAMES
     starter = Window_create("Darling test starter", 240, 120);
     if (!starter) { Application_free(application); return B_TEST_SKIP; }

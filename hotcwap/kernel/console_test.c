@@ -45,11 +45,11 @@ static bool fakeSpawn(void *ctx, const char *shell, const char *workDir) {
     return true;
 }
 
-static bool fakeFeed(void *ctx, const char *bytes, size_t len) {
+static bool fakeFeed(void *ctx, const char *Bytes, size_t len) {
     fake_io_t *f = ctx;
     (*f).feeds++;
     size_t n = len < sizeof((*f).lastFeed) - 1 ? len : sizeof((*f).lastFeed) - 1;
-    memcpy((*f).lastFeed, bytes, n);
+    memcpy((*f).lastFeed, Bytes, n);
     (*f).lastFeed[n] = '\0';
     (*f).lastFeedLen = len;
     return true;

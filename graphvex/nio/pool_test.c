@@ -21,14 +21,14 @@ static int g_fail = 0;
 
 int main(void) {
     Pool *p = Pool_new(32, 4);       // 4 slots per block -> 10 allocs force growth
-    CHECK(p != NULL);
+    CHECK(p != nullptr);
     CHECK(Pool_stride(p) == 32);
     CHECK(Pool_live(p) == 0);
 
     void *items[10];
     for (int i = 0; i < 10; i++) {
         items[i] = Pool_alloc(p);
-        CHECK(items[i] != NULL);
+        CHECK(items[i] != nullptr);
         memset(items[i], 0xAB, 32);
     }
     CHECK(Pool_live(p) == 10);
@@ -57,11 +57,11 @@ int main(void) {
     CHECK(!Pool_contains(p, &local));
 
     // null-safety
-    CHECK(Pool_alloc(NULL) == NULL);
-    CHECK(!Pool_contains(NULL, items[0]));
-    CHECK(Pool_live(NULL) == 0);
-    Pool_release(NULL, NULL);
-    Pool_destroy(NULL);
+    CHECK(Pool_alloc(nullptr) == nullptr);
+    CHECK(!Pool_contains(nullptr, items[0]));
+    CHECK(Pool_live(nullptr) == 0);
+    Pool_release(nullptr, nullptr);
+    Pool_destroy(nullptr);
 
     Pool_destroy(p);
     printf("pool_test: ALL PASS\n");

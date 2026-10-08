@@ -32,7 +32,7 @@ int main(void) {
     CHECK(Graphics_clear(COLOR_CLEAR));
     CHECK(Graphics_clipRounded(&(Rect){0, 0, 60, 60}, 30));   // a circle
     CHECK(Graphics_fillRect(&(Rect){0, 0, 200, 200}, &(Brush){COLOR_RGBA(255, 0, 0, 255), 0, 0, 0, 0}));
-    CHECK(Graphics_clip(NULL));                               // reset
+    CHECK(Graphics_clip(nullptr));                               // reset
     CHECK(Graphics_end());
 
     Image *img = Image_0();

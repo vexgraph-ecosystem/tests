@@ -22,12 +22,12 @@ static void round_trip(void) {
             p[3] = y ? 128 : 255;
         }
     }
-    CompositorSurface *surface = NULL;
+    CompositorSurface *surface = nullptr;
     assert(CompositorSurface_fromImage(image, -17, 33, &surface) == COMPOSITOR_OK);
     CompositorBounds bounds = CompositorSurface_bounds(surface);
     assert(bounds.x == -17 && bounds.y == 33 && bounds.width == 256 && bounds.height == 2);
     assert(CompositorSurface_validate(surface) == COMPOSITOR_OK);
-    Image *out = NULL;
+    Image *out = nullptr;
     assert(CompositorSurface_toImage(surface, &out) == COMPOSITOR_OK);
     const uint8_t *exported = Image_pixels(out);
     for (uint32_t y = 0; y < 2; ++y)
@@ -50,7 +50,7 @@ static void alpha_and_gain(void) {
     const uint8_t rgba[] = {255, 128, 64, 128, 255, 200, 100, 0};
     Image *image = Image_2(2, 1);
     assert(Image_upload(rgba, 2, 1, image));
-    CompositorSurface *surface = NULL;
+    CompositorSurface *surface = nullptr;
     assert(CompositorSurface_fromImage(image, 0, 0, &surface) == COMPOSITOR_OK);
     const float *p = CompositorSurface_constPixels(surface);
     assert(fabsf(p[0] - 128.0f / 255) < 1e-7f);
@@ -59,9 +59,9 @@ static void alpha_and_gain(void) {
     Image_destroy(image); /* imported source is no longer borrowed */
     const CompositorSurface *sources[] = {surface};
     FilterToken gain = Filter_gain(2);
-    CompositorSurface *filtered = NULL;
+    CompositorSurface *filtered = nullptr;
     assert(Compositor_compose(sources, 1, &gain, 1, &filtered) == COMPOSITOR_OK);
-    Image *out = NULL;
+    Image *out = nullptr;
     assert(CompositorSurface_toImage(filtered, &out) == COMPOSITOR_OK);
     const uint8_t *q = Image_pixels(out);
     assert(q[0] == 255 && q[1] == 176 && q[3] == 128);
@@ -72,21 +72,21 @@ static void alpha_and_gain(void) {
 }
 
 static void failures(void) {
-    CompositorSurface *empty = NULL;
+    CompositorSurface *empty = nullptr;
     assert(CompositorSurface_create((CompositorBounds) {0}, &empty) == COMPOSITOR_OK);
     CompositorSurface *out = empty;
-    assert(CompositorSurface_fromImage(NULL, 0, 0, &out) == COMPOSITOR_INVALID);
+    assert(CompositorSurface_fromImage(nullptr, 0, 0, &out) == COMPOSITOR_INVALID);
     Image *image = Image_2(1, 1);
     assert(CompositorSurface_fromImage(image, 0, 0, &out) == COMPOSITOR_INVALID);
-    assert(CompositorSurface_fromImage(image, 0, 0, NULL) == COMPOSITOR_INVALID);
+    assert(CompositorSurface_fromImage(image, 0, 0, nullptr) == COMPOSITOR_INVALID);
     Image_destroy(image);
     image = Image_4(1, 1, IMAGE_FORMAT_BGRA8, 0);
     assert(CompositorSurface_fromImage(image, 0, 0, &out) == COMPOSITOR_UNSUPPORTED);
     assert(out == empty);
     Image *unchanged = image;
-    assert(CompositorSurface_toImage(NULL, &unchanged) == COMPOSITOR_INVALID);
+    assert(CompositorSurface_toImage(nullptr, &unchanged) == COMPOSITOR_INVALID);
     assert(CompositorSurface_toImage(empty, &unchanged) == COMPOSITOR_INVALID);
-    assert(CompositorSurface_toImage(empty, NULL) == COMPOSITOR_INVALID);
+    assert(CompositorSurface_toImage(empty, nullptr) == COMPOSITOR_INVALID);
     assert(unchanged == image);
     Image_destroy(image);
     CompositorSurface_destroy(empty);

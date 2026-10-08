@@ -49,9 +49,9 @@ static bool mockConnect(void *handle) {
     return true;
 }
 
-static bool mockSend(void *handle, const uint8_t *bytes, uint32_t len) {
+static bool mockSend(void *handle, const uint8_t *Bytes, uint32_t len) {
     (void)handle;
-    (void)bytes;
+    (void)Bytes;
     (void)len;
     return true;
 }

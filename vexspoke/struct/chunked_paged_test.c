@@ -150,7 +150,7 @@ static void testDeepGrowth(void) {
     CHECK(ChunkedList_capacity(list) >= total);
     CHECK(ChunkedList_getChunkCount(list) == (total + 3u) / 4u); // 275 leaves
 
-    // Row 0 kept its address AND its bytes across the root doubling.
+    // Row 0 kept its address AND its Bytes across the root doubling.
     CHECK(ChunkedList_slot(list, 0u) == first);
     if (first) {
         Row16 *r0 = (Row16*) first;

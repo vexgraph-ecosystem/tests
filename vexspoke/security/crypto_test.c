@@ -136,15 +136,15 @@ static void test_rng(void) {
     // Byte output must equal the word stream, little-endian, for full words.
     CryptoRng rb;
     Crypto_rngInit(&rb, 999);
-    uint8_t bytes[16];
-    Crypto_rngBytes(&rb, bytes, sizeof(bytes));
+    uint8_t Bytes[16];
+    Crypto_rngBytes(&rb, Bytes, sizeof(Bytes));
     CryptoRng rw;
     Crypto_rngInit(&rw, 999);
     for (int i = 0; i < 2; i++) {
         uint64_t w = Crypto_rngNextU64(&rw);
         uint8_t wb[8];
         memcpy(wb, &w, 8);
-        CHECK(memcmp(bytes + i * 8, wb, 8) == 0);
+        CHECK(memcmp(Bytes + i * 8, wb, 8) == 0);
     }
 
     // Seed 0 is remapped but deterministic; nullptr is safe.
@@ -154,8 +154,8 @@ static void test_rng(void) {
     CHECK(Crypto_rngNextU64(&z1) == Crypto_rngNextU64(&z2));
     Crypto_rngInit(nullptr, 1);
     CHECK(Crypto_rngNextU64(nullptr) == 0);
-    Crypto_rngBytes(nullptr, bytes, sizeof(bytes));
-    Crypto_rngBytes(&rb, nullptr, sizeof(bytes));
+    Crypto_rngBytes(nullptr, Bytes, sizeof(Bytes));
+    Crypto_rngBytes(&rb, nullptr, sizeof(Bytes));
 }
 
 static void test_global_rng(void) {
@@ -176,14 +176,14 @@ static void test_global_rng(void) {
 }
 
 static void test_hex(void) {
-    uint8_t bytes[4] = { 0x00, 0x0f, 0xa5, 0xff };
+    uint8_t Bytes[4] = { 0x00, 0x0f, 0xa5, 0xff };
     char hex[9];
-    Crypto_toHex(bytes, 4, hex);
+    Crypto_toHex(Bytes, 4, hex);
     CHECK(strcmp(hex, "000fa5ff") == 0);
 
     uint8_t back[4] = { 0 };
     CHECK(Crypto_fromHex(hex, back, sizeof(back)) == 4);
-    CHECK(memcmp(back, bytes, 4) == 0);
+    CHECK(memcmp(back, Bytes, 4) == 0);
 
     // Uppercase decodes too.
     CHECK(Crypto_fromHex("A5", back, sizeof(back)) == 1);
@@ -201,9 +201,9 @@ static void test_hex(void) {
     char empty[4] = { 'x', 'x', 'x', 'x' };
     Crypto_toHex(nullptr, 3, empty);
     CHECK(empty[0] == '\0');
-    Crypto_toHex(bytes, 0, empty);
+    Crypto_toHex(Bytes, 0, empty);
     CHECK(empty[0] == '\0');
-    Crypto_toHex(bytes, 4, nullptr);               // safe
+    Crypto_toHex(Bytes, 4, nullptr);               // safe
     CHECK(Crypto_fromHex(nullptr, back, 4) == 0);
     CHECK(Crypto_fromHex("00", nullptr, 4) == 0);
     CHECK(Crypto_fromHex("00", back, 0) == 0);

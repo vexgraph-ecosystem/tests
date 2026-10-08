@@ -10,17 +10,17 @@
 #include <IOSurface/IOSurface.h>
 
 void *IosHost_create(int width, int height) {
-    if (width <= 0 || height <= 0) return NULL;
-    CFMutableDictionaryRef d = CFDictionaryCreateMutable(NULL, 0,
+    if (width <= 0 || height <= 0) return nullptr;
+    CFMutableDictionaryRef d = CFDictionaryCreateMutable(nullptr, 0,
         &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-    if (!d) return NULL;
+    if (!d) return nullptr;
     int32_t w = width, h = height, bpe = 4, fmt = 'RGBA';
     int32_t bpr = ((width * 4) + 63) & ~63;   // Metal needs an aligned row stride
-    CFNumberRef nw = CFNumberCreate(NULL, kCFNumberSInt32Type, &w);
-    CFNumberRef nh = CFNumberCreate(NULL, kCFNumberSInt32Type, &h);
-    CFNumberRef nbpe = CFNumberCreate(NULL, kCFNumberSInt32Type, &bpe);
-    CFNumberRef nbpr = CFNumberCreate(NULL, kCFNumberSInt32Type, &bpr);
-    CFNumberRef nfmt = CFNumberCreate(NULL, kCFNumberSInt32Type, &fmt);
+    CFNumberRef nw = CFNumberCreate(nullptr, kCFNumberSInt32Type, &w);
+    CFNumberRef nh = CFNumberCreate(nullptr, kCFNumberSInt32Type, &h);
+    CFNumberRef nbpe = CFNumberCreate(nullptr, kCFNumberSInt32Type, &bpe);
+    CFNumberRef nbpr = CFNumberCreate(nullptr, kCFNumberSInt32Type, &bpr);
+    CFNumberRef nfmt = CFNumberCreate(nullptr, kCFNumberSInt32Type, &fmt);
     CFDictionarySetValue(d, kIOSurfaceWidth, nw);
     CFDictionarySetValue(d, kIOSurfaceHeight, nh);
     CFDictionarySetValue(d, kIOSurfaceBytesPerElement, nbpe);
@@ -37,13 +37,13 @@ void IosHost_release(void *surface) {
 }
 
 const uint8_t *IosHost_lockRead(void *surface, size_t *outStride) {
-    if (!surface) return NULL;
-    if (IOSurfaceLock((IOSurfaceRef)surface, kIOSurfaceLockReadOnly, NULL) != kIOReturnSuccess)
-        return NULL;
+    if (!surface) return nullptr;
+    if (IOSurfaceLock((IOSurfaceRef) surface, kIOSurfaceLockReadOnly, nullptr) != kIOReturnSuccess)
+        return nullptr;
     if (outStride) *outStride = IOSurfaceGetBytesPerRow((IOSurfaceRef)surface);
     return (const uint8_t *)IOSurfaceGetBaseAddress((IOSurfaceRef)surface);
 }
 
 void IosHost_unlock(void *surface) {
-    if (surface) IOSurfaceUnlock((IOSurfaceRef)surface, kIOSurfaceLockReadOnly, NULL);
+    if (surface) IOSurfaceUnlock((IOSurfaceRef) surface, kIOSurfaceLockReadOnly, nullptr);
 }

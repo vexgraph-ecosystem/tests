@@ -46,7 +46,7 @@ int main(void) {
     // Panel_remove(child) unlinks WITHOUT freeing: caller keeps the child
     Panel *detached = Panel_remove(c);
     CHECK(detached == c);
-    CHECK(Panel_parent(c) == NULL);
+    CHECK(Panel_parent(c) == nullptr);
     CHECK(Panel_childCount(root) == 2);
     CHECK(Panel_childElement(root, 0) == Panel_graphics(a));
     CHECK(Panel_childElement(root, 1) == Panel_graphics(b));

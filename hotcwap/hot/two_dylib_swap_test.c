@@ -98,7 +98,7 @@ static bool rmtree(const char *path) {
     if (!dir)
         return false;
     struct dirent *ent;
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         if (strcmp((*ent).d_name, ".") == 0 || strcmp((*ent).d_name, "..") == 0)
             continue;
         char child[512];
@@ -192,7 +192,7 @@ int main(void) {
 
     // --- A. Both dylibs load ------------------------------------------------
     HotModule *hot = Hot_init("hot_behavior");
-    CHECK(hot != NULL, "Hot_init() returned NULL");
+    CHECK(hot != nullptr, "Hot_init() returned NULL");
     if (!hot) {
         rmtree(base);
         return 1;
@@ -216,7 +216,7 @@ int main(void) {
           (unsigned long long) Hot_get_generation(hot));
     loaded = 0;
     HotFn pulse = Hot_get_symbol(hot, "hot_behavior_pulse");
-    CHECK(pulse != NULL, "hot_behavior_pulse unresolved after the two-dylib swap");
+    CHECK(pulse != nullptr, "hot_behavior_pulse unresolved after the two-dylib swap");
     printf("  B. both sections re-adopted at generation 2\n");
 
     HotShutdown(hot);
