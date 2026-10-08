@@ -111,6 +111,43 @@ int main(void) {
     CHECK(Type_registerParents(projByte(0x21), chain2, 4));
     CHECK(Type_getParentClass(projByte(0x21) | 3) == 1u);               // new table won
 
+    // --- Cyclic parent tables are rejected; prior state is preserved.
+    static const uint32_t cyclic[4] = { 0, 2, 1, 2 };  // 1->2->1 never roots
+    CHECK(!Type_registerParents(projByte(0x22), cyclic, 4));
+    CHECK(Type_getParentClass(projByte(0x22) | 1) == 1u);              // nothing stored
+    CHECK(!Type_isA(projByte(0x22) | 1, projByte(0x22) | 2));
+
+    // A self-parent is a root, not a cycle (0 = the class is its own parent).
+    static const uint32_t selfRoot[3] = { 0, 1, 0 };
+    CHECK(Type_registerParents(projByte(0x23), selfRoot, 3));
+    CHECK(Type_getParentClass(projByte(0x23) | 1) == 1u);
+    CHECK(Type_isA(projByte(0x23) | 1, projByte(0x23) | 1));
+    CHECK(!Type_isA(projByte(0x23) | 1, projByte(0x23) | 2));          // 2 is a root, not a child
+
+    // --- A long legal chain resolves end to end (walk bounded by the table,
+    // never capped below it).
+    static uint32_t longChain[300];
+    longChain[0] = 0u;
+    for (uint32_t i = 1u; i < 300u; i++)
+        longChain[i] = i - 1u;
+    CHECK(Type_registerParents(projByte(0x24), longChain, 300));
+    CHECK(Type_isA(projByte(0x24) | 299, projByte(0x24) | 1));
+    CHECK(Type_isA(projByte(0x24) | 299, projByte(0x24) | 299));       // self
+    CHECK(!Type_isA(projByte(0x24) | 1, projByte(0x24) | 299));        // not a descendant
+
+    // --- Cross-project class-number collision: chains never bleed across
+    // projects; the ancestor target stays project-invariant (masked to class).
+    static const uint32_t chainA[4] = { 0, 0, 1, 2 };  // A: 3->2->1
+    static const uint32_t chainB[4] = { 0, 0, 0, 1 };  // B: 3->1, 2 root
+    CHECK(Type_registerParents(projByte(0x40), chainA, 4));
+    CHECK(Type_registerParents(projByte(0x41), chainB, 4));
+    CHECK(Type_isA(projByte(0x40) | 3, projByte(0x40) | 1));
+    CHECK(Type_isA(projByte(0x40) | 3, projByte(0x40) | 2));
+    CHECK(Type_isA(projByte(0x41) | 3, projByte(0x41) | 1));
+    CHECK(!Type_isA(projByte(0x41) | 3, projByte(0x41) | 2));          // B: 2 is root
+    CHECK(!Type_isA(projByte(0x40) | 2, projByte(0x40) | 3));          // direction
+    CHECK(Type_isA(projByte(0x40) | 3, projByte(0x41) | 1));           // target resolves in A's project
+
     // --- Exponential slate growth: many projects must all resolve.
     static const uint32_t flat[4] = { 0, 0, 0, 0 };
     for (uint64_t b = 0x30; b < 0x30 + 24; b++)
