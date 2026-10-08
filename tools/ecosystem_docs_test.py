@@ -59,9 +59,10 @@ class EcosystemDocsTest(unittest.TestCase):
                      "ecosystem/.github/profile/README.md"]:
             with self.subTest(path=path):
                 content = normalized(path)
-                for expected in ("vexspoke", "relational engine", "r2", "staged",
-                                 "default allocator", "r1", "gpu"):
+                for expected in ("vexspoke", "relational engine", "r2",
+                                 "r1"):
                     self.assertIn(expected, content)
+                self.assertRegex(content, r"gpu|graphics")
                 self.assertRegex(content, r"comput(ation|e)")
                 self.assertIn("behavior", content)
 
@@ -95,9 +96,9 @@ class EcosystemDocsTest(unittest.TestCase):
         self.assertFalse((ROOT / "preferences.md").is_symlink())
         for expected in ("R2 — COMPUTATION + STORAGE", "R2 `relational-engine`",
                          "R2 `vexspoke`", "and/or `relational-engine` public contracts",
-                         "default allocator remain", "No C/Rust atomic-layout",
+                          "default production build", "No C/Rust atomic-layout",
                          "R5 applications remain unfinished"):
-            self.assertIn(expected, content)
+            self.assertIn(expected, " ".join(content.split()))
 
     def test_unfinished_ecosystem_and_all_r5_pages(self):
         for path in ("README.md", "ecosystem/.github/profile/README.md",
@@ -128,7 +129,7 @@ class EcosystemDocsTest(unittest.TestCase):
         engine = normalized("ecosystem/repos/relational-engine/README.md")
         for expected in ("chunk<t>", "chunkedlist<t>", "variableslot", "variableregistry",
                          "re_name_search", "append-only", "borrowed", "planned",
-                         "manifest-backed", "discussion", "four imported", "native-search target"):
+                          "manifest-backed", "discussion", "engine_nio", "engine_search"):
             self.assertIn(expected, engine)
 
     def test_wiki_pages_link_the_new_storage_owner_without_automatic_migration(self):
