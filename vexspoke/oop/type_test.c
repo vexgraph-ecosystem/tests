@@ -75,6 +75,8 @@ int main(void) {
     CHECK(Type_arch(projByte(3) | ID_INT) == ARCH_HOTCWAP);
     CHECK(Type_arch(projByte(4) | ID_INT) == ARCH_DARLING);
     CHECK(Type_arch(projByte(5) | ID_INT) == ARCH_APIHAVEN);
+    CHECK(Type_arch(projByte(6) | ID_INT) == ARCH_DARKBASE);
+    CHECK(Type_isDarkbase(projByte(6) | ID_INT));
     CHECK(Type_isVexspoke(TYPE_INT_SINGLETON));
     CHECK(Type_isDarling(projByte(4) | ID_INT));
 
