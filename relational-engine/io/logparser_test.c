@@ -1,4 +1,4 @@
-// tests/vexspoke/io/logparser_test.c — owner test for io/logparser.
+// Relational Engine owner test for the migrated production io/logparser.
 //
 // Proves the binary ANTI-log reader against hand-built files:
 //   - a valid 12-byte header ("ANTILOG", version 1, record size 52);
