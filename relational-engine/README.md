@@ -8,7 +8,7 @@ python3 tests/relational-engine/rust/run.py
 python3 tests/relational-engine/scaffold_test.py
 ```
 
-`rust/Cargo.toml` registers nine independent owner targets:
+`rust/Cargo.toml` registers eleven independent owner targets:
 - `memory_owner`: `rust/nio/mem_test.rs` (ownership, growth, stale IDs, macros).
 - `string_owner`: `rust/primitives/string_test.rs` (byte and UTF-8 projections).
 - `atomic_string_owner`: `rust/primitives/atomic_string_test.rs` (snapshot lifetime,
@@ -19,6 +19,9 @@ python3 tests/relational-engine/scaffold_test.py
 - `variable_slot_owner`: 32-byte layout, all byte/name boundaries and arities.
 - `variable_registry_owner`: actual C search, stable bindings and borrowed values.
 - `ffi_variable_registry_owner`: every registry extern and output preservation.
+- `typed_chunk_owner`: bitmap edges, over-alignment, ownership, hole reuse and OOM.
+- `typed_pool_owner`: lazy growth, stable survivors, reclamation, failure/retry and
+  20,000 seeded operations against an independent owned-value model.
 
 These directories mirror `rust/src/{nio,primitives,ffi}` in the engine. The companion
 C client is `rust/ffi/memory_test.c`; the compile-negative borrow fixture is
