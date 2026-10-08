@@ -1,4 +1,4 @@
-/* Opt-in Vexspoke extern handshake against real resident Rust storage.
+/* Engine-owned extern handshake against real resident Rust storage.
  * Not a Hotcwap loader test or default allocator migration. */
 #include "nio/relational_memory.h"
 #include <assert.h>
