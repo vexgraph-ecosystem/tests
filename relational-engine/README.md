@@ -6,6 +6,7 @@ repository rather than production source. Run from the workspace root:
 ```sh
 python3 tests/relational-engine/rust/run.py
 python3 tests/relational-engine/scaffold_test.py
+python3 tests/relational-engine/native_run.py
 ```
 
 `rust/Cargo.toml` registers eleven independent owner targets:
@@ -29,9 +30,17 @@ C client is `rust/ffi/memory_test.c`; the compile-negative borrow fixture is
 debug/release tests, the engine doctest, an actual strict C23 static-library
 client, C-client ASan/UBSan and expected E0502 borrow rejection. Subprocesses
 have 90-second watchdogs; generated output stays in temporary directories.
-The runner also builds and runs `tests/vexspoke/nio/relational_memory_test.c`
+The runner also builds and runs `tests/relational-engine/nio/relational_memory_test.c`
 against the real engine, with and without C-client ASan/UBSan. This proves the
-opt-in extern handshake, not the default allocator or Hotcwap reload integration.
+Rust extern handshake, not a rewrite of the native allocator or Hotcwap reload integration.
+
+Native owners now mirror engine `src/io` and `src/nio`. `native_run.py` compiles
+the migrated implementation, never Vexspoke IO/NIO copies, with CPU-only spin,
+crypto and destructor dispatch from Vexspoke. Eleven native owners execute with
+strict optimized C23 and ASan/UBSan, assertions active and bounded watchdogs.
+The clipboard mutation owner is built but SKIP without explicit permission;
+HotFileSys lifecycle calls prove only its existing draft no-op. New process/WS
+owners cover real child exhaustion/reap/reuse/cancel and fixed frame boundaries.
 
 `scaffold_test.py` checks C IDE metadata and ignores, documentation markers,
 and warnings-denied Cargo discovery. It does not exercise imported C behavior.
