@@ -1,9 +1,9 @@
-// tests/vexspoke/io/cache_test.c — owner test for io/cache.
+// Relational Engine owner test for the migrated production io/cache.
 //
 // Proves the persistent SHA-256-keyed disk cache, isolated under a scratch
 // VEX_HOME so it never touches the real state directory:
 //   - open/close lifecycle; get_dir is the subsystem cache directory;
-//   - miss (has/path/data) then put/get round trip of raw bytes;
+//   - miss (has/path/data) then put/get round trip of raw Bytes;
 //   - get_data returns a caller-owned buffer (freed here) with exact content;
 //   - a permanent entry and a TTL entry both present immediately;
 //   - overwrite replaces content; evict removes; clear empties;
@@ -54,7 +54,7 @@ int main(void) {
     size_t size = 0;
     CHECK(!Cache_get_data(c, "absent", &data, &size));
 
-    // put/get raw bytes.
+    // put/get raw Bytes.
     CHECK(Cache_put_data(c, "greeting", "hello world", 11, 0));
     CHECK(Cache_has(c, "greeting"));
     CHECK(Cache_get_path(c, "greeting", path, sizeof(path)));
@@ -78,12 +78,12 @@ int main(void) {
     snprintf(src, sizeof(src), "%s/source.bin", g_home);
     File *f = File_open(src, FILE_MODE_WRITE | FILE_MODE_CREATE | FILE_MODE_TRUNCATE);
     CHECK(f != nullptr);
-    CHECK(File_write(f, "payload-bytes", 13) == 13);
+    CHECK(File_write(f, "payload-Bytes", 13) == 13);
     File_close(f);
     CHECK(Cache_put_file(c, "from-file", src, 0));
     CHECK(Cache_has(c, "from-file"));
     CHECK(Cache_get_data(c, "from-file", &data, &size));
-    CHECK(size == 13 && memcmp(data, "payload-bytes", 13) == 0);
+    CHECK(size == 13 && memcmp(data, "payload-Bytes", 13) == 0);
     free(data);
 
     // Evict.
