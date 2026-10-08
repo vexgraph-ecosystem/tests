@@ -1,4 +1,4 @@
-// tests/relational-engine/type/type_test.c — the R2 type-algebra owner test.
+// tests/relational-engine/type/type_algebra_test.c — the R2 type-algebra owner test.
 // (Per-File Battle Test Law.) type/type.c owns the project-agnostic id algebra
 // and the parent-chain resolver, so the battle rows are:
 //   - VALUE BOUNDARY: each id field (form / project / class / sugar) isolates;
@@ -111,19 +111,23 @@ int main(void) {
     CHECK(Type_isA(projByte(0x21) | 1, projByte(0x21) | 1));            // self
     CHECK(!Type_isA(projByte(0x21) | 1, projByte(0x21) | 3));           // ancestor is not descendant
 
-    // --- Cycles / self-parents / out-of-range parents are REJECTED atomically.
-    static const uint32_t cyc[4]  = { 0, 0, 3, 2 };   // 2 -> 3, 3 -> 2 (cycle)
-    static const uint32_t selfp[4] = { 0, 0, 2, 1 };  // 2 -> 2 (self-parent)
-    static const uint32_t oob[4]  = { 0, 0, 1, 9 };   // 3 -> 9 (out of range)
+    // --- Cycles and out-of-range parents are REJECTED atomically; a self-parent
+    //     is a ROOT encoding, not a cycle, so it is accepted.
+    static const uint32_t cyc[4]   = { 0, 0, 3, 2 };  // 2 -> 3, 3 -> 2 (cycle)
+    static const uint32_t oob[4]   = { 0, 0, 1, 9 };  // 3 -> 9 (out of range)
+    static const uint32_t selfp[4] = { 0, 1, 0, 1 };  // 1 self-root; 3 -> 1
     CHECK(!Type_registerParents(projByte(0x22), cyc, 4));
-    CHECK(!Type_registerParents(projByte(0x23), selfp, 4));
     CHECK(!Type_registerParents(projByte(0x24), oob, 4));
     CHECK(Type_getParentClass(projByte(0x21) | 3) == 2u);               // prior table intact
+    CHECK(Type_registerParents(projByte(0x23), selfp, 4));               // self-parent = root
+    CHECK(Type_getParentClass(projByte(0x23) | 1) == 1u);
+    CHECK(Type_isA(projByte(0x23) | 1, projByte(0x23) | 1));
+    CHECK(!Type_isA(projByte(0x23) | 1, projByte(0x23) | 2));            // 2 is a root
 
     // --- Bounded progress: a rejected cyclic project resolves as roots, so the
     //     walk returns instead of spinning (the Bounded Wait Law).
     CHECK(!Type_isA(projByte(0x22) | 1, projByte(0x22) | 3));
-    CHECK(!Type_isA(projByte(0x23) | 1, projByte(0x23) | 3));
+    CHECK(!Type_isA(projByte(0x23) | 1, projByte(0x23) | 3));            // 3 is not an ancestor
 
     // --- CROSS-PROJECT pin: the ancestor target is masked to class only, so the
     //     documented project-invariant match holds. This is intentional

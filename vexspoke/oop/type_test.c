@@ -80,7 +80,10 @@ int main(void) {
     CHECK(Type_isVexspoke(TYPE_INT_SINGLETON));
     CHECK(Type_isDarling(projByte(4) | ID_INT));
 
-    // --- vexspoke's own legacy chain: buffer family rolls up to ID_BUFFER.
+    // --- vexspoke's own legacy chain: buffer family rolls up to ID_BUFFER. The
+    // resolver is now Relational Engine's; the owner grants the bare chain once.
+    static const uint32_t bareChain[0x64] = { [0x50 ... 0x63] = ID_BUFFER };
+    CHECK(Type_registerBareParents(bareChain, 0x64u));
     CHECK(Type_getParentClass(ID_ACCUMULUATION_BUFFER) == ID_BUFFER);
     CHECK(Type_getParentClass(ID_VISIBILITY_BUFFER) == ID_BUFFER);
     CHECK(Type_getParentClass(ID_BUFFER) == ID_BUFFER);      // the root
