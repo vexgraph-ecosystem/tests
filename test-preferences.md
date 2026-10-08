@@ -1013,6 +1013,21 @@ Native database store (R3).
 
 ## sesh Test Laws
 Session sync and relay (R4).
+- **Session Composition Proof Law** — Seven class owners under
+  `tests/sesh/session/`, plus `session/text_test.c`, `lang/arity_test.c` and
+  `lang/interop_test.c`, registered by `python3 tests/sesh/session_run.py` and
+  the main Sesh runner. Prove all supported constructor forms, next unsupported
+  arity rejection, null/zero/max identity boundaries, getter/setter round trips,
+  auth revocation and secret-free projections, flat copied-intent/receipt growth,
+  missing/changed/replayed operation identities, stale revision/overflow rejection,
+  failure preservation/recovery and non-owning close. Queued intent is not an
+  applied receipt. Use strict C23/assertions, ASan/UBSan and a bounded TSan probe
+  with synchronized starts and one caller-owned serialization domain across four
+  clients. API Haven verifier injection is not OAuth proof; local revision checks
+  are not remote authorization, distributed CAS, data/SQL execution or persistence.
+  Numeric identities are host-assigned; durable uniqueness/provider linking need
+  separate integration proof. The C spelling SeshClient must coexist with Graphvex
+  Client. Ledger clear/reset requires coordinated baseline/identity-epoch handling.
 - **Snapshot Backup Proof Law** — `tests/sesh/snapshot/snapshot_test.c` and the
   API Haven header owner `tests/api-haven/storage/snapshot_io_test.c`, registered
   by `python3 tests/sesh/run.py`, prove copied admission, empty/exact/oversize
