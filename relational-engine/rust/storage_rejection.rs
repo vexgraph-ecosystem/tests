@@ -6,6 +6,30 @@ fn main() {
     #[cfg(slot_arity)] let _ = VariableSlot!(b"x", std::ptr::null(), 3);
     #[cfg(registry_arity)] let _ = VariableRegistry!(2, 3);
     #[cfg(wrong_capacity)] let _ = Chunk!(u64, "wrong");
+    #[cfg(typed_chunk_arity)] let _ = TypedChunk!(u64, 2, 3);
+    #[cfg(typed_pool_arity)] let _ = TypedPool!(u64, 2, 3);
+    #[cfg(typed_wrong_capacity)] let _ = TypedPool!(u64, "wrong");
+    #[cfg(typed_chunk_borrow)] {
+        let mut owner = TypedChunk!(u64, 2).unwrap();
+        owner.add(1).unwrap();
+        let borrowed = owner.get(0).unwrap();
+        owner.remove(0).unwrap();
+        println!("{borrowed}");
+    }
+    #[cfg(typed_pool_borrow)] {
+        let mut owner = TypedPool!(u64, 2).unwrap();
+        owner.add(1).unwrap();
+        let borrowed = owner.get(0).unwrap();
+        owner.remove(0).unwrap();
+        println!("{borrowed}");
+    }
+    #[cfg(typed_pool_release_borrow)] {
+        let mut owner = TypedPool!(u64, 2).unwrap();
+        owner.add(1).unwrap();
+        let borrowed = owner.get(0).unwrap();
+        owner.release_empty_chunks();
+        println!("{borrowed}");
+    }
     #[cfg(chunk_borrow)] {
         let mut owner = Chunk!(u64, 2).unwrap();
         owner.add(1).unwrap();
