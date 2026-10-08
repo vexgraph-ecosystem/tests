@@ -1,4 +1,4 @@
-// tests/vexhome_test.c — verify VexHome cache factory and layout.
+// Relational Engine owner test for the migrated VexHome cache factory and layout.
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -81,7 +81,7 @@ static void testVexHomeCache(void) {
     CHECK(strstr(buf, "created = 2024-01-01") != nullptr);
 
     // Test 3: NULL/empty subsystem falls back to root cache dir
-    const char *root_cache = VexHome_cache(NULL);
+    const char *root_cache = VexHome_cache(nullptr);
     CHECK(root_cache != nullptr);
     CHECK(strstr(root_cache, "/cache") != nullptr);
     CHECK(strstr(root_cache, "/testsub") == nullptr);
@@ -90,7 +90,7 @@ static void testVexHomeCache(void) {
     CHECK(empty_cache != nullptr);
     CHECK(strcmp(root_cache, empty_cache) == 0);
 
-    const char *root_index = VexHome_cacheIndex(NULL);
+    const char *root_index = VexHome_cacheIndex(nullptr);
     CHECK(root_index != nullptr);
     CHECK(strstr(root_index, "/cache/dictionary.ini") != nullptr);
 
@@ -101,7 +101,7 @@ static void testVexHomeCache(void) {
     ok = VexHome_ensure();
     CHECK(ok);
 
-    const char *cache_after_ensure = VexHome_cache(NULL);
+    const char *cache_after_ensure = VexHome_cache(nullptr);
     CHECK(File_exists(cache_after_ensure));
     CHECK(File_isDirectory(cache_after_ensure));
 
