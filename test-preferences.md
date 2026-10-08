@@ -992,9 +992,10 @@ compared, like a device tested in a lab and again in the field.
 
 # Part III — Blueprint Repos
 
-These repositories currently hold no production source and no tests. Their sections exist so the
-first real commit lands already governed. Each carries its opening obligations from the ecosystem
-inventory.
+Language, Darkbase and Samplerate remain blueprints. Sesh now has an explicit
+caller-buffer snapshot core; its collaborative sessions and cloud integration
+remain future work. These sections govern each first implementation rather than
+conferring readiness from the roadmap.
 
 ## language Test Laws
 Grammar and LSP driver (R3).
@@ -1012,6 +1013,25 @@ Native database store (R3).
 
 ## sesh Test Laws
 Session sync and relay (R4).
+- **Snapshot Backup Proof Law** — `tests/sesh/snapshot/snapshot_test.c` and the
+  API Haven header owner `tests/api-haven/storage/snapshot_io_test.c`, registered
+  by `python3 tests/sesh/run.py`, prove copied admission, empty/exact/oversize
+  inputs, busy rejection preservation, pending/retry timing, exhaustion, clock
+  overflow, cancellation, recovery, getters and bounded projections. Assert exact
+  cold diagnostics and quiet normal paths under strict C23/assertions and
+  ASan/UBSan with external watchdogs. The ignored `tests/sesh/test.txt` is local
+  disposable input; tracked sources remain visible. Offline fake put/get is not
+  Drive/iCloud, TLS/OAuth, durable journal, real provider idempotency, overall
+  timeout, host integration or concurrent merge proof.
+- **File and Directory Workflow Proof Law** — Proposed FileSession and
+  DirectorySession do not inherit readiness from the snapshot core. Their owner
+  tests must exercise real R2 local file/traversal operations, nested paths,
+  create/change/remove snapshots, publication failure preserving the previous
+  manifest, clone into new/empty storage, byte/hash verification and hostile
+  path/symlink rejection. Rebase requires a baseline, explicit conflicts and
+  preserved local/remote work. Real cloud execution is a separately authorized
+  smoke test over disposable files, not an offline-suite dependency. No such
+  workflow implementation or proof exists yet.
 - **Session Ordering and Reconnect Law** — sequence, loss, and bounded-backoff reconciliation.
 - **Wire Protocol Fuzz Law** — bad length prefix, CRC, MTU chunking, and varint (Adversarial and
   Hostile-Input Proof Law).
