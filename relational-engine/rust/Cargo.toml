@@ -42,3 +42,11 @@ path = "variable/variable_registry_test.rs"
 [[test]]
 name = "ffi_variable_registry_owner"
 path = "ffi/variable_registry_test.rs"
+
+[[test]]
+name = "typed_chunk_owner"
+path = "nio/typed_chunk_test.rs"
+
+[[test]]
+name = "typed_pool_owner"
+path = "struct/typed_pool_test.rs"
