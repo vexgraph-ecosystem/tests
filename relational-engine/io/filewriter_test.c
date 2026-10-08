@@ -1,4 +1,4 @@
-// tests/vexspoke/io/filewriter_test.c — owner test for io/filewriter.
+// Relational Engine owner test for the migrated production io/filewriter.
 //
 // Proves the buffered binary writer:
 //   - open creates missing parent directories and truncates;
@@ -6,7 +6,7 @@
 //     a write larger than the buffer still lands whole;
 //   - flush and close are idempotent; closed writers ignore further writes;
 //   - nullptr path and an uncreatable parent directory fail cleanly;
-//   - the bytes on disk match exactly what was written.
+//   - the Bytes on disk match exactly what was written.
 
 #include <stddef.h>
 #include <stdint.h>
