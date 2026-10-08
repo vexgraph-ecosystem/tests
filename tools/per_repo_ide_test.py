@@ -24,10 +24,11 @@ CODE = {
     "ecosystem/projects/impedance": "src/impedance.c",
     "personal/b": "b.c",
     "ecosystem/repos/relational-engine": "src/io/file.c",
+    "ecosystem/repos/sesh": "src/snapshot/snapshot.c",
 }
 EMPTY = (
     "ecosystem/repos/darkbase", "ecosystem/repos/language",
-    "ecosystem/repos/samplerate", "ecosystem/repos/sesh",
+    "ecosystem/repos/samplerate",
     "ecosystem/projects/anti", "ecosystem/projects/drawling",
     "ecosystem/projects/semicolon",
 )
@@ -36,6 +37,7 @@ DEPENDENCIES = {
     "RELATIONAL_ENGINE_SOURCE_DIR": ROOT / "ecosystem/repos/relational-engine/src",
     "GRAPHVEX_SOURCE_DIR": ROOT / "ecosystem/repos/graphvex/src",
     "HOTCWAP_SOURCE_DIR": ROOT / "ecosystem/repos/hotcwap",
+    "API_HAVEN_SOURCE_DIR": ROOT / "ecosystem/repos/api-haven/src",
 }
 
 
