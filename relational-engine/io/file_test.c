@@ -1,4 +1,4 @@
-// tests/vexspoke/io/file_test.c — owner test for io/file.
+// Relational Engine owner test for the migrated production io/file.
 //
 // Proves the stdio-backed File wrapper end to end in a scratch directory:
 //   - isDirectory / exists / mkdirs (nested, idempotent) / delete;
