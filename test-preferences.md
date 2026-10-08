@@ -385,7 +385,7 @@ starvation, or teardown races.
 ## Adversarial and Hostile-Input Proof Law
 
 ### Definition:
-Every public seam that consumes **untrusted input** — bytes, sizes, indices, pointers, paths, URLs,
+Every public seam that consumes **untrusted input** — Bytes, sizes, indices, pointers, paths, URLs,
 filenames, binary modules, network frames, or serialized data — has an adversarial battery that feeds
 malformed, oversized, truncated, and hostile values at the public cold seam.
 
@@ -628,9 +628,10 @@ requires its own host run before it is claimed battle tested.
 ## vexspoke Test Laws (R2 computation/behavior and retained storage ABI)
 
 Vexspoke owns CPU computation, math, algorithms, synchronization and behavior.
-Existing arena, container, type, string-pool and I/O ABI remains during staged
-migration to the cooperating Relational Engine storage owner. These owner tests
-still prove the retained C implementation; they do not prove a migrated backend.
+Vexspoke consumes the engine-owned native IO/NIO ABI; those implementation and
+owner files have migrated to Relational Engine. Retained container/type/string-pool
+behavior stays Vexspoke-owned until its own migration and proof. CPU tests do not
+claim that the native arena has been rewritten into Rust.
 Everything here is about **predictable calculation** and **pointers that lie**.
 
 ### Deterministic Calculation Law
@@ -688,22 +689,23 @@ Everything here is about **predictable calculation** and **pointers that lie**.
 | :--- | :--- | :--- |
 | Deterministic Calculation | `tests/vexspoke/math/determinism_test.c` | `StrictMath`, `Calc_eval`, `Hash_*` |
 | Boundary Value | `tests/vexspoke/struct/container_boundary_test.c` | `struct/*` |
-| Pointer Legitimacy | `tests/vexspoke/nio/pointer_legitimacy_test.c` | `mem`, `bit`, `variable_pool` |
+| Pointer Legitimacy | `tests/relational-engine/nio/mem_test.c` plus Vexspoke bit/variable owners | Engine memory ABI and retained CPU object seams |
 | Failure Observability | `tests/vexspoke/relational/failure_observability_test.c` | cold rejections |
 | Failure Observability | `tests/vexspoke/exception/try_value_test.c` | `TryValue`/`TryPtr` value-or-error pair |
-| Overflow Guard | `tests/vexspoke/nio/overflow_guard_test.c` | `Transient_alloc`, `Url_base64`, radix |
-| Lifetime and Arena | `tests/vexspoke/nio/arena_lifetime_test.c` | `MemoryArena_*` |
+| Overflow Guard | `tests/relational-engine/nio/mem_test.c` plus Vexspoke URL/radix owners | Migrated Transient_alloc and retained CPU arithmetic |
+| Lifetime and Arena | `tests/relational-engine/nio/mem_test.c`, `transient_lifetime_test.c` | Engine MemoryArena/Transient ABI |
 | Concurrent Substrate | `tests/vexspoke/atomic/atomic_contention_test.c` | `atomic/ring`, `atomic/spin`, `bit` |
-| Hot-Path Guard | `tests/vexspoke/nio/hot_path_guard_test.c` | hot getters, `;;HOTCODE` sites |
+| Hot-Path Guard | Future `tests/relational-engine/nio/hot_path_guard_test.c` | hot getters, `;;HOTCODE` sites; unproved until registered execution |
 
 ---
 
 ## relational-engine Test Laws (R2 memory/storage/native C search)
 
-Relational Engine owns Rust allocation/storage, stable row chunks, named variable
-bindings and native C search over Rust-owned spans. Imported C comparison code
-is not a production implementation. All Part I laws apply; tests must distinguish
-the implemented prototype from future allocator/type/schema parity.
+Relational Engine owns migrated production native IO/NIO, Rust allocation/storage,
+stable row chunks, named bindings and native C search over Rust-owned spans.
+Imported reflection/relational comparison code is not production. All Part I laws
+apply; tests distinguish native Memory ABI preservation from future Rust allocator/
+type/schema parity. Migration does not confer blanket battle-tested readiness.
 
 ### Rust Ownership and Stable Row Proof Law
 
@@ -717,6 +719,18 @@ the implemented prototype from future allocator/type/schema parity.
   for isolation, rollback and preserved identity. Mark unavailable forms as gaps.
 
 ### Native Span Boundary Proof Law
+
+- Migrated IO/NIO owners mirror `src/io` and `src/nio` in
+  `tests/relational-engine/{io,nio}`. Run `native_run.py` and registered workspace
+  owners with assertions, strict C23 and applicable ASan/UBSan. Prove source/header
+  provenance, default production linkage and absence of Vexspoke IO/NIO copies.
+  Exercise legacy pointer/header ABI, overflow, rejection preservation, arena
+  isolation, scratch reset, file/cache round trips and bounded process/frame slots.
+- Native storage may borrow Vexspoke CPU-only contracts without duplicating memory
+  implementations or a recursive build graph. Keep imported comparison headers
+  from shadowing consumer headers. Static linking proves neither live reload nor
+  concurrent lifetime exclusion. Clipboard mutation needs explicit lab permission;
+  an unavailable test returns 77. HotFileSys is a draft no-op, not a real watcher.
 
 - Compile/run the engine-owned C header as a real C23 client and exercise native
   search over valid Rust-owned spans. Prove empty/not-found/normal/boundary input,
@@ -736,8 +750,9 @@ the implemented prototype from future allocator/type/schema parity.
 - Keep engine code/storage resident across consumer reloads. Prove actual R1
   integration with reload/teardown tests before claiming it; static linking alone
   does not prove the Hot loader seam or automatic record-schema migration.
-- Vexspoke default allocation remains unchanged until explicit migration and
-  owner proof. Prove the optional extern header separately from backend owners.
+- Native default Memory implementation ownership is now the engine's; its C ABI
+  is preserved. Prove the Rust extern header separately; this migration is not a
+  Rust allocator rewrite or full migration of Vexspoke containers.
 
 ### Seams to Prove
 
@@ -746,7 +761,8 @@ the implemented prototype from future allocator/type/schema parity.
 | Rust memory and primitive/string publication | `tests/relational-engine/rust/`; `python3 tests/relational-engine/rust/run.py` | Registered debug/release owners and doctest; exact targets/results recorded after execution |
 | Stable chunks and named bindings | Mirrored `tests/relational-engine/rust/struct/` and `variable/` owners | Growth, layout, identity and lifetime when implemented; no readiness from a planned owner |
 | Native C ABI/search | `tests/relational-engine/` C clients through the owner runner | Real C23 bridge plus sanitizer scopes; Rust sanitizer gaps explicit |
-| Optional Vexspoke extern header | `tests/vexspoke/nio/relational_memory_test.c` | Opt-in C ABI only, not default allocator replacement |
+| Production native IO/NIO | `tests/relational-engine/{io,nio}`; `python3 tests/relational-engine/native_run.py` | Migrated C ownership/ABI and sanitizer scope; exact executed counts/gaps recorded |
+| Rust byte/string extern header | `tests/relational-engine/nio/relational_memory_test.c` | Separate C/Rust handshake, not a native allocator rewrite |
 | R1 residency/reload/schema migration | Future integration owner | Unproved until executable reload, rollback and reverse teardown evidence exists |
 
 ## graphvex Test Laws (R3 GPU)
@@ -861,7 +877,7 @@ The API driver: REST client, auth, AI providers, MCP server, SSE, webhooks. Ever
 
 ### Framing and Escaping Law
 **Proves:** hostile content cannot break the protocol.
-- Control bytes are escaped in emitted JSON; identifier spoofing and truncation are rejected; malformed
+- Control Bytes are escaped in emitted JSON; identifier spoofing and truncation are rejected; malformed
   input yields the correct JSON-RPC error code.
 
 ### Seams to Prove
