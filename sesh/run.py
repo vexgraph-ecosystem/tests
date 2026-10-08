@@ -39,6 +39,18 @@ with tempfile.TemporaryDirectory(prefix="sesh-owner-", dir=os.environ.get("TMPDI
             if scenario == "invalid":
                 assert len(reports) == 27, result.stderr
                 assert all(re.fullmatch(r"\[vex\] snapshot\.c:\d+: snapshot .+", line) for line in reports), result.stderr
+                expected = [
+                    "configuration: null or active job", "buffer: missing storage", "buffer: missing storage",
+                    "configuration: null or active job", "provider: missing callback",
+                    "configuration: null or active job", "retry policy: zero delay or attempts",
+                    "retry policy: zero delay or attempts", *(["queue: invalid input"] * 3),
+                    *(["queue: busy, unconfigured or oversized"] * 4),
+                    *(["configuration: null or active job"] * 3), "step: null job",
+                    *(["step: retry exhausted or clock overflow"] * 2),
+                    *(["step: provider rejected snapshot"] * 2),
+                    *(["string: missing destination"] * 2), *(["string: truncated"] * 2),
+                ]
+                assert [line.split(": snapshot ", 1)[1] for line in reports] == expected, result.stderr
             else:
                 assert not reports, result.stderr
             print(mode + ": " + result.stdout.strip())
