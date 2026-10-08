@@ -15,6 +15,10 @@ class SnapshotDocsTest(unittest.TestCase):
         contributing = (ROOT / "ecosystem/repos/sesh/CONTRIBUTING.md").read_text()
         self.assertIn("caller-buffer snapshot core", contributing)
         self.assertIn("tests/sesh/run.py", contributing)
+        prefs = (ROOT / "ecosystem/repos/sesh/sesh-preferences.md").read_text()
+        for phrase in ("Snapshot Backup Boundary Law", "queue/step/cancel", "managed exception",
+                       "no core-level overall deadline", "Tracked test source is never ignored"):
+            self.assertIn(phrase, prefs)
 
     def test_readiness_is_scoped(self):
         for repo in ("sesh", "api-haven"):
