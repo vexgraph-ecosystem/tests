@@ -1,4 +1,4 @@
-// tests/vexspoke/io/log_test.c — owner test for io/log.
+// Relational Engine owner test for the migrated production io/log.
 //
 // Proves the MPSC log ring + writer daemon:
 //   - init rounds the ring up to a power of two, enables/activates, and writes
