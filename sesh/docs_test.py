@@ -12,6 +12,10 @@ class SnapshotDocsTest(unittest.TestCase):
                        "drive.file", "Pending operations", "engine-owned", "not rewritten into Rust",
                        "No canonical preferences file", "iCloud/CloudKit"):
             self.assertIn(phrase, readme)
+        for phrase in ("FileSession_sync", "DirectorySession_sync", "DirectorySession_clone",
+                       "DirectorySession_rebase", "proposed, not implemented classes",
+                       "preserves both versions", "directory-enumeration"):
+            self.assertIn(phrase, readme)
         contributing = (ROOT / "ecosystem/repos/sesh/CONTRIBUTING.md").read_text()
         self.assertIn("caller-buffer snapshot core", contributing)
         self.assertIn("tests/sesh/run.py", contributing)
@@ -19,6 +23,10 @@ class SnapshotDocsTest(unittest.TestCase):
         for phrase in ("Snapshot Backup Boundary Law", "queue/step/cancel", "managed exception",
                        "no core-level overall deadline", "Tracked test source is never ignored"):
             self.assertIn(phrase, prefs)
+        laws = (ROOT / "tests/test-preferences.md").read_text()
+        for phrase in ("Snapshot Backup Proof Law", "File and Directory Workflow Proof Law",
+                       "No such", "tests/sesh/run.py"):
+            self.assertIn(phrase, laws)
 
     def test_readiness_is_scoped(self):
         for repo in ("sesh", "api-haven"):
