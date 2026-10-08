@@ -10,6 +10,7 @@ struct Row(u64);
 struct Tracked(Rc<Cell<usize>>);
 impl Drop for Tracked { fn drop(&mut self) { self.0.set(self.0.get() + 1); } }
 
+/// Proves chunk geometry, aligned stable slots, reuse, ownership transfer, and projections.
 #[test]
 fn geometry_bitmap_reuse_and_lifetime() {
     assert_eq!(TypedChunk!(u8).unwrap().get_capacity(), 1024);
@@ -73,6 +74,7 @@ fn geometry_bitmap_reuse_and_lifetime() {
     assert_eq!(drops.get(), 4);
 }
 
+/// Injects construction failures and verifies later operations recover without allocation.
 #[test]
 fn each_allocation_stage_rejects_and_recovers() {
     for stage in [0, 1] {
@@ -93,4 +95,24 @@ fn each_allocation_stage_rejects_and_recovers() {
         assert_eq!(reused, Ok(0));
         assert_eq!(read, Some(4));
     }
+}
+
+/// Proves the generation-tagged handle surface rejects a reused slot as stale.
+#[test]
+fn handles_reject_stale_generations() {
+    use relational_engine_scratchpad::Handle;
+    let mut chunk = TypedChunk!(u64, 4).unwrap();
+    let first = chunk.add_handle(10).unwrap();
+    assert_eq!(chunk.get_handle(first), Some(&10));
+    assert_eq!(chunk.remove_handle(first), Ok(10));
+    assert!(chunk.get_handle(first).is_none()); // stale: the slot was removed
+    assert!(matches!(chunk.remove_handle(first), Err(StorageError::Bounds)));
+    let reused = chunk.add_handle(20).unwrap(); // same slot, new generation
+    assert_eq!(reused.index(), first.index());
+    assert_ne!(reused.generation(), first.generation());
+    assert!(chunk.get_handle(first).is_none()); // the old handle stays stale
+    assert_eq!(chunk.get_handle(reused), Some(&20));
+    *chunk.get_handle_mut(reused).unwrap() = 21;
+    assert_eq!(chunk.get_handle(reused), Some(&21));
+    let _ = Handle::zero();
 }

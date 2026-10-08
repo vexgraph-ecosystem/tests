@@ -10,6 +10,7 @@ struct Row(u64);
 struct Tracked(Rc<Cell<usize>>);
 impl Drop for Tracked { fn drop(&mut self) { self.0.set(self.0.get() + 1); } }
 
+/// Exercises lazy growth, reusable holes, empty-chunk release, stable rows, and formatting.
 #[test]
 fn lazy_growth_reuse_reclaim_and_stability() {
     // Even a valid huge geometry is lazy, not a reservation/touch at construction.
@@ -62,6 +63,7 @@ fn lazy_growth_reuse_reclaim_and_stability() {
     assert_eq!(pool.len(), 2050);
 }
 
+/// Verifies allocation failures preserve survivors and correctly drop rejected owned values.
 #[test]
 fn failure_preserves_survivors_and_incoming_ownership() {
     // Fresh pools exercise directory, rows and bitmap failures independently.
@@ -114,6 +116,7 @@ fn failure_preserves_survivors_and_incoming_ownership() {
     assert_eq!(drops.get(), 4);
 }
 
+/// Compares deterministic mixed pool operations against an owned reference model.
 #[test]
 fn seeded_mixed_operations_match_owned_model() {
     // Reproducible xorshift sequence, not scheduler/clock-dependent fuzzing.
@@ -157,4 +160,24 @@ fn seeded_mixed_operations_match_owned_model() {
     assert!(pool.release_empty_chunks() > 0);
     assert_eq!(pool.get_chunk_count(), 0);
     assert_eq!(pool.add(42), Ok(0));
+}
+
+/// Proves the pool's handle surface rejects a reused slot as stale.
+#[test]
+fn handles_reject_stale_generations() {
+    let mut pool = TypedPool!(u64, 2).unwrap();
+    let first = pool.add_handle(1).unwrap();
+    let second = pool.add_handle(2).unwrap();
+    assert_eq!(pool.get_handle(first), Some(&1));
+    assert_eq!(pool.remove_handle(first), Ok(1));
+    assert!(pool.get_handle(first).is_none());
+    assert!(matches!(pool.remove_handle(first), Err(StorageError::Bounds)));
+    let reused = pool.add_handle(3).unwrap(); // reuses the first slot
+    assert_eq!(reused.index(), first.index());
+    assert_ne!(reused.generation(), first.generation());
+    assert!(pool.get_handle(first).is_none());
+    assert_eq!(pool.get_handle(second), Some(&2));
+    assert_eq!(pool.get_handle(reused), Some(&3));
+    *pool.get_handle_mut(second).unwrap() = 22;
+    assert_eq!(pool.get_handle(second), Some(&22));
 }

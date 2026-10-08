@@ -50,3 +50,7 @@ path = "nio/typed_chunk_test.rs"
 [[test]]
 name = "typed_pool_owner"
 path = "struct/typed_pool_test.rs"
+
+[[test]]
+name = "handle_owner"
+path = "nio/handle_test.rs"
