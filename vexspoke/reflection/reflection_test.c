@@ -64,7 +64,7 @@ static void holderSet(void *receiver, void *value) {
 static void testLayouts(void) {
     printf("[1] per-kind layouts stay fixed\n");
     CHECK(sizeof(Variable) == 40u);
-    CHECK(sizeof(Field) == 48u);   // embedded Variable (40) + setter
+    CHECK(sizeof(Field) == 72u);   // embedded Variable (40) + setter + physical layout
     CHECK(sizeof(Method) == 40u);
     CHECK(sizeof(Struct) == 40u);
     CHECK(sizeof(Class) == 56u);   // name + construct + layout + methods + count + pad
@@ -145,6 +145,51 @@ static void testFieldEmbedsVariable(void) {
     Field_free(f);
 }
 
+static void testFieldLayout(void) {
+    printf("[8] field physical layout: typeId derives size, offset/flags round-trip\n");
+
+    Field *f = Field("position.x", holderGet, holderSet, nullptr);
+    CHECK(f != nullptr);
+    if (!f)
+        return;
+
+    CHECK(Field_getTypeId(f) == 0u);
+    CHECK(Field_getOffset(f) == 0u);
+    CHECK(Field_getSize(f) == 0u);
+    CHECK(Field_getFlags(f) == REFLECT_FIELD_NONE);
+
+    // typeId derives the byte width from Stride for a known class id.
+    Field_setTypeId(f, TYPE_INT_SINGLETON);
+    CHECK(Field_getTypeId(f) == TYPE_INT_SINGLETON);
+    CHECK(Field_getSize(f) == 4u);
+
+    Field_setOffset(f, 16u);
+    CHECK(Field_getOffset(f) == 16u);
+
+    // An explicit size overrides the derived width.
+    Field_setSize(f, 8u);
+    CHECK(Field_getSize(f) == 8u);
+
+    Field_setFlags(f, REFLECT_FIELD_KEY | REFLECT_FIELD_NULLABLE | REFLECT_FIELD_INDEXED);
+    CHECK(Field_isKey(f) && Field_isNullable(f) && Field_isIndexed(f));
+    CHECK(Field_getFlags(f) == (REFLECT_FIELD_KEY | REFLECT_FIELD_NULLABLE | REFLECT_FIELD_INDEXED));
+
+    bool truncated = true;
+    char buf[220];
+    Field_toStringStruct(f, buf, sizeof(buf), &truncated);
+    CHECK(truncated == false && strstr(buf, "offset=16") != nullptr && strstr(buf, "size=8") != nullptr);
+
+    // Null-safety across the physical accessors.
+    CHECK(Field_getTypeId(nullptr) == 0u);
+    CHECK(Field_getOffset(nullptr) == 0u);
+    CHECK(Field_getSize(nullptr) == 0u);
+    CHECK(Field_getFlags(nullptr) == REFLECT_FIELD_NONE);
+    CHECK(!Field_isKey(nullptr) && !Field_isNullable(nullptr) && !Field_isIndexed(nullptr));
+    Field_setOffset(nullptr, 5u); // no crash
+
+    Field_free(f);
+}
+
 static void testStruct(void) {
     printf("[5] struct: a growable list of field rows\n");
 
@@ -153,6 +198,10 @@ static void testStruct(void) {
     if (!s)
         return;
     CHECK(Struct_isEmpty(s) == true);
+    CHECK(Struct_getSize(s) == 0u);
+    Struct_setSize(s, 64u);
+    CHECK(Struct_getSize(s) == 64u);
+    CHECK(Struct_getSize(nullptr) == 0u);
 
     Field *f = Field("position.x", holderGet, holderSet, nullptr);
     for (uint32_t i = 0u; i < 100u; i++)
@@ -276,6 +325,7 @@ int main(void) {
     testKinds();
     testNames();
     testFieldEmbedsVariable();
+    testFieldLayout();
     testStruct();
     testClass();
     testStringsAndNull();
