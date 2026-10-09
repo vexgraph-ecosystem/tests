@@ -39,6 +39,100 @@ Use `--description` for a short explanation. Only `--kind lab` is recordable;
 `--kind visual` is rejected before execution. Visual reports belong to the user.
 Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
+## ecosystem/.github
+
+### `ecosystem/.github/profile`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/.github/profile/README.md` | ✅ | 1791384482 | 5475083055ab1cff9e195e126d8a13d24f2ce73db50d5ca7e4a927f7a44066bf | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+
+## ecosystem/ecosystem
+
+### `ecosystem/ecosystem`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/ecosystem/Home.md` | ✅ | 1791444298 | 9a3e4202bb1f7d78e911f9ae8f601f308e00d49285cb136021bf951e0c772cee | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py && python3 -B tests/tools/per_repo_ide_test.py']; macOS offline documentation and IDE-metadata assertions only. No runtime, persistence, allocator or visual proof. | Darkbase documentation reframe: native vex entity store (struct-&gt;Entity, field-&gt;EntityField, function-&gt;EntityFunction), reactive programs, store-vs-executable naming; R2 staged-migration wording and per-repo IDE blueprint contracts preserved. | passed |
+| `ecosystem/ecosystem/_Sidebar.md` | ✅ | 1791384482 | 814c1a95d5137cec5bf1b645aab5d1f92020ee0005220e57bd0853bae8741a95 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/anti.md` | ✅ | 1791384482 | 529fd6f258c1794bf281858ad499cf5f0643653c5cd91b5e526452c9b99549b0 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/api-haven.md` | ✅ | 1791441432 | 5a6cce9c3d3fd093a4f823082400dd15fe9fcd3466210d3093600b545df7b3ae | ['python3', '-B', 'tests/sesh/docs_test.py']; Two offline documentation checks on macOS: owner runner links, scoped snapshot law/proof, new file/directory API proposals and cloud/traversal gaps. Documentation assertions only; no proposed class implementation or workflow execution proof. | Snapshot boundary and public FileSession/DirectorySession proposal documented without cloud or directory readiness inflation | passed |
+| `ecosystem/ecosystem/darkbase.md` | ✅ | 1791447462 | 32fd17f20eeeb8bfd24af5d6aba2609f5992fa53410774ec709ea1c658b16079 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only. | Darkbase wiki: record the M2 persistence slice (header/codec/checksum rows moved to partial) and the current status. | passed |
+| `ecosystem/ecosystem/darling-editor.md` | ✅ | 1791384482 | 3f3d66d5485edf7f5db9a02d3ee99eac7646403423c9fd7952629b64054aee0b | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/darling.md` | ✅ | 1791384482 | 38b9a22f1d3043b3fc4c04e7572d88ea7c560984fe43d3acbf120fab3b8f858c | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/drawling.md` | ✅ | 1791384482 | a5b488e01a8aef1fa585d0c110de090b44ebe7e08e060d09aceb05c6c729937c | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/graphvex.md` | ✅ | 1791384482 | 0b8388f5896a899d120c6213dbfa0fe687c567fff578bbba05aa92a74ef445a4 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/hotcwap.md` | ✅ | 1791384482 | 2e54d777c5f9936299d91f56a33e88f0e5c28d2512f776a2018215a8fe479e2b | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/impedance.md` | ✅ | 1791384482 | c1b36803f8c2b45f50e5f4b2bcb27052d25a7083f6e24b314a0a59505befb2d9 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/language.md` | ✅ | 1791384482 | 3f1117b388fa8ebe0ace4834cd50146af5f97e9244e03d38f3180b1a81a54174 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/relational-engine.md` | ✅ | 1791449229 | 8e9602d0495615fe7bcd74651052024d72a643b66b0c07f6df13d8eb0164a67e | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py']; macOS; offline documentation/layout assertions only; not runtime proof | Readiness wiki rows rehomed for the type-algebra ownership move (algebra now relational-engine-owned; vexspoke keeps the registry) | passed |
+| `ecosystem/ecosystem/samplerate.md` | ✅ | 1791384482 | 323ea1e265700e7e61aa572ed84da17419d17b383b658cd02016055b6b7c902d | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/semicolon.md` | ✅ | 1791384482 | 4c12287dc6c99381f2d237e3963161166543844a58357e1a1369bc504752b489 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/ecosystem/sesh.md` | ✅ | 1791447304 | a5126079180e2682f68dfd1489eb4a3405bc7ade010ebde70881c06eff36ddf2 | ['python3', '-B', 'tests/sesh/docs_test.py']; Two macOS offline documentation checks: seven physical class/header pairs, Sesh public composition, scoped identity/receipt laws, owner runner, borrowed lifetime and file/directory proposal distinction. Documentation assertions only; no OAuth/cloud, distributed CAS or file/directory workflow proof. | Session composition vocabulary, local identity/admission proof and explicit provider/workflow gaps | passed |
+| `ecosystem/ecosystem/vexspoke.md` | ✅ | 1791449229 | 1aadac165162db04b08ab6775aa978a4ac42dc25cd5b83cb00167a6b0d855787 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py']; macOS; offline documentation/layout assertions only; not runtime proof | Readiness wiki rows rehomed for the type-algebra ownership move (algebra now relational-engine-owned; vexspoke keeps the registry) | passed |
+
+### `ecosystem/ecosystem/tools`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/ecosystem/tools/validate_tables.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+## ecosystem/projects/anti
+
+### `ecosystem/projects/anti`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/projects/anti/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/projects/anti/CMakeLists.txt` | ✅ | 1791337104 | 0a856534d56695173486149417ea2d5068bd86d352bb555d3c96a36b806fa187 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/projects/anti/CONTRIBUTING.md` | ✅ | 1791384482 | d12b837c21ef74b349a5ccb2327af60a9302a39c3cb3b32c9ae509e33781c7ba | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/projects/anti/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/projects/anti/README.md` | ✅ | 1791384482 | f5d72eb78f48410587612aaa757e7a6e81a1ae2c838e2aa82f123985a66e0e47 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+
+## ecosystem/projects/drawling
+
+### `ecosystem/projects/drawling`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/projects/drawling/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/projects/drawling/CMakeLists.txt` | ✅ | 1791337104 | 05c40afb34e0cbf27b8cf6818efac3ff1802e214c81fdd3ade8060e20f317c01 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/projects/drawling/CONTRIBUTING.md` | ✅ | 1791384482 | 0df914467baa43c3759f3c72a7e1d220b4615163094e865615d1e1e78cd1d475 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/projects/drawling/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/projects/drawling/README.md` | ✅ | 1791384482 | 48f62dbf6aabf5fdd5d754f2e64b9dfbae166beeaa4777897712041f168457ed | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+
+## ecosystem/projects/impedance
+
+### `ecosystem/projects/impedance`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/projects/impedance/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/projects/impedance/CMakeLists.txt` | ✅ | 1791337104 | ce4f97902d02afb21afdc71d8036524831381b4ebe0c00fd881768fd6fec9bd1 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/projects/impedance/CONTRIBUTING.md` | ✅ | 1791384482 | b9e8cc510320c60cc1029ceeb58fc4af7162782ee0de657426b69ba8dead3430 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/projects/impedance/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/projects/impedance/README.md` | ✅ | 1791384482 | 1bbfbec6ca59593547313387f41b7d952b405584a472cabeba4b6aa19cb19025 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+
+### `ecosystem/projects/impedance/src`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/projects/impedance/src/impedance.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/projects/impedance/src/impedance.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/projects/impedance/src/main.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+## ecosystem/projects/semicolon
+
+### `ecosystem/projects/semicolon`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/projects/semicolon/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/projects/semicolon/CMakeLists.txt` | ✅ | 1791337104 | 0919d872153cf7fd12b2255c47fb46ba6bd1a7f1a2baa18231f1151165825f44 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/projects/semicolon/CONTRIBUTING.md` | ✅ | 1791384482 | 892a8f5a8657a57c93e9504adc826583b21615ddd3698ce9c5887bf4ab0a08b5 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/projects/semicolon/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/projects/semicolon/README.md` | ✅ | 1791384482 | 981ab93013f60e49cfa97ac7d048e4abf0fd82b5a4611cf3f52c0b708391bf84 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+
 ## ecosystem/repos/api-haven
 
 ### `ecosystem/repos/api-haven`
@@ -906,6 +1000,19 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `ecosystem/repos/hotcwap/window/window_wayland.c` | ❌ | 1791504436 | fac93c54aaa1e821e997e12ce58f9ab343cfe0f20bc203f3c1be5a5d92fe8fa5 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | stale — content changed; rerun required |
 | `ecosystem/repos/hotcwap/window/window_win32.c` | ❌ | 1791504436 | d977f3e7d38395ab4f904ce4cb1a7e61544e01036c9191f40e2cba969f9e879a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | stale — content changed; rerun required |
 
+## ecosystem/repos/language
+
+### `ecosystem/repos/language`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/repos/language/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/repos/language/CMakeLists.txt` | ✅ | 1791337104 | 1b6723bd6c25fed2f06091c3dc161bc1862e78e014df048b5bc8f2fc8bdfa52a | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/repos/language/CONTRIBUTING.md` | ✅ | 1791384482 | 1107d21fb935cc10b6a35f8b01f325ed63142de0ab20ca33745cfd869eaf104e | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/repos/language/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/language/README.md` | ✅ | 1791471884 | 719929593a02c8f0acd7c240b0febfeef9eb6b6ed46be41d2d918f56ad02b637 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && python3 -B tests/tools/per_repo_ide_test.py &gt;/dev/null && echo DOC_IDE_OK']; macOS offline documentation + IDE-metadata assertions only. Not runtime behavior, network, GPU, or visual proof. | Transparent Competency Law pass (5 repos, source-grounded reads): each README gains '## Current State' + '## Scope and Limitations'; drift fixed in api-haven (client.c overclaim, api/discord.c, anthropic 'planned', _trash path, personal/b, attic/TLS), sesh (networked-collaboration overclaim re-framed as roadmap), darling (layout/focus/bridge overstated softened); language/samplerate marked source-free blueprints. | passed |
+| `ecosystem/repos/language/language-preferences.md` | ✅ | 1791384482 | 52f6d8c10daca2ffb6fd00cb15a3e7c6bb45afb6a010fdd7b848d392d6c37889 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+
 ## ecosystem/repos/relational-engine
 
 ### `ecosystem/repos/relational-engine`
@@ -1122,6 +1229,19 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
 | `ecosystem/repos/relational-engine/src/type/type.c` | ❌ | 1791449108 | dd63bdb52f967a8e20670525834025393f583403f16914e59b48ed0c9d4fee47 | ['bash', '-lc', './tools/b build && ./tools/b test type_test && ./tools/b test type_algebra']; macOS arm64; umbrella b build plus registered owner tests type_test and type_algebra_test. Not other platforms; not a per-line proof of workspace.c internals. | Type algebra ownership move to relational-engine: engine type/type.{h,c} own the algebra + resolver, vexspoke oop/type.h is registry + include, oop/type.c removed, CMAKE/workspace wiring and owner tests retargeted. b build green; both owner tests pass. | stale — content changed; rerun required |
 | `ecosystem/repos/relational-engine/src/type/type.h` | ✅ | 1791449108 | 3ee865732e404479d46fe74f7d76b4de6aa4f9719ede58e3d05f46721fccc3fa | ['bash', '-lc', './tools/b build && ./tools/b test type_test && ./tools/b test type_algebra']; macOS arm64; umbrella b build plus registered owner tests type_test and type_algebra_test. Not other platforms; not a per-line proof of workspace.c internals. | Type algebra ownership move to relational-engine: engine type/type.{h,c} own the algebra + resolver, vexspoke oop/type.h is registry + include, oop/type.c removed, CMAKE/workspace wiring and owner tests retargeted. b build green; both owner tests pass. | passed |
+
+## ecosystem/repos/samplerate
+
+### `ecosystem/repos/samplerate`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `ecosystem/repos/samplerate/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/repos/samplerate/CMakeLists.txt` | ✅ | 1791337104 | a3d3c6221e996952a1d4e08762f95e22729da437176c63dae4b92d353cafe4c0 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
+| `ecosystem/repos/samplerate/CONTRIBUTING.md` | ✅ | 1791384482 | 68911fa67d530a2982ce6b8ef86e2b0a9face65cff05c8261db086d7d37cff88 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+| `ecosystem/repos/samplerate/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `ecosystem/repos/samplerate/README.md` | ✅ | 1791471884 | 2e71e82c9b4f8153dcb58a24c2eec36c2e9c03bd54cc2a271fd0497670f7d0d3 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && python3 -B tests/tools/per_repo_ide_test.py &gt;/dev/null && echo DOC_IDE_OK']; macOS offline documentation + IDE-metadata assertions only. Not runtime behavior, network, GPU, or visual proof. | Transparent Competency Law pass (5 repos, source-grounded reads): each README gains '## Current State' + '## Scope and Limitations'; drift fixed in api-haven (client.c overclaim, api/discord.c, anthropic 'planned', _trash path, personal/b, attic/TLS), sesh (networked-collaboration overclaim re-framed as roadmap), darling (layout/focus/bridge overstated softened); language/samplerate marked source-free blueprints. | passed |
+| `ecosystem/repos/samplerate/samplerate-preferences.md` | ✅ | 1791384482 | 0c1dff421879f5df77945c794d2e3b73a10af514ef2e29a5c5eaf6171c9fc865 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
 
 ## ecosystem/repos/sesh
 
@@ -1767,6 +1887,24 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `personal/b/adapters/typescript.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `personal/b/adapters/zig.c` | ✅ | 1791504436 | 4552ae7f599ae783baa136395d047d2aa49ca1bbb9cb5baae5fa6bc1291f0c3e | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `personal/b/adapters/zig.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+
+## personal/vex-graph
+
+### `personal/vex-graph`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `personal/vex-graph/README.md` | ✅ | 1791384482 | a02bc57f181f0aac44271b051d2bb869f0d13ab0244ef4beed3f851ebd84776c | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+
+### `personal/vex-graph/resources`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `personal/vex-graph/resources/b.png` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `personal/vex-graph/resources/ecosystem.png` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `personal/vex-graph/resources/personal-projects.png` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `personal/vex-graph/resources/preferences-dot-md.png` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `personal/vex-graph/resources/vexgraph.png` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ## tests
 
