@@ -83,7 +83,8 @@ int main(void) {
     void *havoc = Memory_realloc(p, (size_t) -1);
     CHECK(havoc == nullptr);
     CHECK(Memory_length(p) == 16);                           // unchanged
-    CHECK(((uint8_t*) p)[0] == 0xA5);                        // contents intact
+    for (size_t i = 0; i < 16; i++)
+        CHECK(((uint8_t*) p)[i] == 0xA5);                    // whole payload intact
 
     // --- realloc preserves type + contents across a grow.
     void *grown = Memory_realloc(p, 128);
@@ -91,7 +92,8 @@ int main(void) {
     CHECK(grown != p);
     CHECK(Memory_length(grown) == 128);
     CHECK(Memory_type(grown) == ID_INT);
-    CHECK(((uint8_t*) grown)[0] == 0xA5);
+    for (size_t i = 0; i < 16; i++)
+        CHECK(((uint8_t*) grown)[i] == 0xA5);
     p = grown;
     (void) p;
 
