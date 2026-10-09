@@ -14,7 +14,8 @@ SUITE = Path(__file__).resolve().parent
 ROOT = SUITE.parents[2]
 OWNERS = ("typed_chunk_owner", "typed_pool_owner", "handle_owner",
           "row_chunk_owner", "row_pool_owner", "row_handle_owner", "ffi_row_pool_owner",
-          "mapped_file_owner", "mapping_error_owner")
+          "mapped_file_owner", "mapping_error_owner", "preallocated_file_owner",
+          "preallocation_owner", "preallocation_error_owner", "preallocated_failure_owner")
 
 
 def main():

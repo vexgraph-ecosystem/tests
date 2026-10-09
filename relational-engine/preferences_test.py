@@ -45,7 +45,7 @@ for module, unit in (("nio", "chunk"), ("struct", "chunked_list"),
     assert (ROOT / "rust/src" / module / f"{unit}.rs").is_file()
     assert (WORKSPACE / "tests/relational-engine/rust" / module / f"{unit}_test.rs").is_file()
 assert "VariableRegistry" in (ROOT / "rust/README.md").read_text()
-assert "eighteen independent owner targets" in (WORKSPACE / "tests/relational-engine/README.md").read_text()
+assert "twenty-two independent owner targets" in (WORKSPACE / "tests/relational-engine/README.md").read_text()
 for module, unit in (("nio", "typed_chunk"), ("struct", "typed_pool")):
     assert (ROOT / "rust/src" / module / f"{unit}.rs").is_file()
     assert (WORKSPACE / "tests/relational-engine/rust" / module / f"{unit}_test.rs").is_file()
@@ -60,7 +60,18 @@ assert "view.flush()?" in mapping and "sync_all()?" in mapping
 assert "file identity plus offsets" in prefs
 assert "buffered readers/writers" in prefs
 assert "Manifest-backed persistence remains proposed" in prefs
-assert "No runtime file API" in (ROOT / "rust/src/io/mod.rs").read_text()
+assert "physical byte-file reservation" in (ROOT / "rust/src/io/mod.rs").read_text()
+assert "Physical File Reservation Law" in prefs
+owner = (ROOT / "rust/src/io/preallocated_file.rs").read_text()
+backend = (ROOT / "rust/src/io/preallocation.rs").read_text()
+assert "create_new(true)" in owner and "mode(0o600)" in owner
+assert "allocated < length" in owner and "fs::remove_file(&path)" in owner
+assert "F_ALLOCATEALL" in backend and "libc::fallocate" in backend
+assert "Self::from_file(file, true)" in mapping and "owner.into_file()" in mapping
+for doc in (ROOT / "README.md", ROOT / "rust/README.md"):
+    text = doc.read_text()
+    assert "PreallocatedFile" in text and "Application Support/vexgraph" in text
+    assert "APFS" in text and "remain gaps" in text
 assert "re_name_search" in (ROOT / "src/search/primitives/README.md").read_text()
 assert "BORROW" in (ROOT / "rust/include/relational_engine/variable_registry.h").read_text().upper()
 print("PASS: resident/atomic contracts, reading map and one named Rust type per file")

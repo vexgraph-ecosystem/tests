@@ -25,6 +25,7 @@ version = "0.0.0"
 name = "relational-engine-owner-tests"
 version = "0.0.0"
 dependencies = [
+ "libc",
  "relational-engine-scratchpad",
 ]
 
@@ -32,6 +33,7 @@ dependencies = [
 name = "relational-engine-scratchpad"
 version = "0.0.0"
 dependencies = [
+ "libc",
  "memmap2",
  "relational-annotations",
 ]

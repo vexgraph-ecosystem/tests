@@ -1,5 +1,5 @@
 //! Compiled by the registered runner for intended unsafe/arity/type/borrow failures.
-use relational_engine_scratchpad::MappedFile;
+use relational_engine_scratchpad::{MappedFile, PreallocatedFile};
 
 fn main() {
     #[cfg(unsafe_admission)]
@@ -40,4 +40,25 @@ fn main() {
         let second = owner.as_mut_slice();
         println!("{first:?} {second:?}");
     }
+    #[cfg(preallocation_arity)]
+    let _owner = PreallocatedFile!("fixture");
+    #[cfg(preallocation_extra_arity)]
+    let _owner = PreallocatedFile!("fixture", 8, true);
+    #[cfg(preallocation_length)]
+    let _owner = PreallocatedFile!("fixture", -1i64);
+    #[cfg(preallocation_move)]
+    {
+        let owner = PreallocatedFile!();
+        let _ = unsafe { MappedFile::from_preallocated(owner) };
+        println!("{}", owner.len());
+    }
+    #[cfg(preallocation_borrow)]
+    {
+        let mut owner = PreallocatedFile!();
+        let path = owner.path();
+        owner.close();
+        println!("{path:?}");
+    }
+    #[cfg(preallocation_unsafe)]
+    let _ = MappedFile::from_preallocated(PreallocatedFile!());
 }

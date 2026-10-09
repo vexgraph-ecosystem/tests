@@ -1,5 +1,5 @@
 //! MappingError owner: every variant's observable diagnostic and retained OS cause.
-use relational_engine_scratchpad::MappingError;
+use relational_engine_scratchpad::{MappingError, PreallocationError};
 use std::error::Error;
 
 #[test]
@@ -19,4 +19,7 @@ fn diagnostics_and_os_error_source() {
     assert_eq!(error.to_string(), "mapping IO: denied fixture");
     assert_eq!(error.source().unwrap().to_string(), "denied fixture");
     assert!(matches!(error, MappingError::Io(ref source) if source.kind() == std::io::ErrorKind::PermissionDenied));
+    let error = MappingError::Preallocation(PreallocationError::Closed);
+    assert_eq!(error.to_string(), "mapping preallocation: preallocated file is closed");
+    assert_eq!(error.source().unwrap().to_string(), "preallocated file is closed");
 }

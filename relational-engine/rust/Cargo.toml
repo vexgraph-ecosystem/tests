@@ -6,6 +6,7 @@ publish = false
 
 [dependencies]
 relational-engine-scratchpad = { path = "../../../ecosystem/repos/relational-engine/rust" }
+libc = "0.2"
 
 [[test]]
 name = "memory_owner"
@@ -78,3 +79,19 @@ path = "nio/mapped_file_test.rs"
 [[test]]
 name = "mapping_error_owner"
 path = "nio/mapping_error_test.rs"
+
+[[test]]
+name = "preallocated_file_owner"
+path = "io/preallocated_file_test.rs"
+
+[[test]]
+name = "preallocation_error_owner"
+path = "io/preallocation_error_test.rs"
+
+[[test]]
+name = "preallocation_owner"
+path = "io/preallocation_test.rs"
+
+[[test]]
+name = "preallocated_failure_owner"
+path = "io/preallocated_failure_test.rs"
