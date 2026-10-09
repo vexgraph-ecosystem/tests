@@ -1005,9 +1005,11 @@ symlink traversal, source/manifest symlink and control-name rejection. Native
 scripts/compiler includes remain trusted; a stable-tree contract is not a
 sandbox or TOCTOU claim. No program run, firmware upload or SQL execution is
 implied by building. Public C clients require strict C23/assertions and applicable
-ASan/UBSan; platform-specific leak-sanitizer gaps remain explicit. Existing
-`tests/b/workspace_test.py` is a distinct ecosystem integration owner and must
-not inherit a green result from these standalone owners.
+ASan/UBSan; on macOS, where ASan cannot detect leaks, the OS `/usr/bin/leaks`
+tool must prove zero leaks on the CLI seam, and any other platform-specific
+leak-sanitizer gap must stay explicit. Existing `tests/b/workspace_test.py` is a
+distinct ecosystem integration owner and must not inherit a green result from
+these standalone owners; it must track the current storage-ownership layout.
 
 ### Shader Tool Delegation Proof Law
 

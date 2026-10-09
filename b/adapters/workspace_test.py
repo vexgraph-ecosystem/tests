@@ -7,6 +7,7 @@ filesystem mutation during build is outside the documented contract.
 from pathlib import Path
 import os
 import platform
+import shutil
 import subprocess
 from adapter_support import AdapterCase, ROOT
 
@@ -92,6 +93,39 @@ class WorkspaceBuildTest(AdapterCase):
         result = self.invoke("build", "workspace", self.project, expected=None)
         self.assertIn("regular non-symlink", result.stderr)
         self.assertNotIn("Building", result.stdout)
+
+    def test_apple_leaks_tool_reports_no_leaks_on_plan_and_shader_build(self):
+        """Apple ASan cannot detect leaks; use the OS leaks tool on the CLI seam."""
+        if platform.system() != "Darwin" or not Path("/usr/bin/leaks").exists():
+            self.skipTest("Apple leaks tool unavailable; leak proof unproved on this host")
+        tools = self.project / "leaky-tools"
+        tools.mkdir()
+        for name in ("uname", "dirname", "mkdir", "cat", "sh"):
+            path = shutil.which(name)
+            if path is None:
+                self.skipTest(f"launcher utility {name} unavailable")
+            (tools / name).symlink_to(path)
+        base = [os.environ.get("CC", "cc"), "-std=gnu23", "-Wall", "-Wextra", "-Werror",
+                "-g", "-I", str(ROOT), str(ROOT / "b.c"), str(ROOT / "inspect.c"),
+                str(ROOT / "util.c"), *map(str, sorted((ROOT / "adapters").glob("*.c")))]
+        cli = self.project / "leak-cli"
+        subprocess.run([*base, "-o", str(cli)], capture_output=True, check=True, timeout=120)
+        tree = self.project / "leak-tree"
+        (tree / "nested").mkdir(parents=True)
+        (tree / "nested" / "script.py").write_text("raise Exception('never executed')\n")
+        (tree / "shader.comp").write_text("shader")
+        tool = tools / "copy-compiler"
+        tool.write_text("#!/bin/sh\ncp \"$3\" \"$5\"\n")
+        tool.chmod(0o755)
+        environment = dict(self.environment, PATH=str(tools), GLSLC=str(tool))
+
+        def leak_check(*command):
+            result = subprocess.run(["/usr/bin/leaks", "--atExit", "--", str(cli), *command],
+                                    env=environment, capture_output=True, text=True, timeout=120)
+            self.assertIn("0 leaks for 0 total leaked bytes", result.stdout + result.stderr)
+
+        leak_check("build", "workspace", str(tree), "--plan")
+        leak_check("build", "glsl", str(tree))
 
     def test_broad_scope_confirmation_empty_and_invalid_forms(self):
         downloads = self.project / "Downloads"

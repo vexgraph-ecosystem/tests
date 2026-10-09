@@ -50,7 +50,8 @@ class WorkspaceTest(unittest.TestCase):
     def test_registered_cpu_target_still_builds_and_runs(self):
         self.assertIn("PASS", self.invoke("test", "compositor_scope_test"))
 
-    def test_reorganized_paths_keep_the_c_backend_in_vexspoke(self):
+    def test_reorganized_paths_keep_storage_in_engine_and_cpu_in_vexspoke(self):
+        """Assert migrated storage provenance without moving retained CPU reflection."""
         metadata = json.dumps(json.loads(self.invoke("ide")))
         self.assertIn("ecosystem/repos/vexspoke/src", metadata)
         self.assertIn("ecosystem/repos/graphvex/src", metadata)
@@ -59,8 +60,12 @@ class WorkspaceTest(unittest.TestCase):
         self.assertNotIn("ecosystem/drivers/", metadata)
         self.assertNotIn("ecosystem/interface/", metadata)
         self.assertNotIn("personal/relational-engine", metadata)
-        for part, unit in (("nio", "mem"), ("io", "file"),
-                           ("relational", "symbol_table"), ("reflection", "field")):
+        self.assertIn("ecosystem/repos/relational-engine/src", metadata)
+        for part, unit in (("nio", "mem"), ("io", "file")):
+            for suffix in (".c", ".h"):
+                self.assertTrue((ROOT / "ecosystem/repos/relational-engine/src" / part / (unit + suffix)).is_file())
+                self.assertFalse((ROOT / "ecosystem/repos/vexspoke/src" / part / (unit + suffix)).exists())
+        for part, unit in (("relational", "symbol_table"), ("reflection", "field")):
             for suffix in (".c", ".h"):
                 self.assertTrue((ROOT / "ecosystem/repos/vexspoke/src" / part / (unit + suffix)).is_file())
 
