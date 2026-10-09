@@ -54,3 +54,19 @@ path = "struct/typed_pool_test.rs"
 [[test]]
 name = "handle_owner"
 path = "nio/handle_test.rs"
+
+[[test]]
+name = "row_handle_owner"
+path = "nio/row_handle_test.rs"
+
+[[test]]
+name = "row_chunk_owner"
+path = "nio/row_chunk_test.rs"
+
+[[test]]
+name = "row_pool_owner"
+path = "struct/row_pool_test.rs"
+
+[[test]]
+name = "ffi_row_pool_owner"
+path = "ffi/row_pool_test.rs"

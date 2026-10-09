@@ -1,7 +1,7 @@
 //! Owns every TypedChunk public form: packed-word boundaries, stable/aligned
 //! storage, removal ownership, hole reuse, rejection recovery and bounded strings.
 //! Indices are not identities. Stale raw pointers/concurrent mutation are outside
-//! this exclusive Rust contract; generation/type/C ABI proof belongs to later work.
+//! this exclusive Rust contract. Handles are owner-local; no wrong-owner/type check.
 #[path = "../fail_allocator.rs"] mod faults;
 use relational_engine_scratchpad::{TypedChunk, StorageError};
 use std::{cell::Cell, rc::Rc};
@@ -77,7 +77,7 @@ fn geometry_bitmap_reuse_and_lifetime() {
 /// Injects construction failures and verifies later operations recover without allocation.
 #[test]
 fn each_allocation_stage_rejects_and_recovers() {
-    for stage in [0, 1] {
+    for stage in [0, 1, 2] {
         faults::fail_after(stage);
         let rejected = TypedChunk::<u64>::new(65);
         faults::reset();
@@ -114,5 +114,33 @@ fn handles_reject_stale_generations() {
     assert_eq!(chunk.get_handle(reused), Some(&20));
     *chunk.get_handle_mut(reused).unwrap() = 21;
     assert_eq!(chunk.get_handle(reused), Some(&21));
-    let _ = Handle::zero();
+    assert!(chunk.get_handle(Handle::zero()).is_none());
+    assert!(chunk.get_handle(Handle::new(usize::MAX, 1)).is_none());
+}
+
+/// Exhaust the same real counter path with a small immutable budget; never resurrect an identity.
+#[test]
+fn zero_and_generation_exhaustion_never_name_live_rows() {
+    use relational_engine_scratchpad::Handle;
+    assert!(matches!(TypedChunk::<u8>::new_with_generation_limit(1, 0), Err(StorageError::Layout)));
+    let mut chunk = TypedChunk::<u8>::new_with_generation_limit(2, 2).unwrap();
+    let first = chunk.add_handle(1).unwrap();
+    assert!(!first.is_zero());
+    assert!(chunk.get_handle(Handle::zero()).is_none());
+    assert!(chunk.get_handle_mut(Handle::zero()).is_none());
+    assert_eq!(chunk.remove_handle(Handle::zero()), Err(StorageError::Bounds));
+    assert_eq!(chunk.remove(first.index()), Ok(1)); // raw removal invalidates handles too
+    let last = chunk.add_handle(2).unwrap();
+    assert_eq!(last.generation(), 2);
+    assert_eq!(chunk.remove_handle(last), Ok(2));
+    assert_eq!(chunk.generation_at(first.index()), 0); // permanent retirement
+    let other = chunk.add_handle(3).unwrap();
+    assert_ne!(other.index(), first.index());
+    assert!(chunk.get_handle(first).is_none() && chunk.get_handle(last).is_none());
+    assert_eq!(chunk.remove_handle(other), Ok(3));
+    let end = chunk.add_handle(4).unwrap();
+    assert_eq!(chunk.remove_handle(end), Ok(4));
+    assert!(chunk.is_empty() && chunk.is_full());
+    assert_eq!(chunk.add(5), Err(StorageError::Capacity));
+    assert_eq!(chunk.generation_at(usize::MAX), 0);
 }

@@ -1,7 +1,6 @@
 //! TypedPool owner: lazy backing, grow beyond defaults, reuse before growth,
 //! empty-chunk reclamation, stable survivors, exclusive mutation and OOM rollback.
-//! All public forms run. Bulk contiguous capacity, generations, registered type
-//! metadata and legal concurrent mutation are not offered by this first slice.
+//! Handles remain owner-local; raw pointers/concurrent mutation need caller exclusion.
 #[path = "../fail_allocator.rs"] mod faults;
 use relational_engine_scratchpad::{TypedPool, StorageError};
 use std::{cell::Cell, rc::Rc};
@@ -67,7 +66,7 @@ fn lazy_growth_reuse_reclaim_and_stability() {
 #[test]
 fn failure_preserves_survivors_and_incoming_ownership() {
     // Fresh pools exercise directory, rows and bitmap failures independently.
-    for stage in [0, 1, 2] {
+    for stage in [0, 1, 2, 3] {
         let mut pool = TypedPool!(u64, 2).unwrap();
         faults::fail_after(stage);
         let result = pool.add(1);
@@ -180,4 +179,38 @@ fn handles_reject_stale_generations() {
     assert_eq!(pool.get_handle(reused), Some(&3));
     *pool.get_handle_mut(second).unwrap() = 22;
     assert_eq!(pool.get_handle(second), Some(&22));
+}
+
+/// Empty backing reclamation/reallocation preserves identities, including after allocation failure.
+#[test]
+fn released_chunks_retain_history_and_recovery() {
+    use relational_engine_scratchpad::Handle;
+    let mut pool = TypedPool!(u64, 1).unwrap();
+    let old = pool.add_handle(10).unwrap();
+    let survivor = pool.add_handle(20).unwrap();
+    let address = pool.get_handle(survivor).unwrap() as *const u64;
+    assert!(pool.get_handle(Handle::zero()).is_none());
+    assert_eq!(pool.remove_handle(old), Ok(10));
+    assert_eq!(pool.release_empty_chunks(), 1);
+    assert_eq!(pool.release_empty_chunks(), 0);
+    faults::fail_after(0);
+    let rejected = pool.add_handle(30);
+    faults::reset();
+    assert_eq!(rejected, Err(StorageError::Allocation));
+    assert!(pool.get_handle(old).is_none());
+    let fresh = pool.add_handle(30).unwrap();
+    assert_eq!(fresh.index(), old.index());
+    assert_ne!(fresh.generation(), old.generation());
+    assert_eq!(pool.get_handle(survivor).unwrap() as *const u64, address);
+    assert!(pool.get_handle(old).is_none());
+    assert_eq!(pool.remove_handle(old), Err(StorageError::Bounds));
+    assert_eq!(pool.get_handle(fresh), Some(&30));
+    for value in 31..200 {
+        pool.remove_handle(fresh).ok(); // repeat stale rejection cannot affect later values
+        let active = pool.add_handle(value).unwrap();
+        assert!(pool.get_handle(old).is_none());
+        pool.remove_handle(active).unwrap();
+        pool.release_empty_chunks();
+    }
+    assert_eq!(pool.get_handle(survivor), Some(&20));
 }

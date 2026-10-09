@@ -58,12 +58,25 @@ with tempfile.TemporaryDirectory(prefix="relational-owner-", dir=os.environ.get(
         result = subprocess.run([binary], cwd=ROOT, capture_output=True, text=True, timeout=90)
         assert result.returncode == 0 and result.stderr == "", result.stderr
     print("PASS: actual C variable registry layout, stable pointers, rebinding and teardown")
+    for profile in ("debug", "release"):
+        run("cargo", "build", *( ["--release"] if profile == "release" else [] ),
+            "--offline", "--locked", "--manifest-path", "rust/Cargo.toml", env=env)
+        for sanitizers in ([], ["-fsanitize=address,undefined"]):
+            run("clang", "-std=c23", "-Wall", "-Wextra", "-Werror", "-O2", *sanitizers,
+                "-Irust/include", "-Isrc", str(SUITE / "ffi/row_pool_test.c"),
+                str(target / profile / "librelational_engine_scratchpad.a"), "-o", binary)
+            result = subprocess.run([binary], cwd=ROOT, capture_output=True, text=True, timeout=90)
+            assert result.returncode == 0 and result.stderr == "", result.stderr
+    print("PASS: actual C aligned row-pool ABI debug/release + C ASan/UBSan, named-binding borrow/teardown")
     for form, diagnostic in [("chunk_arity", "no rules expected"), ("list_arity", "no rules expected"),
         ("slot_arity", "no rules expected"), ("registry_arity", "no rules expected"),
         ("wrong_capacity", "E0308"), ("chunk_borrow", "E0502"), ("registry_borrow", "E0502"),
         ("typed_chunk_arity", "no rules expected"), ("typed_pool_arity", "no rules expected"),
         ("typed_wrong_capacity", "E0308"), ("typed_chunk_borrow", "E0502"),
-        ("typed_pool_borrow", "E0502"), ("typed_pool_release_borrow", "E0502")]:
+        ("typed_pool_borrow", "E0502"), ("typed_pool_release_borrow", "E0502"),
+        ("row_pool_arity", "no rules expected"), ("row_chunk_arity", "unexpected end"),
+        ("row_handle_arity", "unexpected end"), ("row_wrong_capacity", "E0308"),
+        ("row_pool_borrow", "E0502"), ("row_pool_release_borrow", "E0502")]:
         result = subprocess.run(["rustc", "--edition=2024", "--cfg", form,
             str(SUITE / "storage_rejection.rs"), "--extern",
             f"relational_engine_scratchpad={target}/debug/librelational_engine_scratchpad.rlib",

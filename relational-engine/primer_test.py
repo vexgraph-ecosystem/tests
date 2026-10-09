@@ -23,8 +23,8 @@ class PrimerTest(unittest.TestCase):
             "Expose only the required C surface",
             "Mapping is a choice, not a readiness badge",
             "Rust is here (it does not have to be)",
-            "No runtime\nsuite was rerun",
-            "C-client ASan/UBSan does not instrument Rust",
+            "no consumer rewrite",
+            "not instrument Rust",
         ):
             self.assertIn(note, self.doc)
         self.assertEqual(self.doc.count("```") % 2, 0)
@@ -33,13 +33,13 @@ class PrimerTest(unittest.TestCase):
         chunk = (ENGINE / "rust/src/nio/typed_chunk.rs").read_text()
         pool = (ENGINE / "rust/src/struct/typed_pool.rs").read_text()
         handle = (ENGINE / "rust/src/nio/handle.rs").read_text()
-        self.assertIn("generations.resize(capacity, 0u32)", chunk)
-        self.assertIn("wrapping_add(1)", chunk)
+        self.assertIn("generations.resize(capacity, 1u32)", chunk)
+        self.assertNotIn("wrapping_add(1)", chunk)
         self.assertIn("Self { index: 0, generation: 0 }", handle)
-        self.assertIn("*entry = None", pool)
+        self.assertIn("chunk.release_backing()", pool)
         self.assertIn("let mut chunk = TypedChunk::new(self.rows_per_chunk)?", pool)
-        for note in ("first insertion", "wraps back to one",
-                     "discards generation metadata", "no owner identity"):
+        for note in ("generation one", "retires the slot permanently",
+                      "keeps generation metadata", "no owner identity"):
             self.assertIn(note, self.doc)
 
     def test_c_example_and_ownership_limits(self):
@@ -51,6 +51,28 @@ class PrimerTest(unittest.TestCase):
         for note in ("can abort on OOM", "do **not** implement",
                      "does not own, type-check or keep", "Integers still have byte order"):
             self.assertIn(note, " ".join(self.doc.split()))
+
+    def test_row_pool_competency_matches_public_source(self):
+        header = (ENGINE / "rust/include/relational_engine/row_pool.h").read_text()
+        bridge = (ENGINE / "rust/src/ffi/row_pool.rs").read_text()
+        pool = (ENGINE / "rust/src/struct/row_pool.rs").read_text()
+        for operation in ("new", "drop", "add", "read", "write", "borrow", "remove",
+                          "release_empty", "len", "geometry", "to_string", "to_string_struct"):
+            self.assertIn("re_rows_" + operation, header)
+            self.assertIn("fn re_rows_" + operation, bridge)
+        self.assertIn("compare_exchange", pool)
+        self.assertNotIn("fetch_add", pool)
+        for path in ("README.md", "rust/README.md"):
+            doc = (ENGINE / path).read_text()
+            for note in ("## Current State", "## Scope and Limitations", "nio/relational_rows.h",
+                         "Windows", "unproved"):
+                self.assertIn(note, doc)
+        preferences = (ENGINE / "relational-engine-preferences.md").read_text()
+        self.assertIn("RowPool C API", preferences)
+        self.assertIn("explicit status codes", preferences)
+        wiki = (ROOT / "ecosystem/ecosystem/relational-engine.md").read_text()
+        self.assertIn("C Rust byte-row pool", wiki)
+        self.assertIn("no R3–R5 migration/automatic build wiring", wiki)
 
 
 if __name__ == "__main__":

@@ -9,6 +9,24 @@ fn main() {
     #[cfg(typed_chunk_arity)] let _ = TypedChunk!(u64, 2, 3);
     #[cfg(typed_pool_arity)] let _ = TypedPool!(u64, 2, 3);
     #[cfg(typed_wrong_capacity)] let _ = TypedPool!(u64, "wrong");
+    #[cfg(row_pool_arity)] let _ = RowPool!(8, 8, 2, 3);
+    #[cfg(row_chunk_arity)] let _ = RowChunk!(8, 8);
+    #[cfg(row_handle_arity)] let _ = RowHandle!(1, 2);
+    #[cfg(row_wrong_capacity)] let _ = RowPool!(8, 8, "wrong");
+    #[cfg(row_pool_borrow)] {
+        let mut owner = RowPool!(8, 8, 2).unwrap();
+        let handle = owner.add(&[0; 8]).unwrap();
+        let borrowed = owner.get(handle).unwrap();
+        owner.remove(handle).unwrap();
+        println!("{borrowed:?}");
+    }
+    #[cfg(row_pool_release_borrow)] {
+        let mut owner = RowPool!(8, 8, 2).unwrap();
+        let handle = owner.add(&[0; 8]).unwrap();
+        let borrowed = owner.get(handle).unwrap();
+        owner.release_empty_chunks();
+        println!("{borrowed:?}");
+    }
     #[cfg(typed_chunk_borrow)] {
         let mut owner = TypedChunk!(u64, 2).unwrap();
         owner.add(1).unwrap();
