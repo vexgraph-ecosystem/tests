@@ -44,15 +44,67 @@ class ReadmeTest(unittest.TestCase):
                          "../../tests/b/cli_test.py", "../../preferences.md",
                          "https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a"):
             self.assertIn(phrase, text)
+        adapters = (ROOT / "ADAPTERS.md").read_text()
         for language in ("C /", "Java /", "Python /", "Rust /", "C# /", "R /", "Arduino /",
-                         "Swift /", "Objective-C /", "JavaScript /", "TypeScript /", "PHP /", "SQL /", "C++ /", "POSIX shell /"):
-            self.assertIn(language, text)
+                          "Swift /", "Objective-C /", "JavaScript /", "TypeScript /", "PHP /", "SQL /", "C++ /", "POSIX shell /"):
+            self.assertIn(language, adapters)
         self.assertIn("b build cmake", text)
         self.assertIn("orchestrator on top", text)
         self.assertIn(";;OVERVIEW", text)
         for claim in ("Build, breeze, box", "B_SQL_DATABASE", "not a sandbox",
-                      "not type-checking", "b build npm", "no default database"):
-            self.assertIn(claim.lower(), text.lower())
+                       "not type-checking", "b build npm", "no default database"):
+            self.assertIn(claim.lower(), (text + adapters).lower())
+
+    def test_readme_outline_and_alphabetical_languages(self):
+        """Keep the requested overview ordered and its language inventory alphabetical."""
+        text = (ROOT / "README.md").read_text()
+        headings = re.findall(r"^## (.+)$", text, re.M)
+        self.assertEqual(headings, [
+            "Disclaimer: CMake is just IDE metadata (not irony)", "Current State",
+            "What does it do?", "List of languages", "Tree", "JetBrains IDEs",
+            "Adapters", "Actual dogfooding across Vexgraph",
+            "Future and b's own build", "Scope and Limitations",
+        ])
+        table = text.split("## List of languages\n", 1)[1].split("## Tree\n", 1)[0]
+        names = re.findall(r"^\| ([^|]+?) \|", table, re.M)[2:]
+        self.assertEqual(names, sorted(names, key=str.casefold))
+        self.assertEqual(len(names), 20)
+        self.assertIn("[ADAPTERS.md](ADAPTERS.md)", text)
+        self.assertNotIn("deliberately experimental", text)
+
+    def test_shader_inventory_matches_project_owned_implementation(self):
+        """Describe real GLSL generators without inventing standalone shader dispatch."""
+        readme = (ROOT / "README.md").read_text()
+        adapters = (ROOT / "ADAPTERS.md").read_text()
+        workspace = (ROOT.parents[1] / "tools/workspace.c").read_text()
+        registry = (ROOT / "adapters/adapter.c").read_text()
+        launcher = (ROOT.parents[1] / "tools/b").read_text()
+        for text in (readme, adapters):
+            for phrase in ("GLSL / SPIR-V", ".vert", ".frag", ".comp", ".glsl", ".spv",
+                           "glslangValidator -V", "workspace", "standalone"):
+                self.assertIn(phrase, text)
+        self.assertIn("not discovered by this graph", adapters)
+        self.assertIn("There is no `b build glsl`", adapters)
+        self.assertNotIn("GLSL_ADAPTER", registry)
+        self.assertIn('strl_push(&g, "glslangValidator")', workspace)
+        self.assertIn('strl_push(&g, "-V")', workspace)
+        self.assertIn('"quad.vert", "quad.frag"', workspace)
+        self.assertIn('run exec "$root/tools/workspace.c"', launcher)
+
+    def test_adapter_reference_covers_registered_names_and_safety(self):
+        """Retain native adapter details and explicit deployment/trust boundaries."""
+        text = (ROOT / "ADAPTERS.md").read_text()
+        table = text.split("| Adapter / CLI name", 1)[1].split("Project backends", 1)[0]
+        names = re.findall(r"^\| ([^|]+?) \|", table, re.M)[1:]
+        self.assertEqual(names, sorted(names, key=str.casefold))
+        for source in (ROOT / "adapters").glob("*.c"):
+            for name in re.findall(r'const Adapter \w+ = \{\s*"([^"]+)"', source.read_text()):
+                self.assertIn(f"`{name}`", text)
+        for phrase in ('// b_build("arduino:avr:uno")', "--port", "--fqbn",
+                       "B_SQL_DATABASE", "no default database", "not a sandbox",
+                       "--offline", "not type-checking", "parse-only", "SDK 10+",
+                       "main.rs", "exactly one", ".csproj"):
+            self.assertIn(phrase.lower(), text.lower())
 
     def test_jetbrains_external_tool_instructions(self):
         text = (ROOT / "JETBRAINS.md").read_text()
