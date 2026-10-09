@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[3] / "personal/vex-graph"
 CARDS = [
     ("personal-projects.png", "personal projects", "https://github.com/vex-graph?tab=repositories"),
     ("ecosystem.png", "ecosystem", "https://github.com/vexgraph-ecosystem"),
+    ("gisthub.png", "gist", "https://gist.github.com/vex-graph"),
     ("b.png", "b — build, breeze, box!", "https://github.com/vex-graph/b"),
     ("preferences-dot-md.png", "preferences.md", "https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a"),
 ]
@@ -38,13 +39,13 @@ class ProfileMarkup(HTMLParser):
 
 
 class ReadmeTest(unittest.TestCase):
-    def test_centered_header_intro_and_four_linked_cards_in_order(self):
+    def test_centered_header_intro_and_five_linked_cards_in_order(self):
         text = (ROOT / "README.md").read_text()
         markup = ProfileMarkup()
         markup.feed(text)
         markup.close()
         self.assertEqual(markup.stack, [])
-        self.assertEqual(len(markup.images), 5)
+        self.assertEqual(len(markup.images), 6)
         header, parents = markup.images[0]
         self.assertEqual(header, {"src": "resources/vexgraph.png", "alt": "vexgraph", "width": "800"})
         self.assertEqual(parents, [("p", {"align": "center"})])
@@ -53,7 +54,7 @@ class ReadmeTest(unittest.TestCase):
         self.assertLess(text.index("vexgraph.png"), text.index("hey! vex here!"))
         self.assertLess(text.index("spare time"), text.index("personal-projects.png"))
         for (image, parents), (filename, alt, href) in zip(markup.images[1:], CARDS):
-            self.assertEqual(image, {"src": f"resources/{filename}", "alt": alt, "width": "23%"})
+            self.assertEqual(image, {"src": f"resources/{filename}", "alt": alt, "width": "19%"})
             self.assertEqual(parents, [("p", {"align": "center"}), ("a", {"href": href})])
         self.assertNotIn("<script", text.lower())
         self.assertNotIn("<style", text.lower())
