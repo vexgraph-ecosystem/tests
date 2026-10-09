@@ -9,7 +9,7 @@ python3 tests/relational-engine/scaffold_test.py
 python3 tests/relational-engine/native_run.py
 ```
 
-`rust/Cargo.toml` registers eleven independent owner targets:
+`rust/Cargo.toml` registers eighteen independent owner targets:
 - `memory_owner`: `rust/nio/mem_test.rs` (ownership, growth, stale IDs, macros).
 - `string_owner`: `rust/primitives/string_test.rs` (byte and UTF-8 projections).
 - `atomic_string_owner`: `rust/primitives/atomic_string_test.rs` (snapshot lifetime,
@@ -22,7 +22,13 @@ python3 tests/relational-engine/native_run.py
 - `ffi_variable_registry_owner`: every registry extern and output preservation.
 - `typed_chunk_owner`: bitmap edges, over-alignment, ownership, hole reuse and OOM.
 - `typed_pool_owner`: lazy growth, stable survivors, reclamation, failure/retry and
-  20,000 seeded operations against an independent owned-value model.
+   20,000 seeded operations against an independent owned-value model.
+- `handle_owner`, `row_handle_owner`: owner-local/owner-tagged generation identity.
+- `row_chunk_owner`, `row_pool_owner`, `ffi_row_pool_owner`: actual aligned byte
+  rows, failure preservation, reclamation history and C borrowing.
+- `mapped_file_owner`, `mapping_error_owner`: fixed existing-file byte views,
+  offset/count boundaries, writeback/sync round trips, close/drop, shared readers,
+  observable errors and intended unsafe/arity/type/borrow compiler rejections.
 
 These directories mirror `rust/src/{nio,primitives,ffi}` in the engine. The companion
 C client is `rust/ffi/memory_test.c`; the compile-negative borrow fixture is
@@ -45,8 +51,10 @@ owners cover real child exhaustion/reap/reuse/cancel and fixed frame boundaries.
 `scaffold_test.py` checks C IDE metadata and ignores, documentation markers,
 and warnings-denied Cargo discovery. It does not exercise imported C behavior.
 `preferences_test.py` checks the R2 responsibility layout and explicit planned
-scope. io/compress/virtual modules have no runtime behavior to prove; mmap, file
-indexing, codecs and GPU transfer remain unimplemented. Primitive owners also
+scope. io/compress/virtual modules have no runtime behavior to prove; file
+indexing, codecs and GPU transfer remain unimplemented. Fixed-extent Rust mmap
+does not provide resize, C mapping ABI, hostile truncation protection or transactions.
+OS mapping/flush/sync failure injection and huge-file admission remain unproved. Primitive owners also
 execute legacy `text` aliases. C `search/primitives/name_search_test.c` executes
 span boundaries and exact diagnostic counts under ASan/UBSan. A real C registry
 client asserts ABI layout, growth, pointer rebinding and borrowed-value teardown.

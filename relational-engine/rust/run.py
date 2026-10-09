@@ -84,3 +84,14 @@ with tempfile.TemporaryDirectory(prefix="relational-owner-", dir=os.environ.get(
             cwd=ROOT, capture_output=True, text=True, timeout=90)
         assert result.returncode != 0 and diagnostic in result.stderr, result.stderr
     print("PASS: storage arity/type and exclusive-borrow compile-negative contracts")
+    for form, diagnostic in [("unsafe_admission", "E0133"), ("unsafe_explicit", "E0133"),
+        ("arity", "no rules expected"), ("wrong_mode", "E0308"), ("wrong_path", "E0277"),
+        ("close_borrow", "E0502"), ("write_borrow", "E0502"),
+        ("drop_borrow", "E0505"), ("double_mut", "E0499")]:
+        result = subprocess.run(["rustc", "--edition=2024", "--cfg", form,
+            str(SUITE / "nio/mapped_file_rejection.rs"), "--extern",
+            f"relational_engine_scratchpad={target}/debug/librelational_engine_scratchpad.rlib",
+            "-L", f"dependency={target}/debug/deps", "-o", str(target / "mapping-negative")],
+            cwd=ROOT, capture_output=True, text=True, timeout=90)
+        assert result.returncode != 0 and diagnostic in result.stderr, result.stderr
+    print("PASS: mapping unsafe admission, arity/types and close/write/drop borrow rejection")

@@ -70,9 +70,13 @@ class PrimerTest(unittest.TestCase):
         preferences = (ENGINE / "relational-engine-preferences.md").read_text()
         self.assertIn("RowPool C API", preferences)
         self.assertIn("explicit status codes", preferences)
-        wiki = (ROOT / "ecosystem/ecosystem/relational-engine.md").read_text()
-        self.assertIn("C Rust byte-row pool", wiki)
-        self.assertIn("no R3–R5 migration/automatic build wiring", wiki)
+        mapping = (ENGINE / "rust/src/nio/mapped_file.rs").read_text()
+        self.assertIn("pub unsafe fn open", mapping)
+        self.assertIn("offset.checked_add(length)", mapping)
+        for path in ("README.md", "rust/README.md"):
+            doc = (ENGINE / path).read_text()
+            for note in ("MappedFile", "unsafe", "truncation", "offset", "no hard latency bound"):
+                self.assertIn(note, doc)
 
 
 if __name__ == "__main__":

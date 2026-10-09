@@ -45,16 +45,19 @@ for module, unit in (("nio", "chunk"), ("struct", "chunked_list"),
     assert (ROOT / "rust/src" / module / f"{unit}.rs").is_file()
     assert (WORKSPACE / "tests/relational-engine/rust" / module / f"{unit}_test.rs").is_file()
 assert "VariableRegistry" in (ROOT / "rust/README.md").read_text()
-assert "eleven independent owner targets" in (WORKSPACE / "tests/relational-engine/README.md").read_text()
+assert "eighteen independent owner targets" in (WORKSPACE / "tests/relational-engine/README.md").read_text()
 for module, unit in (("nio", "typed_chunk"), ("struct", "typed_pool")):
     assert (ROOT / "rust/src" / module / f"{unit}.rs").is_file()
     assert (WORKSPACE / "tests/relational-engine/rust" / module / f"{unit}_test.rs").is_file()
-assert "not generation-tagged handles" in prefs
+assert "generation-tagged `Handle`" in prefs
 assert "Reusable typed storage" in (ROOT / "rust/README.md").read_text()
-wiki = (WORKSPACE / "ecosystem/ecosystem/relational-engine.md").read_text()
-assert "TypedChunk / TypedPool" in wiki and "sixteen cases" in wiki
-assert "typed_chunk_test.rs" in wiki and "typed_pool_test.rs" in wiki
-assert "metadata encoding unresolved" in wiki
+# The retired wiki is not current proof or a dependency of local owner checks.
+assert "Fixed-Extent File Mapping Law" in prefs
+mapping = (ROOT / "rust/src/nio/mapped_file.rs").read_text()
+assert "pub unsafe fn open" in mapping and "offset.checked_add(length)" in mapping
+assert "external" in mapping and "No escaped descriptor or resize API" in mapping
+assert "view.flush()?" in mapping and "sync_all()?" in mapping
+assert "file identity plus offsets" in prefs
 assert "buffered readers/writers" in prefs
 assert "Manifest-backed persistence remains proposed" in prefs
 assert "No runtime file API" in (ROOT / "rust/src/io/mod.rs").read_text()

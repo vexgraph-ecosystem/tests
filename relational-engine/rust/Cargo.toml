@@ -70,3 +70,11 @@ path = "struct/row_pool_test.rs"
 [[test]]
 name = "ffi_row_pool_owner"
 path = "ffi/row_pool_test.rs"
+
+[[test]]
+name = "mapped_file_owner"
+path = "nio/mapped_file_test.rs"
+
+[[test]]
+name = "mapping_error_owner"
+path = "nio/mapping_error_test.rs"
