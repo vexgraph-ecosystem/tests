@@ -61,6 +61,7 @@ static int s_failures = 0;
         }                                                                       \
     } while (0)
 
+/** Copies a prepared module fixture into the rollback test's staging path. */
 static bool copy_file(const char *src, const char *dst) {
     FILE *in = fopen(src, "rb");
     if (!in)
@@ -85,6 +86,7 @@ static bool copy_file(const char *src, const char *dst) {
     return ok;
 }
 
+/** Creates missing parent directories for the rollback fixtures. */
 static bool mkdir_p(const char *path) {
     if (mkdir(path, 0755) == 0 || errno == EEXIST)
         return true;
@@ -107,6 +109,7 @@ static bool mkdir_p(const char *path) {
     return true;
 }
 
+/** Removes the temporary rollback fixture directory tree. */
 static bool rmtree(const char *path) {
     DIR *dir = opendir(path);
     if (!dir)

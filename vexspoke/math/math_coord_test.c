@@ -22,6 +22,9 @@ static int g_failures = 0;
     else { printf("[math_coord_test] FAIL %s\n", name); g_failures++; } \
 } while (0)
 
+// Integrates coordinate-frame, math-facade, and spatial-vector behavior checks.
+// Verifies coordinate-aware math operations across the selected frame mappings.
+// Integrates frame mappings, strict/fast math dispatch, and vector direction semantics.
 int main(void) {
     printf("=== Running 12-Frame Math & Vector Test Suite ===\n");
 

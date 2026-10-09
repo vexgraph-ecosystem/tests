@@ -15,6 +15,7 @@ typedef struct Worker {
     bool *start;
 } Worker;
 
+/* Applies and immediately replays 32 operations while holding the caller's shared serialization mutex. */
 static void *submitWorker(void *context) {
     Worker *worker = context;
     assert(pthread_mutex_lock((*worker).mutex) == 0);
@@ -35,6 +36,7 @@ static void *submitWorker(void *context) {
     return nullptr;
 }
 
+/* Starts four clients together and verifies serialized application and replay accounting. */
 static void serializedConcurrency(AuthService *auth, Workspace *workspace) {
     Resource resource = Resource(4, 3, 0);
     OperationsSlot rows[128];
@@ -64,6 +66,7 @@ static void serializedConcurrency(AuthService *auth, Workspace *workspace) {
     assert(pthread_cond_destroy(&condition) == 0);
 }
 
+/* Exercises Sesh composition, valid admission, replay, caller-serialized clients, and optional rejection cases. */
 int main(int argc, char **argv) {
     ApiAuth credential = { .kind = API_AUTH_BEARER, .credential = "NEVER-PRINT-TOKEN" };
     uint64_t principal = 7;

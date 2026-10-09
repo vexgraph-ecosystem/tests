@@ -34,6 +34,7 @@ static int g_failures = 0;
             printf("KNOWN GAP (unproved): %s\n", msg);                     \
     } while (0)
 
+// Checks exact/prefix/subsequence ranking order and default candidate-index IDs.
 static void test_exact_and_prefix(void) {
     const char *cands[] = { "app", "apple", "apple pie", "banana", "pineapple" };
     uint32_t ids[] = { 10, 20, 30, 40, 50 };
@@ -58,6 +59,7 @@ static void test_exact_and_prefix(void) {
         CHECK(out[i].id < 5);
 }
 
+// Pins ordering across exact, prefix, word-boundary, substring, and fuzzy match tiers.
 static void test_tiers(void) {
     // One candidate per tier for a single query.
     const char *cands[] = {
@@ -83,6 +85,7 @@ static void test_tiers(void) {
     CHECK(out[3].score > out[4].score);
 }
 
+// Checks candidate matching is case-insensitive for differently cased exact strings.
 static void test_case_and_boundaries(void) {
     const char *cands[] = { "APPLE", "Apple", "apple" };
     SpotlightMatch out[4];
@@ -91,6 +94,7 @@ static void test_case_and_boundaries(void) {
     CHECK(out[0].score == 1000 && out[1].score == 1000 && out[2].score == 1000);
 }
 
+// Checks rank output capacity and the reported total count, including zero capacity.
 static void test_max_count(void) {
     const char *cands[] = { "aa", "ab", "ac", "ad" };
     SpotlightMatch out[2];
@@ -102,6 +106,7 @@ static void test_max_count(void) {
     CHECK(Spotlight_rank("a", cands, nullptr, 4, out, 0) == 0);
 }
 
+// Checks null and empty query inputs return no ranked matches.
 static void test_nulls(void) {
     const char *cands[] = { "a" };
     SpotlightMatch out[1];
@@ -111,6 +116,7 @@ static void test_nulls(void) {
     CHECK(Spotlight_rank("", cands, nullptr, 1, out, 1) == 0);   // empty query
 }
 
+// Checks Spotlight calculation forwarding for valid, non-expression, and null inputs.
 static void test_calculate(void) {
     double r = 0.0;
     CHECK(Spotlight_tryCalculate("2 + 3 * 4", &r));
@@ -122,6 +128,7 @@ static void test_calculate(void) {
     CHECK(!Spotlight_tryCalculate("1+1", nullptr));
 }
 
+// Runs ranking tiers, candidate boundaries, capacity behavior, and calculation checks.
 int main(void) {
     test_exact_and_prefix();
     test_tiers();

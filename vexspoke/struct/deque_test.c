@@ -17,6 +17,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Exercises deque construction, both-end operations, large growth, hostile indices, null safety, and cleanup.
 int main(void) {
     Deque *d = Deque_1(ID_INT);
     CHECK(d != nullptr);

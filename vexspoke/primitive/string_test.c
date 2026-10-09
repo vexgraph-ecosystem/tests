@@ -38,6 +38,7 @@ static int g_failures = 0;
             printf("KNOWN GAP (unproved): %s\n", msg);                     \
     } while (0)
 
+// Covers string allocation forms, value identity, copying, chooser arities, and freeing.
 static void test_allocate(void) {
     CHECK(string_allocate(nullptr) == nullptr);
 
@@ -91,6 +92,7 @@ static void test_allocate(void) {
     string_free(nullptr);
 }
 
+// Checks safe defaults from every string introspection and equality call on null inputs.
 static void test_null_introspection(void) {
     CHECK(string_get(nullptr) == nullptr);
     CHECK(string_length(nullptr) == 0);
@@ -101,6 +103,7 @@ static void test_null_introspection(void) {
     CHECK(!string_equals(nullptr, nullptr));
 }
 
+// Checks ordering, containment, index lookup, in-string matching, and null arguments.
 static void test_compare_search(void) {
     uint8_t *a = string_allocate("apple");
     uint8_t *b = string_allocate("banana");
@@ -134,6 +137,7 @@ static void test_compare_search(void) {
     string_free(apple2);
 }
 
+// Checks substring clamping, empty out-of-range results, and first/last projections.
 static void test_substrings(void) {
     uint8_t *s = string_allocate("hello world");
 
@@ -174,6 +178,7 @@ static void test_substrings(void) {
     string_free(all);
 }
 
+// Checks append variants, null identities, destination capacity, and append-first growth.
 static void test_append(void) {
     uint8_t *a = string_allocate("foo");
     uint8_t *b = string_allocate("bar");
@@ -221,6 +226,7 @@ static void test_append(void) {
     string_free(inplace);
 }
 
+// Initializes the memory substrate, runs each string contract case, and returns aggregate failures.
 int main(void) {
     CHECK(Memory_init(0));
     test_allocate();

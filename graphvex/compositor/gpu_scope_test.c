@@ -20,6 +20,7 @@
 // Force a timeout return without claiming the queue has completed. The real
 // device function is used after injection to prove safe retained-job recovery.
 static unsigned forcedTimeouts;
+// Injects bounded wait timeouts before delegating to Vulkan's real fence wait.
 VKAPI_ATTR VkResult VKAPI_CALL vkWaitForFences(VkDevice device,uint32_t count,
     const VkFence *fences,VkBool32 all,uint64_t timeout) {
     if (forcedTimeouts) { --forcedTimeouts; return VK_TIMEOUT; }
@@ -29,14 +30,17 @@ VKAPI_ATTR VkResult VKAPI_CALL vkWaitForFences(VkDevice device,uint32_t count,
 }
 
 enum { WIDTH=12, HEIGHT=10, PX=3, PY=2, PW=6, PH=6, FX=2, FY=3 };
+// Converts an encoded channel to linear-light space for the oracle.
 static double linear(unsigned value) {
     double v=value/255.0;
     return v<=.04045 ? v/12.92 : pow((v+.055)/1.055,2.4);
 }
+// Encodes a linear-light oracle channel as an 8-bit display value.
 static unsigned encoded(double value) {
     value=fmin(1,fmax(0,value));
     return (unsigned) lround(255*(value<=.0031308 ? 12.92*value : 1.055*pow(value,1/2.4)-.055));
 }
+// Reads one RGBA pixel and converts its channels to linear light.
 static void sample(const Image *image,int x,int y,double *out) {
     memset(out,0,4*sizeof(double));
     if (x<0 || y<0 || x>=(int) Image_width(image) || y>=(int) Image_height(image)) return;
@@ -44,17 +48,21 @@ static void sample(const Image *image,int x,int y,double *out) {
     out[3]=p[3]/255.0;
     for (unsigned c=0;c<3;++c) out[c]=linear(p[c])*out[3];
 }
+// Applies premultiplied source-over composition to oracle pixels.
 static void over(const double *src,double *dest) {
     double a=src[3];
     for (unsigned c=0;c<4;++c) dest[c]=src[c]+dest[c]*(1-a);
 }
+// Reports whether an absolute pixel lies inside the test element rectangle.
 static bool inside(int x,int y) { return x>=PX && x<PX+PW && y>=PY && y<PY+PH; }
+// Composes decoration and foreground pixels into an isolated group.
 static void group(const Image *decoration,const Image *foreground,int x,int y,double *out) {
     memset(out,0,4*sizeof(double));
     if (!inside(x,y)) return;
     sample(decoration,x-PX,y-PY,out);
     double fore[4]; sample(foreground,x-FX,y-FY,fore); over(fore,out);
 }
+// Computes expected filter output for the selected scope and radius.
 static void oracle(unsigned scope,unsigned radius,const Image *prior,const Image *decoration,
                    const Image *foreground,int x,int y,double *out) {
     double filtered[4]={0};
@@ -77,6 +85,7 @@ static void oracle(unsigned scope,unsigned radius,const Image *prior,const Image
     }
     over(content,out);
 }
+// Compares Vulkan scope-filter output to the independent CPU oracle.
 int main(void) {
     assert(GpuScope()==nullptr && GpuScope_0()==nullptr && GpuScope_zero()==nullptr);
     assert(GpuScope_destroy(nullptr) && !GpuScope_isPending(nullptr));

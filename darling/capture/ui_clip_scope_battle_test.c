@@ -9,6 +9,7 @@
 
 #define CHECK(c) do { if (!(c)) { fprintf(stderr, "FAIL %s:%d: %s\n", __FILE__, __LINE__, #c); exit(1); } } while (0)
 
+// Writes a failing capture to the optional battle-artifact directory.
 static void captureEvidence(const Image *image) {
     const char *dir = getenv("UI_BATTLE_ARTIFACT_DIR");
     if (!dir || !image || !Image_pixels(image)) return;
@@ -21,6 +22,7 @@ static void captureEvidence(const Image *image) {
         fprintf(stderr, "capture: %s\n", path);
 }
 
+// Asserts one captured RGBA pixel within the test's channel tolerance.
 static inline void pixel(const Image *image, int x, int y, Color expected) {
     CHECK(image && Image_pixels(image));
     CHECK(x >= 0 && y >= 0 && (uint32_t) x < Image_width(image) && (uint32_t) y < Image_height(image));
@@ -38,6 +40,7 @@ static inline void pixel(const Image *image, int x, int y, Color expected) {
 
 
 #include "darling/test_application.h"
+// Exercises caller clip scope across nested lists, malformed lists, and reuse.
 int main(void) {
     CHECK(Graphics_use(BACKEND_RASTER) && Graphics_resize(64, 64));
     Rect outer = {16, 16, 32, 32};

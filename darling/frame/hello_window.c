@@ -12,6 +12,7 @@
 #define DARLING_TEST_HAS_FRAMES
 #include "darling/test_application.h"
 
+// Opens the sample Frame and keeps its Application alive until window closure.
 int main(void) {
     Frame *frame = Frame("hello from b", 900, 600);
     if (!frame) return B_TEST_SKIP;

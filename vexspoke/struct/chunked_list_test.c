@@ -37,6 +37,7 @@ typedef struct Row16 {
     uint32_t d;
 } Row16;
 
+// Checks empty-list defaults, row geometry, and initial capacity.
 static void testDefaults(void) {
     printf("[1] defaults: 128-byte budget, 16-byte rows -> 8 rows/chunk\n");
 
@@ -76,6 +77,7 @@ static void testDefaults(void) {
     ChunkedList_free(list);
 }
 
+// Verifies row addresses remain stable when the chunk directory grows.
 static void testStableAddresses(void) {
     printf("[2] stable addresses + chunk boundaries across growth\n");
 
@@ -152,6 +154,7 @@ static void testStableAddresses(void) {
     ChunkedList_free(list);
 }
 
+// Exercises explicit reservation, including its accepted and rejected bounds.
 static void testReserve(void) {
     printf("[3] reserve pre-allocates chunks without activating rows\n");
 
@@ -182,6 +185,7 @@ static void testReserve(void) {
     ChunkedList_free(list);
 }
 
+// Checks packing rows into caller-provided storage and preserves output on rejection.
 static void testPackInto(void) {
     printf("[4] packInto snapshot: dest-last + truncation flag\n");
 
@@ -232,6 +236,7 @@ static void testPackInto(void) {
     ChunkedList_free(list);
 }
 
+// Verifies chunk-byte budgeting limits admission without corrupting existing rows.
 static void testChunkBytesBudget(void) {
     printf("[5] chunk byte budget: settable before growth, rejected after\n");
 
@@ -269,6 +274,7 @@ static void testChunkBytesBudget(void) {
     ChunkedList_free(list);
 }
 
+// Confirms nullable list operations return safe defaults without mutation.
 static void testNullSafety(void) {
     printf("[6] cold-path null safety (no crash on null self)\n");
 
@@ -291,6 +297,7 @@ static void testNullSafety(void) {
     CHECK(true);
 }
 
+// Exercises overflow-checked capacity and byte-size calculations.
 static void testCheckedMath(void) {
     printf("[7] checked size math: extreme budgets fail closed, never wrap\n");
 
@@ -336,6 +343,7 @@ static ChunkedList *g_concList;
 static _Atomic uint32_t g_concSeq;
 static _Atomic bool g_concDone;
 
+// Appends a fixed batch of rows and stamps each admitted row with a unique sequence.
 static void *concWriter(void *arg) {
     (void) arg;
     for (uint32_t i = 0u; i < CONC_ROWS; i++) {
@@ -348,6 +356,7 @@ static void *concWriter(void *arg) {
     return nullptr;
 }
 
+// Scans all published rows until writers finish, rejecting holes or invalid stamps.
 static void *concReader(void *arg) {
     (void) arg;
     while (!atomic_load(&g_concDone)) {
@@ -365,6 +374,7 @@ static void *concReader(void *arg) {
     return nullptr;
 }
 
+// Orders pointer values for deterministic comparison of concurrent writer results.
 static int cmpPtr(const void *a, const void *b) {
     uint8_t * const *pa = (uint8_t * const *) a;
     uint8_t * const *pb = (uint8_t * const *) b;
@@ -375,6 +385,7 @@ static int cmpPtr(const void *a, const void *b) {
     return 0;
 }
 
+// Runs concurrent appenders and checks completion and the resulting row set.
 static void testConcurrentWriters(void) {
     printf("[8] concurrent writers claim every row exactly once; readers see no holes\n");
 
@@ -454,6 +465,7 @@ static void testConcurrentWriters(void) {
     ChunkedList_free(list);
 }
 
+// Runs the chunked-list geometry, stability, rejection, and concurrency cases.
 int main(void) {
     printf("=== ChunkedList Test Suite ===\n\n");
 

@@ -16,6 +16,7 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Checks graphics backend registration and lookup behavior.
 static void test_registry(void) {
     CHECK(Graphics_use(BACKEND_RASTER));
     CHECK(Graphics_backendId() == BACKEND_RASTER);
@@ -25,6 +26,7 @@ static void test_registry(void) {
     CHECK(Graphics_current() != nullptr && (*Graphics_current()).fillRect != nullptr);
 }
 
+// Verifies rectangle fills and clearing on the raster backend.
 static void test_fill_and_clear(void) {
     CHECK(Raster_configure(64, 64));
     CHECK(Graphics_begin());
@@ -37,6 +39,7 @@ static void test_fill_and_clear(void) {
     CHECK(Raster_pixelAt(1u << 20, 1u << 20) == 0u);
 }
 
+// Checks rounded-rectangle corner coverage and interior fill.
 static void test_rounded_corners(void) {
     CHECK(Graphics_begin());
     CHECK(Graphics_clear(COLOR_BLACK));
@@ -47,6 +50,7 @@ static void test_rounded_corners(void) {
     CHECK(Raster_pixelAt(5, 5) == COLOR_WHITE);   // centre filled
 }
 
+// Verifies source-over blending and transparent-source behavior.
 static void test_alpha_blend(void) {
     CHECK(Graphics_begin());
     CHECK(Graphics_clear(COLOR_BLACK));
@@ -62,6 +66,7 @@ static void test_alpha_blend(void) {
     CHECK(Graphics_end());
 }
 
+// Checks display-list recording, clipping, and invalid geometry handling.
 static void test_display_list_and_clip(void) {
     DisplayList *dl = DisplayList_0();
     CHECK(dl != nullptr);
@@ -89,6 +94,7 @@ static void test_display_list_and_clip(void) {
     DisplayList_free(nullptr);   // null-safe
 }
 
+// Verifies packed-color helpers and rectangle containment boundaries.
 static void test_color_helpers(void) {
     Color c = COLOR_RGBA(0x12, 0x34, 0x56, 0x78);
     CHECK(Color_red(c) == 0x12);
@@ -101,6 +107,7 @@ static void test_color_helpers(void) {
     CHECK(Rect_isEmpty((Rect){0, 0, 0, 9}));
 }
 
+// Runs graphics registry, rasterization, blending, clipping, and color tests.
 int main(void) {
     test_registry();
     test_fill_and_clear();

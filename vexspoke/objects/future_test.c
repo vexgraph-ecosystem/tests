@@ -17,6 +17,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Checks Future's single-assignment transition and preserved value on rejection.
 int main(void) {
     Future *f = Future_0();
     CHECK(f != nullptr);

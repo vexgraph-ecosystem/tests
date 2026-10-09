@@ -19,6 +19,7 @@ static unsigned expectedDiagnostics;
 } } while (0)
 #define ERROR(call, status) do { ++expectedDiagnostics; CHECK((call) == (status)); } while (0)
 
+// Creates a filter pool with the requested slot and per-stack limits.
 static FilterPool *pool(uint32_t capacity, uint32_t maxFilters) {
     FilterPool *p = NULL;
     FilterPoolConfig config = {capacity, maxFilters};
@@ -26,6 +27,7 @@ static FilterPool *pool(uint32_t capacity, uint32_t maxFilters) {
     return p;
 }
 
+// Verifies pool allocation, borrowed token lifetime, and release behavior.
 static void lifetime(void) {
     FilterPool *p = pool(1, 2);
     CHECK(FilterPool_capacity(p) == 1 && FilterPool_maxRecipeFilters(p) == 2);
@@ -63,6 +65,7 @@ static void lifetime(void) {
     CHECK(FilterPool_destroy(p) == FILTER_POOL_OK);
 }
 
+// Checks pool configuration, malformed strings, and diagnostic failures.
 static void invalid_and_strings(void) {
     FilterPool *p = NULL;
     ERROR(FilterPool_2((FilterPoolConfig){0, 1}, &p), FILTER_POOL_INVALID);
@@ -120,6 +123,7 @@ static void invalid_and_strings(void) {
     CHECK(FilterPool_destroy(NULL) == FILTER_POOL_OK);
 }
 
+// Exercises filter-pool tokens through compositor composition.
 static void composition(void) {
     FilterPool *p = pool(2, COMPOSITOR_MAX_FILTERS);
     FilterToken recipe[] = {Filter_gain(2), Filter_scatterBlur(1)};
@@ -163,6 +167,7 @@ static void composition(void) {
     CompositorSurface_destroy(source);
 }
 
+// Verifies exhausted generations reject safely without aliasing old handles.
 static void generation_exhaustion(void) {
     FilterPool *p = pool(1, 1);
     FilterToken first = 0, last = 0;
@@ -181,6 +186,7 @@ static void generation_exhaustion(void) {
     CHECK(FilterPool_destroy(p) == FILTER_POOL_OK);
 }
 
+// Runs filter-pool lifetime, validation, composition, and exhaustion cases.
 int main(void) {
     FILE *diagnostics = tmpfile();
     if (!diagnostics)

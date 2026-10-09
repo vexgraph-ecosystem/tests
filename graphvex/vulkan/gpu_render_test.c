@@ -18,11 +18,13 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Reads RGB channels at one pixel for rendered-output assertions.
 static void at(const Image *img, int x, int y, int *r, int *g, int *b) {
     const uint8_t *p = Image_pixels(img) + (size_t)y * Image_stride(img) + (size_t)x * 4;
     *r = p[0]; *g = p[1]; *b = p[2];
 }
 
+// Verifies Vulkan rendering, clipping, and device-loss recovery behavior.
 int main(void) {
     Graphics_register(VulkanBackend_row());
     CHECK(Graphics_use(BACKEND_VULKAN));

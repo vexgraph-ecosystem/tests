@@ -23,6 +23,7 @@ typedef struct FilterGalleryState {
 } FilterGalleryState;
 static FilterGalleryState gallery;
 
+// Releases gallery-owned widgets and images after outstanding GPU work retires.
 static void galleryClosed(Frame *frame, void *userdata) {
     (void) frame;
     FilterGalleryState *state = userdata;
@@ -40,6 +41,7 @@ static void galleryClosed(Frame *frame, void *userdata) {
         Image_destroy((*state).oracles[i]);
 }
 
+// Compares one captured RGBA sample with its reference sample.
 static bool sampleMatches(const Image *capture, const Image *source,
                           unsigned x, unsigned y, unsigned sx, unsigned sy) {
     if (!capture || x >= Image_width(capture) || y >= Image_height(capture))
@@ -54,6 +56,7 @@ static bool sampleMatches(const Image *capture, const Image *source,
     return true;
 }
 
+// Supplies a fixed time source so the smoke checks have deterministic pacing.
 static uint64_t galleryFrozenClock(void *userdata) {
     (void) userdata;
     return 1000000000ULL;
@@ -84,6 +87,7 @@ static Image *galleryPublished(Frame *frame) {
 #define DARLING_TEST_WITH_ARGS
 #include "darling/test_application.h"
 
+// Builds the filter gallery; --smoke checks published pixels and resized anchors.
 int main(int argc, char **argv) {
     bool smoke = argc > 1 && strcmp(argv[1], "--smoke") == 0;
     Frame *frame = Frame("Graphvex filters | Backdrop / Foreground / Element", 1160, 430);

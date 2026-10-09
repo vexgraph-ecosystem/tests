@@ -19,6 +19,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Exercises BitPool admission, allocation, recycling, validation, and shutdown.
 int main(void) {
     // Bad arguments are refused.
     BitPool bad;

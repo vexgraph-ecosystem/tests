@@ -4,6 +4,7 @@
 #[path = "../fail_allocator.rs"] mod faults;
 use relational_engine_scratchpad::{VariableRegistry, VariableSlot, StorageError};
 
+/// Verifies native name search, stable bindings, growth, rejection preservation, and borrowed-value lifetime.
 #[test]
 fn native_search_and_stable_bindings() {
     assert!(VariableRegistry!().unwrap().is_empty());

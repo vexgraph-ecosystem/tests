@@ -41,6 +41,7 @@ static int g_checks = 0;
         }                                                                 \
     } while (0)
 
+// Checks Cell layout, header identity, value storage, and null-safe destruction.
 static void testCell(void) {
     printf("[1] identity cell: 32 B block, header identity, value slot\n");
 
@@ -70,6 +71,7 @@ static void testCell(void) {
     CHECK(true);
 }
 
+// Checks Cell value and structure projections, including truncation and nullptr rendering.
 static void testCellStrings(void) {
     printf("[2] cell string projections\n");
 
@@ -90,6 +92,7 @@ static void testCellStrings(void) {
     Cell_free(c);
 }
 
+// Exercises shelf insertion, linked traversal, invalid indices, and head updates.
 static void testShelfBasics(void) {
     printf("[3] shelf: node pool, cells, u32 edges, head walk\n");
 
@@ -140,6 +143,7 @@ static void testShelfBasics(void) {
     Shelf_free(shelf);
 }
 
+// Verifies cell addresses and values remain stable as the shelf grows to 500 entries.
 static void testShelfStability(void) {
     printf("[4] node/cell addresses stay stable across growth\n");
 
@@ -172,6 +176,7 @@ static void testShelfStability(void) {
     Shelf_free(shelf);
 }
 
+// Checks Shelf null-safe operations, lifecycle idempotence, and bounded projections.
 static void testShelfNullAndStrings(void) {
     printf("[5] shelf null-safety + string projections\n");
 
@@ -212,6 +217,7 @@ static void testShelfNullAndStrings(void) {
     CHECK(true);
 }
 
+// Runs Cell and Shelf identity, collection, growth, projection, and null-safety checks.
 int main(void) {
     printf("=== Cell + Shelf Test Suite ===\n\n");
 

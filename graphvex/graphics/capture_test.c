@@ -17,11 +17,13 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Returns one channel byte from the image's packed pixel storage.
 static uint8_t byteAt(const Image *img, int x, int y, int c) {
     const uint8_t *p = Image_pixels(img);
     return p[(size_t)y * Image_stride(img) + (size_t)x * 4 + (size_t)c];
 }
 
+// Verifies captured graphics pixels and image channel ordering.
 int main(void) {
     CHECK(Graphics_use(BACKEND_RASTER));
     CHECK(Raster_configure(32, 16));

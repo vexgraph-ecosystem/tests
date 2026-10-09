@@ -6,6 +6,7 @@
 
 // MODULE: gallery fixture photo decoding. No owned persistent state.
 // Native headers stay in this TU: Apple's Point/Rect collide with Graphvex's.
+// Decodes and center-crops a photo into the caller-provided top-left RGBA buffer.
 // GalleryPhoto_decode owns temporary URL/source/image/context references,
 // releases them on every path, and writes only the caller's bounded shadow.
 // Source pixel safety bound: 16 Mi pixels; output bound matches GpuScope budget.

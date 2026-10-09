@@ -9,6 +9,7 @@
 
 #define CHECK(c) do { if (!(c)) { fprintf(stderr, "FAIL %s:%d: %s\n", __FILE__, __LINE__, #c); exit(1); } } while (0)
 
+// Save a failed pixel capture when the caller configured an artifact directory.
 static void captureEvidence(const Image *image) {
     const char *dir = getenv("UI_BATTLE_ARTIFACT_DIR");
     if (!dir || !image || !Image_pixels(image)) return;
@@ -21,6 +22,7 @@ static void captureEvidence(const Image *image) {
         fprintf(stderr, "capture: %s\n", path);
 }
 
+// Assert that one captured pixel matches all expected RGBA channels.
 static inline void pixel(const Image *image, int x, int y, Color expected) {
     CHECK(image && Image_pixels(image));
     CHECK(x >= 0 && y >= 0 && (uint32_t) x < Image_width(image) && (uint32_t) y < Image_height(image));
@@ -35,6 +37,7 @@ static inline void pixel(const Image *image, int x, int y, Color expected) {
     }
 }
 
+// Render an element tree through the CPU raster backend and return its capture.
 static inline Image *rasterCapture(Element *root, int width, int height) {
     CHECK(Graphics_use(BACKEND_RASTER));
     CHECK(Graphics_resize((uint32_t) width, (uint32_t) height));
@@ -55,6 +58,7 @@ static inline Image *rasterCapture(Element *root, int width, int height) {
 
 #define DARLING_TEST_HAS_FRAMES
 #include "darling/test_application.h"
+// Verify scroll clipping and color bands in frame captures and CPU raster output.
 int main(void) {
     uint32_t baseline = PropertyPool_live(PropertyPool_default());
     Frame *frame = Frame("scroll capture battle", 96, 64);

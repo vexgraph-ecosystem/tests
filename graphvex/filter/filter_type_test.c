@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
+// Checks canonical filter IDs, aliases, and operation-table consistency.
 int main(void) {
     const uint32_t ids[] = {
         IDENTITY_ID, GAIN_ID, SCATTER_BLUR_ID, BRIGHTNESS_ID,

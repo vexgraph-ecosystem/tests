@@ -12,11 +12,13 @@ ROOT = Path(__file__).resolve().parents[3]
 REPO = ROOT / "ecosystem/interface/darling-framework"
 
 
+# Raises the supplied diagnostic when a scaffold invariant is false.
 def require(condition, message):
     if not condition:
         raise AssertionError(message)
 
 
+# Validates the manifest/source map and compiles the aggregate C23 headers.
 def main():
     manifest = json.loads((REPO / "scaffolds.json").read_text())
     entries = manifest["entries"]

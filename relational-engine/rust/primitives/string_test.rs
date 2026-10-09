@@ -1,6 +1,7 @@
 // Owner proof for primitives/string; also prove the old text compatibility path.
 use relational_engine_scratchpad::{bytes, primitives::string};
 
+/// Checks UTF-8 byte/text conversion, malformed input rejection, and legacy module aliases.
 #[test]
 fn byte_text_contract() {
     assert_eq!(string::to_byte_array("hello"), bytes!("hello"));

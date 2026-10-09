@@ -8,6 +8,7 @@
 #include <math.h>
 #include <stdio.h>
 
+// Verifies image upload and sampling preserve a complete pixel round trip.
 static void round_trip(void) {
     Image *image = Image_2(256, 2);
     assert(image && Image_ensureShadow(image, 256, 2));
@@ -46,6 +47,7 @@ static void round_trip(void) {
     Image_destroy(image);
 }
 
+// Checks alpha handling and gain adjustments on image composition.
 static void alpha_and_gain(void) {
     const uint8_t rgba[] = {255, 128, 64, 128, 255, 200, 100, 0};
     Image *image = Image_2(2, 1);
@@ -71,6 +73,7 @@ static void alpha_and_gain(void) {
     CompositorSurface_destroy(surface);
 }
 
+// Checks invalid image inputs and preserved state after rejection.
 static void failures(void) {
     CompositorSurface *empty = nullptr;
     assert(CompositorSurface_create((CompositorBounds) {0}, &empty) == COMPOSITOR_OK);
@@ -92,6 +95,7 @@ static void failures(void) {
     CompositorSurface_destroy(empty);
 }
 
+// Runs image round-trip, alpha/gain, and failure-contract scenarios.
 int main(void) {
     round_trip();
     alpha_and_gain();

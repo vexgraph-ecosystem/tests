@@ -23,6 +23,7 @@
  */
 
 
+// Demonstrates authenticate-once token verification, discard, and prompt flow.
 int main(void) {
     printf("=== Secure TouchID token _test ===\n");
 

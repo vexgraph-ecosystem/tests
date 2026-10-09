@@ -20,6 +20,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Checks class-to-byte-width mappings and full type-id class masking.
 int main(void) {
     // Scalar widths.
     CHECK(Stride_get(ID_BYTE) == 1);

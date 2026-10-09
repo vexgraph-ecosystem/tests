@@ -17,6 +17,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Exercises set membership, duplicate handling, insertion, and removal.
 int main(void) {
     Set *s = Set_1(ID_INT);
     CHECK(s != nullptr);

@@ -36,6 +36,7 @@ static int g_failures = 0;
     else { printf("[variable_slot_test] FAIL %s\n", name); g_failures++; } \
 } while (0)
 
+// Checks VariableSlot layout, name grammar/folding, accessors, constructors, strings, and null safety.
 int main(void) {
     printf("=== Running Variable Slot Test Suite ===\n");
 

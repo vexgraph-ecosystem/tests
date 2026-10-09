@@ -33,11 +33,13 @@ static int g_failures = 0;
 
 static char g_dir[256];
 
+/* Writes one 32-bit value in the log format's big-endian byte order. */
 static void put_be32(FILE *f, uint32_t v) {
     uint8_t b[4] = { (uint8_t)(v >> 24), (uint8_t)(v >> 16), (uint8_t)(v >> 8), (uint8_t)v };
     fwrite(b, 1, 4, f);
 }
 
+/* Writes one signed timestamp/value as its 64-bit big-endian representation. */
 static void put_be64(FILE *f, int64_t v) {
     uint8_t b[8];
     for (int i = 0; i < 8; i++)
@@ -45,6 +47,7 @@ static void put_be64(FILE *f, int64_t v) {
     fwrite(b, 1, 8, f);
 }
 
+/* Emits the ANTI-log magic, version, and big-endian record-size header. */
 static void put_header(FILE *f, uint8_t version, uint32_t record_size) {
     fwrite("ANTILOG", 1, 7, f);
     uint8_t v = version;
@@ -59,6 +62,7 @@ typedef struct Collector {
     int64_t ts[8];
 } Collector;
 
+/* Saves selected callback fields so parsing order and values can be asserted. */
 static void collect(void *userdata, int kind, int64_t ts,
                     int64_t v0, int64_t v1, int64_t v2, int64_t v3, int64_t v4) {
     (void) v1; (void) v2; (void) v3; (void) v4;
@@ -71,6 +75,7 @@ static void collect(void *userdata, int kind, int64_t ts,
     c->count++;
 }
 
+/* Verifies valid records, callback values, counts, and safe handling of a partial trailing record. */
 static void test_valid(void) {
     char p[300];
     snprintf(p, sizeof(p), "%s/valid.log", g_dir);
@@ -105,6 +110,7 @@ static void test_valid(void) {
     CHECK(c2.count == 2);
 }
 
+/* Verifies malformed headers, missing/short files, and null parse callbacks are rejected. */
 static void test_malformed(void) {
     char p[300];
 
@@ -162,6 +168,7 @@ static void test_malformed(void) {
     CHECK(LogParser_parse(nullptr, nullptr, nullptr) == -1);
 }
 
+/* Checks timestamp formatting, kind-name fallback, supplied labels, and truncation reporting. */
 static void test_format(void) {
     char out[256];
     int n = LogParser_formatRecord(out, sizeof(out), 1,
@@ -183,6 +190,7 @@ static void test_format(void) {
     CHECK(LogParser_formatRecord(small, sizeof(small), 1, 1, 0, "x", 0, 0, 0, 0, 0) == -1);
 }
 
+/* Checks known event names and deterministic fallback names for unknown kinds. */
 static void test_kind_names(void) {
     CHECK(strcmp(LogParser_kindName(1), "produce") == 0);
     CHECK(strcmp(LogParser_kindName(2), "present") == 0);
@@ -193,6 +201,7 @@ static void test_kind_names(void) {
     CHECK(strcmp(LogParser_kindName(-3), "kind#-3") == 0);
 }
 
+/* Creates an isolated temporary directory, runs parser contract cases, and returns their aggregate status. */
 int main(void) {
     const char *base = getenv("TMPDIR");
     if (!base || !*base)

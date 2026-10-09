@@ -19,6 +19,7 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Tests pool growth, stable item storage, release, and rejected operations.
 int main(void) {
     Pool *p = Pool_new(32, 4);       // 4 slots per block -> 10 allocs force growth
     CHECK(p != nullptr);

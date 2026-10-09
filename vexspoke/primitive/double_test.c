@@ -16,6 +16,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Exercises Double values including signed zero, CAS, arrays, metadata, and null safety.
 int main(void) {
     CHECK(Double_init());
 

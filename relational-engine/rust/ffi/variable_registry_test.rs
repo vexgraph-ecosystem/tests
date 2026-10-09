@@ -1,6 +1,7 @@
 //! Owner proof of all registry extern forms and preserved outputs on rejection.
 use relational_engine_scratchpad::{VariableRegistry, VariableSlot, ffi::*};
 
+/// Exercises registry FFI admission, error codes, preserved outputs, pointer updates, and cleanup.
 #[test]
 fn registry_ffi_rejections_and_recovery() {
     unsafe {

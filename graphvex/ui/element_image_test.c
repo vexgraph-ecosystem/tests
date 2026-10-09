@@ -7,6 +7,7 @@
 #include "image.h"
 #include "ui/element.h"
 
+// Verifies image-backed elements paint, update, and reject invalid images.
 int main(void) {
     const uint8_t rgba[] = {255, 0, 0, 255, 0, 255, 0, 255};
     Image *image = Image_2(2, 1);

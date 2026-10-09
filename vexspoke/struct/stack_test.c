@@ -17,6 +17,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Verifies LIFO push/pop behavior, empty defaults, and stack cleanup.
 int main(void) {
     Stack *s = Stack_1(ID_INT);
     CHECK(s != nullptr);

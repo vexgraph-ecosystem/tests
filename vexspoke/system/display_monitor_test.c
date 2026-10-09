@@ -28,6 +28,9 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Checks DisplayMonitor defaults, property round trips, name bounds, and null handling.
+// Exercises monitor enumeration and the metadata exposed for each monitor.
+// Verifies DisplayMonitor defaults, mutable properties, bounded names, and null handling.
 int main(void) {
     CHECK(Memory_init(0));
 

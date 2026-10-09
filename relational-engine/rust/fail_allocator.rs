@@ -3,7 +3,9 @@
 use std::alloc::{GlobalAlloc, Layout, System};
 use std::cell::Cell;
 thread_local! { static REMAINING: Cell<Option<usize>> = const { Cell::new(None) }; }
+/// Makes the selected subsequent allocation fail on the current test thread.
 pub fn fail_after(count: usize) { REMAINING.with(|value| value.set(Some(count))); }
+/// Disables pending allocation failure injection on the current test thread.
 pub fn reset() { REMAINING.with(|value| value.set(None)); }
 struct FailAllocator;
 unsafe impl GlobalAlloc for FailAllocator {

@@ -80,6 +80,7 @@ static void on_key_down(void *self, int keyEvent, uint64_t nanos) {
     printf("key DOWN  %-12s code=%d\n", Key_name(Key_code(keyEvent)), Key_code(keyEvent));
 }
 
+/** Prints key-up events and stops the tour when Escape is released. */
 static void on_key_up(void *self, int keyEvent, uint64_t nanos) {
     (void) self; (void) nanos;
     printf("key UP    %-12s hold=%.1fms taps=%d\n", Key_name(Key_code(keyEvent)),
@@ -89,6 +90,7 @@ static void on_key_up(void *self, int keyEvent, uint64_t nanos) {
         Loop_stop(&(*g_winCtx).loop); // Esc exits the tour
 }
 
+/** Reports mouse-button presses with the current pointer position. */
 static void on_mouse_down(void *self, int mouseEvent, uint64_t nanos) {
     (void) self; (void) nanos;
     printf("mouse DOWN %s taps=%d at (%.0f, %.0f)\n",
@@ -96,6 +98,7 @@ static void on_mouse_down(void *self, int mouseEvent, uint64_t nanos) {
            Mouse_x(), Mouse_y());
 }
 
+/** Reports scroll deltas received by the window input listener. */
 static void on_scroll(void *self, double dx, double dy) {
     (void) self;
     printf("scroll (%.2f, %.2f)\n", dx, dy);
@@ -103,6 +106,7 @@ static void on_scroll(void *self, double dx, double dy) {
 
 static int g_moves = 0;
 
+/** Reports pointer movement and counts events for the bounded demo. */
 static void on_move(void *self, double x, double y) {
     (void) self;
     if (++g_moves % 60 == 0) // throttle: one line per ~60 moves
@@ -310,6 +314,7 @@ static const char *greenLabel(const chrome_step_t *step) {
     return (*step).fullscreen_button ? "fullscreen" : "zoom";
 }
 
+/** Applies one scripted window-chrome state to the live test window. */
 static void applyStep(win_ctx_t *ctx, const chrome_step_t *step) {
     Window_setClosable((*ctx).window, (*step).closable);
     Window_setMiniaturizable((*ctx).window, (*step).miniaturizable);
@@ -323,6 +328,7 @@ static void applyStep(win_ctx_t *ctx, const chrome_step_t *step) {
            greenLabel(step));
 }
 
+/** Advances the scripted chrome tour once per window-loop tick. */
 static void tour_tick(void *userdata) {
     win_ctx_t *ctx = userdata;
     Window_pollEvents();
@@ -338,6 +344,7 @@ static void tour_tick(void *userdata) {
     (*ctx).frames++;
 }
 
+/** Runs the bounded sequence of window chrome states used by the demo. */
 static void runTour(Window *w) {
     win_ctx_t ctx = { .window = w, .frames = 0, .frameBudget = 0 };
     g_winCtx = &ctx;

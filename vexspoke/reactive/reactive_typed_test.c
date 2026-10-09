@@ -47,6 +47,7 @@ static int g_sets = 0;
 static int32_t g_old = 0;
 static int32_t g_new = 0;
 
+// Records typed integer change notifications and their old/new payloads.
 static void onChangedInt(Reactive *r, uintptr_t o, uintptr_t n, void *ud) {
     (void) r;
     (void) ud;
@@ -55,6 +56,7 @@ static void onChangedInt(Reactive *r, uintptr_t o, uintptr_t n, void *ud) {
     g_new = (int32_t) (uint32_t) n;
 }
 
+// Counts typed integer onSet notifications.
 static void onSetInt(Reactive *r, uintptr_t v, void *ud) {
     (void) r;
     (void) v;
@@ -62,6 +64,7 @@ static void onSetInt(Reactive *r, uintptr_t v, void *ud) {
     g_sets++;
 }
 
+// Verifies a typed reactive begins at the same address as its raw Reactive base.
 static void testEmbedFirst(void) {
     printf("[1] embed-first: a typed reactive* is a Reactive*\n");
     ReactiveInt *h = ReactiveInt_1(7);
@@ -73,6 +76,7 @@ static void testEmbedFirst(void) {
     }
 }
 
+// Checks integer access, notifications/coalescing, raw writes, and negative values.
 static void testInt(void) {
     printf("[2] int: set/get, exact old/new, coalescing, out-of-band write\n");
     ReactiveInt *h = ReactiveInt_1(10);
@@ -114,6 +118,7 @@ static void testInt(void) {
     ReactiveInt_free(h);
 }
 
+// Checks boolean reactive round trips and the null getter default.
 static void testBool(void) {
     printf("[3] bool\n");
     ReactiveBool *b = ReactiveBool_1(false);
@@ -129,6 +134,7 @@ static void testBool(void) {
     CHECK(ReactiveBool_get(nullptr) == false);
 }
 
+// Checks double round trips preserve signed zero and NaN payload meaning.
 static void testDouble(void) {
     printf("[4] double: bit-exact round trip, incl. -0.0 and NaN\n");
     ReactiveDouble *d = ReactiveDouble_1(1.5);
@@ -155,6 +161,7 @@ static void testDouble(void) {
     ReactiveDouble_free(d);
 }
 
+// Checks borrowed string-pointer storage, rebinding notifications, and same-pointer writes.
 static void testString(void) {
     printf("[5] string: pointer word, rebind is a change\n");
     const uint8_t *a = (const uint8_t*) "hello";
@@ -180,6 +187,7 @@ static void testString(void) {
     ReactiveString_free(s);
 }
 
+// Exercises null-safe setters, getters, and destructors for each typed reactive.
 static void testNull(void) {
     printf("[6] null-safety\n");
     ReactiveInt_set(nullptr, 1);
@@ -196,6 +204,7 @@ static void testNull(void) {
     CHECK(true);
 }
 
+// Runs typed reactive embedding, scalar behavior, notifications, and null-safety cases.
 int main(void) {
     printf("=== Reactive (typed) Test Suite ===\n\n");
 

@@ -45,6 +45,7 @@ typedef struct TestRunContext {
     pthread_t threadId;
 } TestRunContext;
 
+/** Updates the run fixture from a worker thread to prove asynchronous execution. */
 static void sampleRunFunction(void *userdata) {
     TestRunContext *ctx = (TestRunContext*) userdata;
     (*ctx).threadId = pthread_self();
@@ -61,6 +62,7 @@ typedef struct TestEndContext {
     Kernel *receivedKernel;
 } TestEndContext;
 
+/** Records the kernel and call count observed by the end-hook fixture. */
 static void sampleEndFunction(Kernel *kernel, void *userdata) {
     TestEndContext *ctx = (TestEndContext*) userdata;
     (*ctx).receivedKernel = kernel;

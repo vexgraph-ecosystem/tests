@@ -21,12 +21,14 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Returns the RGBA byte address for a pixel in the image.
 static const uint8_t *at(const Image *img, int x, int y) {
     return Image_pixels(img) + (size_t)y * Image_stride(img) + (size_t)x * 4;
 }
 
 // A stiff scene: a 200x200 panel (radius 24) pinned at the top-left, and a
 // second panel straddling the shrink edge so the crop is non-trivial.
+// Records the fixed scene used for resize and clipping comparisons.
 static void scene(void) {
     Graphics_clear(COLOR_RGBA(10, 12, 16, 255));
     Graphics_fillRect(&(Rect){0, 0, 200, 200},
@@ -36,6 +38,7 @@ static void scene(void) {
 }
 
 // Render the scene at a size THROUGH the resize path a window uses, then grab it.
+// Renders the shared scene at the requested extent and returns its image.
 static Image *render_at(int w, int h) {
     CHECK(Graphics_resize((uint32_t)w, (uint32_t)h));
     CHECK(Graphics_begin());
@@ -46,6 +49,7 @@ static Image *render_at(int w, int h) {
     return img;
 }
 
+// Confirms shrinking and restoring the viewport preserves clipped pixels.
 int main(void) {
     CHECK(Graphics_register(VulkanBackend_row()));
     CHECK(Graphics_use(BACKEND_VULKAN));

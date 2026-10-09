@@ -1,6 +1,7 @@
 // Owner proof for ffi/memory: rejection preserves outputs, then valid calls recover.
 use relational_engine_scratchpad::ffi::memory::*;
 
+/// Checks C ABI rejection outputs remain unchanged and valid memory calls recover afterward.
 #[test]
 fn ffi_rejection_preserves_outputs_and_recovers() {
     unsafe {
@@ -33,6 +34,7 @@ fn ffi_rejection_preserves_outputs_and_recovers() {
     }
 }
 
+/// Uses barrier-synchronized readers and a writer to verify atomic string publication snapshots.
 #[test]
 fn ffi_atomic_publication_across_readers() {
     const ROUNDS: usize = 64;

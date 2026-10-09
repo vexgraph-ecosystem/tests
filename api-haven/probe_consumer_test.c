@@ -39,6 +39,7 @@ static int sFailures = 0;
         }                                                              \
     } while (0)
 
+/* Verifies api-haven can consume Vexspoke app, capture, and process probes through the R2 seam. */
 int main(int argc, const char **argv) {
     // --- vexspoke AppDetect through the api_haven seam ------------------------
     AppDetect *detect = AppDetect_shared();

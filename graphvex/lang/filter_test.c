@@ -7,6 +7,7 @@
 #include <math.h>
 #include <stdio.h>
 
+// Verifies the public filter-language compatibility surface.
 int main(void) {
     assert(sizeof(FilterToken) == 8);
     assert(Filter_identity() == 0);

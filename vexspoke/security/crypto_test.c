@@ -31,6 +31,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Hashes a byte span and compares its hex digest with the supplied expectation.
 static void expect_hex(const void *data, size_t len, const char *want) {
     char got[CRYPTO_SHA256_HEX_SIZE];
     Crypto_sha256Hex(data, len, got);
@@ -39,6 +40,7 @@ static void expect_hex(const void *data, size_t len, const char *want) {
         printf("  sha256 got %s\n", got);
 }
 
+// Checks empty, short, and multi-block SHA-256 results against known digests.
 static void test_sha256_vectors(void) {
     expect_hex("", 0,
                "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
@@ -50,6 +52,7 @@ static void test_sha256_vectors(void) {
                "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1");
 }
 
+// Checks streaming SHA-256 of one million repeated bytes against its reference digest.
 static void test_sha256_million_a(void) {
     uint8_t block[1000];
     memset(block, 'a', sizeof(block));
@@ -65,6 +68,7 @@ static void test_sha256_million_a(void) {
                  "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0") == 0);
 }
 
+// Compares one-shot hashing with varied streaming chunk sizes and zero-length update.
 static void test_streaming_equivalence(void) {
     uint8_t buf[205];
     for (int i = 0; i < 205; i++)
@@ -97,6 +101,7 @@ static void test_streaming_equivalence(void) {
     CHECK(memcmp(dig, oneShot, 0) == 0);       // just proves it returned
 }
 
+// Checks equality and mismatch outcomes at first/last bytes, zero length, and null pointers.
 static void test_constant_time(void) {
     uint8_t a[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
     uint8_t b[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -112,6 +117,7 @@ static void test_constant_time(void) {
     CHECK(!Crypto_constantTimeEquals(a, nullptr, 8));
 }
 
+// Checks hash determinism, input distinction, 32-bit folding, and null/empty results.
 static void test_hash(void) {
     CHECK(Crypto_hash64(nullptr, 4) == 0);
     CHECK(Crypto_hash64("abc", 0) == 0);
@@ -122,6 +128,7 @@ static void test_hash(void) {
     CHECK(Crypto_hash32(nullptr, 3) == 0);
 }
 
+// Checks seeded generator repeatability, byte order, zero seed, and null arguments.
 static void test_rng(void) {
     CryptoRng r1, r2;
     Crypto_rngInit(&r1, 12345);
@@ -158,6 +165,7 @@ static void test_rng(void) {
     Crypto_rngBytes(&rb, nullptr, sizeof(Bytes));
 }
 
+// Checks reseeding reproduces global scalar and byte streams and changes with seed.
 static void test_global_rng(void) {
     Crypto_randomSeed(42);
     uint64_t a = Crypto_randomU64();
@@ -175,6 +183,7 @@ static void test_global_rng(void) {
     CHECK(memcmp(x, y, sizeof(x)) == 0);
 }
 
+// Checks hexadecimal encoding/decoding, capacity limits, invalid characters, and null cases.
 static void test_hex(void) {
     uint8_t Bytes[4] = { 0x00, 0x0f, 0xa5, 0xff };
     char hex[9];
@@ -209,6 +218,7 @@ static void test_hex(void) {
     CHECK(Crypto_fromHex("00", back, 0) == 0);
 }
 
+// Exercises null context, input, and digest pointers across SHA-256 entry points.
 static void test_null_safety(void) {
     uint8_t digest[CRYPTO_SHA256_DIGEST_SIZE];
     Crypto_sha256Init(nullptr);
@@ -220,6 +230,7 @@ static void test_null_safety(void) {
     Crypto_sha256Final(&ctx, nullptr);
 }
 
+// Runs hash vectors, streaming, equality, PRNG, conversion, and null-safety checks.
 int main(void) {
     test_sha256_vectors();
     test_sha256_million_a();

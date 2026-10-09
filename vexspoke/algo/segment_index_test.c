@@ -43,11 +43,13 @@ static int g_checks = 0;
     } while (0)
 
 // Fetch the name of the entry a match points at (via the index's entry row).
+/** Resolves a match's stored field index to its fixture name for readable assertions. */
 static const char *matchName(const SegmentIndex *index, const SegmentMatch *m) {
     const SegmentEntry *e = (const SegmentEntry*) ChunkedList_slot((*index).entries, (*m).entry);
     return e ? (*e).name : "";
 }
 
+/** Adds the deterministic field fixture used by segment matching scenarios. */
 static void seed(SegmentIndex *index) {
     SegmentIndex_add(index, "a.b.c", 1u);
     SegmentIndex_add(index, "b.c", 2u);
@@ -60,6 +62,7 @@ static void seed(SegmentIndex *index) {
     SegmentIndex_add(index, "health", 9u);
 }
 
+/** Checks name segmentation for ordinary, dotted, empty, and malformed names. */
 static void testSplitter(void) {
     printf("[1] the '.' splitter\n");
 
@@ -84,6 +87,7 @@ static void testSplitter(void) {
     CHECK(SegmentIndex_segment(nullptr, 0u, out, sizeof(out)) == -1);
 }
 
+/** Verifies index construction and lookup of the seeded field names. */
 static void testBuild(void) {
     printf("[2] index build + getters + null-safety\n");
 
@@ -110,6 +114,7 @@ static void testBuild(void) {
     CHECK(true);
 }
 
+/** Checks candidate ranking prefers the most specific matching field path. */
 static void testRanking(void) {
     printf("[3] ranked phrase search: exact > suffix > contains\n");
 
@@ -180,6 +185,7 @@ static void testRanking(void) {
     SegmentIndex_free(index);
 }
 
+/** Exercises the mini-map bridge and confirms its matches resolve to source fields. */
 static void testBridge(void) {
     printf("[4] buildFrom(VariableHashMap): payload is the VariableSlot*\n");
 
@@ -228,6 +234,7 @@ static void testBridge(void) {
     VariableHashMap_free(map);
 }
 
+/** Runs the SegmentIndex owner scenarios and reports aggregate assertion status. */
 int main(void) {
     printf("=== SegmentIndex (dotted-name search) Test Suite ===\n\n");
 

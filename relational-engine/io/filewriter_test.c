@@ -30,10 +30,12 @@ static int g_failures = 0;
 
 static char g_dir[256];
 
+/** Builds a bounded path for a leaf inside the test's temporary directory. */
 static void path_of(char *out, size_t cap, const char *leaf) {
     snprintf(out, cap, "%s/%s", g_dir, leaf);
 }
 
+/* Reads a file's size for verifying the writer's on-disk result. */
 static long read_file_size(const char *p) {
     FILE *f = fopen(p, "rb");
     if (!f)

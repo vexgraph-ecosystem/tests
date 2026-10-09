@@ -55,6 +55,7 @@ static TestCase kCases[sizeof kInfos / sizeof kInfos[0]];
 
 #define DARLING_TEST_HAS_FRAMES
 #include "darling/test_application.h"
+// Builds the launcher window and attaches a button for each test entry.
 int main(void) {
     Frame *m = Frame("darling — tests", 460, 700);
 

@@ -18,6 +18,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Exercises LongDouble's composite layout, constructors, CAS, arrays, and null safety.
 int main(void) {
     CHECK(LongDouble_init());
 

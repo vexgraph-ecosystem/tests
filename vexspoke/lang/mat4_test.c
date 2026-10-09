@@ -41,6 +41,7 @@ static int g_failures = 0;
             printf("KNOWN GAP (unproved): %s\n", msg);                     \
     } while (0)
 
+// Returns whether every matrix element matches the identity within tolerance.
 static bool is_identity(const Mat4 *m) {
     for (int r = 0; r < 4; r++)
         for (int c = 0; c < 4; c++)
@@ -49,6 +50,7 @@ static bool is_identity(const Mat4 *m) {
     return true;
 }
 
+// Compares all raw matrix entries within the test's numeric tolerance.
 static bool mat_equal(const Mat4 *a, const Mat4 *b) {
     for (int i = 0; i < 16; i++)
         if (fabsf(Mat4_getRaw(a, i) - Mat4_getRaw(b, i)) > 1e-3f)
@@ -56,6 +58,7 @@ static bool mat_equal(const Mat4 *a, const Mat4 *b) {
     return true;
 }
 
+// Checks allocated and in-place identity/zero construction plus null free.
 static void test_construction(void) {
     Mat4 *m = Mat4_0();
     CHECK(m != nullptr);
@@ -72,6 +75,7 @@ static void test_construction(void) {
         CHECK(Mat4_getRaw(&z, i) == 0.0f);
 }
 
+// Checks column-major indexing, identity, and copying.
 static void test_layout(void) {
     Mat4 m;
     Mat4_zero(&m);
@@ -90,6 +94,7 @@ static void test_layout(void) {
     CHECK(mat_equal(&m, &c));
 }
 
+// Checks multiplication identities, composition, and destination aliasing.
 static void test_multiply(void) {
     Mat4 a;
     Mat4_createTransformationMatrix(1, 2, 3, 0, 0, 0, 2, 2, 2, &a);   // T * S
@@ -119,6 +124,7 @@ static void test_multiply(void) {
     CHECK(mat_equal(&r2, &expect));
 }
 
+// Checks transpose values, involution, and in-place operation.
 static void test_transpose(void) {
     Mat4 a;
     Mat4_set(&a, 0, 1, 4.0f);
@@ -139,6 +145,7 @@ static void test_transpose(void) {
     CHECK(mat_equal(&ip, &t));
 }
 
+// Checks TRS construction and homogeneous/vector transform results.
 static void test_transforms(void) {
     // Identity arguments -> identity.
     Mat4 trs;
@@ -185,6 +192,7 @@ static void test_transforms(void) {
     CHECK(CLOSE(Vec4_getY(&rout), 1.0f));
 }
 
+// Checks axis rotation, zero-axis rejection, and transform chaining.
 static void test_rotate_axis(void) {
     Mat4 ident;
     Mat4_identity(&ident);
@@ -222,6 +230,7 @@ static void test_rotate_axis(void) {
     CHECK(CLOSE(Mat4_get(&s, 0, 3), 1.0f));      // translation preserved
 }
 
+// Checks perspective, Vulkan perspective, and orthographic depth mappings.
 static void test_projections(void) {
     Mat4 p;
     Mat4_perspective(1.5707963f, 1.0f, 1.0f, 100.0f, &p);
@@ -262,6 +271,7 @@ static void test_projections(void) {
     CHECK(CLOSE(Vec4_getZ(&out), 1.0f));
 }
 
+// Checks that look-at maps the world origin into the expected view position.
 static void test_look_at(void) {
     Mat4 v;
     Mat4_lookAt(0, 0, 5, 0, 0, 0, 0, 1, 0, &v);
@@ -274,6 +284,7 @@ static void test_look_at(void) {
     CHECK(CLOSE(Vec4_getW(&out), 1.0f));
 }
 
+// Runs the Mat4 owner cases after initializing the memory substrate.
 int main(void) {
     CHECK(Memory_init(0));
     test_construction();

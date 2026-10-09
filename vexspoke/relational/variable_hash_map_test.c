@@ -52,6 +52,7 @@ static uint32_t slotOf(const char *name) {
     return (uint32_t)(Hash_murmur3Mix64(seed) & 1023u);
 }
 
+// Checks initialization, empty lookup defaults, null receiver behavior, and idempotent shutdown.
 static void testLifecycle(void) {
     printf("[1] init / empty / count / null-safety\n");
 
@@ -79,6 +80,7 @@ static void testLifecycle(void) {
     CHECK(true);
 }
 
+// Checks case folding, lookup, and same-key upsert without duplicate count growth.
 static void testFoldAndBucket(void) {
     printf("[2] lowercase folding + upsert semantics\n");
 
@@ -103,6 +105,7 @@ static void testFoldAndBucket(void) {
     VariableHashMap_shutdown(&map);
 }
 
+// Admits and resolves a key in every supported first-character bucket.
 static void testAllBuckets(void) {
     printf("[3] every first-char bucket is reachable (39 of them)\n");
 
@@ -128,6 +131,7 @@ static void testAllBuckets(void) {
     VariableHashMap_shutdown(&map);
 }
 
+// Checks invalid-name rejection and accepted dotted/name-length boundary forms.
 static void testRejection(void) {
     printf("[4] illegal / malformed names rejected; dotted names accepted\n");
 
@@ -151,6 +155,7 @@ static void testRejection(void) {
     VariableHashMap_shutdown(&map);
 }
 
+// Finds two distinct keys sharing a bucket/slot and verifies both remain retrievable.
 static void testCollisionChain(void) {
     printf("[5] forced collision: two names share a bucket+slot and both resolve\n");
 
@@ -197,6 +202,7 @@ static void testCollisionChain(void) {
     }
 }
 
+// Inserts and resolves 3,000 same-bucket names to exercise chained-slot volume.
 static void testVolume(void) {
     printf("[6] volume: 3000 same-bucket names, all resolve (chained slots)\n");
 
@@ -229,6 +235,7 @@ static void testVolume(void) {
     VariableHashMap_shutdown(&map);
 }
 
+// Checks value/structure projections, null rendering, and truncation reporting.
 static void testStrings(void) {
     printf("[7] toString / toStringStruct: bounded + truncation flagged\n");
 
@@ -256,6 +263,7 @@ static void testStrings(void) {
     VariableHashMap_shutdown(&map);
 }
 
+// Exercises the zero-argument constructor chooser and null-safe freeing.
 static void testArity(void) {
     printf("[8] arity constructor + free\n");
 
@@ -278,6 +286,7 @@ typedef struct VisitProbe {
     bool sawDotted;
 } VisitProbe;
 
+// Accumulates visited pointers and records whether the dotted-name entry was seen.
 static void visitFn(VariableSlot *slot, void *userdata) {
     VisitProbe *p = (VisitProbe*) userdata;
     (*p).visited++;
@@ -286,6 +295,7 @@ static void visitFn(VariableSlot *slot, void *userdata) {
         (*p).sawDotted = true;
 }
 
+// Checks forEach visits each live entry and safely ignores null callback/receiver.
 static void testForEach(void) {
     printf("[9] forEach visits every live entry\n");
 
@@ -307,6 +317,7 @@ static void testForEach(void) {
     VariableHashMap_shutdown(&map);
 }
 
+// Runs lifecycle, key policy, collision/growth, projection, constructor, and iteration checks.
 int main(void) {
     printf("=== VariableHashMap Test Suite ===\n\n");
 
