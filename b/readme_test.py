@@ -68,7 +68,7 @@ class ReadmeTest(unittest.TestCase):
         table = text.split("## List of languages\n", 1)[1].split("## Tree\n", 1)[0]
         names = re.findall(r"^\| ([^|]+?) \|", table, re.M)[2:]
         self.assertEqual(names, sorted(names, key=str.casefold))
-        self.assertEqual(len(names), 20)
+        self.assertEqual(len(names), 21)
         self.assertIn("[ADAPTERS.md](ADAPTERS.md)", text)
         self.assertNotIn("deliberately experimental", text)
 
@@ -83,9 +83,12 @@ class ReadmeTest(unittest.TestCase):
             for phrase in ("GLSL / SPIR-V", ".vert", ".frag", ".comp", ".glsl", ".spv",
                            "glslangValidator -V", "workspace", "standalone"):
                 self.assertIn(phrase, text)
-        self.assertIn("not discovered by this graph", adapters)
-        self.assertIn("There is no `b build glsl`", adapters)
-        self.assertNotIn("GLSL_ADAPTER", registry)
+        self.assertIn("has not migrated to this adapter", adapters)
+        self.assertIn("`b build glsl <directory>`", adapters)
+        self.assertIn("GLSL_ADAPTER", registry)
+        self.assertIn("METAL_ADAPTER", registry)
+        self.assertIn("--plan", readme)
+        self.assertIn("not a sandbox", adapters)
         self.assertIn('strl_push(&g, "glslangValidator")', workspace)
         self.assertIn('strl_push(&g, "-V")', workspace)
         self.assertIn('"quad.vert", "quad.frag"', workspace)
@@ -105,6 +108,16 @@ class ReadmeTest(unittest.TestCase):
                        "--offline", "not type-checking", "parse-only", "SDK 10+",
                        "main.rs", "exactly one", ".csproj"):
             self.assertIn(phrase.lower(), text.lower())
+
+    def test_workspace_and_shader_proof_lawbook_has_registered_owners(self):
+        """Keep proof laws tied to runnable owners without claiming skipped compilers."""
+        text = (ROOT.parents[1] / "tests/test-preferences.md").read_text()
+        for phrase in ("Workspace Assessment and Build Proof Law", "Shader Tool Delegation Proof Law",
+                       "tests/b/adapters/workspace_test.py", "glsl_test.py", "metal_test.py",
+                       "shaderc fixtures are not real glslc proof", "not inherit a green result"):
+            self.assertIn(phrase, text)
+        for owner in ("workspace", "glsl", "metal"):
+            self.assertTrue((ROOT.parents[1] / "tests/b/adapters" / f"{owner}_test.py").is_file())
 
     def test_jetbrains_external_tool_instructions(self):
         text = (ROOT / "JETBRAINS.md").read_text()

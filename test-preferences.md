@@ -56,6 +56,7 @@ blueprints, so their first real commit lands already governed.
 - graphvex Test Laws (R3 GPU)
 - api-haven Test Laws (R3 API)
 - darling Test Laws (R4 UI)
+- b Build Tool Test Laws (standalone tooling)
 
 **Part III — Blueprint Repos** (stub-stage; rules provisional)
 - language Test Laws
@@ -987,6 +988,41 @@ compared, like a device tested in a lab and again in the field.
 | Present-On-Demand and Dirty | `tests/darling/panel/tree_dirty_test.c` | `Panel_isTreeDirty` |
 | Layout Robustness | `tests/darling/panel/layout_robustness_test.c` | `container` |
 | Untrusted Text | `tests/darling/text/untrusted_text_test.c` | markdown/rich_text/input |
+
+---
+
+## b Build Tool Test Laws (standalone tooling)
+
+### Workspace Assessment and Build Proof Law
+
+`tests/b/adapters/workspace_test.py` owns standalone `b build workspace`, not
+Vexgraph's separate `tools/workspace.c` graph. Execute assessment before tools;
+prove read-only plans, real recursive C/Python and native-manifest builds,
+directory/callback grouping, subtree ownership, growable inventories, literal
+paths, progress through failures, aggregate nonzero status and retry recovery.
+Prove broad-scope review gates without sudo, excluded caches/VCS, no directory
+symlink traversal, source/manifest symlink and control-name rejection. Native
+scripts/compiler includes remain trusted; a stable-tree contract is not a
+sandbox or TOCTOU claim. No program run, firmware upload or SQL execution is
+implied by building. Public C clients require strict C23/assertions and applicable
+ASan/UBSan; platform-specific leak-sanitizer gaps remain explicit. Existing
+`tests/b/workspace_test.py` is a distinct ecosystem integration owner and must
+not inherit a green result from these standalone owners.
+
+### Shader Tool Delegation Proof Law
+
+`tests/b/adapters/glsl_test.py` and `metal_test.py` own build-only shader adapters.
+Prove selector/registry/header seams, literal compiler argv, missing tools,
+malformed source/include rejection, compiler and linker failure, cleanup,
+preservation of previously successful output, retry and rejection of both host
+run modes. GLSL stage sources must have real SPIR-V compilation/magic evidence
+for each claimed backend; shaderc fixtures are not real glslc proof. Metal needs
+real AIR/metallib evidence on an installed Apple toolchain; fixtures alone prove
+two-stage invocation/rollback, not compilation. Missing tools are explicit skips,
+never automatic downloads. Compiler success is not GPU rendering evidence.
+Registered runners use `PYTHONPATH=tests/b python3 -m unittest discover
+-s tests/b/adapters -p '*_test.py' -v` with bounded child watchdogs. README,
+ADAPTERS.md and TREE.md remain checked by `tests/b/readme_test.py`.
 
 ---
 
