@@ -9,9 +9,13 @@ Governed by the **Timestamped Test Checklist Law** in `preferences.md`.
   `—` means never checked. Estimates must never be recorded as executed evidence.
 - The hash identifies the tested content. A file change invalidates a previous ✅;
   the old timestamp/evidence remains visible until the next executed check.
-- All non-ignored files are inventoried, including headers, shaders, documentation,
-  build/configuration files, test files, and tools. This report alone is excluded
-  to avoid a self-referential hash. Empty/blueprint frameworks remain visible.
+- The ledger tracks **executable tests only**: compilable/runnable test sources
+  (`*_test.c/.m/.rs/.py`), registered runner scripts (`run.py`, `*_run.py`) and
+  the shared test harness (`test_support.h`). Markdown, documentation, images,
+  configuration and production source are deliberately excluded — a row exists
+  to record a test that can actually run, not a file that never executes.
+  This report alone is excluded to avoid a self-referential hash. A subsystem
+  with no inventoried test is untested, not exempt.
 - An integration pass only applies to explicitly named subjects and scope.
   Neither test-file presence nor a passing build proves every framework file.
 - Platform gaps and omitted cases must be stated in the evidence/scope column.
@@ -24,11 +28,14 @@ Governed by the **Timestamped Test Checklist Law** in `preferences.md`.
 ## Commands
 
 ```sh
-python3 tools/test_checklist.py sync   # inventory files; invalidate stale greens
+python3 tools/test_checklist.py sync   # inventory executable tests; invalidate stale greens
 python3 tools/test_checklist.py check  # reject missing rows or stale results
-# Execute first, then record only the explicitly named subjects:
-python3 tools/test_checklist.py run --file tools/agents.sh -- bash -n tools/agents.sh
+# Execute the test first, then record its executed test file:
+python3 tools/test_checklist.py run --file tests/tools/test_checklist_test.py -- python3 -B tests/tools/test_checklist_test.py
 ```
+
+`run` records only inventoried executable test files; naming a documented or
+production file is rejected because those are not runnable tests.
 
 `run` propagates failures; exit 77 is recorded as skipped, never green.
 Add repeated `--file` arguments only for files actually exercised by the command.
@@ -41,1907 +48,75 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 ## ecosystem/.github
 
-### `ecosystem/.github/profile`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/.github/profile/README.md` | ❌ | 1791384482 | 5475083055ab1cff9e195e126d8a13d24f2ce73db50d5ca7e4a927f7a44066bf | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | stale — content changed; rerun required |
+No inventoried files yet; not verified.
 
 ## ecosystem/ecosystem
 
-### `ecosystem/ecosystem`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/ecosystem/Home.md` | ✅ | 1791444298 | 9a3e4202bb1f7d78e911f9ae8f601f308e00d49285cb136021bf951e0c772cee | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py && python3 -B tests/tools/per_repo_ide_test.py']; macOS offline documentation and IDE-metadata assertions only. No runtime, persistence, allocator or visual proof. | Darkbase documentation reframe: native vex entity store (struct-&gt;Entity, field-&gt;EntityField, function-&gt;EntityFunction), reactive programs, store-vs-executable naming; R2 staged-migration wording and per-repo IDE blueprint contracts preserved. | passed |
-| `ecosystem/ecosystem/_Sidebar.md` | ✅ | 1791384482 | 814c1a95d5137cec5bf1b645aab5d1f92020ee0005220e57bd0853bae8741a95 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/anti.md` | ✅ | 1791384482 | 529fd6f258c1794bf281858ad499cf5f0643653c5cd91b5e526452c9b99549b0 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/api-haven.md` | ✅ | 1791441432 | 5a6cce9c3d3fd093a4f823082400dd15fe9fcd3466210d3093600b545df7b3ae | ['python3', '-B', 'tests/sesh/docs_test.py']; Two offline documentation checks on macOS: owner runner links, scoped snapshot law/proof, new file/directory API proposals and cloud/traversal gaps. Documentation assertions only; no proposed class implementation or workflow execution proof. | Snapshot boundary and public FileSession/DirectorySession proposal documented without cloud or directory readiness inflation | passed |
-| `ecosystem/ecosystem/darkbase.md` | ✅ | 1791447462 | 32fd17f20eeeb8bfd24af5d6aba2609f5992fa53410774ec709ea1c658b16079 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only. | Darkbase wiki: record the M2 persistence slice (header/codec/checksum rows moved to partial) and the current status. | passed |
-| `ecosystem/ecosystem/darling-editor.md` | ✅ | 1791384482 | 3f3d66d5485edf7f5db9a02d3ee99eac7646403423c9fd7952629b64054aee0b | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/darling.md` | ✅ | 1791384482 | 38b9a22f1d3043b3fc4c04e7572d88ea7c560984fe43d3acbf120fab3b8f858c | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/drawling.md` | ✅ | 1791384482 | a5b488e01a8aef1fa585d0c110de090b44ebe7e08e060d09aceb05c6c729937c | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/graphvex.md` | ✅ | 1791384482 | 0b8388f5896a899d120c6213dbfa0fe687c567fff578bbba05aa92a74ef445a4 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/hotcwap.md` | ✅ | 1791384482 | 2e54d777c5f9936299d91f56a33e88f0e5c28d2512f776a2018215a8fe479e2b | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/impedance.md` | ✅ | 1791384482 | c1b36803f8c2b45f50e5f4b2bcb27052d25a7083f6e24b314a0a59505befb2d9 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/language.md` | ✅ | 1791384482 | 3f1117b388fa8ebe0ace4834cd50146af5f97e9244e03d38f3180b1a81a54174 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/relational-engine.md` | ✅ | 1791526740 | 85a77bae357e275abea516c5dc78914ae2df6bdc1cf898d84708ba99d788cbd7 | ['python3', '-B', 'tests/relational-engine/primer_test.py']; Offline mechanical document owner review against current public exports and identity source; not whole-repository source audit or runtime/visual/platform readiness. | Primer and C row-pool competency checks: actual export names, non-wrapping history, opt-in C borrowing, README state/limitations, local ownership/status contract and partial wiki readiness. | passed |
-| `ecosystem/ecosystem/samplerate.md` | ✅ | 1791384482 | 323ea1e265700e7e61aa572ed84da17419d17b383b658cd02016055b6b7c902d | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/semicolon.md` | ✅ | 1791384482 | 4c12287dc6c99381f2d237e3963161166543844a58357e1a1369bc504752b489 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/ecosystem/sesh.md` | ✅ | 1791447304 | a5126079180e2682f68dfd1489eb4a3405bc7ade010ebde70881c06eff36ddf2 | ['python3', '-B', 'tests/sesh/docs_test.py']; Two macOS offline documentation checks: seven physical class/header pairs, Sesh public composition, scoped identity/receipt laws, owner runner, borrowed lifetime and file/directory proposal distinction. Documentation assertions only; no OAuth/cloud, distributed CAS or file/directory workflow proof. | Session composition vocabulary, local identity/admission proof and explicit provider/workflow gaps | passed |
-| `ecosystem/ecosystem/vexspoke.md` | ✅ | 1791449229 | 1aadac165162db04b08ab6775aa978a4ac42dc25cd5b83cb00167a6b0d855787 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py']; macOS; offline documentation/layout assertions only; not runtime proof | Readiness wiki rows rehomed for the type-algebra ownership move (algebra now relational-engine-owned; vexspoke keeps the registry) | passed |
-
-### `ecosystem/ecosystem/tools`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/ecosystem/tools/validate_tables.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+No inventoried files yet; not verified.
 
 ## ecosystem/projects/anti
 
-### `ecosystem/projects/anti`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/projects/anti/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/projects/anti/CMakeLists.txt` | ✅ | 1791337104 | 0a856534d56695173486149417ea2d5068bd86d352bb555d3c96a36b806fa187 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/projects/anti/CONTRIBUTING.md` | ✅ | 1791384482 | d12b837c21ef74b349a5ccb2327af60a9302a39c3cb3b32c9ae509e33781c7ba | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/projects/anti/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/projects/anti/README.md` | ✅ | 1791384482 | f5d72eb78f48410587612aaa757e7a6e81a1ae2c838e2aa82f123985a66e0e47 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+No inventoried files yet; not verified.
 
 ## ecosystem/projects/drawling
 
-### `ecosystem/projects/drawling`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/projects/drawling/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/projects/drawling/CMakeLists.txt` | ✅ | 1791337104 | 05c40afb34e0cbf27b8cf6818efac3ff1802e214c81fdd3ade8060e20f317c01 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/projects/drawling/CONTRIBUTING.md` | ✅ | 1791384482 | 0df914467baa43c3759f3c72a7e1d220b4615163094e865615d1e1e78cd1d475 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/projects/drawling/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/projects/drawling/README.md` | ✅ | 1791384482 | 48f62dbf6aabf5fdd5d754f2e64b9dfbae166beeaa4777897712041f168457ed | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+No inventoried files yet; not verified.
 
 ## ecosystem/projects/impedance
 
-### `ecosystem/projects/impedance`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/projects/impedance/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/projects/impedance/CMakeLists.txt` | ✅ | 1791337104 | ce4f97902d02afb21afdc71d8036524831381b4ebe0c00fd881768fd6fec9bd1 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/projects/impedance/CONTRIBUTING.md` | ✅ | 1791384482 | b9e8cc510320c60cc1029ceeb58fc4af7162782ee0de657426b69ba8dead3430 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/projects/impedance/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/projects/impedance/README.md` | ✅ | 1791384482 | 1bbfbec6ca59593547313387f41b7d952b405584a472cabeba4b6aa19cb19025 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-
-### `ecosystem/projects/impedance/src`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/projects/impedance/src/impedance.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/projects/impedance/src/impedance.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/projects/impedance/src/main.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+No inventoried files yet; not verified.
 
 ## ecosystem/projects/semicolon
 
-### `ecosystem/projects/semicolon`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/projects/semicolon/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/projects/semicolon/CMakeLists.txt` | ✅ | 1791337104 | 0919d872153cf7fd12b2255c47fb46ba6bd1a7f1a2baa18231f1151165825f44 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/projects/semicolon/CONTRIBUTING.md` | ✅ | 1791384482 | 892a8f5a8657a57c93e9504adc826583b21615ddd3698ce9c5887bf4ab0a08b5 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/projects/semicolon/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/projects/semicolon/README.md` | ✅ | 1791384482 | 981ab93013f60e49cfa97ac7d048e4abf0fd82b5a4611cf3f52c0b708391bf84 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+No inventoried files yet; not verified.
 
 ## ecosystem/repos/api-haven
 
-### `ecosystem/repos/api-haven`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/.gitignore` | ✅ | 1791337104 | 78d7956890e6e431ebb31fc969c273a8411301b18d35b93baa0a8401c45a3a61 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/repos/api-haven/CMakeLists.txt` | ✅ | 1791337104 | 8a7763b0d01c4ba2ec0a8af6121ca1305cda52382785da8fb7ccef3f68878fc2 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/repos/api-haven/CONTRIBUTING.md` | ✅ | 1791441263 | e3e5cd107df785dd312c318dd8f520484634aba797f3c4bde5edd52a267e9452 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS seven offline architecture/documentation checks only; not runtime/visual readiness. | Migration owner documentation with actual header geometry and draft watcher gaps | passed |
-| `ecosystem/repos/api-haven/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/README.md` | ✅ | 1791471884 | c06b5ec00333734e9352438454752e4bed900e9c41d8614025de8a0fef4bcbee | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && python3 -B tests/tools/per_repo_ide_test.py &gt;/dev/null && echo DOC_IDE_OK']; macOS offline documentation + IDE-metadata assertions only. Not runtime behavior, network, GPU, or visual proof. | Transparent Competency Law pass (5 repos, source-grounded reads): each README gains '## Current State' + '## Scope and Limitations'; drift fixed in api-haven (client.c overclaim, api/discord.c, anthropic 'planned', _trash path, personal/b, attic/TLS), sesh (networked-collaboration overclaim re-framed as roadmap), darling (layout/focus/bridge overstated softened); language/samplerate marked source-free blueprints. | passed |
-| `ecosystem/repos/api-haven/api-haven-preferences.md` | ✅ | 1791441042 | 8185781cf6cff0cf0d682f042d4f3e8cb2ac5d4f4916211cd75860e4dc773209 | ['python3', '-B', '-c', 'import subprocess; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in ("tests/tools/ecosystem_docs_test.py","tests/relational-engine/preferences_test.py","tests/relational-engine/scaffold_test.py")]']; macOS offline documentation/layout checks and strict CMake metadata with locked warnings-denied Cargo check; not runtime, complete per-file readiness, other-platform or visual proof. Native implementation proof recorded separately. | Production ownership docs and IDE scaffold consistency | passed |
-
-### `ecosystem/repos/api-haven/src/ai`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/ai/ai_chat.c` | ✅ | 1791504436 | 89c122e1bad824b8516576fc29487c5d3d5f5aa82c1532bee3c158b25a03361c | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/ai/ai_chat.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/ai/ai_chat_anthropic.c` | ✅ | 1791504436 | d9557cb5afff9f5aa3a5cbe17ddc83e421d0d53d6e41d39abef3542b537af1dd | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/ai/ai_chat_anthropic.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/ai/ai_chat_gemini.c` | ✅ | 1791504436 | 28e687c3b470fca0ee80286a5831279896fbde7be23c4a34eb4f9e1f53850f30 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/ai/ai_chat_gemini.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/ai/ai_provider.c` | ✅ | 1791504436 | 4c1a9afe983f969ad938f84b8ec3d6767640fa8ee7542283aa8f55741300da48 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/ai/ai_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/ai/ai_sse.c` | ✅ | 1791504436 | de6f22f0fa32dcf2dada7b695165f2076a3ae2fa035d61b958bbba5a49451886 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/ai/ai_sse.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/ai/data`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/ai/data/providers_china.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/ai/data/providers_europe.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/ai/data/providers_global.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/api`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/api/auth.c` | ✅ | 1791504436 | 8b64a1981bc096bba531e227512a908d54808d63dd2272a55bd85883966e7cb1 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/api/auth.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/api/client.c` | ✅ | 1791504436 | b42a7163f304306078b33517e7be0b9476d0f80ea159df71eaba085bf6119408 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/api/client.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/api/discord.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/api/haven_ws_fanout.c` | ✅ | 1791504436 | 5df9456ef6d47c72a0dd9eaf6e89208845d32ba89d9847240c505e0a7b5ef558 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/api/haven_ws_fanout.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/api/rest.c` | ✅ | 1791504436 | 1a660c98faafac879e996a950a90105747769151db70b7538d1a8437c730e4f2 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/api/rest.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/app`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/app/app_broker.c` | ✅ | 1791504436 | 3d51da95bd51e8b0c4d41671974d26acde55ea672ebd08ea6b833f6cd02b089d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/app/app_broker.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/app/app_provider.c` | ✅ | 1791504436 | 350ed67b6d90f95a62580f672000d0ad921d680e2097659cbd74e960c9bf5f71 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/app/app_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/asset`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/asset/asset_broker.c` | ✅ | 1791504436 | 11ca0968cc46fb715fc97ccf16b058b23bd1f2898cadebc52817870eded66550 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/asset/asset_broker.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/asset/asset_provider.c` | ✅ | 1791504436 | ac56975b33b7fb05a8ae80808454784fcdbbfec3bbbf921daed6bdc689b272df | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/asset/asset_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/com/discord`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/com/discord/discord.c` | ✅ | 1791504436 | f5eca8f4fc12c83d3855b5b062f9720e479ad9d25e4039717183c12fa9504270 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/com/discord/discord.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/com/discord/discord_webhook.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/com/slack`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/com/slack/slack.c` | ✅ | 1791504436 | d1bb5131966c40d49cbfb2186b5750635677cc2fb5297babf69a06cc5c3d6a58 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/com/slack/slack.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/database`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/database/db_provider.c` | ✅ | 1791504436 | 61ddcb75b50ffa31692a9e65126555057e9167daee69e6f165c433dc027737e9 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/database/db_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/database/db_sqlite_file.c` | ✅ | 1791504436 | 8428aeb112dffb6d3652ef143146bcdb92d4508086df6a3055b38ad9e21356f4 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/database/db_sqlite_file.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/database/data`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/database/data/db_providers.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/harness`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/harness/engine_provider.c` | ✅ | 1791504436 | 4dab33ed0e347f0d4e58a0e96923924c8b0b321412eb917a7fa98d38b487ef73 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/harness/engine_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/src/harness/harness.c` | ✅ | 1791504436 | 91c72264ae1d467ffef271b891e157bc73ffb97557d3ec692de786c0314e8a4b | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/harness/harness.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/main`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/main/mcp_main.c` | ✅ | 1791504436 | 8960589e9fd780f0a6a3e62fa1e52cf217f44af8caa6c4fdebbae296075d0fdf | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-
-### `ecosystem/repos/api-haven/src/mcp`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/mcp/mcp_server.c` | ✅ | 1791504436 | 42641a0a0beee2c70e8a44792cde03b1def24f4b3731136f7448e4099663cc87 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/mcp/mcp_server.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/search`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/search/search_provider.c` | ✅ | 1791504436 | 24620717bb8c34026088dd032267bcd14c5f15db4df9eea51f3f26bcd7e3f871 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/api-haven/src/search/search_provider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/api-haven/src/storage`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/src/storage/snapshot_io.h` | ✅ | 1791441424 | ca8f872be28c8e0ef77973fcc3fab29a91239573aabe2efd5d4990d5d5ef6c65 | ['python3', 'tests/sesh/run.py']; macOS isolated strict C23 -Wall -Wextra -Werror -O2 assertions plus ASan/UBSan; two owner executables per configuration and compile-negative arity. Offline fake put/get only, ten-second execution watchdogs. No real Drive/iCloud, TLS/OAuth, engine/host integration, provider idempotency, durable journal, overall pending deadline, FileSession/DirectorySession, concurrency or other-platform proof; LeakSanitizer unavailable. | Caller-buffer snapshot core and API provider vocabulary: copied admission, retry/cancel/recovery, exact rejection diagnostics and ignored disposable fixture | passed |
-
-### `ecosystem/repos/api-haven/tools`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/api-haven/tools/gen_db_providers.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/api-haven/tools/gen_providers.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+No inventoried files yet; not verified.
 
 ## ecosystem/repos/darkbase
 
-### `ecosystem/repos/darkbase`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darkbase/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/repos/darkbase/CMakeLists.txt` | ✅ | 1791469254 | ed9478be36e5ee9e1f3a91111320d43307d80e184983941f579e61e855f3d3ed | ['bash', '-lc', 'python3 -B tests/tools/per_repo_ide_test.py &gt;/dev/null && python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && echo DOC_IDE_OK']; macOS offline documentation + IDE-metadata assertions. Not runtime store behavior, persistence, or visual proof. | Darkbase README adds the required '## Current State' honest assessment and '## Scope and Limitations' section (Transparent Competency Law); its CMake IDE entry graduates from an LANGUAGES NONE blueprint to an EXCLUDE_FROM_ALL C23 object target indexing src/**; per_repo_ide_test classifies darkbase as a CODE entry with representative src/database/database.c. Doc and IDE contracts both green. | passed |
-| `ecosystem/repos/darkbase/CONTRIBUTING.md` | ✅ | 1791444298 | f049c6353bc2cc38934f210776a27acc0d59a5f4b2935842fe5c9c475e434891 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py && python3 -B tests/tools/per_repo_ide_test.py']; macOS offline documentation and IDE-metadata assertions only. No runtime, persistence, allocator or visual proof. | Darkbase documentation reframe: native vex entity store (struct-&gt;Entity, field-&gt;EntityField, function-&gt;EntityFunction), reactive programs, store-vs-executable naming; R2 staged-migration wording and per-repo IDE blueprint contracts preserved. | passed |
-| `ecosystem/repos/darkbase/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darkbase/README.md` | ✅ | 1791473727 | 2ed5a9c6c47e792494cf6d911bf3784143bae487d2de264261225ef3b4702cb5 | ['./tools/b', 'test', 'database_test']; macOS arm64; darkbase owner test. Not crash/power-loss durability, WAL or Windows proof. | Blockers FIX: Database_save now publishes atomically (temp sibling -&gt; fsync -&gt; rename), so a failed/rejected save never truncates the previous snapshot; owner test proves atomic replace, temp cleanup (no leftover .tmp) and prior-snapshot survival after a rejected save. | passed |
-| `ecosystem/repos/darkbase/darkbase-preferences.md` | ✅ | 1791473260 | 1c6e7154fe0c2ddb93b60683b66d08a8ba5a04763adddb931d9abbc0af99feea | ['bash', '-lc', './tools/b test database_test &gt;/dev/null 2&gt;&1 && python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && echo OK']; macOS arm64; darkbase owner test + offline lawbook/doc assertions only. Not cross-endian, runtime or visual proof. | Byte-Native Persistence Law + INTENTIONAL(vex) note: values are raw uint8_t[] in memory order, no endianness machinery (little-endian floor), toString is a cold converter only; canonical variable { uint8_t name[24], void* pointer }. | passed |
-
-### `ecosystem/repos/darkbase/src/darkbase`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darkbase/src/darkbase/type.h` | ✅ | 1791449327 | 6d0b3b1da6688108aaeaf6112deae8aae414f1eff80a5ed8a5dbc2d056aa3b56 | ['bash', '-lc', 'printf "#include \\"darkbase/type.h\\"\\n_Static_assert(TYPE_DB_DATABASE_SINGLETON == (SUGAR_VEX&#124;PROJ_DARKBASE&#124;FORM_STRUCT_SINGLETON&#124;ID_DB_DATABASE), \\"m\\");\\n_Static_assert(ARCH_DARKBASE == 6u, \\"arch\\");\\n" &#124; clang -std=gnu23 -Wall -Wextra -Werror -I ecosystem/repos/darkbase/src -I ecosystem/repos/vexspoke/src -I ecosystem/repos/relational-engine/src -x c -fsyntax-only - && echo HEADER_CONTRACT_OK']; macOS arm64; header contract only. Not runtime store behavior or persistence. | Darkbase registry header (post type-algebra move): PROJ_DARKBASE/ARCH_DARKBASE now come from the shared RE type/type.h re-exported through oop/type.h. Strict C23 static asserts on TYPE_DB_DATABASE_SINGLETON composition and ARCH_DARKBASE. | passed |
-
-### `ecosystem/repos/darkbase/src/database`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darkbase/src/database/database.c` | ❌ | 1791473727 | 243e93b7463dd2dfe6cd2179469433274ed37b3522a84b2ad1d54cfb6d409cd6 | ['./tools/b', 'test', 'database_test']; macOS arm64; darkbase owner test. Not crash/power-loss durability, WAL or Windows proof. | Blockers FIX: Database_save now publishes atomically (temp sibling -&gt; fsync -&gt; rename), so a failed/rejected save never truncates the previous snapshot; owner test proves atomic replace, temp cleanup (no leftover .tmp) and prior-snapshot survival after a rejected save. | stale — content changed; rerun required |
-| `ecosystem/repos/darkbase/src/database/database.h` | ✅ | 1791447461 | da48ebf1ed6b14777a72d5272c9619b1eb7cc74385307532e361f50441076e4e | ['./tools/b', 'test', 'database_test']; macOS arm64; registered owner. No mmap, per-Field codec, crash durability or concurrency proof. | Database M2 persistence slice: save/load a .vexdb file (64-byte VEXDB01 header, sequential entity records, flat row Bytes by Struct.size, trailing CRC32). Owner test proves round-trip, arena-owned loaded rows, insert-into-loaded rejection, duplicate-load rejection, and atomic reject on a corrupted checksum. | passed |
-| `ecosystem/repos/darkbase/src/database/database_result.c` | ❌ | 1791445941 | 717227e7db1bc939914e1c23b505d7fc566f292ec4df3053a39eb08d1b979a55 | ['./tools/b', 'test', 'database_result_test']; macOS arm64; cursor owner only. Not persistence or visual proof. | DatabaseResult dest-last row cursor: borrows one entity's row-pointer list, walks it without copying, rewinds, snapshots count, and rejects a null source. Strict C23 + owner test. | stale — content changed; rerun required |
-| `ecosystem/repos/darkbase/src/database/database_result.h` | ✅ | 1791445941 | f7bbefd65dc03682e73ee96d70e2c4feac77827252ab319bc682bb360d46b23b | ['./tools/b', 'test', 'database_result_test']; macOS arm64; cursor owner only. Not persistence or visual proof. | DatabaseResult dest-last row cursor: borrows one entity's row-pointer list, walks it without copying, rewinds, snapshots count, and rejects a null source. Strict C23 + owner test. | passed |
+No inventoried files yet; not verified.
 
 ## ecosystem/repos/darling-framework
 
-### `ecosystem/repos/darling-framework`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/repos/darling-framework/APPLICATION_LIFECYCLE.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/CMakeLists.txt` | ✅ | 1791441165 | 02cf8e5a8fd40c361cd2e5014df45f3aba5f8a68169204ac194785f8940e9f31 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS offline four per-repo configure/index/C23 checks; engine include option after CPU roots. IDE metadata only, runtime native ownership proved separately; no visual or Windows proof. | Canonical engine IO/NIO in consumer IDE adapters | passed |
-| `ecosystem/repos/darling-framework/CONTRIBUTING.md` | ✅ | 1791441263 | c34c5f5a985347f98a12fb7f60ad8ec0603677478bbc554d2d8e0e238a2cf94a | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS seven offline architecture/documentation checks only; not runtime/visual readiness. | Migration owner documentation with actual header geometry and draft watcher gaps | passed |
-| `ecosystem/repos/darling-framework/CURSORS.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/README.md` | ✅ | 1791471884 | 5842082541e4e679157b178238f80c51101839b536e0deb7f09105e654d19948 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && python3 -B tests/tools/per_repo_ide_test.py &gt;/dev/null && echo DOC_IDE_OK']; macOS offline documentation + IDE-metadata assertions only. Not runtime behavior, network, GPU, or visual proof. | Transparent Competency Law pass (5 repos, source-grounded reads): each README gains '## Current State' + '## Scope and Limitations'; drift fixed in api-haven (client.c overclaim, api/discord.c, anthropic 'planned', _trash path, personal/b, attic/TLS), sesh (networked-collaboration overclaim re-framed as roadmap), darling (layout/focus/bridge overstated softened); language/samplerate marked source-free blueprints. | passed |
-| `ecosystem/repos/darling-framework/SCAFFOLDS.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/STATUS.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/scaffolds.json` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/anim`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/anim/anim.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/anim/anim.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/bridge`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/bridge/clipboard.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/bridge/clipboard.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/bridge/font_bridge.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/bridge/font_bridge.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/bridge/panel_bridge.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/bridge/panel_bridge.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/bridge/text_bridge.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/bridge/text_bridge.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/bridge/window_bridge.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/bridge/window_bridge.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/button`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/button/button.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/button/button.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/button/checkbox.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/button/checkbox.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/button/switch.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/button/switch.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/c23`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/c23/darling-type.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/c23/darling-type.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/c23/event_invoke.c` | ✅ | 1791504436 | e693d024af2c37da76189fe42d4e6b82fced9ef909dfc848aceacaa0faf650d1 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/c23/event_invoke.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/c23/overload.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/c23/overload.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/canvas`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/canvas/canvas.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/canvas/canvas.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/code`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/code/code_field.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/code/code_field.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/color`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/color/color.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/color/color.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/combo`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/combo/select.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/combo/select.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/compositor`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/compositor/compositor.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/compositor/compositor.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/cursor`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/cursor/cursor.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/cursor/cursor.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/dialog`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/dialog/alert_dialog.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/alert_dialog.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/color_dialog.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/color_dialog.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/dialog.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/dialog.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/file_dialog.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/file_dialog.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/input_dialog.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/input_dialog.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/option_dialog.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/dialog/option_dialog.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/drawable`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/drawable/object_3d.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/drawable/object_3d.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/drawable/picture.c` | ✅ | 1791504436 | 8820ac05823075dfd0235047eed0108e29a085cf43ae9549bb7784a55db92453 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/drawable/picture.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/drawable/viewer_3d.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/drawable/viewer_3d.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/emoji`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/emoji/emoji.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/emoji/emoji.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/event`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/event/action.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/action.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/bridge.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/bridge.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/document.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/document.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/focus.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/focus.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/gesture.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/gesture.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/hit.c` | ✅ | 1791504436 | c47c7bc0d75faf0aa204d220058efe265cdfbdb2669db4817e36ed90ce864ba0 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/event/hit.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/key.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/key.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/tree.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/tree.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/value.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/event/value.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/export`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/export/html_exporter.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/export/html_exporter.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/feedback`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/feedback/focus_ring.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/feedback/focus_ring.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/feedback/progress_bar.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/feedback/progress_bar.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/feedback/skeleton.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/feedback/skeleton.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/feedback/spinner.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/feedback/spinner.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/frame`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/frame/frame.c` | ✅ | 1791504436 | d007d7dfdc44d8a051f27028475f57c5896272bf2634048b720d75636d614af6 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/frame/frame.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/frame/frame_internal.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/game`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/game/cooldown_button.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/cooldown_button.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/damage_numbers.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/damage_numbers.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/dialog_box.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/dialog_box.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/gamepad_nav.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/gamepad_nav.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/hud_bar.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/hud_bar.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/inventory_grid.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/inventory_grid.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/minimap.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/game/minimap.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/graph`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/graph/node_editor.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/graph/node_editor.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/graph/plot.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/graph/plot.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/history`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/history/history.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/history/history.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/input`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/input/input.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/input.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/input_otp.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/input_otp.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/knob.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/knob.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/pointer.c` | ✅ | 1791504436 | f698887c7de67fbf4a2f9ed9b511a7d288f4c566d2c55580a89d57bc2adb53eb | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/input/pointer.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/scroll_bar.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/scroll_bar.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/search_field.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/search_field.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/slider.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/slider.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/textarea.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/input/textarea.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/kit`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/kit/avatar.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/avatar.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/badge.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/badge.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/breadcrumb.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/breadcrumb.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/chip.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/chip.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/pagination.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/pagination.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/pill.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/pill.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/stat_card.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/kit/stat_card.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/label`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/label/kbd.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/label/kbd.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/label/label.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/label/label.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/label/rich_label.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/label/rich_label.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/layout`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/layout/container.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/layout/container.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/list`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/list/list_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/list/list_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/overlay`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/overlay/command_palette.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/command_palette.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/context_menu.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/context_menu.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/menu.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/menu.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/overlay_root.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/overlay_root.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/popover.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/popover.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/toast.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/toast.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/toast_stack.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/toast_stack.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/tooltip.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/overlay/tooltip.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/panel`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/panel/accordion.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/accordion.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/card_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/card_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/dock_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/dock_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/flex_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/flex_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/grid_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/grid_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/layered_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/layered_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/markdown_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/markdown_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/material_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/material_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/panel.c` | ✅ | 1791504436 | 532da55d338af0cbcf90de349ff3defd548bf59372f34192a11e8ee078f9dee3 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/panel/panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/panel_internal.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/rich_text_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/rich_text_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/scroll_panel.c` | ✅ | 1791504436 | 3000e2e548e084b7607e72cb9ebae6337be61dde5285b7bd83aee858de4fceb7 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/panel/scroll_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/section_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/section_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/split_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/split_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/svg_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/svg_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/tab_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/tab_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/table_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/table_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/tree_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/tree_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/video_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/video_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/web_panel.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/panel/web_panel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/picker`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/picker/color_picker.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/picker/color_picker.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/picker/color_swatch.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/picker/color_swatch.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/picker/date_picker.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/picker/date_picker.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/properties`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/properties/add.c` | ✅ | 1791504436 | 401d344e4481b8c956c744d06f273c32e87adc655f2a2710f35063acc61a0d7f | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/properties/add.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/remove.c` | ✅ | 1791504436 | 72c06767d504accb48143187a3a2b29764a5db5c5008c2d77041f852c1de8e39 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/properties/remove.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/revalidate.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/revalidate.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_alignment.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_alignment.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_anchor.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_anchor.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_background_color.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_background_color.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_blur.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_blur.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_border.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_border.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_corner_radius.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_corner_radius.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_cursor.c` | ✅ | 1791504436 | ba15ffd77800a92c8b5b3604e6c9c3bf0614ca91092d044cdde1355d15b3c2b0 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/properties/set_cursor.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_enabled.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_enabled.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_focus.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_focus.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_font.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_font.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_gap.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_gap.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_location.c` | ✅ | 1791504436 | a4670d15ea6f150fbb62285d1eb5c1749784a82730378f222c4faacdb88daf6a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/properties/set_location.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_margin.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_margin.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_maximum_size.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_maximum_size.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_minimum_size.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_minimum_size.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_padding.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_padding.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_pivot.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_pivot.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_scroll_offset.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_scroll_offset.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_shadow.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_shadow.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_size.c` | ✅ | 1791504436 | bd2f85e4b56561fd4058807c70329ba135c5e2882f37686dc5c6625cbe91cd48 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/darling-framework/src/properties/set_size.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_sizing_mode.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_sizing_mode.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_text.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_text.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_theme.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_theme.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_value.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_value.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_visible.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/properties/set_visible.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/radio`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/radio/radio_group.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/radio/radio_group.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/scene`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/scene/scene.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/scene/scene.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/scene/scene_2d.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/scene/scene_2d.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/scene/scene_3d.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/scene/scene_3d.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/shape`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/shape/icon_image.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/shape/icon_image.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/spatial`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/spatial/property_inspector.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/spatial/property_inspector.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/spatial/spatial_canvas.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/spatial/spatial_canvas.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/spatial/transform_box.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/spatial/transform_box.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/text`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/text/text_core.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/text/text_core.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/text/typography.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/text/typography.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/darling-framework/src/theme`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/darling-framework/src/theme/theme.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/darling-framework/src/theme/theme.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+No inventoried files yet; not verified.
 
 ## ecosystem/repos/graphvex
 
-### `ecosystem/repos/graphvex`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/.gitignore` | ✅ | 1791337104 | f7f50f25b0fc4442391fe39905395e28f59f0eb16358327b3119c8a1e52d0c0a | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/repos/graphvex/CMakeLists.txt` | ✅ | 1791441165 | 1a316226048bf7def40ea75fe3593a7ab57d3e85aa6ebf39b07713a703391100 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS offline four per-repo configure/index/C23 checks; engine include option after CPU roots. IDE metadata only, runtime native ownership proved separately; no visual or Windows proof. | Canonical engine IO/NIO in consumer IDE adapters | passed |
-| `ecosystem/repos/graphvex/COMPOSITOR.md` | ❌ | 1791343963 | e2965a387d1e3057387b4f4feeea08224f962ebf00f8029111a2bb48e9530bf2 | ['python3', '-c', 'import subprocess; [subprocess.run(["tools/b","test",name],check=True,timeout=120) for name in ("sampled_image_test","filter_gallery_fixture_test","gpu_scope_test","image_test","picture_test","vk_renderer_test")]; subprocess.run(["python3","-B","tests/tools/compositor_contract_test.py","CompositorContractTest.test_gallery_uses_gpu_scope_not_cpu_fixture","CompositorContractTest.test_sampled_image_constructor_dispatch","CompositorContractTest.test_documented_reference_client_compiles","CompositorContractTest.test_filter_constructor_arity_is_rejected_for_intended_reason","CompositorContractTest.test_gpu_color_pass_public_arity_and_no_cpu_extension"],check=True,timeout=60); subprocess.run(["python3","-B","tests/tools/filter_gallery_resources_test.py"],check=True,timeout=180)']; macOS strict registered image/sample/scope/Picture/renderer tests; gallery app build/bundle only, no window/presentation/appearance or memory profiling. Five selected docs checks, not full legacy-path/wiki suite; readiness wiki and Darling lawbook unavailable. Numeric/ASan/UBSan proof recorded separately. | Final strict registered owner runs, five selected documentation/constructor checks and gallery resource bundle build/refresh/signature, no interactive launch | stale — content changed; rerun required |
-| `ecosystem/repos/graphvex/CONTRIBUTING.md` | ✅ | 1791384482 | a1230ec614f50d5ea6fa477ef7bed4e746bed9d33d4de5481d7d0df879544a09 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/repos/graphvex/FILTERS.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/README.md` | ✅ | 1791469296 | 7cefb62799846d082810de6704225e485e9af9bc4368715513b6490e8944ada2 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py']; macOS; offline documentation/layout assertions only; not runtime, GPU or visual proof | Transparent Competency Law: graphvex README gains a Current State assessment and a Scope and Limitations section, evidence-bounded and independently assessed | passed |
-| `ecosystem/repos/graphvex/graphvex-preferences.md` | ✅ | 1791441042 | 086f3722215b9b161d4a78220ffdd72a9c8cb5d751bc5b4b95f3a5c9c4c97ae3 | ['python3', '-B', '-c', 'import subprocess; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in ("tests/tools/ecosystem_docs_test.py","tests/relational-engine/preferences_test.py","tests/relational-engine/scaffold_test.py")]']; macOS offline documentation/layout checks and strict CMake metadata with locked warnings-denied Cargo check; not runtime, complete per-file readiness, other-platform or visual proof. Native implementation proof recorded separately. | Production ownership docs and IDE scaffold consistency | passed |
-
-### `ecosystem/repos/graphvex/src`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/board.c` | ✅ | 1791504436 | 4adbea9ee105c205fe02187006d219e1ea9c39fe46d16bdd79e1918ad0e6e8eb | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/board.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/image.c` | ✅ | 1791504436 | bfb5a88d55103244a4d44e4da3e5f6135fffedcc76e0801736869358279b53c2 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/image.h` | ❌ | 1791343936 | 429a758b9893f55c7f95adb40ce97a816e957579aae1dbdfc35cd433d1692235 | ['python3', '-B', 'tests/tools/sampled_texture_test.py']; macOS Apple Silicon actual Vulkan -O2 -Wall -Wextra -Werror ASan/UBSan assertions, 30s runtime watchdogs. Every sunflower sampled output pixel equals readback reference; GPU-only Images, 576 vertex Bytes/image. No gallery/window/visual approval or process-footprint/drag profiling. macOS14 runtime (local loader built macOS26), other hosts, validation layers, real device loss/OOM and generic all-public renderer coverage remain gaps; sanitizer covers host, not GPU shaders. | Final optimized sanitized sampled-texture and actual GPU three-scope pixel proof: growth, stable VBO, alpha/clip/order, CPU edit invalidation, independent frame lifetime, scope teardown and injected upload/frame/scope timeout recovery | stale — content changed; rerun required |
-
-### `ecosystem/repos/graphvex/src/compositor`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/compositor/color_pass.c` | ✅ | 1791504436 | b2b1eab9668dfb2d6ac8e8e88ee5833a22f6f73db27b30969dc388a124c07b19 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/compositor/color_pass.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/compositor/compositor.c` | ✅ | 1791504436 | 1558a53d6f54fc86c39e4f0d71b4a1ccbee22e6414560ead51eda2f4e7435620 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/compositor/compositor.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/compositor/compositor_image.c` | ✅ | 1791504436 | d8d399a3b380b2c2d367026b14264039e5cd8b49ec2b34c29f2147d79a8e154b | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/compositor/compositor_image.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/compositor/compositor_scope.c` | ✅ | 1791504436 | f12b27df8f2239b76aeedac59c180ce3fa0daf3fe0d5dd4d012b761943cb9985 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/compositor/compositor_scope.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/compositor/compositor_submit.c` | ✅ | 1791504436 | a4a0f5dcb971f194740f3da5c492c45dfaaa58ae96e4b380ab2fff63a5828423 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/compositor/compositor_submit.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/compositor/filter_pool.c` | ✅ | 1791504436 | ef45f15c14816ac9b1d21aa313fb0bffc21f8f1f835227d85bc94aa564ec9d36 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/compositor/filter_pool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/compositor/gpu_scope.c` | ✅ | 1791504436 | dab1b198b4691e42a6742ed394e612fa5641112d439e77669f08bc700161a794 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/compositor/gpu_scope.h` | ✅ | 1791343936 | d0a91c589e742000c1089760634efddab90bd6b6745a2c1643f067d3520213ea | ['python3', '-B', 'tests/tools/sampled_texture_test.py']; macOS Apple Silicon actual Vulkan -O2 -Wall -Wextra -Werror ASan/UBSan assertions, 30s runtime watchdogs. Every sunflower sampled output pixel equals readback reference; GPU-only Images, 576 vertex Bytes/image. No gallery/window/visual approval or process-footprint/drag profiling. macOS14 runtime (local loader built macOS26), other hosts, validation layers, real device loss/OOM and generic all-public renderer coverage remain gaps; sanitizer covers host, not GPU shaders. | Final optimized sanitized sampled-texture and actual GPU three-scope pixel proof: growth, stable VBO, alpha/clip/order, CPU edit invalidation, independent frame lifetime, scope teardown and injected upload/frame/scope timeout recovery | passed |
-
-### `ecosystem/repos/graphvex/src/filter`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/filter/filter_functions.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/filter/filter_type.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/graphvex/src/graphics`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/graphics/graphics.c` | ✅ | 1791504436 | 5600b17d1a2a4bef178d035ed3ecf3bdafbb796c21fdf7f9361b1f1856f44a6a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/graphics/graphics.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/graphics/image_runs.c` | ✅ | 1791504436 | 7b9bfb7f1200abcedfa6c639753ccae95f4c051b43371c36b1ba02140395fbc3 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/graphics/image_runs.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/graphics/render_loop.c` | ✅ | 1791504436 | 3df812d62746cc704cf39a9f60963f85273462aaf06c096ed53b45df8eed5d16 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/graphics/render_loop.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/graphics/viewport.c` | ✅ | 1791504436 | 8789a506145a5deb0385b81291f897c1d4cf8152443f49788c94b39415c76809 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/graphics/viewport.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/graphvex/src/lang`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/lang/filter.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/graphvex/src/nio`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/nio/pool.c` | ✅ | 1791504436 | 8aabeaff344fb59d917fd8d7f6509c014003c55bdaef73bdbd952c4cf57f9f41 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/nio/pool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/nio/property_pool.c` | ✅ | 1791504436 | 64ce012cf24fdbc75075841e58e0e4b9fb7084b8f2a26fedf67cde79f23bc0f0 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/nio/property_pool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/graphvex/src/shaders/compositor`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/shaders/compositor/color.frag` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/shaders/compositor/resolve.frag` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/shaders/compositor/resolve.vert` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/shaders/compositor/scatter.frag` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/shaders/compositor/scatter.vert` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/shaders/compositor/scope.frag` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/graphvex/src/shaders/frag`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/shaders/frag/quad.frag` | ✅ | 1791343936 | 69727e5d0f1dbaa5557c319a2f5b9ca42295b650bacca5c5c05a2d2d8deba376 | ['python3', '-B', 'tests/tools/sampled_texture_test.py']; macOS Apple Silicon actual Vulkan -O2 -Wall -Wextra -Werror ASan/UBSan assertions, 30s runtime watchdogs. Every sunflower sampled output pixel equals readback reference; GPU-only Images, 576 vertex Bytes/image. No gallery/window/visual approval or process-footprint/drag profiling. macOS14 runtime (local loader built macOS26), other hosts, validation layers, real device loss/OOM and generic all-public renderer coverage remain gaps; sanitizer covers host, not GPU shaders. | Final optimized sanitized sampled-texture and actual GPU three-scope pixel proof: growth, stable VBO, alpha/clip/order, CPU edit invalidation, independent frame lifetime, scope teardown and injected upload/frame/scope timeout recovery | passed |
-
-### `ecosystem/repos/graphvex/src/shaders/vert`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/shaders/vert/quad.vert` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/graphvex/src/ui`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/ui/element.c` | ✅ | 1791504436 | 950ad5d9faea2366a5bd64afb20a27ab163684b8fbbe342754ab5640bc26477a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/ui/element.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/ui/property.c` | ✅ | 1791504436 | 2a5f22f2b6dff015e4e5edc4f342a425b59b901feedcea36c9cf43bd321a1fc5 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/ui/property.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/graphvex/src/vulkan`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/graphvex/src/vulkan/device.c` | ✅ | 1791504436 | 52ca90dffe3d765489f601354ba4890486e4a1992826000809066194742a2e58 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/vulkan/device.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/vulkan/pipeline.c` | ✅ | 1791504436 | e6c3d95dd116ffcde56379ad19c7a9f64ab4dc0c46361f47d4f1d6ff8e92402d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/vulkan/pipeline.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/vulkan/sampled_image.c` | ✅ | 1791504436 | d8699324179d5b8ee14989ffc9296a6d153b64c3f088ea4415d101c45ba94b91 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/vulkan/sampled_image.h` | ✅ | 1791343936 | 3b5fb3677085f96a436cac981b15dd7fe80cef223d2606c4e45b5e1ea80fa9ac | ['python3', '-B', 'tests/tools/sampled_texture_test.py']; macOS Apple Silicon actual Vulkan -O2 -Wall -Wextra -Werror ASan/UBSan assertions, 30s runtime watchdogs. Every sunflower sampled output pixel equals readback reference; GPU-only Images, 576 vertex Bytes/image. No gallery/window/visual approval or process-footprint/drag profiling. macOS14 runtime (local loader built macOS26), other hosts, validation layers, real device loss/OOM and generic all-public renderer coverage remain gaps; sanitizer covers host, not GPU shaders. | Final optimized sanitized sampled-texture and actual GPU three-scope pixel proof: growth, stable VBO, alpha/clip/order, CPU edit invalidation, independent frame lifetime, scope teardown and injected upload/frame/scope timeout recovery | passed |
-| `ecosystem/repos/graphvex/src/vulkan/surface.c` | ✅ | 1791504436 | 8020f627c27a93a2af78a691e08abfb3ba3f0a1f4efd039901f0ca73a39096fb | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/vulkan/surface.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/vulkan/vk_batch.c` | ✅ | 1791504436 | b70d47409bf621fb9b0f189781e3a95146836daa51db65cfa48fad1394e70695 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/vulkan/vk_batch.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/graphvex/src/vulkan/vk_renderer.c` | ✅ | 1791504436 | d1d8fcaf7bae4ad7df121ced94ca334698c98d5fa47e5e0d56dc9964f97e4cf1 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/graphvex/src/vulkan/vulkan_backend.h` | ✅ | 1791343936 | ce849f9ddb4821f25a5eb209b60a79a2ce6d095ca42647021489491cf0daafad | ['python3', '-B', 'tests/tools/sampled_texture_test.py']; macOS Apple Silicon actual Vulkan -O2 -Wall -Wextra -Werror ASan/UBSan assertions, 30s runtime watchdogs. Every sunflower sampled output pixel equals readback reference; GPU-only Images, 576 vertex Bytes/image. No gallery/window/visual approval or process-footprint/drag profiling. macOS14 runtime (local loader built macOS26), other hosts, validation layers, real device loss/OOM and generic all-public renderer coverage remain gaps; sanitizer covers host, not GPU shaders. | Final optimized sanitized sampled-texture and actual GPU three-scope pixel proof: growth, stable VBO, alpha/clip/order, CPU edit invalidation, independent frame lifetime, scope teardown and injected upload/frame/scope timeout recovery | passed |
+No inventoried files yet; not verified.
 
 ## ecosystem/repos/hotcwap
 
-### `ecosystem/repos/hotcwap`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/hotcwap/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/CMakeLists.txt` | ✅ | 1791441165 | 73c87b2b8f53b7afb8843fdfad55f6775d5a83abfd14c45a3a7e73831450ce02 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS offline four per-repo configure/index/C23 checks; engine include option after CPU roots. IDE metadata only, runtime native ownership proved separately; no visual or Windows proof. | Canonical engine IO/NIO in consumer IDE adapters | passed |
-| `ecosystem/repos/hotcwap/CONTRIBUTING.md` | ✅ | 1791441263 | a3960668dfc257bb5cc492cad448f9573697cb105007093c406448f08721d3e7 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS seven offline architecture/documentation checks only; not runtime/visual readiness. | Migration owner documentation with actual header geometry and draft watcher gaps | passed |
-| `ecosystem/repos/hotcwap/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/README.md` | ✅ | 1791469560 | 8dcbc5531d133bbae05e42b9f61cef6ee7bb67a6f71cafceaef9742ebe9e9bd9 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py']; macOS; offline documentation/layout assertions only; not runtime, hot-reload or multi-platform proof | Transparent Competency Law: hotcwap README gains an evidence-bounded Current State and a Scope and Limitations section, independently assessed | passed |
-| `ecosystem/repos/hotcwap/hotcwap-preferences.md` | ✅ | 1791441042 | 28f2ca8e3f15f7772f8c4f189a93d15cc7c6df667043cb020fcde4309597131d | ['python3', '-B', '-c', 'import subprocess; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in ("tests/tools/ecosystem_docs_test.py","tests/relational-engine/preferences_test.py","tests/relational-engine/scaffold_test.py")]']; macOS offline documentation/layout checks and strict CMake metadata with locked warnings-denied Cargo check; not runtime, complete per-file readiness, other-platform or visual proof. Native implementation proof recorded separately. | Production ownership docs and IDE scaffold consistency | passed |
-
-### `ecosystem/repos/hotcwap/capability`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/hotcwap/capability/capability.c` | ✅ | 1791504436 | aa5989a6c82efaba8603f86d78603229a6dcdc4b59ad2c409351b19bbed23893 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/capability/capability.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/hotcwap/docs`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/hotcwap/docs/bridging.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/docs/install.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/hotcwap/hot`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/hotcwap/hot/hot.c` | ✅ | 1791504436 | d0c583ebae35031ece4d790760bdeef11f5cc27d8f8703e373cfdd3c1bdebdfa | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/hot/hot.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/hot/hot_behavior.c` | ✅ | 1791504436 | 94c5c6264e5d6851451ab8bd2aad9991bb2440c482510a5906f615a3983b289c | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/hot/hot_retire.c` | ✅ | 1791504436 | 86e2cc126dfb152715413f6009c4797b7bbc226634afe3b723af2a6e5cc0f832 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/hot/hot_retire.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/hot/hot_trampoline.c` | ✅ | 1791504436 | c79f8489caad4212d939db0507bb0d50d71b2bea662ad44f673a8f9f25711045 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/hot/hot_trampoline.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/hot/ledger.c` | ✅ | 1791504436 | 9ef1c72703c3befaafcf5b58f3243aea711b1b74e3296eb7f288214c8099169c | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/hot/ledger.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/hot/manifest.c` | ✅ | 1791504436 | 1635790b4fe8d957d6fdf0818ad7cfaa612bdbc4c3fbc0f3c7f9319cd623e6fe | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/hot/manifest.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/hot/throwable.c` | ✅ | 1791504436 | c8420c2bad1fdaecb550347e95b8fb18b30bc151be2bafae1d9b31a8667ece36 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/hot/throwable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/hotcwap/kernel`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/hotcwap/kernel/application.c` | ✅ | 1791504436 | 7926fcb07ad16caedfa4b2a0ab0c9845f77eedf759cd1101c632c6db302b306b | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/kernel/application.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/kernel/console.c` | ✅ | 1791504436 | 540538b0cb39f7f40c8252ba79f8db74be4b4032c5c6167c09f3d76e6528dffd | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/kernel/console.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/kernel/kernel.c` | ✅ | 1791504436 | d62b943768411f31ff454a820850e9320cb85a050c8b4f849af7c304ec9d5aab | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/kernel/kernel.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/kernel/process.c` | ✅ | 1791504436 | 61d0613a470daa80821a7f3cac152eadac747f1ac2ef10b33db8da5310f2709f | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/kernel/process.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/hotcwap/permission`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/hotcwap/permission/permission.c` | ✅ | 1791504436 | 203f454381429d59d40e1ec7e36a21a255021e3b9f17497edbabdcb46282214d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/permission/permission.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/permission/permission_backend.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/hotcwap/permission/objc`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/hotcwap/permission/objc/permission_cocoa.m` | ✅ | 1791504436 | 0e93474ac1eadfc54ba30f7a070397078545dcd15f7d58659d9f18b83075fd35 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-
-### `ecosystem/repos/hotcwap/spoke`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/hotcwap/spoke/lifetime.c` | ✅ | 1791504436 | e649d7eb68cbd5544ae8275fdd8dde8852dd55d67a005f9e175641c2c5f1263e | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/spoke/lifetime.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/hotcwap/window`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/hotcwap/window/traffic_light.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/window/traffic_light_cocoa.m` | ✅ | 1791504436 | 3a0cdfaedb3b9e5089690afb0a6ab35318c2e40a5cfb966b5c161d5bccc745a1 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/window/window.c` | ✅ | 1791504436 | d0e14c974fbf3c3b6b5d2ddb13a1edddad567d753d67e3bbe632c38b2cc731ac | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/window/window.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/window/window_cocoa.m` | ✅ | 1791504436 | fc29e0406411afc280f81ffeb1da26d7c5380c334cbd528f37609e4e7ba9fbf3 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/window/window_event.c` | ✅ | 1791504436 | ba23617967bc3028d5120b2f1848d7e61e7aceac6cfd4d0d85b40e15f385798f | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/window/window_event.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/hotcwap/window/window_linux.c` | ✅ | 1791504436 | 3bcb280584c21cd8bc6445ffa537881043210a9c15babac0e27807c279602263 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/window/window_wayland.c` | ✅ | 1791504436 | fac93c54aaa1e821e997e12ce58f9ab343cfe0f20bc203f3c1be5a5d92fe8fa5 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/hotcwap/window/window_win32.c` | ✅ | 1791504436 | d977f3e7d38395ab4f904ce4cb1a7e61544e01036c9191f40e2cba969f9e879a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
+No inventoried files yet; not verified.
 
 ## ecosystem/repos/language
 
-### `ecosystem/repos/language`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/language/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/repos/language/CMakeLists.txt` | ✅ | 1791337104 | 1b6723bd6c25fed2f06091c3dc161bc1862e78e014df048b5bc8f2fc8bdfa52a | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/repos/language/CONTRIBUTING.md` | ✅ | 1791384482 | 1107d21fb935cc10b6a35f8b01f325ed63142de0ab20ca33745cfd869eaf104e | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/repos/language/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/language/README.md` | ✅ | 1791471884 | 719929593a02c8f0acd7c240b0febfeef9eb6b6ed46be41d2d918f56ad02b637 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && python3 -B tests/tools/per_repo_ide_test.py &gt;/dev/null && echo DOC_IDE_OK']; macOS offline documentation + IDE-metadata assertions only. Not runtime behavior, network, GPU, or visual proof. | Transparent Competency Law pass (5 repos, source-grounded reads): each README gains '## Current State' + '## Scope and Limitations'; drift fixed in api-haven (client.c overclaim, api/discord.c, anthropic 'planned', _trash path, personal/b, attic/TLS), sesh (networked-collaboration overclaim re-framed as roadmap), darling (layout/focus/bridge overstated softened); language/samplerate marked source-free blueprints. | passed |
-| `ecosystem/repos/language/language-preferences.md` | ✅ | 1791384482 | 52f6d8c10daca2ffb6fd00cb15a3e7c6bb45afb6a010fdd7b848d392d6c37889 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+No inventoried files yet; not verified.
 
 ## ecosystem/repos/relational-engine
 
-### `ecosystem/repos/relational-engine`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/.gitignore` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/CMakeLists.txt` | ✅ | 1791449108 | 315bec05b2fdb26e7ac4becb1a199bd4ce15c6f0b66489f92bc98cdc1286bea6 | ['bash', '-lc', './tools/b build && ./tools/b test type_test && ./tools/b test type_algebra']; macOS arm64; umbrella b build plus registered owner tests type_test and type_algebra_test. Not other platforms; not a per-line proof of workspace.c internals. | Type algebra ownership move to relational-engine: engine type/type.{h,c} own the algebra + resolver, vexspoke oop/type.h is registry + include, oop/type.c removed, CMAKE/workspace wiring and owner tests retargeted. b build green; both owner tests pass. | passed |
-| `ecosystem/repos/relational-engine/CONTRIBUTING.md` | ✅ | 1791441042 | dfaebe10813b063f8be6907f3d128521882978b497434f4c3d4ec12f8acaa31a | ['python3', '-B', '-c', 'import subprocess; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in ("tests/tools/ecosystem_docs_test.py","tests/relational-engine/preferences_test.py","tests/relational-engine/scaffold_test.py")]']; macOS offline documentation/layout checks and strict CMake metadata with locked warnings-denied Cargo check; not runtime, complete per-file readiness, other-platform or visual proof. Native implementation proof recorded separately. | Production ownership docs and IDE scaffold consistency | passed |
-| `ecosystem/repos/relational-engine/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/README.md` | ✅ | 1791526740 | 898c97c65922b3923e62e8015e7661018258ff63455897290c56cb837376bef0 | ['python3', '-B', 'tests/relational-engine/primer_test.py']; Offline mechanical document owner review against current public exports and identity source; not whole-repository source audit or runtime/visual/platform readiness. | Primer and C row-pool competency checks: actual export names, non-wrapping history, opt-in C borrowing, README state/limitations, local ownership/status contract and partial wiki readiness. | passed |
-| `ecosystem/repos/relational-engine/relational-engine-preferences.md` | ✅ | 1791526740 | 03e1f22c0cc11fddd4d4e3b2af0ee66b1181a88ab5c2e458c401c78a4a80cf59 | ['python3', '-B', 'tests/relational-engine/primer_test.py']; Offline mechanical document owner review against current public exports and identity source; not whole-repository source audit or runtime/visual/platform readiness. | Primer and C row-pool competency checks: actual export names, non-wrapping history, opt-in C borrowing, README state/limitations, local ownership/status contract and partial wiki readiness. | passed |
-
-### `ecosystem/repos/relational-engine/docs`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/docs/relational-engine-primer.md` | ✅ | 1791526740 | 48201ff6afba491e246d2597b8b8d693fcea42871088af91f391eb51a63a116c | ['python3', '-B', 'tests/relational-engine/primer_test.py']; Offline mechanical document owner review against current public exports and identity source; not whole-repository source audit or runtime/visual/platform readiness. | Primer and C row-pool competency checks: actual export names, non-wrapping history, opt-in C borrowing, README state/limitations, local ownership/status contract and partial wiki readiness. | passed |
-
-### `ecosystem/repos/relational-engine/rust`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/Cargo.lock` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/rust/Cargo.toml` | ✅ | 1791474980 | 787a1f3a99e8f842fbe2a04e82d8d48f011e6d7c7c46c0c652a000b7416b3d62 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64; RE Rust owner suite + cargo build. Not Windows, release-profiling or runtime behavior beyond the suite. | Rust annotations (Two-Semicolon Annotation Style Law, Rust form): zero-dependency proc-macro crate relational-annotations provides #[overview]/#[intention("...")]/#[what("T")]/etc.; rust/src/annotation.rs is the single in-crate home; lib.rs uses #[overview]+#[intention] as proof. Owner runner (debug/release owners, executable docs, C ABI, ASan/UBSan, borrow rejection) passes with the new path dep. | passed |
-| `ecosystem/repos/relational-engine/rust/README.md` | ✅ | 1791526740 | e75b438ac3e879153c977adf34298c5cd672a89e6cabc25aba665dc683064880 | ['python3', '-B', 'tests/relational-engine/primer_test.py']; Offline mechanical document owner review against current public exports and identity source; not whole-repository source audit or runtime/visual/platform readiness. | Primer and C row-pool competency checks: actual export names, non-wrapping history, opt-in C borrowing, README state/limitations, local ownership/status contract and partial wiki readiness. | passed |
-| `ecosystem/repos/relational-engine/rust/build.rs` | ✅ | 1791384204 | ae4dca5f504a1ce7e8e29cf563b0b0e2c91e0c6dacb3e7d65de8d0409ff63494 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | passed |
-
-### `ecosystem/repos/relational-engine/rust/annotations`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/annotations/Cargo.toml` | ✅ | 1791474980 | e97cef31eb3317390aa846d72bfc246802349afcfdf1f154541da47936d36661 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64; RE Rust owner suite + cargo build. Not Windows, release-profiling or runtime behavior beyond the suite. | Rust annotations (Two-Semicolon Annotation Style Law, Rust form): zero-dependency proc-macro crate relational-annotations provides #[overview]/#[intention("...")]/#[what("T")]/etc.; rust/src/annotation.rs is the single in-crate home; lib.rs uses #[overview]+#[intention] as proof. Owner runner (debug/release owners, executable docs, C ABI, ASan/UBSan, borrow rejection) passes with the new path dep. | passed |
-
-### `ecosystem/repos/relational-engine/rust/annotations/src`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/annotations/src/lib.rs` | ❌ | 1791474980 | de1a110672674bb337fbed699a42b2d3f3c7479ecb22d9c2ac7c525e314f248d | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64; RE Rust owner suite + cargo build. Not Windows, release-profiling or runtime behavior beyond the suite. | Rust annotations (Two-Semicolon Annotation Style Law, Rust form): zero-dependency proc-macro crate relational-annotations provides #[overview]/#[intention("...")]/#[what("T")]/etc.; rust/src/annotation.rs is the single in-crate home; lib.rs uses #[overview]+#[intention] as proof. Owner runner (debug/release owners, executable docs, C ABI, ASan/UBSan, borrow rejection) passes with the new path dep. | stale — content changed; rerun required |
-
-### `ecosystem/repos/relational-engine/rust/include`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/include/relational_memory.h` | ✅ | 1791433943 | 879c62e95e1317b05ea63bb3c86117c05414de6fee834e67585ce9a942c424ca | ['python3', 'tests/relational-engine/rust/run.py']; macOS 11 Rust owner targets/16 cases each debug and release with warnings denied and bounded runner; 20000 seeded operations, 13 arity/type/borrow negatives, existing C ABI/C-client ASan/UBSan regression. Typed Rust internals not sanitizer-instrumented. No generations, type registry, C allocator parity, concurrent mutation, schema/reload or Windows proof. | Reusable aligned typed storage: lazy growth, bitmap boundaries, hole reuse, reclamation, drop ownership, allocation failure recovery and seeded model | passed |
-
-### `ecosystem/repos/relational-engine/rust/include/relational_engine`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/include/relational_engine/memory.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/rust/include/relational_engine/row_handle.h` | ✅ | 1791526727 | 7f7f342c0f55e19e7416c4db203968e748be2f53b3999aab3072f92b7aa8d6b6 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/include/relational_engine/row_pool.h` | ✅ | 1791526727 | 990e695a834791efba6f4d2299052a3603db8404881695f0116766fef8587e34 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/include/relational_engine/variable_registry.h` | ✅ | 1791384204 | bd2cc693701c40d1ca5499771e87d4b4be78be76370e83e55d8197e1638d1a03 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | passed |
-
-### `ecosystem/repos/relational-engine/rust/src`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/src/annotation.rs` | ✅ | 1791474980 | d648b11ae69461051378c5ea33715b894bb0b6ad9aaee5278f4d08d91c62c3e4 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64; RE Rust owner suite + cargo build. Not Windows, release-profiling or runtime behavior beyond the suite. | Rust annotations (Two-Semicolon Annotation Style Law, Rust form): zero-dependency proc-macro crate relational-annotations provides #[overview]/#[intention("...")]/#[what("T")]/etc.; rust/src/annotation.rs is the single in-crate home; lib.rs uses #[overview]+#[intention] as proof. Owner runner (debug/release owners, executable docs, C ABI, ASan/UBSan, borrow rejection) passes with the new path dep. | passed |
-| `ecosystem/repos/relational-engine/rust/src/helloworld.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/rust/src/lib.rs` | ✅ | 1791526727 | bb1de8a5e04d1075e1c24f0f97d97739475cf36542afbd4e7555d9a714c27784 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-
-### `ecosystem/repos/relational-engine/rust/src/compress`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/src/compress/mod.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/relational-engine/rust/src/ffi`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/src/ffi/memory.rs` | ✅ | 1791504436 | 0a6d487adb2dd471e47da25928ef0a02d8d1f338aaaf93af633a003ee50cc53f | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/rust/src/ffi/mod.rs` | ✅ | 1791526727 | c2200359f1e8a1018a85581461ee3b391726f43a2d3a22192b106f1585683e0a | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/src/ffi/row_pool.rs` | ✅ | 1791526727 | 0e36d94a7f937c7bc3d6b62d26669c78583945741bd8b00f7d4a5338c168be87 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/src/ffi/variable_registry.rs` | ❌ | 1791475408 | 23cdccb6131cd2926bc868788c52d4c0631b31983a78146c3bd1657a469f9abd | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64; RE Rust owner suite. Not Windows or performance proof. | Fix the module-marker gotcha: the ffi files now import types by module path (not crate::{Type,...}), removing the illegal absolute-path reference to the same-named #[macro_export] macros, so macro-exporting modules (nio/variable/struct) can carry #[overview]. Owner runner still passes. | stale — content changed; rerun required |
-
-### `ecosystem/repos/relational-engine/rust/src/io`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/src/io/mod.rs` | ✅ | 1791384229 | 678db3b9bb34637b0208f58eccf89b03d8840672016d31e4c62ae356b254a244 | ['python3', 'tests/relational-engine/preferences_test.py']; Static contract/layout checks only: per-class Rust files, 32B borrowed binding distinction, registered owner locations, io read/write/buffered responsibility, planned manifest persistence and unchanged migration gaps. Runtime proof recorded separately; no durable file or concurrent storage implementation claimed. | Stable-row contracts and explicit planned persistence at relocated R2 path | passed |
-
-### `ecosystem/repos/relational-engine/rust/src/nio`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/src/nio/block.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/rust/src/nio/chunk.rs` | ❌ | 1791384204 | 4b187caa5224f912e13861b195ff23132bc22e3b361005602d2b6f13fea20394 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/rust/src/nio/handle.rs` | ✅ | 1791526727 | 5bec084eb9e9059214c9964136e6fbcbe1f2909f73a3579c70c30cc5f5ed46ba | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/src/nio/mem.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/rust/src/nio/memory_error.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/rust/src/nio/mod.rs` | ✅ | 1791526727 | af57dd155b284977745d13ea9238d4f4219701e0d4a2e7220f77e1985a85d353 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/src/nio/projection.rs` | ❌ | 1791384204 | 16ec0cb6b8dd8d4a34ec20c626d6cd664ae97f545b72672a00e16e49cdb097b5 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/rust/src/nio/row_chunk.rs` | ✅ | 1791526727 | bb80d1a971f6df001f96244039867dee18fb409b404b8974dd282c172cb65c57 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/src/nio/row_handle.rs` | ✅ | 1791526727 | 00fd296904fb3521d85165cb8572f4313d06db7775fc01deffbbea40439694c9 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/src/nio/storage_error.rs` | ✅ | 1791384204 | ea8a513ab25bee0d224153127f3b31f052b4ff78f5c68a4df86d1d591b75f577 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | passed |
-| `ecosystem/repos/relational-engine/rust/src/nio/typed_chunk.rs` | ✅ | 1791526727 | 9b430551a7ec11d5e6281982e51fc188a7461a819bdb689289eb3a686df0999a | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/src/nio/value.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/relational-engine/rust/src/primitives`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/src/primitives/atomic_string.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/rust/src/primitives/history.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/rust/src/primitives/mod.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/rust/src/primitives/snapshot.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/rust/src/primitives/string.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/relational-engine/rust/src/struct`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/src/struct/chunked_list.rs` | ❌ | 1791384204 | ae4703fc4d467d1f90ebbde8089593d484fb48bb6c81fd8a142c741cd8347d25 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/rust/src/struct/mod.rs` | ✅ | 1791526727 | e6d022421c80dc5f2d20a5c543700aa2a0c878d23c81487612844acc62decfb4 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/src/struct/row_pool.rs` | ✅ | 1791526727 | c188a1301deef804d3f52bd978b40713098f7b19e4a7952497c6e962bbca1bf3 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `ecosystem/repos/relational-engine/rust/src/struct/typed_pool.rs` | ✅ | 1791526727 | 0486802a965f986fd806721fbc3d7d8de93891e6a10160750ddc581eb8cf8902 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-
-### `ecosystem/repos/relational-engine/rust/src/text`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/src/text/mod.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/relational-engine/rust/src/variable`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/src/variable/mod.rs` | ✅ | 1791384204 | 65252004d723ae753640bb8d032450ed88903b3a90e4ed473397a7e29ba06503 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | passed |
-| `ecosystem/repos/relational-engine/rust/src/variable/variable_registry.rs` | ❌ | 1791384204 | 1dc380d8f85a8b771d6df19589d7b18edf7d2774f1e08515aec3718c9cd44950 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/rust/src/variable/variable_slot.rs` | ❌ | 1791384204 | c73486f5235eedca8429a7e00f3481c2e713358575adea6fa88864cb72e1e8c3 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | stale — content changed; rerun required |
-
-### `ecosystem/repos/relational-engine/rust/src/virtual`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/rust/src/virtual/mod.rs` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/relational-engine/src`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/src/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/relational-engine/src/exception`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/src/exception/throw.h` | ✅ | 1791384204 | 318faa08852c7b9aad59ec0f005605ae48a20e665b8fc759f05d749cbad9be80 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | passed |
-
-### `ecosystem/repos/relational-engine/src/io`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/src/io/cache.c` | ❌ | 1791440440 | 4f11da9ea27aa05084becb1e8dd60c50d5db94fd8f1d02ff020f035e214477fe | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/io/cache.h` | ✅ | 1791440440 | d6afe32302f7b9b2c8a32569aeb965447381c7e1ed049584096d9b4e56090cbe | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | passed |
-| `ecosystem/repos/relational-engine/src/io/clipboard.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/io/clipboard_mac.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/io/clipboard_stub.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/io/file.c` | ❌ | 1791440440 | 15e5763b9a2fc14dddc4465aeedca5255c67534fb8756c94c6a1c4d0926d1ac5 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/io/file.h` | ✅ | 1791440440 | ae938a3c05137f9f58d8b2b221eedd117f4f0fdc9ca92b5ea9984c9146faa116 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | passed |
-| `ecosystem/repos/relational-engine/src/io/filewriter.c` | ❌ | 1791440440 | 49959a85ca50bdeef8f18f26e0d27a1753faf5586e9004dc9899538e3a7e6a71 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/io/filewriter.h` | ✅ | 1791440440 | 6154ef3b726792271d03513bfdaf2caf036a74737ee0aec7391fda28170356dc | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | passed |
-| `ecosystem/repos/relational-engine/src/io/hot_file.c` | ❌ | 1791440440 | 0245307bd8354c95bf1d7535bfb3a0cd86bdba7b0818b2e135247996147d7e7a | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/io/hot_file.h` | ✅ | 1791440440 | 6431e1c392af482b03a8124e38cec8093be3b6f41214b73dd2aebb4346bcb36d | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | passed |
-| `ecosystem/repos/relational-engine/src/io/log.c` | ❌ | 1791440440 | 5b5b6b53af294864ea11533c2fb692ce4691cc49ea2e6335c4834efb98894b2b | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/io/log.h` | ✅ | 1791440440 | eb43c46b1c570cdfa659a1869ca66a8c8ac7384420b02fe105e53d43fd268aa2 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | passed |
-| `ecosystem/repos/relational-engine/src/io/logkind.h` | ✅ | 1791440440 | 02650de4d01c85cd9c106c53f91870df96fcfd2bb2f75330bfcc5b67c32fd405 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | passed |
-| `ecosystem/repos/relational-engine/src/io/logparser.c` | ❌ | 1791440440 | ec7265bcb337bdac519e0ccf37cea0d256f2021536166a8b370f0e12a8b2de61 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/io/logparser.h` | ✅ | 1791440440 | 8c0a1e0c0ca22034b53a93f6d432fd339a750a45bcf54534d5ad40a8e2d2625f | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | passed |
-| `ecosystem/repos/relational-engine/src/io/process_spawn.c` | ❌ | 1791440936 | 97528e4f5b7a34978ffb2aae586c85562599b5fcc6ccd81eb4a5b6850475e8fa | ['python3', 'tests/relational-engine/native_run.py']; macOS Apple Silicon O2 strict C23 and ASan/UBSan, 11 owners per configuration and clipboard SKIP; scratch overflow preservation/retry and live-child reap accounting. Scoped legacy ABI only, no full concurrency/Windows/OOM/THROW conformance claim. | Final native ownership regression after current type contracts | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/io/process_spawn.h` | ✅ | 1791440440 | 7ec009b92490464da340a305caf1bc5cf1e3105fd256fab8c1ae7d2918f29441 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | passed |
-| `ecosystem/repos/relational-engine/src/io/vexhome.c` | ❌ | 1791440440 | b8ee69d55ff2447b8a53b8ce791a6be91b12b3180d933751d3fc4e772fa5dc63 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/io/vexhome.h` | ✅ | 1791440440 | 332c61b44aa6d27d40513a71326643a722deb8e793deee00e2e25a6b7c85b2f1 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | passed |
-| `ecosystem/repos/relational-engine/src/io/ws_client.c` | ❌ | 1791440440 | 6818e782ecda00b43297acd155b6fd6140d7496065f51e6322ef6e086ae4a1e9 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/io/ws_client.h` | ✅ | 1791440440 | 14835ffb12c94dbf6156e2c6f8919fbd308b5229f6fb4b740447a8fa968cc246 | ['python3', 'tests/relational-engine/native_run.py']; Apple Silicon macOS: 11 native owners each strict O2 and ASan/UBSan, assertions and watchdogs. Clipboard skipped; stub non-Apple unproved; HotFileSys lifecycle no-op only; synthetic transient fixture, not Darling integration; no exhaustive security/concurrency/OOM/Windows proof. | Migrated native owner strict and sanitizer regression | passed |
-
-### `ecosystem/repos/relational-engine/src/nio`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/src/nio/mem.c` | ❌ | 1791440936 | dcfa02f90ccd523cb2f1f3f63566b40007e21833d93600b6731ce3e5dbce0ca6 | ['python3', 'tests/relational-engine/native_run.py']; macOS Apple Silicon O2 strict C23 and ASan/UBSan, 11 owners per configuration and clipboard SKIP; scratch overflow preservation/retry and live-child reap accounting. Scoped legacy ABI only, no full concurrency/Windows/OOM/THROW conformance claim. | Final native ownership regression after current type contracts | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/nio/mem.h` | ✅ | 1791440936 | b724249a845ae599392485d9ed2cc78e30a7856df615dd339d6d17617ab99f92 | ['python3', 'tests/relational-engine/native_run.py']; macOS Apple Silicon O2 strict C23 and ASan/UBSan, 11 owners per configuration and clipboard SKIP; scratch overflow preservation/retry and live-child reap accounting. Scoped legacy ABI only, no full concurrency/Windows/OOM/THROW conformance claim. | Final native ownership regression after current type contracts | passed |
-| `ecosystem/repos/relational-engine/src/nio/relational_memory.h` | ✅ | 1791440993 | de1c47db5b771d94595b8bacd1497be099e7f39f91dd9f8a88f5f958c7b39263 | ['python3', 'tests/relational-engine/rust/run.py']; macOS warnings denied debug/release 11 Rust owners and 16 cases, doctest, native C ABI/search/registry and C-client ASan/UBSan, expected compile failures. Rust not sanitizer-instrumented; no default native-to-Rust allocator rewrite or live reload/Windows proof. | Relocated Rust handshake and storage owner regression | passed |
-| `ecosystem/repos/relational-engine/src/nio/relational_rows.h` | ✅ | 1791526727 | 1066247a3608c8c61bc492147292b0809a079dc63b7b6d0fff15d1709923e2fa | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-
-### `ecosystem/repos/relational-engine/src/reflection`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/src/reflection/class.c` | ✅ | 1791504436 | 63a1b2fd67262dc36c61fea0ec523a3c9ed9ec0646fd94321b73bf1b7ce576f5 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/reflection/class.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/reflection/field.c` | ✅ | 1791504436 | 270b89850d460b7d7f3c8d52d0814bfd106cf728f84532c89236d2c177bccad2 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/reflection/field.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/reflection/method.c` | ✅ | 1791504436 | 8c4ca89fa606873beeaad4081e766b2a3f0c8767c9ae1497b30e18cc97464730 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/reflection/method.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/reflection/struct.c` | ✅ | 1791504436 | d35c3644bf439ba56153b6538e9d52ddc58b552f3c855e35a71fd8dd7763bbcb | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/reflection/struct.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/reflection/variable.c` | ✅ | 1791504436 | 7c2f5f00cb00ce99e273d951a81e47b00cba414743da3a014785b207e472ef87 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/reflection/variable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/relational-engine/src/relational`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/src/relational/cell.c` | ✅ | 1791504436 | 9389fdab92863d7e3f200b21229603f50cd6c242193616bcb26dc1107c2dc73d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/relational/cell.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/relational/relational.c` | ✅ | 1791504436 | 105913a0f8409b3fb40cf92bc3c525ba16f7af57653ac4383ad314421606b09a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/relational/relational.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/relational/shelf.c` | ✅ | 1791504436 | 78cb73bceb85b186f869be2b8e096cea7682e9231c3ee13cc062ae57f1a1aead | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/relational/shelf.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/relational/symbol_table.c` | ✅ | 1791504436 | 6259b0475cc107e24d3b104d2b6e9c8d243f45137e6767a4fd340b831a5677e5 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/relational/symbol_table.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/relational/variable_hash_map.c` | ✅ | 1791504436 | b7a9fd79a858297849c5fe79b70ba98f17dec922ef67d2f1064ccbfd9203085e | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/relational/variable_hash_map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/relational/variable_mini_map.c` | ✅ | 1791504436 | 41593a1b3656da2ece48e568fc913f9a5ca6ca6fbad93e8431cc77d29cf439d3 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/relational/variable_mini_map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/relational/variable_pool.c` | ✅ | 1791504436 | 03545f4b657a135e33b21e5510639ab5e2ae84f56f4753b0020ae3038cff1287 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/relational/variable_pool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/relational-engine/src/relational/variable_slot.c` | ✅ | 1791504436 | d5e0e3aefa4052e32d95ca3b1a1bb5fd9fedbc757b10129c3ba1a4c5cfda6420 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/relational-engine/src/relational/variable_slot.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/relational-engine/src/search`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/src/search/README.md` | ✅ | 1791384229 | a9830fa6968de80b16f198b1a229c55a6171fc917b9067083531b3c721248081 | ['python3', 'tests/relational-engine/preferences_test.py']; Static contract/layout checks only: per-class Rust files, 32B borrowed binding distinction, registered owner locations, io read/write/buffered responsibility, planned manifest persistence and unchanged migration gaps. Runtime proof recorded separately; no durable file or concurrent storage implementation claimed. | Stable-row contracts and explicit planned persistence at relocated R2 path | passed |
-
-### `ecosystem/repos/relational-engine/src/search/primitives`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/src/search/primitives/README.md` | ✅ | 1791384229 | 6f6fea129f5fe6f6d26a894dee9eecda7b3c7197f52ee3da2b6a2b4ae05d377d | ['python3', 'tests/relational-engine/preferences_test.py']; Static contract/layout checks only: per-class Rust files, 32B borrowed binding distinction, registered owner locations, io read/write/buffered responsibility, planned manifest persistence and unchanged migration gaps. Runtime proof recorded separately; no durable file or concurrent storage implementation claimed. | Stable-row contracts and explicit planned persistence at relocated R2 path | passed |
-| `ecosystem/repos/relational-engine/src/search/primitives/name_search.c` | ❌ | 1791384204 | fdac6d9614497d398f4731f7ebb5d1bb4158ab0203379e8b22ab4c12c5d02404 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/search/primitives/name_search.h` | ✅ | 1791384204 | 100c3580e5b758d5f2899d6fd14576dae95415564ea1d44e7a0a9a9472352533 | ['python3', 'tests/relational-engine/rust/run.py']; macOS nine registered Rust owners (11 cases each debug/release), warnings denied, deterministic directory/leaf OOM retry, stable pointer/alignment/drop proof over 1025 rows, byte grammar/duplicate/bounds/output preservation, bounded projections, real C registry and native name-search C ASan/UBSan plus exact cold diagnostics, seven arity/type/borrow compile negatives and memory regression. Rust sanitizer instrumentation, concurrent registry mutation, stale pointer validation, schema/Hot reload/type headers, Vexspoke collection migration and Windows/MSVC remain gaps. | Relocated stable row and 32-byte variable owners with C registry ABI | passed |
-
-### `ecosystem/repos/relational-engine/src/type`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/relational-engine/src/type/type.c` | ❌ | 1791449108 | dd63bdb52f967a8e20670525834025393f583403f16914e59b48ed0c9d4fee47 | ['bash', '-lc', './tools/b build && ./tools/b test type_test && ./tools/b test type_algebra']; macOS arm64; umbrella b build plus registered owner tests type_test and type_algebra_test. Not other platforms; not a per-line proof of workspace.c internals. | Type algebra ownership move to relational-engine: engine type/type.{h,c} own the algebra + resolver, vexspoke oop/type.h is registry + include, oop/type.c removed, CMAKE/workspace wiring and owner tests retargeted. b build green; both owner tests pass. | stale — content changed; rerun required |
-| `ecosystem/repos/relational-engine/src/type/type.h` | ✅ | 1791449108 | 3ee865732e404479d46fe74f7d76b4de6aa4f9719ede58e3d05f46721fccc3fa | ['bash', '-lc', './tools/b build && ./tools/b test type_test && ./tools/b test type_algebra']; macOS arm64; umbrella b build plus registered owner tests type_test and type_algebra_test. Not other platforms; not a per-line proof of workspace.c internals. | Type algebra ownership move to relational-engine: engine type/type.{h,c} own the algebra + resolver, vexspoke oop/type.h is registry + include, oop/type.c removed, CMAKE/workspace wiring and owner tests retargeted. b build green; both owner tests pass. | passed |
+No inventoried files yet; not verified.
 
 ## ecosystem/repos/samplerate
 
-### `ecosystem/repos/samplerate`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/samplerate/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/repos/samplerate/CMakeLists.txt` | ✅ | 1791337104 | a3d3c6221e996952a1d4e08762f95e22729da437176c63dae4b92d353cafe4c0 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/repos/samplerate/CONTRIBUTING.md` | ✅ | 1791384482 | 68911fa67d530a2982ce6b8ef86e2b0a9face65cff05c8261db086d7d37cff88 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `ecosystem/repos/samplerate/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/samplerate/README.md` | ✅ | 1791471884 | 2e71e82c9b4f8153dcb58a24c2eec36c2e9c03bd54cc2a271fd0497670f7d0d3 | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && python3 -B tests/tools/per_repo_ide_test.py &gt;/dev/null && echo DOC_IDE_OK']; macOS offline documentation + IDE-metadata assertions only. Not runtime behavior, network, GPU, or visual proof. | Transparent Competency Law pass (5 repos, source-grounded reads): each README gains '## Current State' + '## Scope and Limitations'; drift fixed in api-haven (client.c overclaim, api/discord.c, anthropic 'planned', _trash path, personal/b, attic/TLS), sesh (networked-collaboration overclaim re-framed as roadmap), darling (layout/focus/bridge overstated softened); language/samplerate marked source-free blueprints. | passed |
-| `ecosystem/repos/samplerate/samplerate-preferences.md` | ✅ | 1791384482 | 0c1dff421879f5df77945c794d2e3b73a10af514ef2e29a5c5eaf6171c9fc865 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
+No inventoried files yet; not verified.
 
 ## ecosystem/repos/sesh
 
-### `ecosystem/repos/sesh`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/sesh/.gitignore` | ✅ | 1791337104 | 3bad14d6030a64ac54c9b43679525632bcb355daeb590cd262303083fe7678fc | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `ecosystem/repos/sesh/CMakeLists.txt` | ✅ | 1791447321 | 2a3bc20b30850eb78ce2cb3690ef53e2c4186ea8f6c67b005e73cc99093f3625 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; Four macOS owner checks across independent repo entries: configure, default no-op, strict C23 representative syntax and missing dependency rejection. No application launch, visual acceptance or standalone runtime closure proof. | Index session and snapshot sources through excluded IDE-only C23 object target | passed |
-| `ecosystem/repos/sesh/CONTRIBUTING.md` | ✅ | 1791447304 | 82db9263f6e8b8e07537b4dbd8eee24c9df7a57ffb28721fb751771043dffdab | ['python3', '-B', 'tests/sesh/docs_test.py']; Two macOS offline documentation checks: seven physical class/header pairs, Sesh public composition, scoped identity/receipt laws, owner runner, borrowed lifetime and file/directory proposal distinction. Documentation assertions only; no OAuth/cloud, distributed CAS or file/directory workflow proof. | Session composition vocabulary, local identity/admission proof and explicit provider/workflow gaps | passed |
-| `ecosystem/repos/sesh/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/sesh/README.md` | ✅ | 1791471884 | 8a13ba58d429e8e5a06cb27f8e03a7015d407aa0fae75a0d575e967550b986ec | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && python3 -B tests/tools/per_repo_ide_test.py &gt;/dev/null && echo DOC_IDE_OK']; macOS offline documentation + IDE-metadata assertions only. Not runtime behavior, network, GPU, or visual proof. | Transparent Competency Law pass (5 repos, source-grounded reads): each README gains '## Current State' + '## Scope and Limitations'; drift fixed in api-haven (client.c overclaim, api/discord.c, anthropic 'planned', _trash path, personal/b, attic/TLS), sesh (networked-collaboration overclaim re-framed as roadmap), darling (layout/focus/bridge overstated softened); language/samplerate marked source-free blueprints. | passed |
-| `ecosystem/repos/sesh/sesh-preferences.md` | ✅ | 1791447304 | 56d28e5f4703ec2eab6d4f5de9f9b18b17b26b5abe6bd82332b927303d9b931d | ['python3', '-B', 'tests/sesh/docs_test.py']; Two macOS offline documentation checks: seven physical class/header pairs, Sesh public composition, scoped identity/receipt laws, owner runner, borrowed lifetime and file/directory proposal distinction. Documentation assertions only; no OAuth/cloud, distributed CAS or file/directory workflow proof. | Session composition vocabulary, local identity/admission proof and explicit provider/workflow gaps | passed |
-
-### `ecosystem/repos/sesh/src/lang`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/sesh/src/lang/arity.h` | ✅ | 1791447025 | 8d60a0200f401609f9bf47b9b4e8674b6a18228c12c0d91b22c8f35125e6678b | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
-| `ecosystem/repos/sesh/src/lang/auth_service.h` | ✅ | 1791447025 | 564f8e12c83d50059769284f7f6041390ebace7748b37aa4a92e3e3363e488b7 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
-| `ecosystem/repos/sesh/src/lang/client.h` | ✅ | 1791447025 | 07cc0208cf7ae4c65979ef0ce332c98858e3fae92bb22a8125479e56b00fe93a | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
-| `ecosystem/repos/sesh/src/lang/operation.h` | ✅ | 1791447025 | a93467592c6ab8f9474274fc8b142d03c4409dd98ffd4ca3cdfe511d0977f146 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
-| `ecosystem/repos/sesh/src/lang/operations.h` | ✅ | 1791447025 | 49bc90b4845ad7eb52f9690455b0ab2697c75d84e1036ac32cf342030b11d849 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
-| `ecosystem/repos/sesh/src/lang/resource.h` | ✅ | 1791447025 | 7343a10450c1806bbe3ada31be23bc19275f2d1a0c5519a08f5196baa3dcafe2 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
-| `ecosystem/repos/sesh/src/lang/sesh.h` | ✅ | 1791447025 | ba3256d6707542cdff6555506d1b3bb65ce67f5182bc4491bd35963bdbb9cb03 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
-| `ecosystem/repos/sesh/src/lang/workspace.h` | ✅ | 1791447025 | 04a058c49a27927c341c063cd94d7bc91aaf6de5435a30edbab9fdacf0dc8398 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
-
-### `ecosystem/repos/sesh/src/session`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/sesh/src/session/auth_service.c` | ✅ | 1791504436 | 936d53f1a8aeebdfbfca02169cb2919f9465180a61951cdeb25bfa4280571b9d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/sesh/src/session/client.c` | ✅ | 1791504436 | 6c6b76ea28f408e06a7267fd0c187f5488ad936852f9e4507bb90755b4fc941d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/sesh/src/session/operation.c` | ✅ | 1791504436 | fadd35c99cf8b9a7631d3006d31b8a999d4182bdf7566d68462ae1fba2aa6c6a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/sesh/src/session/operations.c` | ✅ | 1791504436 | c373a3b457240e8a6e44c077414919b45e34638c90a44f5197141cc7c46c6310 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/sesh/src/session/resource.c` | ✅ | 1791504436 | b70d206a709c31ecea747d3d4eac1ae047c4cbec8eb50a3aca4f27f40c765bf3 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/sesh/src/session/sesh.c` | ✅ | 1791504436 | 81b2a64375e649ea17c491b9968a79a289b85da50ec70cdc8b47615c246795b0 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/sesh/src/session/text.h` | ✅ | 1791447025 | f282546ae4d43be732aab4d6d55a0c157d03c6e662b13ce1c16ea006ec5271c3 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
-| `ecosystem/repos/sesh/src/session/workspace.c` | ✅ | 1791504436 | 253b6e0d3cd1d6ef98cfc690cc4d791b2a491fd8ce02fd1d8a2126fcda0d1730 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-
-### `ecosystem/repos/sesh/src/snapshot`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/sesh/src/snapshot/snapshot.c` | ✅ | 1791504436 | 9017a63a26185194e953886bd0e8f75743d19288c053922e37ca675206be2866 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/sesh/src/snapshot/snapshot.h` | ✅ | 1791441424 | a0c92b4e70e466102d02aba7abe0219eeef12357279901c9ac2aa447a1f6e0bf | ['python3', 'tests/sesh/run.py']; macOS isolated strict C23 -Wall -Wextra -Werror -O2 assertions plus ASan/UBSan; two owner executables per configuration and compile-negative arity. Offline fake put/get only, ten-second execution watchdogs. No real Drive/iCloud, TLS/OAuth, engine/host integration, provider idempotency, durable journal, overall pending deadline, FileSession/DirectorySession, concurrency or other-platform proof; LeakSanitizer unavailable. | Caller-buffer snapshot core and API provider vocabulary: copied admission, retry/cancel/recovery, exact rejection diagnostics and ignored disposable fixture | passed |
+No inventoried files yet; not verified.
 
 ## ecosystem/repos/vexspoke
 
-### `ecosystem/repos/vexspoke`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/.gitignore` | ✅ | 1791275083 | 8cf46984457865da19f07cd60bd58b400a4467fa12a5b835382bb78d2b192ad4 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","build"],check=True); subprocess.run(["python3","-B","tests/b/workspace_test.py"],check=True); subprocess.run(["python3","-B","tests/vexspoke/backend_contract_test.py"],check=True)']; macOS b build plus eight workspace regressions and two backend-document/copy checks. 610 registered compilation units; imported reference Bytes preserved. Source-empty repos are not builds; no Rust backend, standalone per-repo, Windows or visual approval. | Integrated build repair and unchanged C-backend restoration | passed |
-| `ecosystem/repos/vexspoke/BACKEND.md` | ✅ | 1791440762 | 4c690d87387f3d626f5f0d4449e22b227df3f234c91335bf3dca5a397900c0d5 | ['python3', 'tests/vexspoke/backend_contract_test.py']; macOS default Darling consumer build, metadata ownership and unique engine Memory_alloc archive definition; four registered native owners execute. Not full UI/runtime readiness or Rust allocator rewrite. | Default consumer build and archive source ownership | passed |
-| `ecosystem/repos/vexspoke/CMakeLists.txt` | ✅ | 1791441165 | 7c9b821844020e5e035a9c923d642bba3d30ce23d7ef81e7b21dd67a1aa198c5 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS offline four per-repo configure/index/C23 checks; engine include option after CPU roots. IDE metadata only, runtime native ownership proved separately; no visual or Windows proof. | Canonical engine IO/NIO in consumer IDE adapters | passed |
-| `ecosystem/repos/vexspoke/CONTRIBUTING.md` | ✅ | 1791441042 | b420d7323c0e271771c45cf954d64f461369ed45c12c2157675cd69062435454 | ['python3', '-B', '-c', 'import subprocess; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in ("tests/tools/ecosystem_docs_test.py","tests/relational-engine/preferences_test.py","tests/relational-engine/scaffold_test.py")]']; macOS offline documentation/layout checks and strict CMake metadata with locked warnings-denied Cargo check; not runtime, complete per-file readiness, other-platform or visual proof. Native implementation proof recorded separately. | Production ownership docs and IDE scaffold consistency | passed |
-| `ecosystem/repos/vexspoke/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/README.md` | ✅ | 1791469706 | d3ff5f53655437794d05df45ce2343f6b98ed0e74f728a85c76de5e8a97685fc | ['bash', '-lc', 'python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && python3 -B tests/tools/per_repo_ide_test.py &gt;/dev/null && echo DOC_IDE_OK']; macOS offline documentation + IDE-metadata assertions only. Not runtime behavior, allocator, or visual proof. | Transparent Competency Law pass: relational-engine and vexspoke READMEs gain a '## Current State' honest assessment and a '## Scope and Limitations' section; vexspoke inventory claims corrected (64-bit ids, reflection in src/reflection, IO/NIO migrated to RE, type algebra in RE). Doc + IDE contracts green. | passed |
-| `ecosystem/repos/vexspoke/vexspoke-preferences.md` | ✅ | 1791441042 | 6aeceea2624e06c4261afc0137161831bc76a0399d78baa9a6d7901e11fd2e51 | ['python3', '-B', '-c', 'import subprocess; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in ("tests/tools/ecosystem_docs_test.py","tests/relational-engine/preferences_test.py","tests/relational-engine/scaffold_test.py")]']; macOS offline documentation/layout checks and strict CMake metadata with locked warnings-denied Cargo check; not runtime, complete per-file readiness, other-platform or visual proof. Native implementation proof recorded separately. | Production ownership docs and IDE scaffold consistency | passed |
-
-### `ecosystem/repos/vexspoke/src/algo`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/algo/bvh.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/bvh.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/dijkstra.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/dijkstra.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/draft_sort.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/draft_sort.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/kd_tree.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/kd_tree.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/radix_sort.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/radix_sort.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/segment_index.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/segment_index.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/tree_sit.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/algo/tree_sit.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/annotation`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/annotation/checker.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/definition.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/draft.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/getter.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/hotcode.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/incomplete.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/inherits.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/intention.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/overview.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/platform_exclusive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/setter.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/annotation/what.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/atomic`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/atomic/registry.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/atomic/registry.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/atomic/ring.c` | ✅ | 1791504436 | e0d6735c97b4f325e156f8f9f0dd519531cf24e52859c2f332715cae8d8fa935 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/atomic/ring.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/atomic/spin.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/atomic/spin.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/audio`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/audio/audio.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/audio/audio_hal.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/audio/audio_hal_stub.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/audio/audio_stub.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/bit`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/bit/bit.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/bit/bit.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/c23`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/c23/constructor.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/c23/equals.c` | ✅ | 1791504436 | 01cf187f4fbf9ff76469ad055566ad63aedb6d1addd86d1ceb6a7e61d3a38a44 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/c23/equals.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/c23/fn.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/c23/free.c` | ✅ | 1791504436 | 2e6e4231935790ba425aa9af98d5e644084a65009459bf96989b7522bfe31c39 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/c23/free.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/c23/overload.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/c23/zero.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/cli`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/cli/command.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/command.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/commandparser.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/commandparser.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/commandregistry.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/commandregistry.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/console.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/console.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/logcommands.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/logcommands.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/scanner.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/cli/scanner.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/deferred`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/deferred/dispatch.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/deferred/dispatch.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/engine`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/engine/loop.c` | ✅ | 1791504436 | d341699a39f88bdeff497e4328b9a29b454578a1359126b0c66d27fd94e0c22b | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/engine/loop.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/event`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/event/keyhandler.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/event/mousehandler.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/event/touchhandler.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/exception`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/exception/exception.c` | ✅ | 1791504436 | 78ebf3d26fc3a0133099ae81862f4903793697e85a63f62c6409fbb44ed142e1 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/exception/exception.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/exception/throw.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/exception/try.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/exception/try_code.c` | ✅ | 1791504436 | 08ba606e9d692c353b3b8399de23767967b32d9a649548db904c40a35d746d04 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/exception/try_code.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/exception/try_ptr.c` | ✅ | 1791504436 | ffcac57b8483eb75e8f814edc566cff982c7021eb90f8a2c45fd29afee6c6b8d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/exception/try_ptr.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/exception/try_value.c` | ✅ | 1791504436 | effca31331bcd23c41dda982b1febf4e0708d1e51eb0f01277e7cd4690764223 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/exception/try_value.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/input`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/input/focus.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/focus.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/gamepad.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/gamepad.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/gesture.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/gesture.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/hardware_event.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/hardware_event.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/key.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/key.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/key_map.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/key_map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/mouse.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/mouse.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/piano_key.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/piano_key.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/touch.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/touch.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/turntable.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/input/turntable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/lang`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/lang/mat4.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/mat4.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/str.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/str.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec2.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec2.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec3.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec3.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec4.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec4.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/lang/point`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/lang/point/point.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/point/point.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/lang/rect`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/lang/rect/rectangle.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/rect/rectangle.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/lang/vec2`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/lang/vec2/vec2.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec2/vec2.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec2/vec2d.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec2/vec2d.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/lang/vec3`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/lang/vec3/vec3.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec3/vec3.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec3/vec3_int_float.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec3/vec3_int_float.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec3/vec3_long_double.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec3/vec3_long_double.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec3/vec3d.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec3/vec3d.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/lang/vec4`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/lang/vec4/vec4.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec4/vec4.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec4/vec4d.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/lang/vec4/vec4d.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/math`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/math/coord_frame.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/math/coord_frame.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/math/fast_math.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/math/fast_math.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/math/math.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/math/math.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/math/strict_math.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/math/strict_math.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/net`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/net/download.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/download.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/http.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/http.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/json.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/json.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/net.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/netfacade.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/tls.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/tls_curl.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/url.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/net/url.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/objc`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/objc/audio_cocoa.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objc/audio_hal_mac.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objc/discovery.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objc/tls_apple.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objc/touchid_cocoa.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/objects`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/objects/choice.c` | ✅ | 1791504436 | 3231a4d3c555f35dbbd12ad2031fa8e7230650cdf7b9969d21ac2e8cc512e370 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/objects/choice.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/future.c` | ✅ | 1791504436 | 9ace8116a1fb0638a9fec08369977d5b091037342fb62aedb9338e74fafebcce | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/objects/future.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/global.c` | ✅ | 1791504436 | 133dba3393747f16c737fe25bf46be3a77e8ae9f40bf1036ce09fc549aca2308 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/objects/global.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/local.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/local.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/passive.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/passive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/probable.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/probable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/probable_objects.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/probable_objects.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/objects/reactive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/oop`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/oop/stride.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/oop/stride.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/oop/type.h` | ✅ | 1791449108 | 5b922052464ce4dcda7d2ff3240c9fb68156672275fadfed7b5c812d5401a526 | ['bash', '-lc', './tools/b build && ./tools/b test type_test && ./tools/b test type_algebra']; macOS arm64; umbrella b build plus registered owner tests type_test and type_algebra_test. Not other platforms; not a per-line proof of workspace.c internals. | Type algebra ownership move to relational-engine: engine type/type.{h,c} own the algebra + resolver, vexspoke oop/type.h is registry + include, oop/type.c removed, CMAKE/workspace wiring and owner tests retargeted. b build green; both owner tests pass. | passed |
-
-### `ecosystem/repos/vexspoke/src/primitive`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/primitive/bool.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/bool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/brain.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/brain.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/byte.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/byte.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/double.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/double.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/fixed32.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/fixed32.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/fixed64.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/fixed64.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/float.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/float.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/int.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/int.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/int_double.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/int_double.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/int_float.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/int_float.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/long.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/long.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/long_double.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/long_double.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/long_float.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/long_float.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/pack.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/pack.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/short.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/short.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/string.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/primitive/string.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/reactive`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/reactive/dispatch.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/generic.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive.c` | ✅ | 1791443098 | 37fada7c84d31230ba99af3548b47002401a263bc4c13ccbe53afa898dde4b3e | ['python3', '-B', '-c', 'from pathlib import Path; import subprocess\nt=Path("ecosystem/repos/vexspoke/src/oop/type.h").read_text()\nassert "SUGAR_VEX" in t and "SUGAR_BE6C" not in t\nassert t.count("SUGAR_VEX &#124;") &gt;= 97, t.count("SUGAR_VEX &#124;")\nsrc="#include \\"oop/type.h\\"\\n_Static_assert(SUGAR_VEX == 0xBE6C000000ULL, \\"sugar value\\");\\n_Static_assert((SUGAR_VEX & MASK_SUGAR) == SUGAR_VEX, \\"sugar in slot\\");\\n_Static_assert(TYPE_INT_SINGLETON == (SUGAR_VEX&#124;PROJ_VEXSPOKE&#124;FORM_SINGLETON&#124;ID_INT), \\"macro\\");\\n_Static_assert(TYPE_INT_SINGLETON != (PROJ_VEXSPOKE&#124;FORM_SINGLETON&#124;ID_INT), \\"sugar stamped\\");\\n"\nsubprocess.run(["clang","-std=gnu23","-Wall","-Wextra","-Werror","-Iecosystem/repos/vexspoke/src","-x","c","-fsyntax-only","-"],input=src,text=True,check=True)\nsubprocess.run(["./tools/b","build"],check=True,timeout=1200)\nsubprocess.run(["./tools/b","run","type_test"],check=True,timeout=600)\nsubprocess.run(["./tools/b","run","reactive_test"],check=True,timeout=600)\nprint("PASS: SUGAR_VEX stamped; build + type_test + reactive_test")']; macOS arm64: header contract (SUGAR_VEX present, SUGAR_BE6C gone, &gt;=97 TYPE_ macros stamped), strict C23 static asserts (sugar value masked, macro==Type_make expression, sugar actually stamped), full ./tools/b build and type_test/reactive_test. Not allocator/ABI/provenance, other-platform or visual proof; storage migration owned separately. | SUGAR_VEX standard-stamped type ids | passed |
-| `ecosystem/repos/vexspoke/src/reactive/reactive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive_object.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive_object.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive_primitive.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive_primitive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive_probable.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive_probable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive_probable_tmpl.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive_probable_tmpl.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive_tmpl.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reactive/reactive_tmpl.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/reflection`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/reflection/class.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reflection/class.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reflection/field.c` | ✅ | 1791445499 | e3ad82bbdf36e10c7e2b25b1c446f7080ca5781885256c9e6811fc7fb0b846fe | ['./tools/b', 'test', 'reflection']; macOS arm64; registered reflection owner. Not persistence, darkbase runtime, or visual proof. | Unified entity Field: Field extended with physical layout (typeId, offset, size, flags) plus symmetric accessors and REFLECT_FIELD_* flags; Field_setTypeId derives size via Stride_get; Struct.pad renamed to size with accessors. Owner reflection_test asserts Field==72, layout round-trip, Stride-derived width, Struct size. Passes under the registered b owner with no new coverage gaps. | passed |
-| `ecosystem/repos/vexspoke/src/reflection/field.h` | ✅ | 1791445499 | 450407661b46cc41d8a2c8d3bd53b1997249da52b187527b62915efe59f8a03c | ['./tools/b', 'test', 'reflection']; macOS arm64; registered reflection owner. Not persistence, darkbase runtime, or visual proof. | Unified entity Field: Field extended with physical layout (typeId, offset, size, flags) plus symmetric accessors and REFLECT_FIELD_* flags; Field_setTypeId derives size via Stride_get; Struct.pad renamed to size with accessors. Owner reflection_test asserts Field==72, layout round-trip, Stride-derived width, Struct size. Passes under the registered b owner with no new coverage gaps. | passed |
-| `ecosystem/repos/vexspoke/src/reflection/method.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reflection/method.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reflection/struct.c` | ✅ | 1791445499 | 2ae23a486b2b3f443f4bbb6fd1b733439ba23d5cf5e74b7190a6cd5b3245498f | ['./tools/b', 'test', 'reflection']; macOS arm64; registered reflection owner. Not persistence, darkbase runtime, or visual proof. | Unified entity Field: Field extended with physical layout (typeId, offset, size, flags) plus symmetric accessors and REFLECT_FIELD_* flags; Field_setTypeId derives size via Stride_get; Struct.pad renamed to size with accessors. Owner reflection_test asserts Field==72, layout round-trip, Stride-derived width, Struct size. Passes under the registered b owner with no new coverage gaps. | passed |
-| `ecosystem/repos/vexspoke/src/reflection/struct.h` | ✅ | 1791445499 | f07d14558a3d4962bea3667cc78830fb18bf30379011af46d0cc054ca78df207 | ['./tools/b', 'test', 'reflection']; macOS arm64; registered reflection owner. Not persistence, darkbase runtime, or visual proof. | Unified entity Field: Field extended with physical layout (typeId, offset, size, flags) plus symmetric accessors and REFLECT_FIELD_* flags; Field_setTypeId derives size via Stride_get; Struct.pad renamed to size with accessors. Owner reflection_test asserts Field==72, layout round-trip, Stride-derived width, Struct size. Passes under the registered b owner with no new coverage gaps. | passed |
-| `ecosystem/repos/vexspoke/src/reflection/variable.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/reflection/variable.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/relational`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/relational/cell.c` | ❌ | 1791275020 | 4e0eca5567fa500993d8e4cd76385629ff11623578eb54981afbab04dbc5eef0 | ['./tools/b', 'test', 'cell_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend cell registered regression | stale — content changed; rerun required |
-| `ecosystem/repos/vexspoke/src/relational/cell.h` | ❌ | 1791275020 | 4f9910e159a65d0a6f814b1547d3c15e284c31600ed392d5fe2451c738ac0974 | ['./tools/b', 'test', 'cell_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend cell registered regression | stale — content changed; rerun required |
-| `ecosystem/repos/vexspoke/src/relational/relational.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/relational/relational.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/relational/shelf.c` | ✅ | 1791275021 | 7e45d2bd5b870a6d1d449ba2e3ac2ef2aa41af08c3116d34b08980610e32369d | ['./tools/b', 'test', 'shelf_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend shelf registered regression | passed |
-| `ecosystem/repos/vexspoke/src/relational/shelf.h` | ❌ | 1791275021 | 06f13f980f4e7e831a474917b55809d82006ad02a723be8ce65c57a24f0119ba | ['./tools/b', 'test', 'shelf_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend shelf registered regression | stale — content changed; rerun required |
-| `ecosystem/repos/vexspoke/src/relational/symbol_table.c` | ✅ | 1791275017 | 4f5c3ac5cb41c09a3c6382c9a8243e5b7c3518b42ad576c4f78385a8768030ec | ['./tools/b', 'test', 'symbol_table_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend symbol_table registered regression | passed |
-| `ecosystem/repos/vexspoke/src/relational/symbol_table.h` | ❌ | 1791275017 | d9cae7a8e4d66afa848e6d80f756dbaebbb66307d01036ad94b1f2a8b4e754f4 | ['./tools/b', 'test', 'symbol_table_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend symbol_table registered regression | stale — content changed; rerun required |
-| `ecosystem/repos/vexspoke/src/relational/variable_hash_map.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/relational/variable_hash_map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/relational/variable_mini_map.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/relational/variable_mini_map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/relational/variable_pool.c` | ❌ | 1791275018 | 2ede5385fdfc0617a5aba2f8957dd3a394497359f8fe31bf797a38babbbc58de | ['./tools/b', 'test', 'variable_pool_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend variable_pool registered regression | stale — content changed; rerun required |
-| `ecosystem/repos/vexspoke/src/relational/variable_pool.h` | ❌ | 1791275018 | 526c4afff14e94e4b146191d2b3d458147b5ee846efbee90b87e7944fffea7d7 | ['./tools/b', 'test', 'variable_pool_test']; macOS headless registered owner test through b; warnings denied and assertions active. Scoped regression only, not full adversarial/concurrency/other-platform readiness. | Restored C backend variable_pool registered regression | stale — content changed; rerun required |
-| `ecosystem/repos/vexspoke/src/relational/variable_slot.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/relational/variable_slot.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/search`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/search/calc.c` | ✅ | 1791504436 | 691e3ce7e198bc76d76396a4e08b3bff2c4e0365d80c7f8c7517b627cba4e2cf | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/search/calc.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/search/find.c` | ✅ | 1791504436 | 63fa1abca051a09e71f1e21a62834c6eeecaa171b5ec02e2779a17a20676cf56 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/search/find.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/search/spotlight.c` | ✅ | 1791504436 | 12300f635ea9cf3e862ef26f60f735d405c3c29a0269ce7d7fef857c4f9c2b48 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/search/spotlight.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/security`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/security/crypto.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/security/crypto.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/security/secure_random.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/security/secure_random.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/security/touchid.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/security/touchid.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/spoke`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/spoke/bespoke.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/spoke/bespoke.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/struct`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/struct/array.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/array.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/chunked_list.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/chunked_list.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/circle_array.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/circle_array.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/collection.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/collection.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/deque.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/deque.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/list.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/list.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/map.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/map.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/minheap.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/minheap.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/octree.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/octree.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/queue.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/queue.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/set.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/set.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/sparseset.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/sparseset.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/sphere_array.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/sphere_array.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/stack.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/struct/stack.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/system`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/system/app_detect.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/app_detect.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/capture_tool.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/capture_tool.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/discovery.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/display_info.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/display_info.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/display_monitor.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/display_monitor.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/graphics_info.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/graphics_info.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/hardware_info.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/hardware_info.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/image_mac.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/image_mac.m` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/process_probe.c` | ✅ | 1791504436 | be644382869a86a1ce7ed746bc227548f20b6ed43cf24317f542aaddd1523e53 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/system/process_probe.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/system.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/system.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/system/data`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/system/data/apps.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/system/data/capture_tools.inc` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/thread`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/thread/compute.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/compute.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/draw.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/draw.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/event.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/event.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/networking.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/networking.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/reactive.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/reactive.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/scripting.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/scripting.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/thread.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/thread.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/ui.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/thread/ui.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/time`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/time/calendar.c` | ✅ | 1791504436 | b7043cb52badac4ac69449c0d16aa224794df25c643f6a3798a1efc269e9999c | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/time/calendar.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/time/clock.c` | ✅ | 1791504436 | f005da2114c57389a10335ff7397a79ca7daca499567c51ab868aaeddae856d4 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/time/clock.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/time/datetime.c` | ✅ | 1791504436 | 778f9a7da49e3947ea9efdae3adcc7a58863031f80bde478b24d45fcd59bd5d3 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/time/datetime.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/time/nanotime.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/time/nanotime.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `ecosystem/repos/vexspoke/src/util`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `ecosystem/repos/vexspoke/src/util/arrays.c` | ✅ | 1791504436 | ec6dcc2aaa3459dad97106a3e8b5752df985fb6a8193f3136292237cb761fafd | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/util/arrays.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/util/hash.c` | ✅ | 1791504436 | bb0373611a87fa1ba6d1a2eec60de2194e9512c59ca6744f2d6d231d1c7be772 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `ecosystem/repos/vexspoke/src/util/hash.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/util/random.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `ecosystem/repos/vexspoke/src/util/random.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+No inventoried files yet; not verified.
 
 ## personal/b
 
-### `personal/b`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `personal/b/.gitignore` | ✅ | 1791337104 | b25f8f35c89deb4cd88c31b279946095df9d24b400f45818825c8e5b204412e9 | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `personal/b/ADAPTERS.md` | ✅ | 1791527914 | a26dae213104ce6f0c22ed530677baa75f23fad46927853bece6d9625fe63dd2 | ['python3', '-B', 'tests/b/readme_test.py']; macOS offline document owner; asserts recorded tool evidence and explicit remaining rendering/GPU gaps; no hardware rendering claim. | b documentation and proof laws updated to real glslang/shaderc/Metal/leaks evidence | passed |
-| `personal/b/CMakeLists.txt` | ✅ | 1791337104 | 51fde6ea9245597ef9ac7ddb4a8ea7064d37724f1fd39a6eff6ab139d184d8cb | ['python3', '-B', 'tests/tools/per_repo_ide_test.py']; macOS four owner checks across 15 repos: configure, default-no-op targets, C23 commands, representative syntax, missing-header rejection, ignored build outputs, blueprint and docs contracts. No release linking, dependencies downloaded, apps, Rust/C ABI or other-host runtime proof. | Independent per-repo C23 IDE entries, ignored outputs and b-build links | passed |
-| `personal/b/CONTRIBUTING.md` | ✅ | 1791384482 | 178871c761d06b596b9476e31d9886940d32dba8aee624efc53172c9ea269a70 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `personal/b/JETBRAINS.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/README.md` | ✅ | 1791527914 | 344b105d3db3dd12c47e45889f7b22936df0d0ee883055c0763da8c14dd0b796 | ['python3', '-B', 'tests/b/readme_test.py']; macOS offline document owner; asserts recorded tool evidence and explicit remaining rendering/GPU gaps; no hardware rendering claim. | b documentation and proof laws updated to real glslang/shaderc/Metal/leaks evidence | passed |
-| `personal/b/TREE.md` | ✅ | 1791526321 | 849e20340728f908e93ac3347b6a4e996bca1df559544762574516322ebb8029 | ['python3', '-B', 'tests/b/readme_test.py']; macOS offline documentation owner; nine structure/registry/source/JetBrains/proof-law checks. Records explicit tool/platform/integration gaps; no hardware rendering claim. | Current b command documentation, alphabetical inventory, proof laws and implementation boundaries | passed |
-| `personal/b/annotation.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/b` | ✅ | 1791275595 | a7c96f72cfedcd3eff3c5f4be271bd892767650717c3d3c78144976ea9e9ef2c | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/run_current_test.py"],check=True); subprocess.run(["python3","-B","tests/b/workspace_test.py"],check=True); subprocess.run(["./tools/b","build"],check=True)']; macOS headless C/Rust routing, arguments/status/recovery, XML wiring, workspace regression and complete registered build; IDE UI and interactive appearance remain user-owned. b-local lawbook unavailable. | Project-owned graph and repaired CLion active-file routing | passed |
-| `personal/b/b.c` | ✅ | 1791526040 | 4cc98a9ccaa243e8cd48a820750eeb495fa3c188bb989d91e1c5a0bccebb453d | ['python3', '-B', 'tests/b/cli_test.py']; macOS strict C23 bootstrap; 27 CLI scenarios using installed native tools, failures/argv and stale-artifact rejection; no other platform or GPU proof | Standalone command dispatch regression after workspace/shader wiring | passed |
-| `personal/b/b.h` | ✅ | 1791384508 | 5dcf4c658293421001128c6b42d0a5f6c8ba772020775bd66d96b11fdfb108f4 | ['python3', '-B', '-c', 'import subprocess; commands=["tests/repos/vex-graph/readme_test.py","tests/repos/artwork_headers_test.py","tests/b/readme_test.py","tests/b/preferences_test.py","tests/tools/per_repo_ide_test.py","tests/vexspoke/backend_contract_test.py"]; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in commands]; subprocess.run(["python3","-B","tests/tools/compositor_contract_test.py","CompositorContractTest.test_universal_ownership_is_reconciled"],check=True,timeout=30)']; macOS: 21 checks across profile/artwork/b docs, lexical Reference form, relocated IDE configure/default-noop/C23 syntax, retained C copy identity and selected universal compositor ownership clause. Only that compositor clause ran, not its full suite. No default allocator change, app/GPU runtime, Windows or visual acceptance. | Relocated documentation owner regressions and preserved default-backend copy boundary | passed |
-| `personal/b/inspect.c` | ✅ | 1791504436 | 15030624898f1f14bd2bb535d7541ecb3a4596df4d644399b1b1f39cf88ac7c6 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/inspect.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/util.c` | ✅ | 1791504436 | 1cfa044685c4194e9da7825567c6ca41fdccb038a4eeba81d5078db0596f7f6f | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-
-### `personal/b/adapters`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `personal/b/adapters/adapter.c` | ✅ | 1791526320 | 4095fb1cc01e186b3ad743a39f7cc28749ee8dcbfcd9072e5bf524c04dcd54f8 | ['env', 'PYTHONPATH=tests/b/adapters:tests/b', 'python3', '-B', '-m', 'unittest', 'glsl_test', 'workspace_test', 'metal_test', 'adapter_test', '-v']; macOS strict C23/assertions; ASan/UBSan null public clients, 40-unit traversal/build, fake GLSL/Metal normal/failure cleanup. Real C/Python/CMake and glslang six stages plus generic GLSL/SPIR-V magic. Two explicit skips: real glslc absent, Metal compiler unavailable (fixture proof only). Apple LeakSanitizer, Windows, GPU execution and hostile-tree mutation unproved. External child watchdogs. | Final recursive-builder/shader/registry owners with sanitizer cleanup and all GLSL stages | passed |
-| `personal/b/adapters/adapter.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/arduino.c` | ✅ | 1791504436 | be0b081177a270aeb0663677ee68f4f96f42a526fdcac61184615a921c7a9324 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/arduino.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/c.c` | ✅ | 1791504436 | db27be716500af30b2eb4632696fad4d0878fd7e38652c2ecc308c60f46407ed | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/c.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/cargo.c` | ✅ | 1791504436 | 9f324b57dfb3592d88068cda0ad667ecd161dace27bcad50c1232a2a722eb773 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/cargo.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/cmake.c` | ✅ | 1791504436 | 0ac5024389d28eec82f5960fa36a0e10df868ec47d75a821c27bb298dc25ffbc | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/cmake.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/cpp.c` | ✅ | 1791504436 | 55e4363b12146aba76c1d26a5d1ff50c7b294e3176159540101d63890acc2457 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/cpp.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/csharp.c` | ✅ | 1791504436 | 1ba02b608baf486de618a11f24f28f88f8daf7eeea0747ae8d026e7ffa610421 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/csharp.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/glsl.c` | ✅ | 1791527069 | 4032d94600c58e01102aba85bd1d623a11217c2a135ce02578a8a2eed5ba3370 | ['env', 'PYTHONPATH=tests/b/adapters:tests/b', 'python3', '-B', '-m', 'unittest', 'glsl_test', 'adapter_test', '-v']; macOS strict C23/assertions and ASan/UBSan; glslc 2026.4 and glslangValidator both exercise real SPIR-V magic (0x07230203) and include-failure rejection. No GPU execution, Windows or rendering proof. | GLSL adapter: real shaderc and glslang SPIR-V for all six stages plus generic .glsl | passed |
-| `personal/b/adapters/glsl.h` | ✅ | 1791527069 | b22f24d5fa30d859b56bfc3f11cd4e4c0f61f10f7447de774b2fea73e3adf2a1 | ['env', 'PYTHONPATH=tests/b/adapters:tests/b', 'python3', '-B', '-m', 'unittest', 'glsl_test', 'adapter_test', '-v']; macOS strict C23/assertions and ASan/UBSan; glslc 2026.4 and glslangValidator both exercise real SPIR-V magic (0x07230203) and include-failure rejection. No GPU execution, Windows or rendering proof. | GLSL adapter: real shaderc and glslang SPIR-V for all six stages plus generic .glsl | passed |
-| `personal/b/adapters/go.c` | ✅ | 1791504436 | 880c9fd563785e67e4cf82c18d4dd089848afbb1a6c9143281ef7a18c30851e9 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/go.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/html.c` | ✅ | 1791504436 | 985eabb60dbc7fe6b2c564c61c69fd8827ad2efd5985fd5ad0ea2558740681e4 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/html.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/java.c` | ✅ | 1791504436 | f27f7070caf553628c3d304a8bd9d14ce419b48c4ff367d70f449fa28e9e01d3 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/java.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/javascript.c` | ✅ | 1791504436 | 4c0b58adffe9f7ee898ce79e2938e5fa3f5e1655de0ed6a69a5c86c9d123f902 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/javascript.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/lua.c` | ✅ | 1791504436 | 9fa0539ac286311f81370f1bae67a7158dc75399399334592ddde63711726287 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/lua.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/metal.c` | ✅ | 1791527913 | 50376d31c5861d5888ed0bec0f5f44191543e8ab850095a1fb383bdb9707ab83 | ['env', 'PYTHONPATH=tests/b/adapters:tests/b', 'python3', '-B', '-m', 'unittest', 'metal_test', 'adapter_test', '-v']; macOS Apple Metal 27A266a toolchain; real kernel compiled to non-empty metallib, malformed source rejection preserves previous library, XCRUN override and non-symlink guards. No GPU execution/rendering, Windows or cross-file link inference proof. | Metal adapter: real Apple AIR-to-metallib compilation and two-stage failure recovery | passed |
-| `personal/b/adapters/metal.h` | ✅ | 1791527913 | 90db30db8ea2956a98513fd85ee2c2b7d5dc87c803b4ce8f0a52600d038badbd | ['env', 'PYTHONPATH=tests/b/adapters:tests/b', 'python3', '-B', '-m', 'unittest', 'metal_test', 'adapter_test', '-v']; macOS Apple Metal 27A266a toolchain; real kernel compiled to non-empty metallib, malformed source rejection preserves previous library, XCRUN override and non-symlink guards. No GPU execution/rendering, Windows or cross-file link inference proof. | Metal adapter: real Apple AIR-to-metallib compilation and two-stage failure recovery | passed |
-| `personal/b/adapters/npm.c` | ✅ | 1791504436 | 69330b154d7692a14c07b5c2c7b9c4e091eeb20a7b3a47b02093998a6b5114eb | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/npm.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/objc.c` | ✅ | 1791504436 | 3d275eeb6683a60d8182f6b70164de15788232d0946e0d3fd615ff750a3ca721 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/objc.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/php.c` | ✅ | 1791504436 | 78a3403a3852daa5af5d00507aebdf2495c1985784965571a521c14b17e49394 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/php.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/python.c` | ✅ | 1791504436 | 30d8540c09f6281bb835007c38057ae0523dd16abbcf7b629f035fe3b6a90256 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/python.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/r.c` | ✅ | 1791504436 | 29f7901f25bc96895aeffc6a0e05bfb3f6f77231746c4759c5040d9d61936b04 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/r.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/rust.c` | ✅ | 1791504436 | 43574139903938fc852edfdba4101be087bd2f5076a433bbe4f98a6369b97a9e | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/rust.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/shell.c` | ✅ | 1791504436 | 487d837323e9bf2f66089ad57ba7657a0e9c0291c4bd6e30182d4dac59320a40 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/shell.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/sql.c` | ✅ | 1791504436 | 7f3ebed8984f8d109ea2cf7511c293bd3f71c2d56ea7acd1f1082150b07f8153 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/sql.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/swift.c` | ✅ | 1791504436 | 47ab5c83bbb1e1991dd92a15c911f1018d70cb0df2e67cdb0208853941149967 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/swift.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/typescript.c` | ✅ | 1791504436 | 700bdd463a43937c4c263800ea4cba37359ba686f52bacf21ff28e35b79fd7b3 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/typescript.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/b/adapters/workspace.c` | ✅ | 1791527087 | 8292261e677ca2f66d64c8f6ed9228f203f89796237eb52e103eba6562f1dcc9 | ['env', 'PYTHONPATH=tests/b/adapters:tests/b', 'python3', '-B', '-m', 'unittest', 'workspace_test', '-v']; macOS strict C23/assertions; 40-unit traversal/build, manifest ownership, symlink/control rejection, ASan/UBSan null clients and /usr/bin/leaks zero-leak proof on plan and shader build. No Windows, GPU, hostile-tree mutation or TOCTOU proof; native scripts trusted. | Recursive workspace owner plus OS leaks proof on the CLI seam | passed |
-| `personal/b/adapters/workspace.h` | ✅ | 1791527087 | a46bca67c853e12be63f937f70e24a30fb5df397f926d30e8264ff529b03ab7a | ['env', 'PYTHONPATH=tests/b/adapters:tests/b', 'python3', '-B', '-m', 'unittest', 'workspace_test', '-v']; macOS strict C23/assertions; 40-unit traversal/build, manifest ownership, symlink/control rejection, ASan/UBSan null clients and /usr/bin/leaks zero-leak proof on plan and shader build. No Windows, GPU, hostile-tree mutation or TOCTOU proof; native scripts trusted. | Recursive workspace owner plus OS leaks proof on the CLI seam | passed |
-| `personal/b/adapters/zig.c` | ✅ | 1791504436 | 4552ae7f599ae783baa136395d047d2aa49ca1bbb9cb5baae5fa6bc1291f0c3e | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `personal/b/adapters/zig.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+No inventoried files yet; not verified.
 
 ## personal/vex-graph
 
-### `personal/vex-graph`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `personal/vex-graph/.DS_Store` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/vex-graph/README.md` | ✅ | 1791384482 | a02bc57f181f0aac44271b051d2bb869f0d13ab0244ef4beed3f851ebd84776c | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-
-### `personal/vex-graph/resources`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `personal/vex-graph/resources/.DS_Store` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/vex-graph/resources/b.png` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/vex-graph/resources/ecosystem.png` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/vex-graph/resources/personal-projects.png` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/vex-graph/resources/preferences-dot-md.png` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `personal/vex-graph/resources/vexgraph.png` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+No inventoried files yet; not verified.
 
 ## tests
 
@@ -1949,12 +124,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/.gitignore` | ✅ | 1791441193 | 62cfeb4f8bd0012305c085e91852694eba001b4594a0564d8eaa294370edfca7 | ['python3', '-B', '-c', 'import subprocess; cwd="tests"; ignored=subprocess.check_output(["git","check-ignore","--no-index","cmake-build-debug/CMakeCache.txt","relational-engine/rust/target/probe.o"],cwd=cwd,text=True).splitlines(); assert len(ignored)==2; assert not subprocess.check_output(["git","ls-files","cmake-build-debug/"],cwd=cwd); assert subprocess.run(["git","check-ignore","--no-index","relational-engine/nio/mem_test.c"],cwd=cwd,capture_output=True).returncode==1; print("PASS: generated outputs ignored, no tracked CMake output, owner source visible")']; Git ignore and tracked-file inventory only; no build/runtime proof. | Generated CMake and Cargo outputs ignored without hiding test source | passed |
-| `tests/CMakeLists.txt` | ✅ | 1791277610 | 39a8bb4f0569319cae83d48acda191ab2af7d8a5ff8b56475158ceca1e5678a7 | ['python3', '-B', 'tests/tools/clion_adapter_test.py', '--generator', 'Ninja', '--ninja', '/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja']; macOS eight adapter checks plus two headless CTest runs; no interactive or CLion UI acceptance | Root and tests-only C23 models with explicit compiler resource headers | passed |
-| `tests/LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/README.md` | ✅ | 1791384482 | 3ff2a216ded01288498a9f839740707b6d975569fc0048fba1387cac955ddda5 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation assertions only: R2 ownership/staged migration, actual lawbook links, partial engine boundaries and unfinished R5 warnings. No allocator/FFI/GPU/app runtime, persistence, Windows or visual acceptance proof. | Two-owner R2 contracts, canonical constitution paths and explicit unfinished ecosystem/R5 documentation | passed |
-| `tests/run.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/test-preferences.md` | ✅ | 1791527914 | 6ea338ef227fb45ee9c5e3be311e39e5663c32c3b7dd41173e751ed566c65bf3 | ['python3', '-B', 'tests/b/readme_test.py']; macOS offline document owner; asserts recorded tool evidence and explicit remaining rendering/GPU gaps; no hardware rendering claim. | b documentation and proof laws updated to real glslang/shaderc/Metal/leaks evidence | passed |
 | `tests/test_support.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/api-haven`
@@ -1985,7 +154,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/b/adapter_support.py` | ❌ | 1791173599 | c113e2e10ea8982ad50738bd5921e905162dcce745f128362aee0528560619b1 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | stale — content changed; rerun required |
 | `tests/b/arduino_test.py` | ❌ | 1791170808 | 874e24773cf5179e44c4e25d0e44312bc5f2c9d0c2db80d0886c763affa87faa | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64 strict C23 warnings, Rust 1.99/.NET SDK 10.0.401/R 4.6.1/Arduino CLI 1.5.1 AVR 1.8.8/CMake; scoped adapter and documentation evidence only. No flashing by this command, GUI automation, Windows, sanitizer, full workspace GPU or every public boundary claim. | Orchestrator regression: real C/JDK/Python/Rust/.NET/R execution, Arduino header validation and compile-before-upload mocks plus real Uno compile-only, CMake configure/build/rebuild, full source blueprint registries, JetBrains UI/XML docs and preserved workspace headless seam. | stale — content changed; rerun required |
 | `tests/b/blueprint_test.py` | ❌ | 1791189490 | a4d288f54d1595c54f78d0cc9afe4b8a11cecfc548c592c94d9bb757eafe95a4 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64 strict C23 -Wall -Wextra -Werror; Go 1.27.1/Lua 5.5.1/Zig 0.17.0/Cargo 1.99. Registry/shared helper ASan+UBSan; leak detection disabled. SQL isolated socket-only cluster, browser and Zig argv launch fixtures; Uno compile-only, no flashing. No Windows/Linux, GUI appearance, full public API battle-test, packaging or arbitrary-pointer validation claim. | Adapter migration and standalone discovery: real Go/Cargo/Lua/Zig execution and recovery, all existing adapters, exact manifest selectors, no-execution doctor, registry header client, blueprints and workspace regressions. | stale — content changed; rerun required |
 | `tests/b/cli_test.py` | ❌ | 1791170808 | 1195d94a5f4ee600d4d9005b2bedb650fe21d9943f83a19735e153d9f2c5a412 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64 strict C23 warnings, Rust 1.99/.NET SDK 10.0.401/R 4.6.1/Arduino CLI 1.5.1 AVR 1.8.8/CMake; scoped adapter and documentation evidence only. No flashing by this command, GUI automation, Windows, sanitizer, full workspace GPU or every public boundary claim. | Orchestrator regression: real C/JDK/Python/Rust/.NET/R execution, Arduino header validation and compile-before-upload mocks plus real Uno compile-only, CMake configure/build/rebuild, full source blueprint registries, JetBrains UI/XML docs and preserved workspace headless seam. | stale — content changed; rerun required |
@@ -1998,34 +166,27 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `tests/b/objc_test.py` | ✅ | 1791173599 | 04cfe03a7b238742fabc47e01137a3fdc549d85dc3195ce46b358569b1e614e4 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | passed |
 | `tests/b/php_test.py` | ✅ | 1791173599 | 842511e42aa56942ec65350058cfb6e9db55fbc479f59e1c1c6e57752497f836 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | passed |
 | `tests/b/preferences_test.py` | ✅ | 1791384508 | 7badf5a613c32c504f56915f4d0b5e4466624a720ea41f2a01d1703944f70fc5 | ['python3', '-B', '-c', 'import subprocess; commands=["tests/repos/vex-graph/readme_test.py","tests/repos/artwork_headers_test.py","tests/b/readme_test.py","tests/b/preferences_test.py","tests/tools/per_repo_ide_test.py","tests/vexspoke/backend_contract_test.py"]; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in commands]; subprocess.run(["python3","-B","tests/tools/compositor_contract_test.py","CompositorContractTest.test_universal_ownership_is_reconciled"],check=True,timeout=30)']; macOS: 21 checks across profile/artwork/b docs, lexical Reference form, relocated IDE configure/default-noop/C23 syntax, retained C copy identity and selected universal compositor ownership clause. Only that compositor clause ran, not its full suite. No default allocator change, app/GPU runtime, Windows or visual acceptance. | Relocated documentation owner regressions and preserved default-backend copy boundary | passed |
-| `tests/b/readme_test.py` | ✅ | 1791527094 | 811aebf38d958f30734723a2e6de61ece51020ad500a35a6862546616b77f9fb | ['python3', '-B', 'tests/b/readme_test.py']; macOS offline document/owner checks; records real shaderc+glslang+leaks evidence and explicit Metal/GPU gaps; no hardware rendering claim. | b proof laws (workspace/shader/leaks) and documentation boundaries | passed |
+| `tests/b/readme_test.py` | ✅ | 1791529224 | 811aebf38d958f30734723a2e6de61ece51020ad500a35a6862546616b77f9fb | ['python3', '-B', 'tests/b/readme_test.py']; macOS offline documentation assertions only; no runtime/toolchain/visual proof. | b documentation owner: outline, alphabetical inventories, shader/dogfooding boundaries | passed |
 | `tests/b/shell_test.py` | ✅ | 1791173599 | 8751acd5bac01b9fc46d2b6f1f32e457a46a590d368ab66d9d39754a49de980a | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | passed |
 | `tests/b/sql_test.py` | ✅ | 1791173599 | 1b0dd303653219e1fff4558f4b5c71f32d89890d551eb6a9ce781a664978ed75 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | passed |
 | `tests/b/swift_test.py` | ✅ | 1791173599 | c1e5d9ca08b2f6e1d6dfca0f8156951fd68a60e72f12b2a9e54d5243d6603fbe | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | passed |
 | `tests/b/typescript_test.py` | ✅ | 1791173599 | 470778b9bab585279038f11e971c80eb329feb46a4f46c20f9609b19d438d85b | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | passed |
 | `tests/b/util_test.c` | ✅ | 1791504436 | 023a3c17fd63bbcc99534f7f01b9fcbb9ac8303025a333b4b23380a2bd6d58b2 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/b/util_test.py` | ✅ | 1791173599 | ae1e1b14354257064a27129ea89fcbec24a6c577cdca9072b88e6197e05ab52b | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64; strict C23 compilation; new shared helper boundaries checked with ASan/UBSan (leak detection disabled). SQL uses a temporary socket-only cluster; HTML uses a mock opener. No flashing, browser rendering, Windows proof, full API battle-test coverage or packaging/export claim. | 85-test orchestrator regression: real native and script adapters, literal argv, syntax failures and recovery, npm script delegation, isolated PostgreSQL transaction rollback, headless HTML opener, source blueprints and JetBrains documentation. | passed |
-| `tests/b/workspace_test.py` | ✅ | 1791527093 | 6aa66620757ba9a9086c105a41edb02c822434fdab6925181e850049ab27dcbf | ['python3', '-B', 'tests/b/workspace_test.py']; macOS executed; asserts IO/NIO live under relational-engine and Vexspoke retains CPU reflection; no runtime GPU/app proof. | Ecosystem integration owner repaired to current engine-owned storage provenance | passed |
+| `tests/b/workspace_test.py` | ✅ | 1791529223 | 6aa66620757ba9a9086c105a41edb02c822434fdab6925181e850049ab27dcbf | ['python3', '-B', 'tests/b/workspace_test.py']; macOS; asserts engine-owned IO/NIO, Vexspoke CPU reflection, Vulkan client link flags, real glslang generator wiring; no GPU/app/visual proof. | Ecosystem integration owner: storage provenance, targets, shader generator wiring | passed |
 
 ### `tests/b/adapters`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/b/adapters/__init__.py` | ✅ | 1791189490 | 1fd07c1bb7f6b76360cc51f901a9c89458165241b4bd24cd540ee8c932e34cb5 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64 strict C23 -Wall -Wextra -Werror; Go 1.27.1/Lua 5.5.1/Zig 0.17.0/Cargo 1.99. Registry/shared helper ASan+UBSan; leak detection disabled. SQL isolated socket-only cluster, browser and Zig argv launch fixtures; Uno compile-only, no flashing. No Windows/Linux, GUI appearance, full public API battle-test, packaging or arbitrary-pointer validation claim. | Adapter migration and standalone discovery: real Go/Cargo/Lua/Zig execution and recovery, all existing adapters, exact manifest selectors, no-execution doctor, registry header client, blueprints and workspace regressions. | passed |
-| `tests/b/adapters/adapter_test.py` | ✅ | 1791189490 | fafd501ee7185e01e1c7da693675187fe3f1724dd8cf257150f0a378be85f3a8 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64 strict C23 -Wall -Wextra -Werror; Go 1.27.1/Lua 5.5.1/Zig 0.17.0/Cargo 1.99. Registry/shared helper ASan+UBSan; leak detection disabled. SQL isolated socket-only cluster, browser and Zig argv launch fixtures; Uno compile-only, no flashing. No Windows/Linux, GUI appearance, full public API battle-test, packaging or arbitrary-pointer validation claim. | Adapter migration and standalone discovery: real Go/Cargo/Lua/Zig execution and recovery, all existing adapters, exact manifest selectors, no-execution doctor, registry header client, blueprints and workspace regressions. | passed |
+| `tests/b/adapters/adapter_test.py` | ✅ | 1791529177 | fafd501ee7185e01e1c7da693675187fe3f1724dd8cf257150f0a378be85f3a8 | ['env', 'PYTHONPATH=tests/b', 'python3', '-B', '-m', 'unittest', 'discover', '-s', 'tests/b/adapters', '-p', '*_test.py']; macOS strict C23/assertions; real shaderc/glslang six-stage SPIR-V, real Apple AIR/metallib, 40-unit recursive build, ASan/UBSan and /usr/bin/leaks. No GPU execution, Windows or hostile-tree mutation. | b standalone adapters: registry, real GLSL (shaderc+glslang) and Metal, recursive workspace + Apple leaks | passed |
 | `tests/b/adapters/cargo_test.py` | ✅ | 1791189490 | cd1f537645ed73bdc565e63e7e3275ccbbbe86d1abf1d40109f639c9b443e963 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64 strict C23 -Wall -Wextra -Werror; Go 1.27.1/Lua 5.5.1/Zig 0.17.0/Cargo 1.99. Registry/shared helper ASan+UBSan; leak detection disabled. SQL isolated socket-only cluster, browser and Zig argv launch fixtures; Uno compile-only, no flashing. No Windows/Linux, GUI appearance, full public API battle-test, packaging or arbitrary-pointer validation claim. | Adapter migration and standalone discovery: real Go/Cargo/Lua/Zig execution and recovery, all existing adapters, exact manifest selectors, no-execution doctor, registry header client, blueprints and workspace regressions. | passed |
-| `tests/b/adapters/glsl_test.py` | ✅ | 1791526320 | 12ad49c6b0254ab131dff01386e2d42d9b6e0e5bc0776738f1ec8c300b1d72bb | ['env', 'PYTHONPATH=tests/b/adapters:tests/b', 'python3', '-B', '-m', 'unittest', 'glsl_test', 'workspace_test', 'metal_test', 'adapter_test', '-v']; macOS strict C23/assertions; ASan/UBSan null public clients, 40-unit traversal/build, fake GLSL/Metal normal/failure cleanup. Real C/Python/CMake and glslang six stages plus generic GLSL/SPIR-V magic. Two explicit skips: real glslc absent, Metal compiler unavailable (fixture proof only). Apple LeakSanitizer, Windows, GPU execution and hostile-tree mutation unproved. External child watchdogs. | Final recursive-builder/shader/registry owners with sanitizer cleanup and all GLSL stages | passed |
+| `tests/b/adapters/glsl_test.py` | ✅ | 1791529177 | 12ad49c6b0254ab131dff01386e2d42d9b6e0e5bc0776738f1ec8c300b1d72bb | ['env', 'PYTHONPATH=tests/b', 'python3', '-B', '-m', 'unittest', 'discover', '-s', 'tests/b/adapters', '-p', '*_test.py']; macOS strict C23/assertions; real shaderc/glslang six-stage SPIR-V, real Apple AIR/metallib, 40-unit recursive build, ASan/UBSan and /usr/bin/leaks. No GPU execution, Windows or hostile-tree mutation. | b standalone adapters: registry, real GLSL (shaderc+glslang) and Metal, recursive workspace + Apple leaks | passed |
 | `tests/b/adapters/go_test.py` | ✅ | 1791189490 | 166927222156523639bd11fa4d6c26f233804d3f491c90a8d0c104b907fa7b88 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64 strict C23 -Wall -Wextra -Werror; Go 1.27.1/Lua 5.5.1/Zig 0.17.0/Cargo 1.99. Registry/shared helper ASan+UBSan; leak detection disabled. SQL isolated socket-only cluster, browser and Zig argv launch fixtures; Uno compile-only, no flashing. No Windows/Linux, GUI appearance, full public API battle-test, packaging or arbitrary-pointer validation claim. | Adapter migration and standalone discovery: real Go/Cargo/Lua/Zig execution and recovery, all existing adapters, exact manifest selectors, no-execution doctor, registry header client, blueprints and workspace regressions. | passed |
 | `tests/b/adapters/lua_test.py` | ✅ | 1791189490 | 44b1ff93e483724dc6f8eb88841da78f15b6280d59976d04e7b5a46611f6667e | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64 strict C23 -Wall -Wextra -Werror; Go 1.27.1/Lua 5.5.1/Zig 0.17.0/Cargo 1.99. Registry/shared helper ASan+UBSan; leak detection disabled. SQL isolated socket-only cluster, browser and Zig argv launch fixtures; Uno compile-only, no flashing. No Windows/Linux, GUI appearance, full public API battle-test, packaging or arbitrary-pointer validation claim. | Adapter migration and standalone discovery: real Go/Cargo/Lua/Zig execution and recovery, all existing adapters, exact manifest selectors, no-execution doctor, registry header client, blueprints and workspace regressions. | passed |
-| `tests/b/adapters/metal_test.py` | ✅ | 1791526320 | 91a3b4b3aafa0505d740fc6001a2b500a0e2a57681abdbe2a9e4864ce0aaecbc | ['env', 'PYTHONPATH=tests/b/adapters:tests/b', 'python3', '-B', '-m', 'unittest', 'glsl_test', 'workspace_test', 'metal_test', 'adapter_test', '-v']; macOS strict C23/assertions; ASan/UBSan null public clients, 40-unit traversal/build, fake GLSL/Metal normal/failure cleanup. Real C/Python/CMake and glslang six stages plus generic GLSL/SPIR-V magic. Two explicit skips: real glslc absent, Metal compiler unavailable (fixture proof only). Apple LeakSanitizer, Windows, GPU execution and hostile-tree mutation unproved. External child watchdogs. | Final recursive-builder/shader/registry owners with sanitizer cleanup and all GLSL stages | passed |
-| `tests/b/adapters/workspace_test.py` | ✅ | 1791527087 | f1f145c42ab10a56a9799492b3ad4fe41a66ca8c04f457eae7376e1417a74f9d | ['env', 'PYTHONPATH=tests/b/adapters:tests/b', 'python3', '-B', '-m', 'unittest', 'workspace_test', '-v']; macOS strict C23/assertions; 40-unit traversal/build, manifest ownership, symlink/control rejection, ASan/UBSan null clients and /usr/bin/leaks zero-leak proof on plan and shader build. No Windows, GPU, hostile-tree mutation or TOCTOU proof; native scripts trusted. | Recursive workspace owner plus OS leaks proof on the CLI seam | passed |
+| `tests/b/adapters/metal_test.py` | ✅ | 1791529177 | 91a3b4b3aafa0505d740fc6001a2b500a0e2a57681abdbe2a9e4864ce0aaecbc | ['env', 'PYTHONPATH=tests/b', 'python3', '-B', '-m', 'unittest', 'discover', '-s', 'tests/b/adapters', '-p', '*_test.py']; macOS strict C23/assertions; real shaderc/glslang six-stage SPIR-V, real Apple AIR/metallib, 40-unit recursive build, ASan/UBSan and /usr/bin/leaks. No GPU execution, Windows or hostile-tree mutation. | b standalone adapters: registry, real GLSL (shaderc+glslang) and Metal, recursive workspace + Apple leaks | passed |
+| `tests/b/adapters/workspace_test.py` | ✅ | 1791529177 | f1f145c42ab10a56a9799492b3ad4fe41a66ca8c04f457eae7376e1417a74f9d | ['env', 'PYTHONPATH=tests/b', 'python3', '-B', '-m', 'unittest', 'discover', '-s', 'tests/b/adapters', '-p', '*_test.py']; macOS strict C23/assertions; real shaderc/glslang six-stage SPIR-V, real Apple AIR/metallib, 40-unit recursive build, ASan/UBSan and /usr/bin/leaks. No GPU execution, Windows or hostile-tree mutation. | b standalone adapters: registry, real GLSL (shaderc+glslang) and Metal, recursive workspace + Apple leaks | passed |
 | `tests/b/adapters/zig_test.py` | ✅ | 1791189490 | 0b2cccfa55ea07b77df8da443584bbfa4089aec33d8e4d8b98d3e4ac2e3116d9 | ['python3', '-m', 'unittest', 'discover', '-s', 'tests/b', '-p', '*_test.py', '-v']; macOS arm64 strict C23 -Wall -Wextra -Werror; Go 1.27.1/Lua 5.5.1/Zig 0.17.0/Cargo 1.99. Registry/shared helper ASan+UBSan; leak detection disabled. SQL isolated socket-only cluster, browser and Zig argv launch fixtures; Uno compile-only, no flashing. No Windows/Linux, GUI appearance, full public API battle-test, packaging or arbitrary-pointer validation claim. | Adapter migration and standalone discovery: real Go/Cargo/Lua/Zig execution and recovery, all existing adapters, exact manifest selectors, no-execution doctor, registry header client, blueprints and workspace regressions. | passed |
-
-### `tests/darkbase`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darkbase/README.md` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darkbase/database`
 
@@ -2034,19 +195,10 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `tests/darkbase/database/database_result_test.c` | ✅ | 1791504436 | eb0d4fb36dbf0fffb94fe4985f32f9322fe61e2448cdebf07a4978d1e1896625 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darkbase/database/database_test.c` | ✅ | 1791504436 | a769dc94262e2c3739e5b594bf666cf1afab8b1433509f9e946ceefb035f6991 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 
-### `tests/darling`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/BATTLE_TESTS.md` | ✅ | 1791038820 | 46881e2ccfb859a39db083403200e9e21ecadff0bffe1709e510853f58a4f614 | ['python3', '-B', '-c', 'from pathlib import Path; p=Path("tests/darling/BATTLE_TESTS.md"); s=p.read_text(); assert "All 15" in s; assert len(list(Path("tests/darling").rglob("ui_*test.c"))) == 15; assert Path("_notes/darling/ui-battle-testing.md").is_file(); assert "207 passed" in s and "timed out" in s; print("UI battle documentation inventory and references consistent")']; Documentation-only inventory/link/count consistency: confirms 15 ui_ source targets and referenced local notes exist; not independent execution evidence or proof of every prose claim. | Automated lab evidence only; visual approval not recorded | passed |
-| `tests/darling/darling_tests.c` | ✅ | 1791504436 | 92078e68e1fc525e109b813ac90f5c32633d55814c1ce457217a9c7ea602c3fd | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/darling/test_application.h` | ❌ | 1791048098 | 614f2113af2943db02254c043211541a68541c5405af88baf6c79f2d5f5a2dd9 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["./tools/b","run","tests/darling/frame/frame_application_lifecycle_test.c"],check=True); subprocess.run(["./tools/b","run","tests/darling/frame/frame_fps_focus_test.c"],check=True)']; macOS Apple Silicon: worker callback/return, owner invoke-close, hidden vs closed two-window lifetime, close-all/join, Frame attach/detach; native focus requests + deterministic R3 -1/1/120 submission ceilings/coalescing with independent scene worker. Header client/API evidence only; no whole-contract, Linux/Windows, physical display-Hz or visual approval | Application/Frame lifecycle and R3 presentation-cap integration owner tests | stale — content changed; rerun required |
-
 ### `tests/darling/capture`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/capture/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/darling/capture/ui_clip_restore_battle_test.c` | ✅ | 1791504436 | 943580f1c6323847ac249c7767d53412422a47decef442d9a44e87ca58d5bc09 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/capture/ui_clip_scope_battle_test.c` | ✅ | 1791504436 | c6720a8dd9d36d286b703d9a935723a0219686b3ac5f7f15878ed01ea6ab5889 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/capture/ui_multiple_masks_pixels_test.c` | ✅ | 1791504436 | bd3a0903cb05f444ef02dbe18968a79b6e7b30cdd332de8c2698ed421fa0965d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
@@ -2054,17 +206,10 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `tests/darling/capture/ui_rounded_clip_battle_test.c` | ✅ | 1791504436 | edf9e36aa0efec2075a03dcb7c574f0ce6974de7c571f3fb52d4222a0fbb305c | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/capture/ui_rounded_hit_battle_test.c` | ✅ | 1791504436 | c7ad839f496aeb42c04809138084ecfcb5ff711cd880284f5abb72b270f12c11 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 
-### `tests/darling/codefield/languages`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/codefield/languages/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
 ### `tests/darling/color`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/color/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/darling/color/ui_border_pixels_battle_test.c` | ✅ | 1791504436 | d47ac7071e7d82f4be96a93e4bd0cae01d46a7fc28d324ae2d1a9c3421ea49ce | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/color/ui_visual_state_pixels_test.c` | ✅ | 1791504436 | be1242908a711814ab8327c5dcaa182413a991ee1f5936417df374e852d3ad5d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 
@@ -2072,10 +217,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/compositor/filter_gallery.c` | ✅ | 1791504436 | c56552ca2c17cce3ee02f9d7af07e1c535c6d32b12980b3b5c9781ffee47a179 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/darling/compositor/filter_gallery_fixture.h` | ✅ | 1791504436 | 8e5f60b13050749ecab1087b6ed06a38bea1e0b404788e5540371e8386dba69e | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/darling/compositor/gallery_photo.c` | ✅ | 1791504436 | ee023fa173ebf5812ec48fe7b8d58dc5f9835c20f44318bee11fbcee1e2be9f6 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/darling/compositor/gallery_photo.h` | ❌ | 1791342045 | 85e11585756e4e6fa1129ef8d2197ac32e5123530610f3f8968da99862005413 | ['python3', '-B', 'tests/tools/filter_gallery_resources_test.py']; macOS noninteractive build and ImageIO runtime; missing-resource child intentionally fails its assertion. No interactive/gallery appearance, other-host, macOS14 runtime, injected allocation failure or oversized source metadata proof | Final strict gallery bundle build/incremental resource refresh/signature; optimized ASan/UBSan decoder owner and relocated bundle/no-fallback proof | stale — content changed; rerun required |
 | `tests/darling/compositor/gallery_photo_test.c` | ✅ | 1791504436 | 9eda60c23265bc3512c5573f85f504dcd6823ede30482a520e657f12d448fd4a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 
 ### `tests/darling/cursor`
@@ -2083,12 +224,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
 | `tests/darling/cursor/set_cursor_test.c` | ✅ | 1791504436 | f5b99ea4749904d187afc64d3d84081426154a37967037ad32ab521fc18a7be3 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-
-### `tests/darling/dialog`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/dialog/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/drawable`
 
@@ -2103,44 +238,16 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `tests/darling/event/event_invoke_test.c` | ✅ | 1791504436 | 5311c79e68ed72df23ff09816af82e44437e4b5627fc0b627882e35310d978b0 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/event/event_kinds_test.c` | ✅ | 1791504436 | a54d19c478898126bcfc507613a33751c75ef17faf924e55fa507681e2026fe4 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 
-### `tests/darling/event/document`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/event/document/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `tests/darling/event/focus`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/event/focus/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `tests/darling/event/key`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/event/key/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `tests/darling/event/mouse`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/event/mouse/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
 ### `tests/darling/frame`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/frame/README.md` | ✅ | 1791048306 | b89448c5f8f27f8e8365e8e4a39d333745b588978efffcadd42057eec1a596e1 | ['python3', '-B', 'tests/tools/darling_lifecycle_test.py']; Three structural/documentation checks: all C starters use Application, no test-written pump loop, sample compiles freshly with C23 warnings-as-errors, links/README command homes and amended lifecycle-law phrases. No full documentation correctness, runtime or visual proof | Darling starter migration inventory and documented lifecycle API compilation | passed |
 | `tests/darling/frame/borderless_frame_test.c` | ✅ | 1791504436 | 84ea715faece544e9608ce92e03ffb3bd8ffaff1dc038be5bddc382c1a9341fa | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/frame/frame_application_lifecycle_test.c` | ✅ | 1791504436 | fef2f296282a45764c702523846a258912082315419e87d35fb0a6e6a0cdffa0 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/darling/frame/frame_chrome_lab.h` | ✅ | 1791504436 | 4363c4f04e879398bd4ec75719b0c4b4a7fba0a1b33421f6378e588f4617dd6b | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/darling/frame/frame_drag_lab.h` | ✅ | 1791504436 | 945f9d0f28a8a345b57a05951c5ba52c2e178a62432a0e807b9eb270c729e99a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/frame/frame_fps_focus_test.c` | ✅ | 1791504436 | ecdef0bcb5573a61418f276b61cff29c418aed34e7391c89cf4142635e572f3a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/frame/frame_live_resize_test.c` | ✅ | 1791504436 | 04d3c3262f0043f7aaa1cf597321deafe842d433ca0699b01ad822026c6e54ed | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/frame/frame_resize_test.c` | ✅ | 1791504436 | 0a069ac884518bcb16db69deb31fd80243db86d313b8ed5d7a34e82a2bba2077 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/frame/frame_test.c` | ✅ | 1791504436 | 27ac1494b95211961a6057c26a419f627fc37ab5e989f28a7b4142f05b988516 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/darling/frame/hello_window.c` | ✅ | 1791504436 | 3ceb6e9151eb5069bdb5d0c0b6d2ae2e427655c5265ed0722acadf9dbf0a2a6d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/frame/liquid_glass_frame_test.c` | ✅ | 1791504436 | f3da27a639420a8b06e93dff4b506ece6bef6f51ec26817ad1d836370011f620 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/frame/naked_frame_test.c` | ✅ | 1791504436 | 2222125adfcc4ffac4ac19efce46f92c0b8647bb2ca09354c0a44266277aa2e1 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/frame/traffic_light_frame_test.c` | ✅ | 1791504436 | ace0304f864f61e6eb3b65a9f8550eb180abfd7f5a9a72c843e800662403125c | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
@@ -2148,31 +255,17 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `tests/darling/frame/ui_revalidate_cascade_battle_test.c` | ✅ | 1791504436 | b5525d58c85009ee72f99005b7307c7bcde6af695cf9d42709db27960bb3b15a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/frame/ui_wide_tree_battle_test.c` | ✅ | 1791504436 | 498e6d9cc60918b2165e78233dfbf4f44f9375c78249dc44711dc969c9c4006d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 
-### `tests/darling/graph`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/graph/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
 ### `tests/darling/kinematics/anchor`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/kinematics/anchor/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/darling/kinematics/anchor/ui_anchor_pivot_pixels_test.c` | ✅ | 1791504436 | c12e506c09bfd250599a16a4238f977cc87e55c8a169fb6079b9ba4770ae32dd | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 
 ### `tests/darling/kinematics/pivot`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/kinematics/pivot/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/darling/kinematics/pivot/ui_size_limits_pixels_test.c` | ✅ | 1791504436 | 75dc5b407f08dc9dc0f8c51c0e07c32889e1b2510d5d266158acd05e3ae217e9 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-
-### `tests/darling/panel/flexpanel`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/panel/flexpanel/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/panel/panel`
 
@@ -2190,7 +283,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/panel/scrollpanel/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/darling/panel/scrollpanel/scroll_panel_test.c` | ✅ | 1791504436 | c85bff14878481321df0607170c1b0b79cfe6cd6df1be8853b6718910cd1dd22 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/darling/panel/scrollpanel/ui_scroll_capture_battle_test.c` | ✅ | 1791504436 | 40c980ca9acc39313ebe99af2ced78ff65f7f746733239ac25dd0787f2856cd5 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 
@@ -2198,14 +290,7 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/panel/shared/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/darling/panel/shared/ui_element_contract_battle_test.c` | ✅ | 1791504436 | e84fd2e06259c83ac1f557a2c753bfe070c205f0a99f491f6b16ae32b7ab3f8d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-
-### `tests/darling/picker`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/picker/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/darling/properties`
 
@@ -2218,48 +303,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
 | `tests/darling/scaffold/scaffold_lab_test.py` | ✅ | 1791504436 | c569afdd69f2d97d3c2a863e0de87acb634dbc880d34dfb34aa0456eae4e5705 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-
-### `tests/darling/scene/2d`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/scene/2d/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `tests/darling/scene/3d`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/scene/3d/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `tests/darling/scene/properties`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/scene/properties/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `tests/darling/text/emoji`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/text/emoji/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `tests/darling/text/label`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/text/label/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `tests/darling/text/markdown`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/text/markdown/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
-### `tests/darling/text/richtext`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/darling/text/richtext/.gitkeep` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/graphvex`
 
@@ -2326,8 +369,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
 | `tests/graphvex/vulkan/clip_rounded_test.c` | ✅ | 1791504436 | fc1a7eff4a702f0bce5ec3b48f3b85e86af2aeb9dd47830f0347d464490e089c | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/graphvex/vulkan/gpu_render_test.c` | ✅ | 1791504436 | fc988477e94985302acf946989ff48ac4b9ee46f5094ef5d7530e66a3178299b | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/graphvex/vulkan/iosurface_host.c` | ✅ | 1791504436 | 5d5c2514819c64c1fb03fc56666b41567f107c2555941c6b080ae3a4584f1e58 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/graphvex/vulkan/iosurface_host.h` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 | `tests/graphvex/vulkan/pipeline_test.c` | ✅ | 1791504436 | 4de8d0635c0ba5a012204e605293fcd84449cf52f5ac0cf5a582b6bd7074d99e | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/graphvex/vulkan/resize_clip_test.c` | ✅ | 1791504436 | 6c15951a676abd147f6aa9b006f470972a8d7e042ec228c50f341f4a6fe76aff | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/graphvex/vulkan/sampled_image_test.c` | ✅ | 1791504436 | 743158c9ab987420d0215f2558d78d359c1b91d8dc792d5b90de1da16262a7e9 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
@@ -2399,7 +440,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/relational-engine/README.md` | ✅ | 1791441042 | 7ebbdb78a6b083114699d4f5ffb3e8a823239fb27fd883fab739042ecd86a6dd | ['python3', '-B', '-c', 'import subprocess; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in ("tests/tools/ecosystem_docs_test.py","tests/relational-engine/preferences_test.py","tests/relational-engine/scaffold_test.py")]']; macOS offline documentation/layout checks and strict CMake metadata with locked warnings-denied Cargo check; not runtime, complete per-file readiness, other-platform or visual proof. Native implementation proof recorded separately. | Production ownership docs and IDE scaffold consistency | passed |
 | `tests/relational-engine/native_run.py` | ✅ | 1791440936 | dc45a6757699638907c2c5e828c83fe0c2b001ee08df137105ab415824559440 | ['python3', 'tests/relational-engine/native_run.py']; macOS Apple Silicon O2 strict C23 and ASan/UBSan, 11 owners per configuration and clipboard SKIP; scratch overflow preservation/retry and live-child reap accounting. Scoped legacy ABI only, no full concurrency/Windows/OOM/THROW conformance claim. | Final native ownership regression after current type contracts | passed |
 | `tests/relational-engine/preferences_test.py` | ✅ | 1791441042 | 2180ee4ff788f0eb437ab3bce360470a10b4e365d20fbcfc38a069a87f5132f7 | ['python3', '-B', '-c', 'import subprocess; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in ("tests/tools/ecosystem_docs_test.py","tests/relational-engine/preferences_test.py","tests/relational-engine/scaffold_test.py")]']; macOS offline documentation/layout checks and strict CMake metadata with locked warnings-denied Cargo check; not runtime, complete per-file readiness, other-platform or visual proof. Native implementation proof recorded separately. | Production ownership docs and IDE scaffold consistency | passed |
 | `tests/relational-engine/primer_test.py` | ✅ | 1791526740 | 089f25fd2812846bb25e0c3afe83eb09ac077844aaba516fdcb345fabc70a5ad | ['python3', '-B', 'tests/relational-engine/primer_test.py']; Offline mechanical document owner review against current public exports and identity source; not whole-repository source audit or runtime/visual/platform readiness. | Primer and C row-pool competency checks: actual export names, non-wrapping history, opt-in C borrowing, README state/limitations, local ownership/status contract and partial wiki readiness. | passed |
@@ -2432,13 +472,8 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/relational-engine/rust/.gitignore` | ✅ | 1791441193 | 306fd52e74fca6746e12acc750f232de15e71da917756a1270d74c91f5eb7368 | ['python3', '-B', '-c', 'import subprocess; cwd="tests"; ignored=subprocess.check_output(["git","check-ignore","--no-index","cmake-build-debug/CMakeCache.txt","relational-engine/rust/target/probe.o"],cwd=cwd,text=True).splitlines(); assert len(ignored)==2; assert not subprocess.check_output(["git","ls-files","cmake-build-debug/"],cwd=cwd); assert subprocess.run(["git","check-ignore","--no-index","relational-engine/nio/mem_test.c"],cwd=cwd,capture_output=True).returncode==1; print("PASS: generated outputs ignored, no tracked CMake output, owner source visible")']; Git ignore and tracked-file inventory only; no build/runtime proof. | Generated CMake and Cargo outputs ignored without hiding test source | passed |
-| `tests/relational-engine/rust/Cargo.lock` | ✅ | 1791474980 | 71e990f7ce6a83e05a15b36c565e1dba659538048c4d299e21ba7dbaeb7ce211 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64; RE Rust owner suite + cargo build. Not Windows, release-profiling or runtime behavior beyond the suite. | Rust annotations (Two-Semicolon Annotation Style Law, Rust form): zero-dependency proc-macro crate relational-annotations provides #[overview]/#[intention("...")]/#[what("T")]/etc.; rust/src/annotation.rs is the single in-crate home; lib.rs uses #[overview]+#[intention] as proof. Owner runner (debug/release owners, executable docs, C ABI, ASan/UBSan, borrow rejection) passes with the new path dep. | passed |
-| `tests/relational-engine/rust/Cargo.toml` | ✅ | 1791526727 | 294f2c7f53be6747c4506dd5df6d6d2ee1cad5720780d181cb2490c7003fc609 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
-| `tests/relational-engine/rust/fail_allocator.rs` | ✅ | 1791504436 | ee5ef433d57cd0ba75de920612b269b7c5999b0652562d5d9f7412faf7e328f2 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/relational-engine/rust/run.py` | ✅ | 1791526727 | 06564e39a5f868e9998a7974cac1cb6defb4f4e08b51d8edfca814fa54de76c9 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
 | `tests/relational-engine/rust/sanitizer_run.py` | ❌ | 1791526759 | 06daec8de66abba31b0b2e9fc30f1cbfc0fcfa29629286dfed30abe744d50be0 | ['python3', 'tests/relational-engine/rust/sanitizer_run.py']; Rust ASan attempted, no instrumentation evidence: installed Apple runtime lacks ASan v8 symbol. Explicit exit 77; stdlib/native C/leak/platform gaps remain. | Bounded local Rust sanitizer owner runner reports incompatible toolchain as skip, not pass. | skipped (exit 77) |
-| `tests/relational-engine/rust/storage_rejection.rs` | ✅ | 1791526727 | b1f7122129cfe3336c5dabeb9b8dc692406725406a2f362736b59d2b0d29bb86 | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64 Rust debug/release warnings-denied owners, real C row-pool ABI strict C23/assertions and C ASan/UBSan. Rust ASan skips incompatible installed runtime; macOS 14 stdlib runtime, Windows, performance, live reload and R3-R5 migration unproved. | Aligned Rust byte rows consumed from C; zero/wrong-owner/stale rejection, generation retirement and retained reclamation history, fallible allocation stage recovery, stable growth, copied bytes and named-binding teardown; intended arity/type/borrow compile failures. | passed |
 
 ### `tests/relational-engine/rust/ffi`
 
@@ -2455,7 +490,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/relational-engine/rust/nio/borrow_rejection.rs` | ✅ | 1791360733 | 3e684200b1b09b22b46545c953d86aad5d1aa5da3a03885a5fbc0f1dcfc476e2 | ['python3', 'tests/relational-engine/rust/run.py']; macOS debug/release three Cargo owner targets, root-path compatibility and memory macro, engine doctest, strict C23 actual ABI client, C-client ASan/UBSan and expected E0502 rejection; Rust sanitizer/OOM/concurrency/Windows/allocator equivalence unproved | Organized modules and mirrored independent owner targets | passed |
 | `tests/relational-engine/rust/nio/chunk_test.rs` | ✅ | 1791504436 | 21dc2d4cfd1546193e0b183b1204f1c11d08de50629e4d54ae926a590c8b921f | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 | `tests/relational-engine/rust/nio/handle_test.rs` | ✅ | 1791503008 | b784d02986d7f056cc2427db66b48e48b29cd81c9b7f4918754450d68b8f4feb | ['python3', 'tests/relational-engine/rust/run.py']; macOS arm64; RE Rust owner suite (debug/release, C ABI, ASan/UBSan). Not Windows or C-ABI handle exposure. | Generation-tagged Handle identity: Handle { index, generation } + TypedChunk/TypedPool add_handle/get_handle/get_handle_mut/remove_handle reject a reused slot as stale; generation bumped on removal. New handle owner test + stale-rejection tests in the chunk/pool owners. Full RE Rust owner runner passes. | passed |
 | `tests/relational-engine/rust/nio/mem_test.rs` | ✅ | 1791504436 | a6bf06848327d876a697b815ec754d0cefb29be0e841f7630125fa54eef9414d | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
@@ -2509,18 +543,10 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
 | `tests/repos/vex-graph/readme_test.py` | ✅ | 1791384508 | b875acd8defdeeaa63ca0f4305a1265866ce23c24cda2a87a0139626f77a7fa9 | ['python3', '-B', '-c', 'import subprocess; commands=["tests/repos/vex-graph/readme_test.py","tests/repos/artwork_headers_test.py","tests/b/readme_test.py","tests/b/preferences_test.py","tests/tools/per_repo_ide_test.py","tests/vexspoke/backend_contract_test.py"]; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in commands]; subprocess.run(["python3","-B","tests/tools/compositor_contract_test.py","CompositorContractTest.test_universal_ownership_is_reconciled"],check=True,timeout=30)']; macOS: 21 checks across profile/artwork/b docs, lexical Reference form, relocated IDE configure/default-noop/C23 syntax, retained C copy identity and selected universal compositor ownership clause. Only that compositor clause ran, not its full suite. No default allocator change, app/GPU runtime, Windows or visual acceptance. | Relocated documentation owner regressions and preserved default-backend copy boundary | passed |
 
-### `tests/resources`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/resources/README.md` | ✅ | 1791343963 | d7195f49be59d3687250622dcb68670f04d24a50456f6a138286553024853a50 | ['python3', '-c', 'import subprocess; [subprocess.run(["tools/b","test",name],check=True,timeout=120) for name in ("sampled_image_test","filter_gallery_fixture_test","gpu_scope_test","image_test","picture_test","vk_renderer_test")]; subprocess.run(["python3","-B","tests/tools/compositor_contract_test.py","CompositorContractTest.test_gallery_uses_gpu_scope_not_cpu_fixture","CompositorContractTest.test_sampled_image_constructor_dispatch","CompositorContractTest.test_documented_reference_client_compiles","CompositorContractTest.test_filter_constructor_arity_is_rejected_for_intended_reason","CompositorContractTest.test_gpu_color_pass_public_arity_and_no_cpu_extension"],check=True,timeout=60); subprocess.run(["python3","-B","tests/tools/filter_gallery_resources_test.py"],check=True,timeout=180)']; macOS strict registered image/sample/scope/Picture/renderer tests; gallery app build/bundle only, no window/presentation/appearance or memory profiling. Five selected docs checks, not full legacy-path/wiki suite; readiness wiki and Darling lawbook unavailable. Numeric/ASan/UBSan proof recorded separately. | Final strict registered owner runs, five selected documentation/constructor checks and gallery resource bundle build/refresh/signature, no interactive launch | passed |
-| `tests/resources/other-sunflower.png` | ✅ | 1791342045 | 97fb52258c18e91102d36acce83590d0ecf8790f2a13fd37baa8f81becaaccf5 | ['python3', '-B', 'tests/tools/filter_gallery_resources_test.py']; macOS noninteractive build and ImageIO runtime; missing-resource child intentionally fails its assertion. No interactive/gallery appearance, other-host, macOS14 runtime, injected allocation failure or oversized source metadata proof | Final strict gallery bundle build/incremental resource refresh/signature; optimized ASan/UBSan decoder owner and relocated bundle/no-fallback proof | passed |
-
 ### `tests/sesh`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/sesh/.gitignore` | ✅ | 1791441424 | 1bb1d74704a90d9e5c186db3ed12d1d7404ab0e7fbdc312f5f7b59ae16ef3ece | ['python3', 'tests/sesh/run.py']; macOS isolated strict C23 -Wall -Wextra -Werror -O2 assertions plus ASan/UBSan; two owner executables per configuration and compile-negative arity. Offline fake put/get only, ten-second execution watchdogs. No real Drive/iCloud, TLS/OAuth, engine/host integration, provider idempotency, durable journal, overall pending deadline, FileSession/DirectorySession, concurrency or other-platform proof; LeakSanitizer unavailable. | Caller-buffer snapshot core and API provider vocabulary: copied admission, retry/cancel/recovery, exact rejection diagnostics and ignored disposable fixture | passed |
 | `tests/sesh/docs_test.py` | ✅ | 1791447304 | e9d2be61ea12fe5a8e576893c4453e3ed34337d2de1dda14ebe83f7c31c74f4f | ['python3', '-B', 'tests/sesh/docs_test.py']; Two macOS offline documentation checks: seven physical class/header pairs, Sesh public composition, scoped identity/receipt laws, owner runner, borrowed lifetime and file/directory proposal distinction. Documentation assertions only; no OAuth/cloud, distributed CAS or file/directory workflow proof. | Session composition vocabulary, local identity/admission proof and explicit provider/workflow gaps | passed |
 | `tests/sesh/run.py` | ✅ | 1791447351 | 40663726232e83e215d9a0d2a947dc4ab0a75cc6dfa2079803675b5d13256c0f | ['python3', 'tests/sesh/run.py']; macOS offline main runner: strict/assertion-enabled and ASan/UBSan snapshot/API header owners, ten session owner targets each strict/ASan-UBSan plus Sesh TSan; ignored disposable fixture and exact cold diagnostics. No live providers, identity persistence, distributed transactions or file/directory sync. | Main Sesh runner executes snapshot and complete session composition owners | passed |
 | `tests/sesh/session_run.py` | ✅ | 1791447025 | 75178d67740b9d3a2269e350ab0907706d87c9a4e3509d96a79e61a70f150ed2 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
@@ -2542,7 +568,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | `tests/sesh/session/operations_test.c` | ✅ | 1791447025 | 70d87f2ec1c4ea49d992d538b02de2b962aaa9e9f83fba814814db3d8a88eeea | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
 | `tests/sesh/session/resource_test.c` | ✅ | 1791447025 | 3f1f25db8b41084aff0346f411917b182d6e9212a4f986768580c694600fe435 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
 | `tests/sesh/session/sesh_test.c` | ✅ | 1791504436 | 09a49495539542ae2f6a7f111c52ac0c437bd6c9893d7c9d0f23731e3b3caa1b | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/sesh/session/support.h` | ✅ | 1791447025 | b307dd25038f3b42222f80b70260197eb28bfd71ff0cf333a9f5272629a80c4e | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
 | `tests/sesh/session/text_test.c` | ✅ | 1791447025 | 2819aa33a9cda20acefe1505fd0b8e87a0c63a4970a780fc11769389df8b8ac0 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
 | `tests/sesh/session/workspace_test.c` | ✅ | 1791447025 | 54180295716874ace9fd1e62424ab2470259b3aea07cd56e4c1bae4e0ef007d6 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","tests/sesh/session_run.py"],check=True,timeout=100); subprocess.run(["./tools/b","build","sesh"],check=True,timeout=100)']; macOS arm64: ten strict C23/assertion owner targets, ten ASan/UBSan owners, caller-serialized Sesh TSan, constructor/type compile-negative checks and b build sesh. Synchronized four-client starts; fifteen-second execution watchdogs. Local identity/revision metadata only; no OAuth/remote ACL, durable/global identity, data/SQL execution, distributed CAS, Drive/iCloud, FileSession/DirectorySession, Rust storage integration, Windows or macOS14 runtime proof. LeakSanitizer unavailable. Build packages existing apps but does not launch them. | Session composition owner battery and integrated b library build | passed |
 
@@ -2556,29 +581,24 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/tools/agents_test.py` | ✅ | 1791048984 | 4fad586bf1ac5311304b3835c4a19da804056bb39c3ddf329e71583a794363a3 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/agents_test.py"],check=True); subprocess.run(["python3","-B","tests/tools/test_checklist_test.py"],check=True)']; Five agent bus tests and eleven checklist tests, including invalidation, privacy, bounded execution and rejection of visual evidence; no live remote messaging correctness claim | Offline agent signatures and timestamped checklist regression tests before publication | passed |
+| `tests/tools/agents_test.py` | ✅ | 1791529083 | 4fad586bf1ac5311304b3835c4a19da804056bb39c3ddf329e71583a794363a3 | ['python3', '-B', 'tests/tools/agents_test.py']; macOS offline; five agent-bus tests; no live messaging claim | Agent bus signature behaviour regression | passed |
 | `tests/tools/c23_migration_test.py` | ✅ | 1791277954 | 79c8ccc7dfde97cfdbdb9ba267e9f04ba59e5d2ffea8830f31555d18db0f1456 | ['python3', '-B', 'tests/tools/c23_migration_test.py']; macOS five checks: zero parser/diagnostic errors for BVH, algo suite, filter_gallery.c and darling_tests.c. Refactoring tweaks restricted to ExpandAutoType because SwapBinaryOperands self-test fails on valid color macros; no GUI approval | Bundled clangd syntax proof for production, tests and gallery mains | passed |
 | `tests/tools/clion_adapter_test.py` | ❌ | 1791277908 | e383beca0cf31573fc2d5671968a1362d57b033dfce569c3cb306bd57b6ef6f4 | ['python3', '-B', 'tests/tools/clion_adapter_test.py', '--generator', 'Ninja', '--ninja', '/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja']; macOS ten adapter checks: every exported source has root/tests-only compile commands, actual strict gallery compilation with header-only fixture, two headless CTest tests; no gallery execution or GUI approval | Complete registered source contexts including gallery mains and header helper | stale — content changed; rerun required |
 | `tests/tools/compositor_contract_test.py` | ✅ | 1791384508 | 9088ad19ddcd01817d9fe4b010abb03cff805e18bdd5e99ffbdc591a8fbf737b | ['python3', '-B', '-c', 'import subprocess; commands=["tests/repos/vex-graph/readme_test.py","tests/repos/artwork_headers_test.py","tests/b/readme_test.py","tests/b/preferences_test.py","tests/tools/per_repo_ide_test.py","tests/vexspoke/backend_contract_test.py"]; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in commands]; subprocess.run(["python3","-B","tests/tools/compositor_contract_test.py","CompositorContractTest.test_universal_ownership_is_reconciled"],check=True,timeout=30)']; macOS: 21 checks across profile/artwork/b docs, lexical Reference form, relocated IDE configure/default-noop/C23 syntax, retained C copy identity and selected universal compositor ownership clause. Only that compositor clause ran, not its full suite. No default allocator change, app/GPU runtime, Windows or visual acceptance. | Relocated documentation owner regressions and preserved default-backend copy boundary | passed |
 | `tests/tools/compositor_shader_test.py` | ✅ | 1791193925 | 023becab5328d4823cc8aa9eb990ea9016e8e7bc9908376a82aec58a47435a0a | ['python3', 'tests/tools/compositor_shader_test.py']; macOS glslang/SPIR-V syntax validation for six modules including scope/scatter ABI extension; actual GPU execution is separately recorded by GpuScope owner, not inferred from compiler success. | Six compositor shader modules compile and pass spirv-val. | passed |
 | `tests/tools/darling_lifecycle_test.py` | ✅ | 1791048306 | 6914811cb9717a764a7d5412c265f3dd0c4667fef854055fa157de3271bbe6eb | ['python3', '-B', 'tests/tools/darling_lifecycle_test.py']; Three structural/documentation checks: all C starters use Application, no test-written pump loop, sample compiles freshly with C23 warnings-as-errors, links/README command homes and amended lifecycle-law phrases. No full documentation correctness, runtime or visual proof | Darling starter migration inventory and documented lifecycle API compilation | passed |
-| `tests/tools/ecosystem_docs_test.py` | ✅ | 1791441042 | fdb3b6ac683a003a7f2f332f26bb907151274d6508563b20a4d5256ef9c9a7ea | ['python3', '-B', '-c', 'import subprocess; [subprocess.run(["python3","-B",p],check=True,timeout=120) for p in ("tests/tools/ecosystem_docs_test.py","tests/relational-engine/preferences_test.py","tests/relational-engine/scaffold_test.py")]']; macOS offline documentation/layout checks and strict CMake metadata with locked warnings-denied Cargo check; not runtime, complete per-file readiness, other-platform or visual proof. Native implementation proof recorded separately. | Production ownership docs and IDE scaffold consistency | passed |
+| `tests/tools/ecosystem_docs_test.py` | ✅ | 1791529082 | de8ecfa06cc1300c93e78b811cc1f16372d659b2c6af1d8a28ae7fc6ec43d902 | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS offline documentation checks only; no runtime/visual proof | Constitution and repo-local lawbooks point at the readiness and blockers Gists | passed |
 | `tests/tools/filter_gallery_resources_test.py` | ✅ | 1791342045 | c53c09ffacc1fa478d73b396a6dd85ce7c99705f13be7273a162ae58b1b0c68c | ['python3', '-B', 'tests/tools/filter_gallery_resources_test.py']; macOS noninteractive build and ImageIO runtime; missing-resource child intentionally fails its assertion. No interactive/gallery appearance, other-host, macOS14 runtime, injected allocation failure or oversized source metadata proof | Final strict gallery bundle build/incremental resource refresh/signature; optimized ASan/UBSan decoder owner and relocated bundle/no-fallback proof | passed |
-| `tests/tools/opencode_preferences_test.ts` | ✅ | 1791178702 | ad131990bb8eaa5f83c38ab96cf6dd3a70a8960183dee931e6e3c4ecb0d9fb2b | ['bun', 'test', 'tests/tools/opencode_preferences_test.ts']; macOS Bun offline documentation and context-hook regression; discovers all repo lawbooks and validates taxonomy link/path equality, nonempty targets, inventory completeness and mandatory reading clauses. No live agent compliance or production runtime proof. | Mandatory repo-preferences reading map and constitution-first policy: eight tests including all existing lawbook links. | passed |
 | `tests/tools/per_repo_ide_test.py` | ✅ | 1791469254 | 1aebe4cc0d28da1cd3bdc14fa103339e7f3a2101242799f924d20041b2e7cf60 | ['bash', '-lc', 'python3 -B tests/tools/per_repo_ide_test.py &gt;/dev/null && python3 -B tests/tools/ecosystem_docs_test.py &gt;/dev/null && echo DOC_IDE_OK']; macOS offline documentation + IDE-metadata assertions. Not runtime store behavior, persistence, or visual proof. | Darkbase README adds the required '## Current State' honest assessment and '## Scope and Limitations' section (Transparent Competency Law); its CMake IDE entry graduates from an LANGUAGES NONE blueprint to an EXCLUDE_FROM_ALL C23 object target indexing src/**; per_repo_ide_test classifies darkbase as a CODE entry with representative src/database/database.c. Doc and IDE contracts both green. | passed |
 | `tests/tools/run_current_test.py` | ✅ | 1791275828 | f71046d45cee86086300efbdf64bec71afa72f1b0276e09634b35828c606d95f | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/run_current_test.py"],check=True); subprocess.run(["./tools/run-current","tests/vexspoke/nio/mem_test.c"],check=True)']; macOS eight headless runner tests, then run active mem_test.c through the real Vexgraph graph. No GUI/gallery launches. Existing standalone Rust sample exits 5 by design. | CLion runner unit and actual workspace C route proof | passed |
 | `tests/tools/sampled_texture_test.py` | ✅ | 1791343936 | 55e9c38dbbff6921ca0007b9ac2c13385d3f71cba9927c578adb3d5d06b0b88c | ['python3', '-B', 'tests/tools/sampled_texture_test.py']; macOS Apple Silicon actual Vulkan -O2 -Wall -Wextra -Werror ASan/UBSan assertions, 30s runtime watchdogs. Every sunflower sampled output pixel equals readback reference; GPU-only Images, 576 vertex Bytes/image. No gallery/window/visual approval or process-footprint/drag profiling. macOS14 runtime (local loader built macOS26), other hosts, validation layers, real device loss/OOM and generic all-public renderer coverage remain gaps; sanitizer covers host, not GPU shaders. | Final optimized sanitized sampled-texture and actual GPU three-scope pixel proof: growth, stable VBO, alpha/clip/order, CPU edit invalidation, independent frame lifetime, scope teardown and injected upload/frame/scope timeout recovery | passed |
-| `tests/tools/test_checklist_test.py` | ✅ | 1791274047 | 41cad4c0bb8c0e6eee4601434d9b434c9480d1650d08723f8eb77d1e8b77ba4c | ['python3', '-B', 'tests/tools/test_checklist_test.py']; Offline inventory, own-ignore, timestamps, rejection and stale-evidence regression tests; no engine behavior | Discover personal repositories after workspace reorganization | passed |
+| `tests/tools/test_checklist_test.py` | ✅ | 1791529081 | ce76e2dea070765e6d4bacd52884ceb75dfb9380d27e8598aa46286ee2561f5b | ['python3', '-B', 'tests/tools/test_checklist_test.py']; macOS offline unit tests via importlib; verifies markdown/docs/production excluded, non-test --file rejected; no live ecosystem claim | Executable-tests-only inventory, predicate, staleness, rejection and author-free evidence | passed |
 
 ### `tests/vexspoke`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
 | `tests/vexspoke/backend_contract_test.py` | ✅ | 1791440762 | 2c8eb01f0c18b60a7460000a407152d0405b2d8b7a23b6b3712571c5ea8c2a47 | ['python3', 'tests/vexspoke/backend_contract_test.py']; macOS default Darling consumer build, metadata ownership and unique engine Memory_alloc archive definition; four registered native owners execute. Not full UI/runtime readiness or Rust allocator rewrite. | Default consumer build and archive source ownership | passed |
-| `tests/vexspoke/coverage_baseline.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/vexspoke/function_baseline.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/vexspoke/mirror_exceptions.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/vexspoke/surface_baseline.txt` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
 
 ### `tests/vexspoke/algo`
 
@@ -2619,13 +639,6 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
 | `tests/vexspoke/deferred/dispatch_test.c` | ✅ | 1791504436 | 7718fb558792af8795376e871479da0e6ad703a63e1ec964bbc135ea9923643c | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-
-### `tests/vexspoke/demo`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/vexspoke/demo/touchid_demo.c` | ✅ | 1791504436 | cc4860c7887cf61feea1d9792966b1bdb9e658baf33c6dca78ef2b23ce19554b | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
-| `tests/vexspoke/demo/touchid_demo.mm` | ✅ | 1791504436 | 8124123b05139bb2f3fbf01694633ba2d798331624a9fec903e3bedbb819eb8a | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
 
 ### `tests/vexspoke/exception`
 
@@ -2820,34 +833,8 @@ Do not hand-edit generated tables; add files/tests and use `sync` or `run`.
 
 ## workspace
 
-### `.`
-
-| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
-| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `.clangd` | ✅ | 1791277954 | bc2650e4099856ab05fdc1ad82560bdc1f2b6c60502b253597d0a7ba70e2319b | ['python3', '-B', 'tests/tools/c23_migration_test.py']; macOS five checks: zero parser/diagnostic errors for BVH, algo suite, filter_gallery.c and darling_tests.c. Refactoring tweaks restricted to ExpandAutoType because SwapBinaryOperands self-test fails on valid color macros; no GUI approval | Bundled clangd syntax proof for production, tests and gallery mains | passed |
-| `.gitignore` | ❌ | 1791271846 | ec122bf93d95bf088908ffc01e3d4e8d4a95e1b8a41e7dffe638a16b2cd5423b | ['python3', '-c', 'from pathlib import Path; import subprocess; p=Path("preferences.md"); assert p.is_file() and not p.is_symlink(); assert "/preferences.md" in Path(".gitignore").read_text().splitlines(); assert not Path("ecosystem/repos/vexspoke/preferences.md").exists(); assert not subprocess.check_output(["git","ls-files","--","preferences.md"]); assert not subprocess.check_output(["git","-C","ecosystem/repos/vexspoke","ls-files","--","preferences.md"]); subprocess.run(["git","check-ignore","preferences.md"],check=True); remote=subprocess.check_output(["gh","gist","view","4132a6c45cb6d3797c3e8eff2e94035a","--raw","--filename","preferences.md"],timeout=60); assert remote==p.read_bytes(); assert b"Whenever this file changes, upload the complete current file" in remote; print("PASS: migration, publication rule and Gist byte equality")']; macOS filesystem/Git and authenticated existing-Gist byte comparison only; no production or visual proof. | Local constitution migration: real root file, removed Git tracking, root ignore and exact Gist round-trip. | stale — content changed; rerun required |
-| `AGENTS.md` | ✅ | 1791178702 | 052bf77e71faed22d8098bc28d508b70fb295f1a95711bc3cca6f302adac0009 | ['bun', 'test', 'tests/tools/opencode_preferences_test.ts']; macOS Bun offline documentation and context-hook regression; discovers all repo lawbooks and validates taxonomy link/path equality, nonempty targets, inventory completeness and mandatory reading clauses. No live agent compliance or production runtime proof. | Mandatory repo-preferences reading map and constitution-first policy: eight tests including all existing lawbook links. | passed |
-| `CMakeLists.txt` | ✅ | 1791277908 | 89655948a6120188526046aa7d1c6073ea7eb8f35f65144ddf2d0d5d11395c19 | ['python3', '-B', 'tests/tools/clion_adapter_test.py', '--generator', 'Ninja', '--ninja', '/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja']; macOS ten adapter checks: every exported source has root/tests-only compile commands, actual strict gallery compilation with header-only fixture, two headless CTest tests; no gallery execution or GUI approval | Complete registered source contexts including gallery mains and header helper | passed |
-| `LICENSE` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `README.md` | ✅ | 1791441299 | 44d61cbac296358e9d571b6ec47cccce6ddeb7eaafca3909ed9c12362710bb6e | ['python3', '-B', 'tests/tools/ecosystem_docs_test.py']; macOS seven offline documentation checks only; no runtime/visual proof. | Root architecture reflects implemented production storage ownership | passed |
-| `b.json` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-
 ### `tools`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tools/BUILD.md` | ❌ | 1791277908 | c5e7e7f6aa99c0c9d08f22c33fb9faec123b3af2a7e50551869b767a04d5339a | ['python3', '-B', 'tests/tools/clion_adapter_test.py', '--generator', 'Ninja', '--ninja', '/Applications/CLion.app/Contents/bin/ninja/mac/aarch64/ninja']; macOS ten adapter checks: every exported source has root/tests-only compile commands, actual strict gallery compilation with header-only fixture, two headless CTest tests; no gallery execution or GUI approval | Complete registered source contexts including gallery mains and header helper | stale — content changed; rerun required |
-| `tools/agents.sh` | ✅ | 1791048984 | 7561e1a0ada9781376bae821ae2cf68c008d76382fce9214e605d6c81edb9e83 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/agents_test.py"],check=True); subprocess.run(["python3","-B","tests/tools/test_checklist_test.py"],check=True)']; Five agent bus tests and eleven checklist tests, including invalidation, privacy, bounded execution and rejection of visual evidence; no live remote messaging correctness claim | Offline agent signatures and timestamped checklist regression tests before publication | passed |
-| `tools/b` | ✅ | 1791275595 | 21f29523a9ef9b0648f05ac94ebc2f1c3ab4d5b0fe17ef55c520901141714315 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/run_current_test.py"],check=True); subprocess.run(["python3","-B","tests/b/workspace_test.py"],check=True); subprocess.run(["./tools/b","build"],check=True)']; macOS headless C/Rust routing, arguments/status/recovery, XML wiring, workspace regression and complete registered build; IDE UI and interactive appearance remain user-owned. b-local lawbook unavailable. | Project-owned graph and repaired CLion active-file routing | passed |
-| `tools/build_annotation.h` | ✅ | 1791275595 | 0837cbce75e4f3a1e426aa1988a161c6309347c41a04a94fc6a38dfd6041f2a2 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/run_current_test.py"],check=True); subprocess.run(["python3","-B","tests/b/workspace_test.py"],check=True); subprocess.run(["./tools/b","build"],check=True)']; macOS headless C/Rust routing, arguments/status/recovery, XML wiring, workspace regression and complete registered build; IDE UI and interactive appearance remain user-owned. b-local lawbook unavailable. | Project-owned graph and repaired CLion active-file routing | passed |
-| `tools/darling-gallery.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tools/debug_compile.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tools/linter.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tools/make_code_txt.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tools/make_vkapp.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tools/run-current` | ✅ | 1791275828 | b76b7917708ae8e59221aa9d29cbe0fa06eb27e591c6c97d1c840039526f9416 | ['python3', '-B', '-c', 'import subprocess; subprocess.run(["python3","-B","tests/tools/run_current_test.py"],check=True); subprocess.run(["./tools/run-current","tests/vexspoke/nio/mem_test.c"],check=True)']; macOS eight headless runner tests, then run active mem_test.c through the real Vexgraph graph. No GUI/gallery launches. Existing standalone Rust sample exits 5 by design. | CLion runner unit and actual workspace C route proof | passed |
-| `tools/run.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tools/run_debug.sh` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tools/spv_header.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tools/test_checklist.py` | ✅ | 1791274047 | 403cc80671679bcbb339ea961be762d8e525f0fc5d9d1e93256b4f791636a40f | ['python3', '-B', 'tests/tools/test_checklist_test.py']; Offline inventory, own-ignore, timestamps, rejection and stale-evidence regression tests; no engine behavior | Discover personal repositories after workspace reorganization | passed |
-| `tools/workspace.c` | ✅ | 1791504436 | 6f4f4dfe4e8aacef2c4ae543af7ac7f8e8688fa51274057b041653479d032513 | ['bash', '-lc', 'for d in . tests ecosystem/repos/api-haven ecosystem/repos/darling-framework ecosystem/repos/graphvex ecosystem/repos/hotcwap ecosystem/repos/relational-engine ecosystem/repos/sesh ecosystem/repos/vexspoke personal/b; do git -C "$d" diff --check &#124;&#124; exit; done']; macOS workspace; git diff --check only; verifies patch whitespace, not comment accuracy or runtime behavior; no builds/tests executed | Documentation sweep diff whitespace check | passed |
+| `tools/test_checklist.py` | ❌ | 1791274047 | 403cc80671679bcbb339ea961be762d8e525f0fc5d9d1e93256b4f791636a40f | ['python3', '-B', 'tests/tools/test_checklist_test.py']; Offline inventory, own-ignore, timestamps, rejection and stale-evidence regression tests; no engine behavior | Discover personal repositories after workspace reorganization | stale — content changed; rerun required |

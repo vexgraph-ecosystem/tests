@@ -11,6 +11,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 GIST = "https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a"
+READINESS_GIST = "https://gist.github.com/vex-graph/6943f92acb931b25dad1073c46da6ce7"
+BLOCKERS_GIST = "https://gist.github.com/vex-graph/e921fa188eebbd0c68c4e59646109887"
 REPOS = ("relational-engine", "vexspoke", "graphvex", "api-haven", "hotcwap",
          "language", "darkbase", "darling-framework", "sesh", "samplerate")
 APPS = ("anti", "drawling", "semicolon", "impedance")
@@ -131,6 +133,19 @@ class EcosystemDocsTest(unittest.TestCase):
                          "re_name_search", "append-only", "borrowed", "planned",
                           "manifest-backed", "discussion", "engine_nio", "engine_search"):
             self.assertIn(expected, engine)
+
+    def test_readiness_matrix_and_blockers_are_gist_canonical(self):
+        """The readiness matrix and open-work backlog live in Gists, not the wiki."""
+        constitution = text("preferences.md")
+        self.assertIn(READINESS_GIST, constitution)
+        self.assertIn(BLOCKERS_GIST, constitution)
+        self.assertIn("no longer canonical", normalized("preferences.md"))
+        for repo in REPOS:
+            if repo == "darling-framework":
+                continue
+            law = text(f"ecosystem/repos/{repo}/{repo}-preferences.md")
+            self.assertIn(READINESS_GIST, law)
+            self.assertIn(BLOCKERS_GIST, law)
 
     def test_wiki_pages_link_the_new_storage_owner_without_automatic_migration(self):
         for page in WIKI:

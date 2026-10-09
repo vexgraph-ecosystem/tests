@@ -17,8 +17,10 @@ never a number (the Law Identity Doctrine).
    **mapped but unwired** → **failing** → **passing with stated gaps** → **battle tested**.
 5. **Never promote a whole layer from partial file results.** A subsystem is battle tested only when
    every applicable law here has executed evidence.
-6. **Read and maintain `tests/test-checklist.md` across every part**, per the
-   Timestamped Test Checklist Law in workspace `preferences.md`. Record actual
+6. **Read and maintain `tests/test-checklist.md` for every executable test**, per the
+   Timestamped Test Checklist Law in workspace `preferences.md`. The ledger admits only
+   compilable/runnable test units, runner scripts and the shared harness — not markdown,
+   documentation, configuration or production source. Record actual
    Unix timestamps, subject hashes, command/scope, result, and description after
    each automated lab check. Do not record authors or session identifiers.
    Visual appearance is user-tested; manual visual checks are outside this ledger.
