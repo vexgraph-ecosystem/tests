@@ -14,6 +14,7 @@
 
 #define CHROME_CHECK(c) do { if (!(c)) { fprintf(stderr, "FAIL %s:%d: %s\n", __FILE__, __LINE__, #c); Frame_destroy(frame); return 1; } } while (0)
 
+// Requests native closure when the interactive chrome sample's exit panel is clicked.
 static void chromeClose(Element *element, const Mouse *mouse, void *userdata) {
     (void)element; (void)mouse;
     Window_setShouldClose(Frame_window(userdata), true);
@@ -33,6 +34,7 @@ static bool chromeContent(Frame *frame, Color color) {
     return true;
 }
 
+// Runs shared Frame decoration, content, transparency, resize, and chrome checks.
 static int frameChromeLab(int argc, char **argv, const char *title, int mode, bool lights) {
     bool interactive = argc == 2 && strcmp(argv[1], "--interactive") == 0;
     if (argc > 1 && !interactive) {

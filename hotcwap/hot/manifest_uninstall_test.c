@@ -33,6 +33,7 @@ static int g_failures = 0;
     } \
 } while (0)
 
+/** Reports whether the fixture path currently names an existing directory. */
 static bool dirExists(const char *path) {
     if (!path || *path == '\0')
         return false;

@@ -36,6 +36,9 @@ static int sFailures = 0;
         }                                                              \
     } while (0)
 
+// Checks the application registry, PATH/bundle probes, liveness, and null guards.
+// Checks AppDetect command-line discovery against the supplied test arguments.
+// Checks AppDetect registry access, host probes, and null-safe public entry points.
 int main(int argc, const char **argv) {
     AppDetect *detect = AppDetect_shared();
     CHECK(detect != NULL);

@@ -32,6 +32,7 @@ static int g_failures = 0;
 
 static char g_home[256];
 
+/* Exercises isolated cache lifecycle, disk round trips, file insertion, eviction, and null guards. */
 int main(void) {
     const char *base = getenv("TMPDIR");
     if (!base || !*base)

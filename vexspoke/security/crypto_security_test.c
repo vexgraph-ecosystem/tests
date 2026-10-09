@@ -18,6 +18,7 @@ static int g_failures = 0;
     } \
 } while (0)
 
+// Compares one-shot and chunked SHA-256 output with published NIST vectors.
 static void test_sha256_nist_vectors(void) {
     printf("\n--- Testing NIST FIPS 180-4 SHA-256 Vectors ---\n");
 
@@ -54,6 +55,7 @@ static void test_sha256_nist_vectors(void) {
                 "SHA-256 streaming multi-chunk matches one-shot");
 }
 
+// Checks equality results for equal buffers and differences at both ends.
 static void test_constant_time_equals(void) {
     printf("\n--- Testing Constant-Time Equality Check ---\n");
     uint8_t a[32] = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -67,6 +69,7 @@ static void test_constant_time_equals(void) {
     TEST_ASSERT(!Crypto_constantTimeEquals(a, d, 32), "different first byte evaluates not equal");
 }
 
+// Checks relational hash nonzero output, deterministic repeats, and distinction.
 static void test_relational_hash(void) {
     printf("\n--- Testing Fast Relational Hash Mixers ---\n");
     uint64_t h1 = Crypto_hash64("transform.position", 18);
@@ -82,6 +85,7 @@ static void test_relational_hash(void) {
     TEST_ASSERT(h32a == h32b, "hash32 is deterministic");
 }
 
+// Checks seeded PRNG repeatability, successive values, and random-byte filling.
 static void test_prng(void) {
     printf("\n--- Testing XorShift128+ PRNG Engine ---\n");
     CryptoRng rng1, rng2;
@@ -108,6 +112,7 @@ static void test_prng(void) {
     TEST_ASSERT(hasNonZero, "randomBytes filled buffer with non-zero Bytes");
 }
 
+// Checks lowercase hexadecimal encoding and byte-for-byte decode round trips.
 static void test_hex_conversion(void) {
     printf("\n--- Testing Hex Serialization Helpers ---\n");
     uint8_t raw[4] = { 0xDE, 0xAD, 0xBE, 0xEF };
@@ -121,6 +126,7 @@ static void test_hex_conversion(void) {
     TEST_ASSERT(memcmp(raw, decoded, 4) == 0, "fromHex decoded Bytes match original raw Bytes");
 }
 
+// Checks consumed/discarded TouchID tokens cannot verify successfully.
 static void test_touchid_security(void) {
     printf("\n--- Testing Biometric TouchID Token Verification Protocol ---\n");
     TouchIDToken nullTok = { .magic = {0, 0}, .consumed = true };
@@ -130,6 +136,7 @@ static void test_touchid_security(void) {
     TEST_ASSERT(!TouchID_verify(nullTok), "discarded token remains unverified");
 }
 
+// Runs crypto vectors, equality/hash/random/hex checks, and the TouchID token case.
 int main(void) {
     printf("=== Running Security & Cryptography Test Suite ===\n");
 

@@ -26,18 +26,24 @@ typedef struct CellPayload {
     float   weight;
 } CellPayload;
 
+// Counts visited circle-array cells and accumulates their grid coordinates.
+// Counts CircleArray callback visits for comparison with its valid-cell count.
 static void countCellsCb(int32_t gx, int32_t gy, int32_t dx, int32_t dy, const void *element, void *userData) {
     (void) gx; (void) gy; (void) dx; (void) dy; (void) element;
     size_t *count = (size_t*) userData;
     (*count)++;
 }
 
+// Counts visited sphere-array voxels and accumulates their grid coordinates.
+// Counts SphereArray callback visits for comparison with its valid-voxel count.
 static void countVoxelsCb(int32_t gx, int32_t gy, int32_t gz, int32_t dx, int32_t dy, int32_t dz, const void *voxel, void *userData) {
     (void) gx; (void) gy; (void) gz; (void) dx; (void) dy; (void) dz; (void) voxel;
     size_t *count = (size_t*) userData;
     (*count)++;
 }
 
+// Exercises circle-array placement, lookup, bounds, and callback traversal.
+// Tests CircleArray geometry, callback counts, payload round trips, and rejected cells.
 static void test_circle_array(void) {
     printf("\n--- Testing CircleArray (Pythagorean 2D Matrix) ---\n");
     int32_t r = 3;
@@ -86,6 +92,8 @@ static void test_circle_array(void) {
     CircleArray_free(ca);
 }
 
+// Checks sphere-array voxel access, geometry, bounds, and traversal callbacks.
+// Tests SphereArray containment, traversal counts, payload access, and outside rejection.
 static void test_sphere_array(void) {
     printf("\n--- Testing SphereArray (Pythagorean 3D Voxel Matrix) ---\n");
     int32_t r = 2;
@@ -120,6 +128,8 @@ static void test_sphere_array(void) {
     SphereArray_free(sa);
 }
 
+// Verifies octree insertion and spatial query results for the tested tree.
+// Checks Octree insertion/splitting, range and sphere queries, clearing, and cleanup.
 static void test_octree(void) {
     printf("\n--- Testing Octree (3D Spatial Partitioning) ---\n");
     OctreeAABB bounds = { -100.0f, -100.0f, -100.0f, 100.0f, 100.0f, 100.0f };
@@ -165,6 +175,8 @@ static void test_octree(void) {
     Octree_free(oct);
 }
 
+// Runs the circle-array, sphere-array, and octree spatial-structure cases.
+// Initializes memory and runs the three spatial-structure behavior suites.
 int main(void) {
     printf("=== Running Spatial Data Structures Test Suite ===\n");
     Memory_init(32 * 1024 * 1024);

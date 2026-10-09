@@ -30,6 +30,7 @@ typedef struct DrainProbe {
     atomic_int hookCalls;
 } DrainProbe;
 
+/** Marks worker completion after its fixture work interval. */
 static void slowWorker(void *context) {
     DrainProbe *probe = (DrainProbe*) context;
     struct timespec ts = {0, 80000000L}; // 80ms of "work"
@@ -37,6 +38,7 @@ static void slowWorker(void *context) {
     atomic_store_explicit(&(*probe).workerDone, true, memory_order_release);
 }
 
+/** Captures worker quiescence and phase when the end hook runs. */
 static void observerHook(Kernel *kernel, void *userdata) {
     DrainProbe *probe = (DrainProbe*) userdata;
     atomic_store_explicit(&(*probe).hookSawDone,
@@ -47,6 +49,7 @@ static void observerHook(Kernel *kernel, void *userdata) {
     atomic_fetch_add_explicit(&(*probe).hookCalls, 1, memory_order_relaxed);
 }
 
+/** Checks live-phase registration rejection while keeping the run active. */
 static void registrar(void *context) {
     Kernel *kernel = (Kernel*) context;
     CHECK("phase RUNNING inside run", Kernel_getPhase(kernel) == KERNEL_PHASE_RUNNING);
@@ -57,6 +60,7 @@ static void registrar(void *context) {
     nanosleep(&hold, nullptr);
 }
 
+/** Calls Kernel_run on a separate thread for lifecycle-order assertions. */
 static void *runner(void *context) {
     return (void*) (intptr_t) Kernel_run((Kernel*) context);
 }

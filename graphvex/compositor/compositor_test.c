@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// Creates a test surface and asserts that its construction succeeds.
 static CompositorSurface *make(CompositorBounds b, const float rgba[4]) {
     CompositorSurface *surface = NULL;
     assert(CompositorSurface_create(b, &surface) == COMPOSITOR_OK);
@@ -23,11 +24,13 @@ static CompositorSurface *make(CompositorBounds b, const float rgba[4]) {
     return surface;
 }
 
+// Asserts a floating-point result against an explicit tolerance.
 static void near(float actual, double expected, double tolerance) {
     assert(isfinite(actual));
     assert(fabs(actual - expected) <= tolerance);
 }
 
+// Verifies surface creation, pixel access, limits, and invalid arguments.
 static void surface_contract(void) {
     CompositorSurface *zero = CompositorSurface();
     assert(zero && !CompositorSurface_bounds(zero).width);
@@ -94,6 +97,7 @@ static void surface_contract(void) {
     CompositorSurface_destroy(empty);
 }
 
+// Checks filter support bounds and token validation outcomes.
 static void support_and_tokens(void) {
     CompositorBounds b = {-10, 8, 2, 3}, out = {100, 101, 4, 5};
     FilterToken stack[] = {Filter_identity(), Filter_gain(2), Filter_scatterBlur(1), Filter_scatterBlur(2)};
@@ -126,6 +130,7 @@ static void support_and_tokens(void) {
     assert(Compositor_filterBounds(b, identities, COMPOSITOR_MAX_FILTERS, &out) == COMPOSITOR_OK);
 }
 
+// Tests isolated surface composition and source-over color results.
 static void isolation_and_over(void) {
     const float red[4] = {.5f, 0, 0, .5f}, blue[4] = {0, 0, .5f, .5f};
     CompositorSurface *a = make((CompositorBounds) {-2, 4, 1, 1}, red);
@@ -192,6 +197,7 @@ static void isolation_and_over(void) {
     CompositorSurface_destroy(b);
 }
 
+// Verifies bounds union behavior and arithmetic/resource limits.
 static void union_and_limits(void) {
     const float red[4] = {1, 0, 0, 1}, blue[4] = {0, 0, 1, 1};
     CompositorSurface *a = make((CompositorBounds) {-2, -3, 1, 1}, red);
@@ -269,6 +275,7 @@ static void check_scatter(const CompositorSurface *src, uint32_t radius) {
     CompositorSurface_destroy(out);
 }
 
+// Exercises scatter kernels on impulse and constant-field fixtures.
 static void scatter_oracles(void) {
     const float impulse[4] = {.25f, .125f, 0, .5f};
     CompositorSurface *one = make((CompositorBounds) {-8, 19, 1, 1}, impulse);
@@ -304,6 +311,7 @@ static void scatter_oracles(void) {
     CompositorSurface_destroy(one);
 }
 
+// Confirms overflow rejection preserves source and destination surfaces.
 static void overflow_atomicity(void) {
     const float huge[4] = {FLT_MAX, 0, 0, .5f};
     CompositorSurface *src = make((CompositorBounds) {0, 0, 1, 1}, huge);
@@ -334,6 +342,7 @@ static void overflow_atomicity(void) {
     CompositorSurface_destroy(dst);
 }
 
+// Runs compositor surface, filtering, scatter, and atomicity contracts.
 int main(void) {
     surface_contract();
     support_and_tokens();

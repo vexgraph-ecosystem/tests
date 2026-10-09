@@ -56,6 +56,7 @@ static int isSlugValid(const char *slug) {
     return 1;
 }
 
+/* Returns whether a provider identifier contains whitespace forbidden by the slug contract. */
 static int hasWhitespace(const char *s) {
     if (!s)
         return 0;
@@ -67,6 +68,7 @@ static int hasWhitespace(const char *s) {
     return 0;
 }
 
+/* Validates provider-directory invariants and parses generated AiChat request bodies without network access. */
 int main(int argc, const char **argv) {
     (void)argc;
     (void)argv;

@@ -23,9 +23,11 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Compare resolved geometry with tolerance for floating-point calculations.
 static bool near(float a, float b) { return (a > b ? a - b : b - a) < 0.01f; }
 
 #include "darling/test_application.h"
+// Verify property operations, detachment ownership, location arities, and bounds.
 int main(void) {
     Panel *root = Panel(200, 200);
     Panel *a = Panel(50, 50);

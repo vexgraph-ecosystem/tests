@@ -20,6 +20,9 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Returns whether the supplied signed integer slice is in nondecreasing order.
+// Returns whether the supplied integer span is in nondecreasing order.
+// Returns whether the supplied int32 sequence is in nondecreasing order.
 static bool intSorted(const int32_t *data, size_t n) {
     for (size_t i = 1; i < n; i++)
         if (data[i - 1] > data[i])
@@ -27,6 +30,9 @@ static bool intSorted(const int32_t *data, size_t n) {
     return true;
 }
 
+// Exercises in-place sorting, binary-search miss encoding, and byte utilities.
+// Exercises array utilities and checks their ordering and boundary behavior.
+// Verifies in-place sorting, binary-search insertion encoding, and byte operations.
 int main(void) {
     // sortInt: a scrambled buffer becomes ascending and keeps its multiset.
     int32_t a[] = { 5, 3, 9, 1, 3, 7, 0, -2, 8, 3 };

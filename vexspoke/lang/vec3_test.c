@@ -31,6 +31,7 @@ static int g_failures = 0;
 
 #define CLOSE(a, b) (fabsf((a) - (b)) <= 1e-4f)
 
+// Checks constructor arities, frame validation, and free behavior.
 static void test_construction(void) {
     Vec3 *z = Vec3_0();
     CHECK(z != nullptr);
@@ -55,6 +56,7 @@ static void test_construction(void) {
     Vec3_free(nullptr);
 }
 
+// Checks directional aliases, frame-aware accessors, and frame-preserving copy.
 static void test_accessors_and_frame(void) {
     Vec3 v = { 0 };
     Vec3_set(&v, 1.0f, 2.0f, 3.0f);
@@ -91,6 +93,7 @@ static void test_accessors_and_frame(void) {
     CHECK(Vec3_getRight(&c) == Vec3_getRight(&v));
 }
 
+// Checks arithmetic, frame propagation, division rejection, and null guards.
 static void test_arithmetic(void) {
     Vec3 a = { 0 }, b = { 0 }, d = { 0 };
     Vec3_set(&a, 3.0f, -4.0f, 2.0f);
@@ -123,6 +126,7 @@ static void test_arithmetic(void) {
     Vec3_mul(nullptr, 2.0f, &d);
 }
 
+// Checks vector products, normalization, projection, reflection, and geometry.
 static void test_geometry(void) {
     Vec3 a = { 0 }, b = { 0 }, d = { 0 };
     Vec3_set(&a, 3.0f, 4.0f, 0.0f);
@@ -197,6 +201,7 @@ static void test_geometry(void) {
     CHECK(Vec3_getX(&d) == 1.0f && Vec3_getY(&d) == 0.0f);
 }
 
+// Checks coordinate-frame conversion and invalid-target fallback.
 static void test_to_frame(void) {
     Vec3 src = { 0 };
     Vec3_set(&src, 1.0f, 2.0f, 3.0f);
@@ -209,6 +214,7 @@ static void test_to_frame(void) {
     CHECK(Vec3_getFrame(&dst) == COORD_FRAME_DEFAULT);
 }
 
+// Checks safe defaults and no-op behavior for null Vec3 arguments.
 static void test_nulls(void) {
     Vec3 d = { 0 };
     CHECK(Vec3_getRight(nullptr) == 0.0f);
@@ -235,6 +241,7 @@ static void test_nulls(void) {
     Vec3_toFrame(nullptr, COORD_FRAME_DEFAULT, nullptr);
 }
 
+// Runs Vec3 owner cases after initializing the memory substrate.
 int main(void) {
     CHECK(Memory_init(0));
     test_construction();

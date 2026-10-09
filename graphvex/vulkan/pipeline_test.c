@@ -17,6 +17,7 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Writes exactly the requested fixture bytes to a temporary file.
 static int write_file(const char *path, const void *data, unsigned n) {
     FILE *f = fopen(path, "wb");
     if (!f) return 0;
@@ -25,6 +26,7 @@ static int write_file(const char *path, const void *data, unsigned n) {
     return w == n;
 }
 
+// Tests shader-pipeline setup and cleanup across invalid shader inputs.
 int main(void) {
     // in-memory SPIR-V placeholder Bytes
     unsigned char vs[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};

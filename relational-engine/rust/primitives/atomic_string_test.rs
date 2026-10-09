@@ -1,6 +1,7 @@
 use relational_engine_scratchpad::{MemoryError, primitives::atomic_string::AtomicString};
 use std::sync::{Arc, Barrier};
 
+/// Proves immutable snapshots survive replacement, budget exhaustion preserves state, and concurrent publication is coherent.
 #[test]
 fn snapshot_lifetime_budget_and_concurrent_publication() {
     const ROUNDS: usize = 100;

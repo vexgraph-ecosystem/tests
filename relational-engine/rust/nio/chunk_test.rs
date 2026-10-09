@@ -9,6 +9,7 @@ struct Aligned(u64);
 struct Tracked(Rc<Cell<usize>>);
 impl Drop for Tracked { fn drop(&mut self) { self.0.set(self.0.get() + 1); } }
 
+/// Tests stable typed-row addresses, geometry failures, capacity, alignment, drop ownership, and strings.
 #[test]
 fn stable_chunk_contract() {
     assert!(Chunk!(u64).unwrap().is_empty());

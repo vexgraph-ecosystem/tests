@@ -29,6 +29,7 @@ static int g_failures = 0;
 
 #define CLOSE(a, b) (fabsf((a) - (b)) <= 1e-5f)
 
+// Checks zero/value constructors, directional aliases, and free behavior.
 static void test_construction(void) {
     Vec2 *z = Vec2_0();
     CHECK(z != nullptr);
@@ -45,6 +46,7 @@ static void test_construction(void) {
     Vec2_free(nullptr);
 }
 
+// Checks setters, coordinate aliases, frame mapping, and copy behavior.
 static void test_accessors(void) {
     Vec2 v = { 0 };
     Vec2_set(&v, 1.0f, 2.0f);
@@ -72,6 +74,7 @@ static void test_accessors(void) {
     CHECK(Vec2_getX(&c) == Vec2_getX(&v) && Vec2_getY(&c) == Vec2_getY(&v));
 }
 
+// Checks vector arithmetic, aliasing, division rejection, and null guards.
 static void test_arithmetic(void) {
     Vec2 a = { 0 }, b = { 0 }, d = { 0 };
     Vec2_set(&a, 3.0f, 4.0f);
@@ -106,6 +109,7 @@ static void test_arithmetic(void) {
     Vec2_div(&a, 2.0f, nullptr);
 }
 
+// Checks dot/length, normalization, perpendicular, angles, distance, and lerp.
 static void test_geometry(void) {
     Vec2 a = { 0 }, b = { 0 }, d = { 0 };
     Vec2_set(&a, 3.0f, 4.0f);
@@ -149,6 +153,7 @@ static void test_geometry(void) {
     CHECK(Vec2_getX(&d) == -6.0f && Vec2_getY(&d) == 8.0f);
 }
 
+// Checks safe defaults and no-op behavior for null vector arguments.
 static void test_nulls(void) {
     CHECK(Vec2_getRight(nullptr) == 0.0f);
     CHECK(Vec2_getLeft(nullptr) == 0.0f);
@@ -170,6 +175,7 @@ static void test_nulls(void) {
     Vec2_lerp(nullptr, nullptr, 0.5f, nullptr);
 }
 
+// Runs Vec2 owner cases after initializing the memory substrate.
 int main(void) {
     CHECK(Memory_init(0));
     test_construction();

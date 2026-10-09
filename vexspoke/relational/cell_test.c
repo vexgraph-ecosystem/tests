@@ -29,6 +29,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Exercises all Cell constructor arities, type identity checks, value defaults, and cleanup.
 static void test_construction(void) {
     Cell *anon = Cell_0();
     CHECK(anon != nullptr);
@@ -65,6 +66,7 @@ static void test_construction(void) {
     Cell_free(c2);
 }
 
+// Checks value-slot writes at zero, uintptr maximum, and pointer-width payloads.
 static void test_value_slot(void) {
     Cell *c = Cell_2(ID_INT, 1u);
     CHECK(c != nullptr);
@@ -84,6 +86,7 @@ static void test_value_slot(void) {
     Cell_free(c);
 }
 
+// Checks Cell value/structure strings, truncation signaling, and null destinations/self.
 static void test_to_string(void) {
     Cell *c = Cell_2(ID_INT, 0xABCDu);
     CHECK(c != nullptr);
@@ -125,6 +128,7 @@ static void test_to_string(void) {
     Cell_free(c);
 }
 
+// Verifies Cell accessors, mutators, and destruction tolerate a null receiver.
 static void test_null_safety(void) {
     CHECK(Cell_typeId(nullptr) == 0u);
     CHECK(!Cell_check(nullptr, 0u));
@@ -133,6 +137,7 @@ static void test_null_safety(void) {
     Cell_free(nullptr);                         // no-op
 }
 
+// Initializes memory, runs Cell contract cases, and reports aggregate assertion failures.
 int main(void) {
     CHECK(Memory_init(0));
 

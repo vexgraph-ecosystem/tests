@@ -20,6 +20,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Exercises IntFloat's packed bit layout, constructors, CAS, arrays, and null safety.
 int main(void) {
     CHECK(IntFloat_init());
 

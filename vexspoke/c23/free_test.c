@@ -22,16 +22,19 @@ static int g_failures = 0;
     } while (0)
 
 static int g_calls = 0;
+// Counts destructor dispatches for the registered test type.
 static void countingDestructor(void *ptr) {
     (void) ptr;
     g_calls++;
 }
 
+// Distinguishes replacement of a registered destructor from its old handler.
 static void otherDestructor(void *ptr) {
     (void) ptr;
     g_calls += 100;
 }
 
+// Verifies destructor registration, replacement, lookup, and c23_free routing.
 int main(void) {
     // Register / lookup.
     CHECK(Destructor_lookup(4242u) == nullptr);

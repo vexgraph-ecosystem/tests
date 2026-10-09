@@ -34,6 +34,7 @@ static int g_failures = 0;
     else { printf("[variable_strict_test] FAIL %s\n", name); g_failures++; } \
 } while (0)
 
+// Exercises strict SymbolTable rejection, class filtering, rename, and relational rebinding flows.
 int main(void) {
     printf("=== Running SymbolTable Strict Test Suite ===\n");
     SymbolTable scope;

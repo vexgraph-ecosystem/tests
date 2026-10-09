@@ -80,6 +80,7 @@ static void onResizedNullOwnerRec(void *self, Window *window, int width, int hei
     g_nullOwnerHits++;
 }
 
+/** Records the resize callback's window and dimensions in the fixture. */
 static void onResizedRec(void *self, Window *window, int width, int height) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;
@@ -88,6 +89,7 @@ static void onResizedRec(void *self, Window *window, int width, int height) {
     (*r).fired++;
 }
 
+/** Records the move callback's window and top-left coordinates in the fixture. */
 static void onMovedRec(void *self, Window *window, int x, int y) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;
@@ -96,30 +98,35 @@ static void onMovedRec(void *self, Window *window, int x, int y) {
     (*r).movedCalls++;
 }
 
+/** Records delivery of the fullscreen callback and its window argument. */
 static void onFullscreenRec(void *self, Window *window) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;
     (*r).fired++;
 }
 
+/** Records delivery of the minimized callback and its window argument. */
 static void onMinimizedRec(void *self, Window *window) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;
     (*r).fired++;
 }
 
+/** Records delivery of the restored callback and its window argument. */
 static void onRestoredRec(void *self, Window *window) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;
     (*r).fired++;
 }
 
+/** Records delivery of the pressed callback and its window argument. */
 static void onPressedRec(void *self, Window *window) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;
     (*r).fired++;
 }
 
+/** Records focus acquisition and the associated window. */
 static void onFocusGainedRec(void *self, Window *window) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;
@@ -127,6 +134,7 @@ static void onFocusGainedRec(void *self, Window *window) {
     (*r).fired++;
 }
 
+/** Records focus loss and the associated window. */
 static void onFocusLostRec(void *self, Window *window) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;
@@ -134,12 +142,14 @@ static void onFocusLostRec(void *self, Window *window) {
     (*r).fired++;
 }
 
+/** Records delivery of the zoom-filled callback and its window argument. */
 static void onZoomFilledRec(void *self, Window *window) {
     Recorder *r = self;
     (*r).lastWindow = window;
     (*r).fired++;
 }
 
+/** Records the occlusion callback's window and visibility state. */
 static void onOcclusionRec(void *self, Window *window, bool visible) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;
@@ -147,6 +157,7 @@ static void onOcclusionRec(void *self, Window *window, bool visible) {
     (*r).occludedCalls++;
 }
 
+/** Records a quit request and answers that the window may close. */
 static bool onQuitAllowRec(void *self, Window *window) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;
@@ -154,6 +165,7 @@ static bool onQuitAllowRec(void *self, Window *window) {
     return true;
 }
 
+/** Records a quit request and answers that the window must remain open. */
 static bool onQuitVetoRec(void *self, Window *window) {
     Recorder *r = (Recorder*) self;
     (*r).lastWindow = window;

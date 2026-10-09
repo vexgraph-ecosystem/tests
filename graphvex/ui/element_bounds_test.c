@@ -15,11 +15,13 @@ static int failures;
     fprintf(stderr, "FAIL %s:%d: %s\n", __FILE__, __LINE__, #c); failures++; \
 } } while (0)
 
+// Compares rectangles component-wise with the test float tolerance.
 static bool same(Rect a, Rect b) {
     return fabsf(a.x - b.x) < 0.001f && fabsf(a.y - b.y) < 0.001f &&
            fabsf(a.w - b.w) < 0.001f && fabsf(a.h - b.h) < 0.001f;
 }
 
+// Creates a test element with explicit size and position properties.
 static Element *node(float w, float h, float x, float y) {
     ElementDesc desc = {.width = w, .height = h,
         .offsetX = x, .offsetY = y, .background = COLOR_WHITE};
@@ -28,6 +30,7 @@ static Element *node(float w, float h, float x, float y) {
     return e;
 }
 
+// Checks event and absolute bounds for placement and style changes.
 static void placement_and_styles(void) {
     Rect parent = {100, 50, 200, 100};
     Element *e = node(20, 10, 5, -7);
@@ -59,6 +62,7 @@ static void placement_and_styles(void) {
     Element_destroy(e);
 }
 
+// Verifies descendant paint bounds honor clipping and subtree changes.
 static void descendants_and_clips(void) {
     Rect parent = {100, 50, 400, 300};
     Element *root = node(40, 30, 0, 0);
@@ -92,6 +96,7 @@ static void descendants_and_clips(void) {
     Element_destroy(root);
 }
 
+// Checks effect-expanded paint bounds do not expand event hit bounds.
 static void halo_and_hit(void) {
     Element *root = node(40, 30, 0, 0);
     Element *child = node(10, 10, 35, 10);
@@ -110,6 +115,7 @@ static void halo_and_hit(void) {
     Element_destroy(root);
 }
 
+// Tests empty trees, shared properties, and null-safe bound queries.
 static void empty_and_shared(void) {
     Rect parent = {10, 20, 50, 50};
     CHECK(same(Element_eventBound(nullptr, parent), (Rect){0}));
@@ -134,6 +140,7 @@ static void empty_and_shared(void) {
     CHECK(shared.w == 8 && shared.h == 9);
 }
 
+// Runs element bound placement, descendant, halo, and sharing scenarios.
 int main(void) {
     placement_and_styles();
     descendants_and_clips();

@@ -31,6 +31,7 @@ static int g_failures = 0;
     } while (0)
 
 // ── nullptr safety is a first-class case ───────────────────────────────────
+/** Verifies null lock operations fail safely without acquiring or releasing state. */
 static void test_null_safety(void) {
     SpinLock_lock(nullptr);                 // must not crash
     CHECK(!SpinLock_tryLock(nullptr));
@@ -40,6 +41,7 @@ static void test_null_safety(void) {
 }
 
 // ── basic acquire/release + isLocked round trip ────────────────────────────
+/** Checks zero initialization, acquisition, try-acquisition, lock state, and release. */
 static void test_basic_round_trip(void) {
     SpinLock lock = SPIN_LOCK_INIT;         // zero-value construction
     CHECK(!SpinLock_isLocked(&lock));
@@ -58,6 +60,7 @@ static void test_basic_round_trip(void) {
 }
 
 // ── timeout path: a held lock is reported at the deadline, never hangs ─────
+/** Confirms timed acquisition returns at its deadline and succeeds after release. */
 static void test_timeout(void) {
     SpinLock lock = SPIN_LOCK_INIT;
     CHECK(SpinLock_tryLock(&lock));
@@ -74,6 +77,7 @@ static SpinLock g_foreign;
 static atomic_int g_foreign_ready;
 static atomic_int g_foreign_go;
 
+/** Holds the shared lock until the test permits its owning thread to release it. */
 static void *foreign_owner(void *arg) {
     (void) arg;
     SpinLock_lock(&g_foreign);
@@ -84,6 +88,7 @@ static void *foreign_owner(void *arg) {
     return nullptr;
 }
 
+/** Checks a non-owner cannot unlock another thread's lock and that the owner can release it. */
 static void test_foreign_unlock_refused(void) {
     g_foreign = SPIN_LOCK_INIT;
     atomic_store(&g_foreign_ready, 0);
@@ -114,6 +119,7 @@ static int64_t g_observed_max;
 static atomic_long g_watchdog_ticks;
 static atomic_int g_spin_start;
 
+/** Contends on the shared lock while updating the protected counter and watchdog progress count. */
 static void *spin_worker(void *arg) {
     (void) arg;
     while (!atomic_load_explicit(&g_spin_start, memory_order_acquire))
@@ -132,6 +138,7 @@ static void *spin_worker(void *arg) {
     return nullptr;
 }
 
+/** Verifies concurrent increments are neither lost nor duplicated under lock contention. */
 static void test_contention(void) {
     g_counter_lock = SPIN_LOCK_INIT;
     g_plain_counter = 0;
@@ -157,6 +164,7 @@ static void test_contention(void) {
     CHECK(!SpinLock_isLocked(&g_counter_lock));
 }
 
+/** Runs the SpinLock owner scenarios and returns failure if any assertion was violated. */
 int main(void) {
     test_null_safety();
     test_basic_round_trip();

@@ -36,6 +36,7 @@ static int g_failures = 0;
     else { printf("[header_veto_test] FAIL %s\n", name); g_failures++; } \
 } while (0)
 
+// Exercises memory-header integrity vetoes, invalidation, size classes, and reuse.
 int main(void) {
     printf("=== Running Header Veto Test Suite ===\n");
     MemoryArena *arena = MemoryArena_create(64u << 20);

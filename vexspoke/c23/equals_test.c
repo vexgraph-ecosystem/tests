@@ -23,6 +23,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Checks identity, typed block contents, and the registry comparison guard.
 int main(void) {
     int a = 1;
     int b = 2;

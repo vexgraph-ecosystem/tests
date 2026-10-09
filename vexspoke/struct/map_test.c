@@ -17,6 +17,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Checks map insertion, lookup, replacement, missing keys, and cleanup.
 int main(void) {
     Map *m = Map_2(ID_INT, ID_INT);
     CHECK(m != nullptr);

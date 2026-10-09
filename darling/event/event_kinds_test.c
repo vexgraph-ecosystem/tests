@@ -20,31 +20,45 @@ static int g_fail = 0;
     } while (0)
 
 typedef struct Trace { int ids[32]; int count; float lastMag; } Trace;
+// Appends an event-kind identifier while the fixed trace has room.
 static void push(Trace *t, int id) { if (t->count < 32) t->ids[t->count++] = id; }
 
+// Records mouse-down delivery.
 static void m_down(Element *e, const Mouse *m, void *ud)  { (void)e; (void)m; push(ud,  1); }
+// Records mouse-up delivery.
 static void m_up(Element *e, const Mouse *m, void *ud)    { (void)e; (void)m; push(ud,  2); }
+// Records mouse-move delivery.
 static void m_move(Element *e, const Mouse *m, void *ud)  { (void)e; (void)m; push(ud,  3); }
+// Records mouse-enter delivery.
 static void m_enter(Element *e, const Mouse *m, void *ud) { (void)e; (void)m; push(ud,  4); }
+// Records mouse-leave delivery.
 static void m_leave(Element *e, const Mouse *m, void *ud) { (void)e; (void)m; push(ud,  5); }
+// Records zoom delivery and saves its magnitude for the assertion.
 static void z_zoom(Element *e, const Zoom *z, void *ud) {
     (void)e;
     Trace *t = ud;
     push(t, 6);
     t->lastMag = z->magnitude;
 }
+// Records touch-down delivery.
 static void t_down(Element *e, const Touch *t, void *ud) { (void)e; (void)t; push(ud, 7); }
+// Records touch-move delivery.
 static void t_move(Element *e, const Touch *t, void *ud) { (void)e; (void)t; push(ud, 8); }
+// Records touch-up delivery.
 static void t_up(Element *e, const Touch *t, void *ud)   { (void)e; (void)t; push(ud, 9); }
+// Records key-down delivery.
 static void k_down(Element *e, const Key *k, void *ud)   { (void)e; (void)k; push(ud, 10); }
+// Records key-up delivery.
 static void k_up(Element *e, const Key *k, void *ud)     { (void)e; (void)k; push(ud, 11); }
 
+// Dispatches a test event with shared coordinates and deterministic payloads.
 static bool dispatch(Element *root, int kind, float x, float y) {
     Event ev = { .kind = kind, .x = x, .y = y, .magnitude = 2.5f, .key = 42 };
     return Element_dispatchEvent(root, &ev);
 }
 
 #include "darling/test_application.h"
+// Verifies callback delivery for every mouse, zoom, touch, and key event kind.
 int main(void) {
     ElementDesc dd = {0};
     dd.width = 200; dd.height = 200;

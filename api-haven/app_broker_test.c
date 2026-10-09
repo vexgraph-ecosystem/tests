@@ -40,6 +40,7 @@ static int sFailures = 0;
 static int sRunCalls = 0;
 static uint64_t sLastTimeoutMs = 0;
 
+/* Copies the requested action into the bounded output and records successful stub dispatch. */
 static bool stubEcho(void *driverCtx, const AppProviderSlot *target,
                      const char *action, const char *paramsJson,
                      size_t paramsLen, uint64_t timeoutMs,
@@ -60,6 +61,7 @@ static bool stubEcho(void *driverCtx, const AppProviderSlot *target,
     return true;
 }
 
+/* Simulates a driver rejection without writing output or changing broker state. */
 static bool stubFail(void *driverCtx, const AppProviderSlot *target,
                      const char *action, const char *paramsJson,
                      size_t paramsLen, uint64_t timeoutMs,
@@ -76,6 +78,7 @@ static bool stubFail(void *driverCtx, const AppProviderSlot *target,
     return false;
 }
 
+/* Verifies app-provider lookup and broker behavior for unbound, successful, and failed actions. */
 int main(int argc, const char **argv) {
     (void)argc;
     (void)argv;

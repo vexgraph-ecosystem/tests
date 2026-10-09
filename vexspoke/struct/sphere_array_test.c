@@ -29,6 +29,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Checks sphere-array constructors, initial state, and rejected dimensions.
 static void test_construction(void) {
     CHECK(SphereArray_create(-1, ID_INT) == nullptr);
 
@@ -57,6 +58,7 @@ static void test_construction(void) {
     SphereArray_free(nullptr);
 }
 
+// Verifies sphere dimensions and computed voxel-storage geometry.
 static void test_geometry(void) {
     SphereArray *a = SphereArray_create(2, ID_INT);
     CHECK(a != nullptr);
@@ -84,6 +86,7 @@ static void test_geometry(void) {
     SphereArray_free(a);
 }
 
+// Checks voxel writes and reads at valid coordinates and boundary locations.
 static void test_access_round_trip(void) {
     SphereArray *a = SphereArray_create(2, ID_INT);
     CHECK(a != nullptr);
@@ -132,6 +135,7 @@ typedef struct WalkStats {
     int64_t checksum;
 } WalkStats;
 
+// Accumulates traversal count, coordinate checks, and the visited payload checksum.
 static void walkVoxel(int32_t gx, int32_t gy, int32_t gz,
                       int32_t dx, int32_t dy, int32_t dz,
                       const void *voxel, void *userData) {
@@ -152,6 +156,7 @@ static void walkVoxel(int32_t gx, int32_t gy, int32_t gz,
     }
 }
 
+// Confirms iteration visits the expected sphere-array voxels.
 static void test_for_each(void) {
     SphereArray *a = SphereArray_create(2, ID_INT);
     CHECK(a != nullptr);
@@ -179,6 +184,7 @@ static void test_for_each(void) {
     SphereArray_free(a);
 }
 
+// Runs sphere-array construction, geometry, access, iteration, and teardown checks.
 int main(void) {
     test_construction();
     test_geometry();

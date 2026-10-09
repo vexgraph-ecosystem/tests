@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <stdint.h>
 
+/* Checks command/source helper rejection, exit-status propagation, and literal ten-argument forwarding. */
 int main(void) {
     char *prefix[] = { "/bin/sh", "-c", "exit 7" };
     char *empty[] = { nullptr };

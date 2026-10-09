@@ -25,6 +25,9 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Compares two independently created generators for identical seeded output.
+// Confirms repeated engines initialized from one seed produce the same stream.
+// Compares two independently constructed engines for identical seeded output.
 static bool sameStream(uint64_t seed, RandomEngine engine) {
     Random *a = Random_2(seed, engine);
     Random *b = Random_2(seed, engine);
@@ -37,6 +40,9 @@ static bool sameStream(uint64_t seed, RandomEngine engine) {
     return ok;
 }
 
+// Tests seeded engine selection, reproducibility, ranges, weighted sampling, and null safety.
+// Verifies seeded random engines are reproducible and exercise their range contracts.
+// Verifies seed selection, reproducible streams, bounded draws, and weighted sampling.
 int main(void) {
     // Auto-selected engine: same seed -> same engine and same stream.
     Random *p = Random_1(1234u);

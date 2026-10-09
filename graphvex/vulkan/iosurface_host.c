@@ -9,6 +9,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <IOSurface/IOSurface.h>
 
+/** Creates an RGBA IOSurface with Metal-aligned row storage; invalid dimensions return nullptr. */
 void *IosHost_create(int width, int height) {
     if (width <= 0 || height <= 0) return nullptr;
     CFMutableDictionaryRef d = CFDictionaryCreateMutable(nullptr, 0,
@@ -32,10 +33,12 @@ void *IosHost_create(int width, int height) {
     return (void *)s;
 }
 
+/** Releases a surface returned by IosHost_create; nullptr is ignored. */
 void IosHost_release(void *surface) {
     if (surface) CFRelease((IOSurfaceRef)surface);
 }
 
+/** Locks a surface for reading and optionally returns its row stride; lock failure returns nullptr. */
 const uint8_t *IosHost_lockRead(void *surface, size_t *outStride) {
     if (!surface) return nullptr;
     if (IOSurfaceLock((IOSurfaceRef) surface, kIOSurfaceLockReadOnly, nullptr) != kIOReturnSuccess)
@@ -44,6 +47,7 @@ const uint8_t *IosHost_lockRead(void *surface, size_t *outStride) {
     return (const uint8_t *)IOSurfaceGetBaseAddress((IOSurfaceRef)surface);
 }
 
+/** Ends the read lock acquired by IosHost_lockRead; nullptr is ignored. */
 void IosHost_unlock(void *surface) {
     if (surface) IOSurfaceUnlock((IOSurfaceRef) surface, kIOSurfaceLockReadOnly, nullptr);
 }

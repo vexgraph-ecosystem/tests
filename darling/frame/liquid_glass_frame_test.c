@@ -31,6 +31,7 @@ static int g_fail = 0;
 #define DARLING_TEST_HAS_FRAMES
 #define DARLING_TEST_WITH_ARGS
 #include "darling/test_application.h"
+// Probes and round-trips Liquid Glass settings; interactive mode holds the window open.
 int main(int argc, char **argv) {
     bool interactive = argc == 2 && strcmp(argv[1], "--interactive") == 0;
     if (argc > 1 && !interactive) { fprintf(stderr, "usage: %s [--interactive]\n", argv[0]); return 1; }

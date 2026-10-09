@@ -49,6 +49,7 @@ static int isSlugValid(const char *slug) {
     return 1;
 }
 
+/* Checks provider catalog invariants and bounded AssetBroker copy, cancellation, and path contracts. */
 int main(int argc, const char **argv) {
     (void)argc;
     (void)argv;

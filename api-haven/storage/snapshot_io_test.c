@@ -4,11 +4,13 @@
 #include <assert.h>
 #include <string.h>
 
+/* Mocks provider upload outcomes, distinguishing cancellation from ordinary pending work. */
 static int put(void *context, uint64_t key, const uint8_t *bytes, size_t length, int cancel) {
     assert(context == nullptr && key == 1 && length == 1 && bytes[0] == 42);
     return cancel ? HAVEN_SNAPSHOT_REJECT : HAVEN_SNAPSHOT_PENDING;
 }
 
+/* Mocks bounded snapshot retrieval and preserves outputs when key or capacity is invalid. */
 static int get(void *context, uint64_t key, uint8_t *dest, size_t capacity, size_t *outLength) {
     assert(context == nullptr);
     if (key != 1 || capacity < 1)
@@ -18,6 +20,7 @@ static int get(void *context, uint64_t key, uint8_t *dest, size_t capacity, size
     return HAVEN_SNAPSHOT_DONE;
 }
 
+/* Compiles and exercises the header-only callback vocabulary and its result/status contract. */
 int main(void) {
     _Static_assert(HAVEN_SNAPSHOT_DONE != HAVEN_SNAPSHOT_PENDING);
     _Static_assert(HAVEN_SNAPSHOT_PENDING != HAVEN_SNAPSHOT_RETRY);

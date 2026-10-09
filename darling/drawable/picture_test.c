@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include "drawable/picture.h"
 
+// Exercises Picture construction, painting, accessors, projection, and borrowing.
 static void widget(void) {
     Image *image = Image_2(2, 1);
     Image_fill(image, COLOR_RGBA(10, 20, 30, 255));
@@ -74,6 +75,7 @@ static void widget(void) {
     assert(Picture_location(NULL).x == 0 && Picture_location(NULL).y == 0);
 }
 
+// Checks rejected dimensions/formats, diagnostics, and preservation of prior state.
 static void invalid(void) {
     Picture *picture = Picture();
     assert(picture);
@@ -121,16 +123,19 @@ static void invalid(void) {
 }
 
 static unsigned textureReferences;
+// Records a successful retained reference to the fake GPU texture.
 static bool retainTexture(void *texture) {
     assert(texture == &textureReferences);
     ++textureReferences;
     return true;
 }
+// Releases the fake texture reference acquired during Image binding.
 static bool releaseTexture(void *texture) {
     assert(texture == &textureReferences && textureReferences);
     --textureReferences;
     return true;
 }
+// Proves Picture admits a GPU-only borrowed Image without CPU pixel storage.
 static void gpuOnlyAdmission(void) {
     // Headless widget admission only; actual texture pixels are proven by R3.
     Image *image = Image(8, 4);
@@ -147,6 +152,7 @@ static void gpuOnlyAdmission(void) {
     assert(!textureReferences);
 }
 
+// Runs the normal widget, invalid-input, and GPU-only admission scenarios.
 int main(void) {
     widget();
     invalid();

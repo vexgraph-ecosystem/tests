@@ -3,6 +3,7 @@
 //! binding roundtrips and bounded projections. Arbitrary pointers are never read.
 use relational_engine_scratchpad::{VariableSlot, StorageError};
 
+/// Checks the fixed slot layout, accepted names, atomic rejection, borrowed pointer storage, and projections.
 #[test]
 fn slot_layout_and_names() {
     assert_eq!(std::mem::size_of::<VariableSlot>(), 32);

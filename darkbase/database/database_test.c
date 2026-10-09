@@ -52,6 +52,7 @@ typedef struct Row {
     int32_t health;
 } Row;
 
+/** Verifies database construction, type identity, null-safe access, and destruction. */
 static void testConstructorAndNull(void) {
     printf("[1] construction, identity, null-safety\n");
 
@@ -82,6 +83,7 @@ static void testConstructorAndNull(void) {
     CHECK(truncated == false && strcmp(buf, "nullptr") == 0);
 }
 
+/** Verifies entity registration, case-folded lookup, duplicate rejection, and cleanup. */
 static void testDefineAndLookup(void) {
     printf("[2] define entities, index/count/schema lookups\n");
 
@@ -118,6 +120,7 @@ static void testDefineAndLookup(void) {
     Database_free(db);
 }
 
+/** Verifies borrowed row insertion, stable indexed reads, growth, and rejected inserts. */
 static void testInsertAndRead(void) {
     printf("[3] bind live rows, read them back, stable across growth\n");
 
@@ -160,6 +163,7 @@ static void testInsertAndRead(void) {
     Struct_free(player);
 }
 
+/** Verifies recorded database errors and bounded value/structure projections. */
 static void testDiagnostics(void) {
     printf("[4] recorded rejection is legible and bounded\n");
 
@@ -193,6 +197,7 @@ static void testDiagnostics(void) {
     Database_free(db);
 }
 
+/** Verifies save/load round trips, loaded-row ownership, and corrupt-file rejection. */
 static void testPersistence(void) {
     printf("[5] .vexdb save/load round-trip, ownership, checksum, atomicity\n");
 
@@ -288,6 +293,7 @@ static void testPersistence(void) {
     Struct_free(player);
 }
 
+/** Verifies atomic save replacement and preservation of the previous file on rejection. */
 static void testSafeSave(void) {
     printf("[6] atomic save publication (temp write + fsync + rename)\n");
 

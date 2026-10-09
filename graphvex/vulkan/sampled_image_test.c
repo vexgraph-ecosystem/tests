@@ -13,6 +13,7 @@
 #include <vulkan/vulkan.h>
 
 static unsigned forcedTimeouts;
+// Injects bounded fence timeouts before delegating to Vulkan's real wait.
 VKAPI_ATTR VkResult VKAPI_CALL vkWaitForFences(VkDevice device, uint32_t count,
     const VkFence *fences, VkBool32 all, uint64_t timeout) {
     assert(timeout <= UINT64_C(100000000));
@@ -25,6 +26,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkWaitForFences(VkDevice device, uint32_t count,
     return real(device, count, fences, all, timeout);
 }
 
+// Asserts the RGB value at one pixel in the sampled image.
 static void pixel(const Image *image, unsigned x, unsigned y, unsigned r, unsigned g, unsigned b) {
     const uint8_t *p = Image_pixels(image) + y * Image_stride(image) + x * 4u;
     assert(abs((int) p[0] - (int) r) <= 1);
@@ -32,6 +34,7 @@ static void pixel(const Image *image, unsigned x, unsigned y, unsigned r, unsign
     assert(abs((int) p[2] - (int) b) <= 1);
     assert(p[3] == 255);
 }
+// Tests Vulkan image sampling, clipping, and timeout retry behavior.
 int main(void) {
     Device *device = VulkanBackend_device();
     if (!Device_isValid(device))

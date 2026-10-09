@@ -49,6 +49,7 @@ static int g_failures = 0;
     else { printf("[loopback] FAIL %s\n", name); g_failures++; } \
 } while (0)
 
+/* Captures loopback request fields/body and returns a deterministic method-specific response. */
 static void captureHandler(const HttpExchange *exchange, int clientFd, void *userdata) {
     (void)userdata;
     Capture *cap = &g_cap;
@@ -68,6 +69,7 @@ static void captureHandler(const HttpExchange *exchange, int clientFd, void *use
         Http_respond(clientFd, 204, "text/plain", "", 0);
 }
 
+/* Parses a captured JSON body and checks one string-valued member exactly. */
 static bool bodyHas(const char *body, const char *key, const char *want) {
     JsonNode nodes[64];
     char scratch[1024];
@@ -87,11 +89,13 @@ static bool bodyHas(const char *body, const char *key, const char *want) {
     return strncmp(got, want, len) == 0;
 }
 
+/* Supplies a fixed token for testing callback-based bearer credential formatting. */
 static const char *staticToken(void *userdata) {
     (void)userdata;
     return "fn-token-123";
 }
 
+/* Runs Discord, Slack, auth-formatting, and REST-get checks against a local loopback server. */
 int main(void) {
     printf("=== Webhook Loopback Suite (Shape A/B, no accounts) ===\n");
     HttpServer srv = { 0 };

@@ -54,6 +54,7 @@ static int s_failures = 0;
         }                                                                       \
     } while (0)
 
+/** Copies the prepared module fixture to its loader staging location. */
 static bool copy_file(const char *src, const char *dst) {
     FILE *in = fopen(src, "rb");
     if (!in)
@@ -78,6 +79,7 @@ static bool copy_file(const char *src, const char *dst) {
     return ok;
 }
 
+/** Creates missing parent directories required by the staged manifest. */
 static bool mkdir_p(const char *path) {
     if (mkdir(path, 0755) == 0 || errno == EEXIST)
         return true;
@@ -100,6 +102,7 @@ static bool mkdir_p(const char *path) {
     return true;
 }
 
+/** Removes the temporary manifest and module fixture tree. */
 static bool rmtree(const char *path) {
     DIR *dir = opendir(path);
     if (!dir)
@@ -150,6 +153,7 @@ static bool stage_payload(const char *loadBase) {
     return copy_file(moduleFile, dst);
 }
 
+/** Polls the module until its generation reaches the target or times out. */
 static bool wait_for_generation(HotModule *hot, uint32_t target) {
     for (int i = 0; i < 60; i++) {
         struct timespec d = { 0, 20 * 1000 * 1000 };

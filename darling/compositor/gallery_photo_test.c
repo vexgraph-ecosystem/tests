@@ -11,6 +11,7 @@
 #include <ImageIO/ImageIO.h>
 #include <unistd.h>
 
+// Tests bounded photo decoding, bundled lookup, orientation, and rejection recovery.
 int main(int argc, char **argv) {
     const char *path = FILTER_GALLERY_SOURCE_RESOURCE;
     if (argc == 2 && !strcmp(argv[1], "--bundle"))

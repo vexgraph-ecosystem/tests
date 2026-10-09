@@ -16,6 +16,7 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Checks Vulkan batch recording, geometry validation, and image admission.
 int main(void) {
     VkBatch *b = VkBatch_0();
     CHECK(b != nullptr);

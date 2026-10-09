@@ -43,6 +43,7 @@ static int sCancelCalls = 0;
 static HarnessStatus sPollVerdict = HARNESS_STATUS_RUNNING;
 static uint64_t sLastTimeoutMs = 0;
 
+/* Records launches and returns a synthetic handle for each accepted job. */
 static bool stubSpawn(void *driverCtx, const EngineProviderSlot *engine,
                       const char *prompt, size_t promptLen,
                       uint64_t timeoutMs, void **outHandle) {
@@ -57,6 +58,7 @@ static bool stubSpawn(void *driverCtx, const EngineProviderSlot *engine,
     return true;
 }
 
+/* Returns the test-selected poll verdict for a synthetic job handle. */
 static HarnessStatus stubPoll(void *driverCtx, void *handle, uint64_t timeoutMs) {
     (void)driverCtx;
     (void)handle;
@@ -64,12 +66,14 @@ static HarnessStatus stubPoll(void *driverCtx, void *handle, uint64_t timeoutMs)
     return sPollVerdict;
 }
 
+/* Counts cancellation callbacks for the harness lifecycle assertions. */
 static void stubCancel(void *driverCtx, void *handle) {
     (void)driverCtx;
     (void)handle;
     sCancelCalls++;
 }
 
+/* Builds the in-process spawn/poll/cancel table used by the owner test. */
 static HarnessDriverTable stubTable(void) {
     HarnessDriverTable table;
     table.spawnFn = stubSpawn;
@@ -78,6 +82,7 @@ static HarnessDriverTable stubTable(void) {
     return table;
 }
 
+/* Verifies provider lookup and Harness job admission, capacity, polling, cancellation, and timeout behavior. */
 int main(int argc, const char **argv) {
     (void)argc;
     (void)argv;

@@ -15,6 +15,7 @@
 enum { FILTER_GALLERY_WIDTH = 360, FILTER_GALLERY_HEIGHT = 300,
        FILTER_GALLERY_GPU_PIXEL_BUDGET = GALLERY_PHOTO_OUTPUT_PIXEL_LIMIT }; // cold allocation/work safety budget
 
+// Writes one in-bounds RGBA pixel into the gallery's CPU fixture image.
 static inline void FilterGallery_pixel(Image *image, unsigned x, unsigned y, Color color) {
     if (x >= Image_width(image) || y >= Image_height(image))
         return;
@@ -72,6 +73,7 @@ static inline Image *FilterGallery_photoFromPath(const char *path, unsigned widt
     return image;
 }
 
+// Loads the gallery photo from the owner-test path or bundled app resource.
 static inline Image *FilterGallery_photo(unsigned width, unsigned height) {
 #ifdef FILTER_GALLERY_SOURCE_RESOURCE
     // Owner test only: the application has no Downloads/CWD/source-tree fallback.
@@ -85,6 +87,7 @@ static inline Image *FilterGallery_photo(unsigned width, unsigned height) {
     return image;
 }
 
+// Resolves the expected build shader folder into the caller's bounded buffer.
 static inline bool FilterGallery_shaderDirectory(char *dest,size_t cap) {
     const char *home=getenv("B_HOME");
     int length;
@@ -95,6 +98,7 @@ static inline bool FilterGallery_shaderDirectory(char *dest,size_t cap) {
     return length>=0 && (size_t) length<cap;
 }
 
+// Builds one backdrop/foreground/element fixture and renders the chosen output form.
 static inline bool FilterGallery_renderForm(GpuScope *gpu,unsigned which,bool sampled,Image **out) {
     if (which > 2 || !out || !gpu)
         return false;
@@ -140,13 +144,16 @@ cleanup:
     Image_destroy(baseline);
     return status;
 }
+// Renders one fixture output as a CPU-readable reference image.
 static inline bool FilterGallery_render(GpuScope *gpu,unsigned which,Image **out) {
     return FilterGallery_renderForm(gpu,which,false,out);
 }
+// Renders one fixture output as a sampled GPU image.
 static inline bool FilterGallery_renderSampled(GpuScope *gpu,unsigned which,Image **out) {
     return FilterGallery_renderForm(gpu,which,true,out);
 }
 
+// Creates the deterministic title/detail image for one filter-scope example.
 static inline Image *FilterGallery_caption(unsigned which) {
     static const char *titles[] = {"GPU BACKDROP", "GPU FOREGROUND", "GPU ELEMENT"};
     static const char *details[] = {"BEHIND PANEL", "CHILD BLUR CLIPPED", "WHOLE PANEL BLUR"};

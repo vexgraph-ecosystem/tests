@@ -31,11 +31,13 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+/** Builds a cube-shaped axis-aligned box from its minimum and side length. */
 static OctreeAABB box(float a, float b) {
     OctreeAABB r = { a, a, a, b, b, b };
     return r;
 }
 
+/** Verifies inclusive point containment and sphere intersection at box boundaries. */
 static void test_aabb_helpers(void) {
     OctreeAABB b = box(0.0f, 10.0f);
     CHECK(OctreeAABB_containsPoint(b, (OctreePoint) { 0, 0, 0 }));       // min inclusive
@@ -56,6 +58,7 @@ static void test_aabb_helpers(void) {
     CHECK(OctreeAABB_intersectsSphere(b, (OctreePoint) { 20, 5, 5 }, 15.0f)); // reaches in
 }
 
+/** Checks null trees and output buffers are safely refused by the public query operations. */
 static void test_null_safety(void) {
     uint64_t out;
     CHECK(!Octree_insert(nullptr, (OctreePoint) { 0, 0, 0 }, 1));
@@ -66,6 +69,7 @@ static void test_null_safety(void) {
     Octree_free(nullptr);
 }
 
+/** Exercises insertion limits and sphere queries over points in and outside the tree. */
 static void test_bounds_and_queries(void) {
     Octree *t = Octree_create(box(-10.0f, 10.0f), 4, 2);
     CHECK(t != nullptr);
@@ -121,6 +125,7 @@ static void test_bounds_and_queries(void) {
 // ── bulk insert: leaf growth + subdivision, then exhaustive queries ────────
 #define OCT_POINTS 500
 
+/** Tests bulk tree construction and query behavior over a collection of points. */
 static void test_bulk(void) {
     Octree *t = Octree_create(box(0.0f, 100.0f), 8, 2);   // tiny nodes force subdivision
     CHECK(t != nullptr);
@@ -183,6 +188,7 @@ static void test_bulk(void) {
     Octree_free(t);
 }
 
+/** Runs the Octree owner scenarios and reports aggregate assertion status. */
 int main(void) {
     test_aabb_helpers();
     test_null_safety();

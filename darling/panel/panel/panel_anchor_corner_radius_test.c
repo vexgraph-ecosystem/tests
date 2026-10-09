@@ -28,6 +28,7 @@ static int g_fail = 0;
 #define DARLING_TEST_HAS_FRAMES
 #define DARLING_TEST_WITH_ARGS
 #include "darling/test_application.h"
+// Build and capture Panels at each parent anchor with rounded corners and shadows.
 int main(int argc, char **argv) {
     bool interactive = argc == 2 && strcmp(argv[1], "--interactive") == 0;
     if (argc > 1 && !interactive) { fprintf(stderr, "usage: %s [--interactive]\n", argv[0]); return 1; }
