@@ -33,6 +33,7 @@ typedef struct {
     uint32_t count;
 } AddArg;
 
+// Appends this worker's assigned value range while holding the shared list mutex.
 static void *adder(void *userData) {
     AddArg *arg = userData;
     for (uint32_t i = 0; i < (*arg).count; i++) {
@@ -43,6 +44,7 @@ static void *adder(void *userData) {
     return nullptr;
 }
 
+// Verifies list insertion, indexed access, removal, growth, and empty-state behavior.
 int main(void) {
     // Construction + introspection.
     List *list = List_2(ID_INT, 4); // grows to the 1024 default

@@ -17,8 +17,10 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Compares layout coordinates using the test's float tolerance.
 static int closef(float a, float b) { return fabsf(a - b) < 0.001f; }
 
+// Exercises element construction, anchors, pivots, painting, and null guards.
 int main(void) {
     Rect parent = {100, 50, 200, 100};
 

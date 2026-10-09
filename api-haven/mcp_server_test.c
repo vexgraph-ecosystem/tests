@@ -28,6 +28,7 @@
 
 static int sFailures = 0;
 
+/* Counts a failed protocol assertion and prints its concise diagnostic. */
 static void check(int ok, const char *what) {
     if (!ok) {
         sFailures++;
@@ -36,6 +37,7 @@ static void check(int ok, const char *what) {
 }
 
 // Run one line through the engine; assert a response was written.
+/* Sends one JSON-RPC line through the server and records whether a response was produced. */
 static const char *run(McpServer *srv, const char *line, char *out,
                        size_t cap, const char *what) {
     out[0] = '\0';
@@ -44,6 +46,7 @@ static const char *run(McpServer *srv, const char *line, char *out,
     return out;
 }
 
+/* Exercises MCP negotiation, tools/resources, error classes, notifications, and parse failures. */
 int main(void) {
     McpServer *srv = McpServer_shared();
     char out[262144];

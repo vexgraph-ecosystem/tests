@@ -42,11 +42,13 @@ static int g_checks = 0;
         }                                                                 \
     } while (0)
 
+// Resolves a match's entry index to its stored name, using empty text if absent.
 static const char *matchName(const SegmentIndex *index, const SegmentMatch *m) {
     const SegmentEntry *e = (const SegmentEntry*) ChunkedList_slot((*index).entries, (*m).entry);
     return e ? (*e).name : "";
 }
 
+// Checks map initialization, empty/missing lookup, basic insertion, null safety, and shutdown.
 static void testLifecycle(void) {
     printf("[1] init / empty / count / null-safety\n");
 
@@ -76,6 +78,7 @@ static void testLifecycle(void) {
     CHECK(true);
 }
 
+// Covers all buckets, case-folded dotted keys, and in-place upsert behavior.
 static void testBucketsAndFold(void) {
     printf("[2] 39 buckets + folding + dotted names + upsert\n");
 
@@ -110,6 +113,7 @@ static void testBucketsAndFold(void) {
     VariableMiniMap_shutdown(&map);
 }
 
+// Checks malformed and overlong key rejection without changing the entry count.
 static void testRejection(void) {
     printf("[3] illegal names rejected\n");
 
@@ -126,6 +130,7 @@ static void testRejection(void) {
     VariableMiniMap_shutdown(&map);
 }
 
+// Checks constructor/free forms, bounded projections, and safe no-op iteration inputs.
 static void testForEachAndStrings(void) {
     printf("[4] forEach + string projections + arity ctor\n");
 
@@ -160,6 +165,7 @@ static void testForEachAndStrings(void) {
     VariableMiniMap_free(nullptr);
 }
 
+// Builds a SegmentIndex from map fields and checks scoped ranking and payload preservation.
 static void testScopedSearch(void) {
     printf("[5] scoped search: SegmentIndex over a class's field mini map\n");
 
@@ -202,6 +208,7 @@ static void testScopedSearch(void) {
     VariableMiniMap_free(fields);
 }
 
+// Runs map lifecycle, key policy, projection, iteration, and scoped-search cases.
 int main(void) {
     printf("=== VariableMiniMap (scoped) Test Suite ===\n\n");
 

@@ -27,6 +27,9 @@ static int g_failures = 0;
 
 #define EQ(a, b) ((a) == (b) || (isnan(a) && isnan(b)))
 
+// Asserts that facade constants exactly alias the strict-math constants.
+// Checks the math constants against their defined values and special cases.
+// Confirms facade constants are aliases of the strict-math constants.
 static void test_constants(void) {
     CHECK(MATH_PI == STRICT_MATH_PI);
     CHECK(MATH_HALF_PI == STRICT_MATH_HALF_PI);
@@ -37,6 +40,9 @@ static void test_constants(void) {
     CHECK(MATH_RAD_TO_DEG == STRICT_MATH_RAD_TO_DEG);
 }
 
+// Compares every strict facade operation with its StrictMath implementation.
+// Verifies generic math operations dispatch to strict-math implementations.
+// Compares every strict facade call with its StrictMath implementation.
 static void test_strict_dispatch(void) {
     float xs[] = { -3.0f, -0.5f, 0.0f, 0.25f, 1.0f, 3.3f };
     for (size_t i = 0; i < sizeof(xs) / sizeof(xs[0]); i++) {
@@ -69,6 +75,9 @@ static void test_strict_dispatch(void) {
     CHECK(Math_atan2D(1.0, 2.0) == StrictMath_atan2D(1.0, 2.0));
 }
 
+// Compares every fast facade operation with its FastMath implementation.
+// Verifies generic math operations dispatch to fast-math implementations.
+// Compares each fast facade call with its FastMath implementation.
 static void test_fast_dispatch(void) {
     float xs[] = { -2.5f, -0.5f, 0.0f, 0.5f, 2.5f };
     for (size_t i = 0; i < sizeof(xs) / sizeof(xs[0]); i++) {
@@ -88,6 +97,9 @@ static void test_fast_dispatch(void) {
     CHECK(Math_fast_approxEqual(1.0f, 1.001f, 0.01f) == FastMath_approxEqual(1.0f, 1.001f, 0.01f));
 }
 
+// Runs constant and strict/fast dispatch parity checks.
+// Runs math constant and strict/fast generic-dispatch checks.
+// Runs constant-alias and strict/fast facade dispatch checks.
 int main(void) {
     test_constants();
     test_strict_dispatch();

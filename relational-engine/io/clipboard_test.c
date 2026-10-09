@@ -10,6 +10,7 @@
 #include "c23/free.h"
 #include "test_support.h"
 
+/* Exercises the host clipboard round trip; execution is gated by explicit mutation permission. */
 static void test_clipboard(void) {
     printf("Testing clipboard bridge...\n");
     const char *test_str = "VexGraph Ecosystem Clipboard Payload";
@@ -25,6 +26,7 @@ static void test_clipboard(void) {
     Clipboard_clear();
 }
 
+/* Runs cache put/get, path lookup, eviction, and clearing under a temporary VEX_HOME. */
 static void test_cache(void) {
     printf("Testing persistent cache engine...\n");
 
@@ -69,11 +71,13 @@ static void test_cache(void) {
 }
 
 static int custom_dtor_calls = 0;
+/* Counts calls to verify the registered destructor callback is dispatched. */
 static void custom_destructor(void *ptr) {
     (void) ptr;
     custom_dtor_calls++;
 }
 
+/* Verifies C23 destructor registration and callback lookup/invocation. */
 static void test_destructor_dispatch(void) {
     printf("Testing c23 destructor dispatch...\n");
     uint32_t my_type = 9999;

@@ -18,6 +18,7 @@ typedef struct TestLabel {
     bool ownsText;
 } TestLabel;
 
+/** Allocates and initializes the fallback label object from permanent memory. */
 static TestLabel *TestLabel_0(void) {
     TestLabel *lbl = (TestLabel*) Memory_alloc(100, sizeof(TestLabel));
     if (!lbl)
@@ -27,6 +28,7 @@ static TestLabel *TestLabel_0(void) {
     return lbl;
 }
 
+/** Replaces label text with an owned permanent copy, releasing prior owned text. */
 static void TestLabel_setText(TestLabel *lbl, const char *text) {
     if (!lbl)
         return;
@@ -44,6 +46,7 @@ static void TestLabel_setText(TestLabel *lbl, const char *text) {
     }
 }
 
+/** Replaces label text with a borrowed pointer without taking ownership. */
 static void TestLabel_setTextBorrowed(TestLabel *lbl, const char *text) {
     if (!lbl)
         return;
@@ -59,6 +62,7 @@ static void TestLabel_setTextBorrowed(TestLabel *lbl, const char *text) {
     (*lbl).ownsText = false;
 }
 
+/** Releases owned text and the fallback label allocation. */
 static void TestLabel_free(TestLabel *lbl) {
     if (!lbl)
         return;

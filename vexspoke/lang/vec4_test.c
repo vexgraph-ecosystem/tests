@@ -28,6 +28,7 @@ static int g_failures = 0;
 
 #define CLOSE(a, b) (fabsf((a) - (b)) <= 1e-4f)
 
+// Checks zero/value constructors and null-safe freeing.
 static void test_construction(void) {
     Vec4 *z = Vec4_0();
     CHECK(z != nullptr);
@@ -42,6 +43,7 @@ static void test_construction(void) {
     Vec4_free(nullptr);
 }
 
+// Checks directional aliases, frame mapping, setters, and copy behavior.
 static void test_accessors(void) {
     Vec4 v = { 0 };
     Vec4_set(&v, 1.0f, 2.0f, 3.0f, 4.0f);
@@ -72,6 +74,7 @@ static void test_accessors(void) {
     CHECK(Vec4_getX(&c) == 5.0f && Vec4_getW(&c) == 8.0f);
 }
 
+// Checks four-component arithmetic, aliasing, division rejection, and nulls.
 static void test_arithmetic(void) {
     Vec4 a = { 0 }, b = { 0 }, d = { 0 };
     Vec4_set(&a, 1.0f, 2.0f, 3.0f, 4.0f);
@@ -101,6 +104,7 @@ static void test_arithmetic(void) {
     Vec4_mul(nullptr, 1.0f, &d);
 }
 
+// Checks four-dimensional dot/length, normalization, and interpolation.
 static void test_geometry(void) {
     Vec4 a = { 0 }, b = { 0 }, d = { 0 };
     Vec4_set(&a, 1.0f, 2.0f, 2.0f, 0.0f);
@@ -129,6 +133,7 @@ static void test_geometry(void) {
     CHECK(Vec4_getZ(&d) == 0.0f);
 }
 
+// Checks safe defaults and no-op behavior for null Vec4 arguments.
 static void test_nulls(void) {
     CHECK(Vec4_getRight(nullptr) == 0.0f);
     CHECK(Vec4_getLeft(nullptr) == 0.0f);
@@ -146,6 +151,7 @@ static void test_nulls(void) {
     Vec4_lerp(nullptr, nullptr, 0.5f, nullptr);
 }
 
+// Runs Vec4 owner cases after initializing the memory substrate.
 int main(void) {
     CHECK(Memory_init(0));
     test_construction();

@@ -21,10 +21,12 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Returns the alpha channel at the requested image pixel.
 static int alpha_at(const Image *img, int x, int y) {
     return Image_pixels(img)[(size_t)y * Image_stride(img) + (size_t)x * 4 + 3];
 }
 
+// Verifies element placement properties affect paint and hit behavior.
 int main(void) {
     // 1. sharing a bound: two Elements, one Property
     Element *a = Element();

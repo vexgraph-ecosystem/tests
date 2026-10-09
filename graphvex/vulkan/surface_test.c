@@ -22,6 +22,7 @@ static void *g_seenNative = NULL;
 static Image *g_seenImage = NULL;
 static bool g_blitOk = true;
 
+// Test callback records surface presentation and returns its configured result.
 static bool recordPresent(Surface *surface, void *userdata) {
     g_presentCalls++;
     (*(int *) userdata)++;
@@ -31,8 +32,10 @@ static bool recordPresent(Surface *surface, void *userdata) {
 }
 
 // a board revalidate step, recorded
+// Counts board revalidation callbacks.
 static void countReval(Board *board, void *ud) { (void)board; (*(int *)ud)++; }
 
+// Exercises surface lifecycle, presentation admission, and board revalidation.
 int main(void) {
     Surface *s = Surface_2((void *)0xCAFE, 100, 50);
     CHECK(s != NULL);

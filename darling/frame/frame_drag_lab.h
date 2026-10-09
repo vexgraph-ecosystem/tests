@@ -14,6 +14,7 @@ typedef struct FrameDragLab {
     float x[96], y[96], startX, startY, baseX, baseY;
 } FrameDragLab;
 
+// Selects the hit panel and stores its starting pointer and offset coordinates.
 static void frameDragDown(Element *element, const Mouse *mouse, void *userdata) {
     FrameDragLab *drag = userdata;
     (*drag).selected = -1;
@@ -29,6 +30,7 @@ static void frameDragDown(Element *element, const Mouse *mouse, void *userdata) 
     }
 }
 
+// Moves the selected panel subtree by the pointer delta and invalidates its Frame.
 static void frameDragMove(Element *element, const Mouse *mouse, void *userdata) {
     (void)element;
     FrameDragLab *drag = userdata;
@@ -40,12 +42,14 @@ static void frameDragMove(Element *element, const Mouse *mouse, void *userdata) 
     Frame_invalidate((*drag).frame);
 }
 
+// Clears the active panel selection when the drag ends.
 static void frameDragUp(Element *element, const Mouse *mouse, void *userdata) {
     (void)element; (void)mouse;
     FrameDragLab *drag = userdata;
     (*drag).selected = -1;
 }
 
+// Registers the demo drag callbacks on the Frame's root element.
 static void frameDragAttach(FrameDragLab *drag) {
     (*drag).selected = -1;
     Element_addMouseEvent(Frame_element((*drag).frame), (MouseEvent){

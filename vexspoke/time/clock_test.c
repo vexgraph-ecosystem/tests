@@ -29,12 +29,18 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Sleeps briefly so the clock can accrue measurable real-time elapsed duration.
+// Waits for a short interval used by bounded real-time clock observations.
+// Sleeps for a bounded interval while checking elapsed virtual time.
 static void wait_ms(long ms) {
     struct timespec ts = { ms / 1000, (ms % 1000) * 1000000L };
     nanosleep(&ts, nullptr);
 }
 
 // Spin (bounded) until the virtual clock has accrued past `target` ms.
+// Waits with a deadline until the virtual clock reaches the requested duration.
+// Ticks the clock until virtual time reaches the target or the bounded poll expires.
+// Ticks until virtual time reaches a target or the finite polling budget expires.
 static bool accrue_at_least(Clock *c, uint64_t target) {
     for (int i = 0; i < 2000; i++) {          // bounded: <= ~2s
         Clock_tick(c);
@@ -45,6 +51,9 @@ static bool accrue_at_least(Clock *c, uint64_t target) {
     return false;
 }
 
+// Checks clock construction and its initial elapsed-time state.
+// Checks a newly created clock's scale, pause flag, and virtual-time origin.
+// Checks the clock's initial scale, pause state, and virtual-time origin.
 static void test_create(void) {
     Clock c = Clock_create();
     CHECK(Clock_timeScale(&c) == 1.0);
@@ -52,6 +61,9 @@ static void test_create(void) {
     CHECK(Clock_virtualTimeMillis(&c) == 0);
 }
 
+// Verifies configurable clock-rate and pause settings through their accessors.
+// Verifies time-scale and pause setters through their corresponding getters.
+// Verifies time-scale and pause setters through their matching getters.
 static void test_settings(void) {
     Clock c = Clock_create();
     Clock_setTimeScale(&c, 2.5);
@@ -62,6 +74,9 @@ static void test_settings(void) {
     CHECK(!Clock_isPaused(&c));
 }
 
+// Confirms elapsed virtual time advances while the clock is running.
+// Confirms virtual time accrues monotonically across successive ticks.
+// Confirms ticking accrues cumulative monotonic time.
 static void test_accrual(void) {
     Clock c = Clock_create();
     CHECK(accrue_at_least(&c, 1));
@@ -73,6 +88,9 @@ static void test_accrual(void) {
     CHECK(Clock_virtualTimeMillis(&c) >= afterFirst + 1);
 }
 
+// Checks pausing stops virtual-time accrual while real time advances.
+// Ensures pause freezes virtual time without accumulating a resume backlog.
+// Ensures paused ticks freeze virtual time and resume without backlog.
 static void test_pause_freezes_virtual(void) {
     Clock c = Clock_create();
     CHECK(accrue_at_least(&c, 1));
@@ -93,6 +111,9 @@ static void test_pause_freezes_virtual(void) {
     CHECK(Clock_virtualTimeMillis(&c) > v);
 }
 
+// Verifies zero scale prevents virtual time from advancing.
+// Checks zero time scale freezes virtual time while the clock remains active.
+// Checks a zero scale freezes virtual time without setting the paused flag.
 static void test_zero_scale(void) {
     Clock c = Clock_create();
     Clock_setTimeScale(&c, 0.0);
@@ -103,6 +124,9 @@ static void test_zero_scale(void) {
     CHECK(Clock_virtualTimeMillis(&c) == 0);
 }
 
+// Checks reset returns elapsed clock state to its initial value.
+// Verifies reset clears virtual time and reanchors the clock.
+// Verifies reset clears accumulated virtual time and re-anchors the clock.
 static void test_reset(void) {
     Clock c = Clock_create();
     CHECK(accrue_at_least(&c, 1));
@@ -111,6 +135,9 @@ static void test_reset(void) {
     CHECK(Clock_virtualTimeMillis(&c) == 0);
 }
 
+// Runs clock construction, settings, accrual, pause, scale, and reset checks.
+// Runs clock construction, configuration, accrual, pause, scale, and reset tests.
+// Runs clock initialization, configuration, accrual, pause, scale, and reset checks.
 int main(void) {
     test_create();
     test_settings();

@@ -31,6 +31,9 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Sleeps for the requested millisecond interval during bounded polling loops.
+// Waits briefly for asynchronous compute-pool progress in lifecycle scenarios.
+// Delays briefly between bounded polling attempts in asynchronous job assertions.
 static void wait_ms(long ms) {
     struct timespec ts = { ms / 1000, (ms % 1000) * 1000000L };
     nanosleep(&ts, nullptr);
@@ -39,16 +42,25 @@ static void wait_ms(long ms) {
 static atomic_int g_run_count;
 static atomic_int g_done_count;
 
+// Increments the atomic count used to observe job execution.
+// Records that a submitted compute job began running.
+// Increments the atomic counter used to observe job execution.
 static void on_run(void *ctx) {
     (void) ctx;
     atomic_fetch_add(&g_run_count, 1);
 }
 
+// Increments the atomic count used to observe completion callbacks.
+// Records completion of a compute job for the bounded progress check.
+// Increments the atomic counter used to observe job completion callbacks.
 static void on_done(void *ctx) {
     (void) ctx;
     atomic_fetch_add(&g_done_count, 1);
 }
 
+// Builds a tagged job wired to the test's run and completion counters.
+// Builds a callback/context pair used to exercise job recognition and submission.
+// Builds a tagged job wired to the test's run and completion counters.
 static ComputeJob make_job(void) {
     ComputeJob j;
     j.tag = COMPUTE_JOB_TAG;
@@ -58,6 +70,9 @@ static ComputeJob make_job(void) {
     return j;
 }
 
+// Checks job-tag recognition, callback order/counts, and invalid packet rejection.
+// Checks whether job descriptors are recognized as eligible compute work.
+// Checks job tag validation and run/onDone dispatch, including optional completion.
 static void test_recognize(void) {
     ComputeJob job = make_job();
     CHECK(ComputeJob_isJob(&job));
@@ -83,6 +98,9 @@ static void test_recognize(void) {
     CHECK(atomic_load(&g_done_count) == 1);
 }
 
+// Polls an atomic completion count with a finite retry budget.
+// Waits up to the test deadline for an atomic completion count to reach target.
+// Polls an atomic counter until its target or a fixed iteration deadline.
 static bool wait_for(atomic_int *count, int target) {
     for (int i = 0; i < 3000; i++) {          // bounded <= ~3s
         if (atomic_load(count) >= target)
@@ -92,6 +110,9 @@ static bool wait_for(atomic_int *count, int target) {
     return false;
 }
 
+// Exercises compute-pool sizing, submission, targeted dispatch, and teardown.
+// Exercises compute-pool submission, callbacks, completion, and shutdown.
+// Tests worker-pool sizing, submission, targeted dispatch, and shutdown behavior.
 static void test_pool(void) {
     ComputeThread_free();                       // reset any prior pool state
     CHECK(ComputeThread_count() == 0);
@@ -148,6 +169,9 @@ static void test_pool(void) {
     CHECK(!ComputeThread_submit(&jobs[1]));     // pool gone
 }
 
+// Runs job validation and compute-pool lifecycle tests.
+// Runs compute-job recognition and pool lifecycle/progress scenarios.
+// Runs ComputeJob validation and ComputeThread pool lifecycle scenarios.
 int main(void) {
     test_recognize();
     test_pool();

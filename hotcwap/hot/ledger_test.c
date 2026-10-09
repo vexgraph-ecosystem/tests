@@ -38,6 +38,7 @@ static int s_failures = 0;
         }                                                                       \
     } while (0)
 
+/** Removes a ledger test directory and reports whether cleanup succeeded. */
 static bool rmtree(const char *path) {
     DIR *dir = opendir(path);
     if (!dir)

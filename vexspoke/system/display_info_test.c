@@ -26,6 +26,9 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Tests display registry overrides, monitor bounds, primary selection, and scalar properties.
+// Checks display resolution, scale, refresh, and capability queries.
+// Checks monitor registry access and DisplayInfo scalar/pointer round trips.
 int main(void) {
     CHECK(Memory_init(0));
 

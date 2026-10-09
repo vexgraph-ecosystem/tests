@@ -46,6 +46,7 @@ static int s_failures = 0;
         }                                                                       \
     } while (0)
 
+/** Creates the parent directories needed by the uninstall fixtures. */
 static bool mkdir_p(const char *path) {
     if (mkdir(path, 0755) == 0 || errno == EEXIST)
         return true;
@@ -68,6 +69,7 @@ static bool mkdir_p(const char *path) {
     return true;
 }
 
+/** Removes the temporary uninstall fixture directory tree. */
 static bool rmtree(const char *path) {
     DIR *dir = opendir(path);
     if (!dir)
@@ -99,6 +101,7 @@ static bool rmtree(const char *path) {
     return true;
 }
 
+/** Writes the fixture string and reports whether the complete write succeeded. */
 static bool write_file(const char *path, const char *data) {
     FILE *f = fopen(path, "wb");
     if (!f)
@@ -109,6 +112,7 @@ static bool write_file(const char *path, const char *data) {
     return ok;
 }
 
+/** Reports whether the supplied fixture path currently exists. */
 static bool path_exists(const char *path) {
     struct stat st;
     return stat(path, &st) == 0;

@@ -33,6 +33,7 @@ static int sFailures = 0;
 
 static uint32_t sPollCalls = 0;
 
+/* Records a transport poll and returns no frames for the caller-fed SSE test. */
 static uint32_t fakePoll(void *handle, uint64_t budgetMs) {
     (void)handle;
     (void)budgetMs;
@@ -40,11 +41,13 @@ static uint32_t fakePoll(void *handle, uint64_t budgetMs) {
     return 0;
 }
 
+/* Supplies a successful connection callback without opening a transport. */
 static bool fakeConnect(void *handle) {
     (void)handle;
     return true;
 }
 
+/* Accepts sends without side effects so the test can bind a complete source table. */
 static bool fakeSend(void *handle, const uint8_t *Bytes, uint32_t len) {
     (void)handle;
     (void)Bytes;
@@ -52,6 +55,7 @@ static bool fakeSend(void *handle, const uint8_t *Bytes, uint32_t len) {
     return true;
 }
 
+/* Provides the no-op close callback for the in-process source table. */
 static void fakeClose(void *handle) {
     (void)handle;
 }
@@ -63,6 +67,7 @@ static const HavenWsSource sFakeSource = {
     fakeClose,
 };
 
+/* Exercises incremental SSE parsing, slot binding, cancellation, timeout, truncation, and null guards. */
 int main(int argc, const char **argv) {
     (void)argc;
     (void)argv;

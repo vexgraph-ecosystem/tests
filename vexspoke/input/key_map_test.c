@@ -26,12 +26,14 @@ static int g_failures = 0;
 static int g_fires = 0;
 static int64_t g_firedCombo = 0;
 
+// Records the most recent combo delivered by a KeyMap binding.
 static void onFire(void *userdata, int64_t combo) {
     (void) userdata;
     g_fires++;
     g_firedCombo = combo;
 }
 
+// Adds a distinct callback marker to verify replacement and dispatch routing.
 static void onFire2(void *userdata, int64_t combo) {
     (void) userdata;
     (void) combo;
@@ -40,6 +42,7 @@ static void onFire2(void *userdata, int64_t combo) {
 
 // ── Tests ─────────────────────────────────────────────────
 
+// Checks arena-backed map creation, empty state, and destruction.
 static void test_create_destroy(void) {
     MemoryArena *arena = MemoryArena_create(64u << 20);
     CHECK(arena != nullptr);
@@ -56,6 +59,7 @@ static void test_create_destroy(void) {
     MemoryArena_destroy(arena);
 }
 
+// Checks safe results for null map arguments across the public operations.
 static void test_null_safety(void) {
     // All operations on NULL should be safe
     CHECK(KeyMap_create(nullptr) == nullptr);
@@ -68,6 +72,7 @@ static void test_null_safety(void) {
     CHECK(KeyMap_getLongPressNanos(nullptr) == 0);
 }
 
+// Checks exact combo binding, lookup hits, misses, and count updates.
 static void test_bind_and_match(void) {
     MemoryArena *arena = MemoryArena_create(64u << 20);
     KeyMap *map = KeyMap_create(arena);
@@ -106,6 +111,7 @@ static void test_bind_and_match(void) {
     MemoryArena_destroy(arena);
 }
 
+// Checks rebinding a combo updates its userdata without duplicating the entry.
 static void test_bind_replaces(void) {
     MemoryArena *arena = MemoryArena_create(64u << 20);
     KeyMap *map = KeyMap_create(arena);
@@ -126,6 +132,7 @@ static void test_bind_replaces(void) {
     MemoryArena_destroy(arena);
 }
 
+// Checks removal of selected bindings and preservation of unrelated entries.
 static void test_unbind(void) {
     MemoryArena *arena = MemoryArena_create(64u << 20);
     KeyMap *map = KeyMap_create(arena);
@@ -154,6 +161,7 @@ static void test_unbind(void) {
     MemoryArena_destroy(arena);
 }
 
+// Checks the binding table grows beyond its initial capacity and remains searchable.
 static void test_growth(void) {
     MemoryArena *arena = MemoryArena_create(64u << 20);
     KeyMap *map = KeyMap_create(arena);
@@ -177,6 +185,7 @@ static void test_growth(void) {
     MemoryArena_destroy(arena);
 }
 
+// Checks encoded modifier, gesture, key, and mask bit positions.
 static void test_combo_constants(void) {
     // Verify the combo bit layout is correct via compile-time constants
     // Cmd+A: modifier nibble at bit 36, key code A=0x41
@@ -196,6 +205,7 @@ static void test_combo_constants(void) {
     CHECK(KMODE_MASK    == 0x00F0000000000000LL);
 }
 
+// Checks combo construction from current key modifier state.
 static void test_build_combo(void) {
     // buildCombo reads modifier state from Key_isDown.
     // No modifiers held → combo should be just gestureType | keyCode.
@@ -232,6 +242,7 @@ static void test_build_combo(void) {
     Key_shutdown();
 }
 
+// Checks hold-duration threshold mapping into the gesture bits.
 static void test_build_combo_with_hold(void) {
     Key_init();
 
@@ -262,6 +273,7 @@ static void test_build_combo_with_hold(void) {
 static int g_fireCount = 0;
 static int64_t g_fireCombo = -1;
 
+// Records callback count and resolved combo for gesture-resolution cases.
 static void onResolveFire(void *userdata, int64_t combo) {
     g_fireCount++;
     g_fireCombo = combo;
@@ -274,6 +286,7 @@ static void onResolveFire(void *userdata, int64_t combo) {
 #define TAP_WIN_NS 30000000ULL   // 30 ms tap window
 #define SETTLE_SLEEP_US 40000    // 40 ms > window, so settlement always lands
 
+// Sends one synthetic key press/release using the requested tap window.
 static void tapKeyWin(int key, uint64_t winNanos) {
     Key_pushEvent(0, key, KEY_ACTION_DOWN, winNanos);
     Key_dispatchEvents();
@@ -281,15 +294,18 @@ static void tapKeyWin(int key, uint64_t winNanos) {
     Key_dispatchEvents();
 }
 
+// Waits beyond the configured short tap window so pending taps settle.
 static void settle(void) {
     usleep(SETTLE_SLEEP_US);
 }
 
+// Presses or releases the synthetic Super modifier and dispatches it.
 static void holdSuper(bool down) {
     Key_pushEvent(0, KEY_LEFT_SUPER, down ? KEY_ACTION_DOWN : KEY_ACTION_UP, 250000000ULL);
     Key_dispatchEvents();
 }
 
+// Checks one pending tap settles, fires its binding once, and is consumed.
 static void test_resolve_tap(void) {
     // Cmd+A tap: while the tap window is open nothing settles (pending);
     // once it closes, resolve fires exactly the Cmd+A binding once, and the
@@ -328,6 +344,7 @@ static void test_resolve_tap(void) {
     Key_shutdown();
 }
 
+// Checks a settled double tap selects the more specific double-tap binding.
 static void test_resolve_specificity(void) {
     // A TAP and A DOUBLE_TAP both bound: two taps within the window settle as
     // DOUBLE and resolve the DOUBLE_TAP binding (higher KMODE wins), never the
@@ -363,6 +380,7 @@ static void test_resolve_specificity(void) {
     Key_shutdown();
 }
 
+// Checks modifier matching is exact for plain and Cmd-modified bindings.
 static void test_resolve_modifier_exact(void) {
     // Plain A and Cmd+A both bound. Exact modifier equality: with Super held
     // only Cmd+A fires; without modifiers only plain A fires.
@@ -399,6 +417,7 @@ static void test_resolve_modifier_exact(void) {
     Key_shutdown();
 }
 
+// Checks a settled right-button double click resolves and consumes its binding.
 static void test_resolve_mouse(void) {
     // Right-button double-click settles and resolves the MOUSE_RIGHT
     // DOUBLE_TAP binding; Mouse_resetTaps consumes it via the winner path.
@@ -438,6 +457,7 @@ static void test_resolve_mouse(void) {
     Mouse_shutdown();
 }
 
+// Checks a long press fires after its threshold and remains latched until release.
 static void test_resolve_long_press(void) {
     // Hold A past KEYMAP_LONG_PRESS_NANOS: the LONG_PRESS binding fires.
     // Uses a real 450 ms hold — single deliberate sleep in the suite.
@@ -476,6 +496,7 @@ static void test_resolve_long_press(void) {
     Key_shutdown();
 }
 
+// Checks a long-press hit consumes the press so release cannot also fire tap.
 static void test_long_press_single_fire(void) {
     // ONE press → at most ONE fire: a LONG_PRESS hit consumes the tap count
     // as well, so releasing the same press never ALSO fires a TAP.
@@ -512,6 +533,7 @@ static void test_long_press_single_fire(void) {
     Key_shutdown();
 }
 
+// Checks disabled multi-tap mode resolves taps immediately and excludes doubles.
 static void test_multi_tap_disabled(void) {
     // Rhythm-game mode (KeyMap_setMultiTapEnabled(false)): every press-release
     // is a single tap resolved IMMEDIATELY — zero window latency; DOUBLE and
@@ -549,6 +571,7 @@ static void test_multi_tap_disabled(void) {
     Key_shutdown();
 }
 
+// Checks per-key gesture phases through pending, settlement, and consumption.
 static void test_tap_phase(void) {
     // Public per-key gesture timeline: NONE → PENDING (window open) →
     // settled SINGLE/DOUBLE/TRIPLE once the window closes. Consumed → NONE.
@@ -600,6 +623,7 @@ static void test_tap_phase(void) {
     Key_shutdown();
 }
 
+// Checks a modifier change starts a fresh tap sequence rather than accumulating.
 static void test_modifier_breaks_sequence(void) {
     // A modifier-state change between presses breaks the tap sequence:
     // plain Q then Cmd+Q within the window must NOT accumulate into a
@@ -628,6 +652,7 @@ static void test_modifier_breaks_sequence(void) {
     Key_shutdown();
 }
 
+// Runs KeyMap lifecycle, binding, combo construction, and gesture-resolution cases.
 int main(void) {
     test_create_destroy();
     test_null_safety();

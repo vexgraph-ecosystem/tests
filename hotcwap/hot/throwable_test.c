@@ -27,6 +27,7 @@ static int g_failures = 0;
 } while (0)
 
 static int g_teardownCallCount = 0;
+/** Records invocation of the teardown callback for ordering assertions. */
 static void testTeardownCallback(void) {
     g_teardownCallCount++;
 }

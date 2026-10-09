@@ -19,6 +19,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Verifies signed and boundary round trips for byte, short, and int packing helpers.
 int main(void) {
     // Byte pair -> short.
     CHECK(Pack_packByte(1, 2) == 0x0102);

@@ -7,18 +7,22 @@
 static int failures;
 #define CHECK(c) do { if (!(c)) { fprintf(stderr, "FAIL %d: %s\n", __LINE__, #c); failures++; } } while (0)
 static uint64_t now;
+// Returns the test-controlled time used by the Surface cadence checks.
 static uint64_t clockNow(void *userdata) { (void)userdata; return now; }
 static int presentations;
 static _Atomic unsigned sceneSteps;
+// Advances a separate scene counter to prove render demand does not own scene work.
 static void *sceneWorker(void *userdata) {
     (void)userdata;
     for (unsigned i = 0; i < 1000; i++) atomic_fetch_add(&sceneSteps, 1);
     return nullptr;
 }
+// Counts actual Surface presentation callbacks for cadence assertions.
 static bool presented(Surface *surface, void *userdata) {
     (void)surface; (void)userdata; presentations++; return true;
 }
 
+// Checks focus-dependent frame caps and demand-driven presentation with a fake clock.
 int main(void) {
     Frame *frame = Frame("FPS focus policy", 120, 80);
     Frame *other = Frame("other focus target", 120, 80);

@@ -29,6 +29,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+/** Records the application reload callback's load result for later assertions. */
 static void onHotReloadStub(Application *self, uint32_t loaded, void *userdata) {
     (void) self; (void) loaded; (void) userdata;
 }

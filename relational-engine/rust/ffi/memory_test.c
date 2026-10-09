@@ -2,6 +2,7 @@
 #include "relational_memory.h"
 #include <assert.h>
 #include <string.h>
+/* Exercises the standalone C ABI client's copy/read behavior and safe rejection preservation. */
 int main(void) {
     ReMemory *owner = re_memory_new();
     uint64_t id = 0;

@@ -27,6 +27,7 @@ static uint64_t projByte(uint64_t byte) {
     return (byte << 52) & MASK_PROJECT;
 }
 
+// Checks type bit fields, predicates, parent registration, and project isolation.
 int main(void) {
     // --- Bit field isolation: make then read each field back exactly.
     uint64_t id = Type_make(PROJ_VEXSPOKE, FORM_SINGLETON, ID_INT);

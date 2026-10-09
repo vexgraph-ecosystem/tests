@@ -21,11 +21,13 @@ static int g_fail = 0;
 
 #define LAYERS 20
 
+// Alternate the nested-panel palette by depth.
 static Color layerColor(int i) {
     return (i % 2) ? COLOR_RGBA(120, 190, 220, 255) : COLOR_RGBA(230, 140, 160, 255);
 }
 
 #include "darling/test_application.h"
+// Exercise layout, paint, and teardown for a deeply nested Panel chain.
 int main(void) {
     Panel *layers[LAYERS];
     float sizes[LAYERS];

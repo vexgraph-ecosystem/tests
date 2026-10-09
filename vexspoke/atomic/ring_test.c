@@ -31,6 +31,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+/** Checks ring initialization and rejects invalid dimensions or empty/full operations. */
 static void test_init_and_bounds(void) {
     RingBuffer r;
     CHECK(!RingBuffer_init(nullptr, 4, 4));
@@ -71,6 +72,7 @@ static void test_init_and_bounds(void) {
     RingBuffer_shutdown(&r);
 }
 
+/** Verifies FIFO order, full-capacity refusal, and slot reuse after popping. */
 static void test_fifo_and_full(void) {
     RingBuffer r;
     CHECK(RingBuffer_init(&r, sizeof(int), 4));
@@ -106,6 +108,7 @@ static void test_fifo_and_full(void) {
     RingBuffer_shutdown(&r);
 }
 
+/** Exercises repeated index wraparound while preserving element order. */
 static void test_wraparound(void) {
     RingBuffer r;
     CHECK(RingBuffer_init(&r, sizeof(int), 4));
@@ -135,6 +138,7 @@ typedef struct Big {
     char tag[7];
 } Big;
 
+/** Confirms the ring copies complete elements larger than a machine word. */
 static void test_wide_elements(void) {
     RingBuffer r;
     CHECK(RingBuffer_init(&r, sizeof(Big), 2));
@@ -166,6 +170,7 @@ static atomic_int g_bad;
 static atomic_int g_dup;
 static atomic_int g_start;
 
+/** Publishes the producer's assigned values into the shared ring until complete. */
 static void *ring_producer(void *arg) {
     int id = (int) (intptr_t) arg;
     while (!atomic_load_explicit(&g_start, memory_order_acquire))
@@ -178,6 +183,7 @@ static void *ring_producer(void *arg) {
     return nullptr;
 }
 
+/** Drains published values and records consumption for the bounded MPMC assertion. */
 static void *ring_consumer(void *arg) {
     (void) arg;
     while (!atomic_load_explicit(&g_start, memory_order_acquire))
@@ -199,6 +205,7 @@ static void *ring_consumer(void *arg) {
     return nullptr;
 }
 
+/** Checks concurrent producers and consumers deliver every submitted value exactly once. */
 static void test_mpmc_exactly_once(void) {
     CHECK(RingBuffer_init(&g_ring, sizeof(int), 64));
     for (int i = 0; i < RING_TOTAL; i++)
@@ -240,6 +247,7 @@ static void test_mpmc_exactly_once(void) {
     RingBuffer_shutdown(&g_ring);
 }
 
+/** Runs the RingBuffer owner scenarios and reports aggregate assertion status. */
 int main(void) {
     test_init_and_bounds();
     test_fifo_and_full();

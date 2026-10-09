@@ -13,6 +13,7 @@
 
 
 #include "darling/test_application.h"
+// Exercise Element operations, shared-property behavior, null guards, and cleanup.
 int main(void) {
     uint32_t baseline = PropertyPool_live(PropertyPool_default());
     Element *root = Element();

@@ -9,6 +9,7 @@
 #define DARLING_TEST_HAS_FRAMES
 #include "darling/test_application.h"
 
+// Supplies a fixed Surface clock for deterministic native resize publication.
 static uint64_t frozenNow(void *context) {
     (void) context;
     return 1000000000ULL;
@@ -17,6 +18,7 @@ static uint64_t frozenNow(void *context) {
 #define CHECK(condition) do { if (!(condition)) { \
     fprintf(stderr, "FAIL %d: %s\n", __LINE__, #condition); return 1; } } while (0)
 
+// Verifies each native size change publishes immediately without extra repaint.
 int main(void) {
     Frame *frame = Frame("live resize publication", 240, 160);
     CHECK(frame);

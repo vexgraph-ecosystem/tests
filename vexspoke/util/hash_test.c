@@ -23,6 +23,9 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Counts set bits in a 64-bit value for the hash avalanche oracle.
+// Counts set bits in a 64-bit word for the hash test's deterministic oracle.
+// Counts set bits to measure the 64-bit hash avalanche response.
 static unsigned popcount64(uint64_t v) {
     unsigned n = 0;
     while (v) {
@@ -32,6 +35,9 @@ static unsigned popcount64(uint64_t v) {
     return n;
 }
 
+// Counts set bits in a 32-bit value for the hash avalanche oracle.
+// Counts set bits in a 32-bit word for the hash test's deterministic oracle.
+// Counts set bits to measure the 32-bit hash avalanche response.
 static unsigned popcount32(uint32_t v) {
     unsigned n = 0;
     while (v) {
@@ -41,6 +47,9 @@ static unsigned popcount32(uint32_t v) {
     return n;
 }
 
+// Checks reference hash vectors, null/empty input, determinism, and avalanche behavior.
+// Checks hash outputs and their basic distribution/bit-count properties.
+// Checks hash reference vectors, deterministic output, null inputs, and avalanche behavior.
 int main(void) {
     // --- Value boundary: nullptr and empty are the zero mapping, never a read.
     CHECK(Hash_fnv1a64(nullptr, 0) == 0);

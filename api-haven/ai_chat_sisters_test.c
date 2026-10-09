@@ -39,6 +39,7 @@ static const AiMessage sMessages[2] = {
     {"assistant", "sure"},
 };
 
+/* Checks both provider request encodings, authentication, guards, and null-safe accessors without HTTP. */
 int main(int argc, const char **argv) {
     (void)argc;
     (void)argv;

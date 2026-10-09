@@ -13,6 +13,7 @@ static int failures;
 
 // Prove that any implemented widget gets its own Class##_setCursor API.
 typedef struct ExampleWidget { Element *element; } ExampleWidget;
+// Exposes the example widget's backing Element to the cursor adapter macro.
 static Element *ExampleWidget_graphics(const ExampleWidget *self) {
     return self ? (*self).element : nullptr;
 }
@@ -20,6 +21,7 @@ DECLARE_CURSOR(ExampleWidget);
 IMPLEMENT_CURSOR(ExampleWidget)
 
 #include "darling/test_application.h"
+// Tests cursor inheritance, overrides, masked hits, shared bounds, and teardown.
 int main(void) {
     Panel *parent = Panel(200, 100);
     Panel *child = Panel(50, 50);

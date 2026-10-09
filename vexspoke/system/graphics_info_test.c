@@ -23,6 +23,9 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Verifies graphics capability getters/setters and preserves strings on null updates.
+// Exercises graphics-adapter information queries and returned metadata.
+// Checks graphics capability snapshot accessors and setter/getter behavior.
 int main(void) {
     const char *name = GraphicsInfo_getGpuName();
     const char *api = GraphicsInfo_getPrimaryGraphicsApi();

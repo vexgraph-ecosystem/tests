@@ -37,6 +37,9 @@ static const char *k_names[12] = {
     "Y_DOWN_LEFT","Y_DOWN_RIGHT","Z_DOWN_LEFT","Z_DOWN_RIGHT","X_DOWN_LEFT","X_DOWN_RIGHT",
 };
 
+// Checks each coordinate frame's axis permutation and sign against the oracle tables.
+// Checks basis-vector mappings for the supported coordinate-frame conventions.
+// Compares each supported frame's axis permutation and signs against the oracle table.
 static void test_basis(void) {
     for (int f = 0; f < 12; f++) {
         CoordBasis b = CoordFrame_getBasis((CoordFrame) f);
@@ -49,6 +52,9 @@ static void test_basis(void) {
     }
 }
 
+// Verifies the canonical frame and its identity basis.
+// Verifies the default frame and its canonical basis mapping.
+// Checks the default frame constant and its identity basis.
 static void test_default_frame(void) {
     CHECK(COORD_FRAME_DEFAULT == COORD_FRAME_Y_UP_LEFT);
     CoordBasis def = CoordFrame_getBasis(COORD_FRAME_DEFAULT);
@@ -56,6 +62,9 @@ static void test_default_frame(void) {
     CHECK(def.sign[0] == 1 && def.sign[1] == 1 && def.sign[2] == 1);
 }
 
+// Confirms invalid frames and axes resolve to the documented safe defaults.
+// Confirms invalid frame or axis indices return the documented safe result.
+// Verifies invalid frames and axis indices return documented fallback values.
 static void test_out_of_range(void) {
     // An invalid frame resolves to the default basis.
     CoordBasis b = CoordFrame_getBasis((CoordFrame) 12);
@@ -72,6 +81,9 @@ static void test_out_of_range(void) {
     CHECK(CoordFrame_getAxisSign(COORD_FRAME_Y_UP_LEFT, -1) == 1.0f);
 }
 
+// Checks the accepted frame range and stable names, including unknown values.
+// Checks frame validity predicates and stable frame-name projections.
+// Checks frame validity classification and stable human-readable names.
 static void test_validity_and_names(void) {
     for (uint32_t f = 0; f < 12; f++)
         CHECK(CoordFrame_isValid(f));
@@ -85,6 +97,9 @@ static void test_validity_and_names(void) {
     CHECK(strcmp(CoordFrame_name((CoordFrame) -1), "UNKNOWN") == 0);
 }
 
+// Runs all coordinate-frame lookup, boundary, validity, and naming checks.
+// Runs coordinate-frame basis, default, invalid-index, validity, and naming checks.
+// Runs coordinate basis, fallback, validity, and name assertions.
 int main(void) {
     test_basis();
     test_default_frame();

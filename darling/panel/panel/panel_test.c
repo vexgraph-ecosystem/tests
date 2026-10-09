@@ -18,6 +18,7 @@ static int g_fail = 0;
     } while (0)
 
 #include "darling/test_application.h"
+// Verify Panel construction, placement, painting, tree queries, and cleanup.
 int main(void) {
     ElementDesc d = {0};
     d.width = 200; d.height = 80;

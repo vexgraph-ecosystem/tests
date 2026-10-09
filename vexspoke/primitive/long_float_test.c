@@ -18,6 +18,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Exercises LongFloat's composite layout, constructors, CAS, arrays, and null safety.
 int main(void) {
     CHECK(LongFloat_init());
 

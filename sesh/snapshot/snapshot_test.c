@@ -21,6 +21,7 @@ typedef struct Fake {
     int result;
 } Fake;
 
+/* Fake provider stores completed snapshots and records cancellation requests. */
 static int put(void *context, uint64_t key, const uint8_t *bytes, size_t length, int cancel) {
     Fake *fake = context;
     if (cancel) {
@@ -37,6 +38,7 @@ static int put(void *context, uint64_t key, const uint8_t *bytes, size_t length,
     return (*fake).result;
 }
 
+/* Copies a stored snapshot into the caller's buffer when its key and capacity are valid. */
 static int get(void *context, uint64_t key, uint8_t *dest, size_t capacity, size_t *outLength) {
     Fake *fake = context;
     if (key != (*fake).key || (*fake).length > capacity)
@@ -46,6 +48,7 @@ static int get(void *context, uint64_t key, uint8_t *dest, size_t capacity, size
     return HAVEN_SNAPSHOT_DONE;
 }
 
+/* Covers public configuration, fixture round-trip, retry timing, cancellation, boundaries, and projections. */
 static void normal(const char *fixture) {
     SeshSnapshot job = SeshSnapshot();
     SeshSnapshot direct = SeshSnapshot_0();
@@ -134,6 +137,7 @@ static void normal(const char *fixture) {
     puts("PASS: fixture round trip, pending/retry/cancel, boundaries and public projections");
 }
 
+/* Checks rejected admissions preserve state, report failures, and permit later valid recovery. */
 static void invalid(void) {
     SeshSnapshot job = SeshSnapshot();
     uint8_t bytes[2] = {1, 2};
@@ -188,6 +192,7 @@ static void invalid(void) {
     puts("PASS: 27 loud cold rejections; preserved admission and recovery");
 }
 
+/* Selects the normal snapshot contract suite or its cold-rejection suite. */
 int main(int argc, char **argv) {
     assert(argc == 2);
     if (strcmp(argv[1], "invalid") == 0)

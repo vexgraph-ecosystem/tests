@@ -31,6 +31,9 @@ static int g_failures = 0;
 
 #define CLOSE_F(a, b, eps) (fabs((double) (a) - (double) (b)) <= (double) (eps))
 
+// Validates float trigonometry, inverse-trig domains, and libm parity.
+// Checks strict trigonometric functions against reference values.
+// Checks strict float trigonometry, inverse-domain behavior, and libm agreement.
 static void test_trig(void) {
     CHECK(StrictMath_sin(0.0f) == 0.0f);
     CHECK(CLOSE_F(StrictMath_sin(STRICT_MATH_HALF_PI), 1.0f, 1e-6f));
@@ -57,6 +60,9 @@ static void test_trig(void) {
     }
 }
 
+// Checks square-root, inverse-root, power, exponential, and logarithm cases.
+// Verifies strict root and power operations over representative inputs.
+// Verifies root, reciprocal-root, power, exponential, and logarithm semantics.
 static void test_roots_and_powers(void) {
     CHECK(StrictMath_sqrt(0.0f) == 0.0f);
     CHECK(StrictMath_sqrt(4.0f) == 2.0f);
@@ -75,6 +81,9 @@ static void test_roots_and_powers(void) {
     CHECK(StrictMath_pow(0.0f, 0.0f) == 1.0f);
 }
 
+// Exercises float absolute, rounding, clamp, and interpolation semantics.
+// Checks strict rounding operations at integral and fractional boundaries.
+// Tests absolute value, IEEE rounding, clamp, and interpolation endpoints.
 static void test_rounding(void) {
     CHECK(StrictMath_abs(-3.5f) == 3.5f);
     CHECK(StrictMath_abs(3.5f) == 3.5f);
@@ -99,12 +108,18 @@ static void test_rounding(void) {
     CHECK(CLOSE_F(StrictMath_lerp(0.0f, 10.0f, 0.25f), 2.5f, 1e-6f));
 }
 
+// Checks float angle conversion round trips and canonical constants.
+// Exercises strict angle conversions and normalization behavior.
+// Checks radians/degrees conversion round trips and named constants.
 static void test_angles(void) {
     CHECK(CLOSE_F(StrictMath_toDegrees(StrictMath_toRadians(90.0f)), 90.0f, 1e-3f));
     CHECK(CLOSE_F(StrictMath_toRadians(180.0f), STRICT_MATH_PI, 1e-5f));
     CHECK(CLOSE_F(StrictMath_toRadians(90.0f), STRICT_MATH_HALF_PI, 1e-5f));
 }
 
+// Verifies the corresponding double-precision operation surface.
+// Confirms double-precision counterparts agree with their expected values.
+// Verifies double-precision StrictMath counterparts across their public operations.
 static void test_double_twins(void) {
     CHECK(StrictMath_sinD(0.0) == 0.0);
     CHECK(fabs(StrictMath_cosD(0.0) - 1.0) < 1e-15);
@@ -128,6 +143,9 @@ static void test_double_twins(void) {
     CHECK(StrictMath_lerpD(0.0, 4.0, 0.5) == 2.0);
 }
 
+// Runs the strict float and double math contract checks.
+// Runs strict-math trigonometric, root, rounding, angle, and double-precision checks.
+// Runs the strict float and double math contract cases.
 int main(void) {
     test_trig();
     test_roots_and_powers();

@@ -10,6 +10,7 @@
 
 #define CHECK(c) do { if (!(c)) { fprintf(stderr, "FAIL %s:%d: %s\n", __FILE__, __LINE__, #c); exit(1); } } while (0)
 
+// Writes a failing capture to the optional battle-artifact directory.
 static void captureEvidence(const Image *image) {
     const char *dir = getenv("UI_BATTLE_ARTIFACT_DIR");
     if (!dir || !image || !Image_pixels(image)) return;
@@ -22,6 +23,7 @@ static void captureEvidence(const Image *image) {
         fprintf(stderr, "capture: %s\n", path);
 }
 
+// Asserts one captured RGBA pixel within the test's channel tolerance.
 static inline void pixel(const Image *image, int x, int y, Color expected) {
     CHECK(image && Image_pixels(image));
     CHECK(x >= 0 && y >= 0 && (uint32_t) x < Image_width(image) && (uint32_t) y < Image_height(image));
@@ -39,10 +41,12 @@ static inline void pixel(const Image *image, int x, int y, Color expected) {
 
 #define DEPTH 96
 #define EXTENT (DEPTH * 4 + 16)
+// Alternates the two colors used to identify adjacent nested panel rings.
 static Color layerColor(int i) { return i % 2 ? COLOR_RGBA(40, 180, 80, 255) : COLOR_RGBA(180, 40, 80, 255); }
 #define DARLING_TEST_HAS_FRAMES
 #define DARLING_TEST_WITH_ARGS
 #include "darling/test_application.h"
+// Exercises a 96-panel nested tree, mutation, resize, synthetic drag, and cleanup.
 int main(int argc, char **argv) {
     bool interactive = argc == 2 && strcmp(argv[1], "--interactive") == 0;
     if (argc > 1 && !interactive) {

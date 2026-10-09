@@ -35,6 +35,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Checks weighted-pool admission, draws, overflow rejection, copying, and bounds.
 int main(void) {
     ProbableObjects *po = ProbableObjects_1(4);
     CHECK(po != nullptr);

@@ -11,6 +11,7 @@ static Color pixel(const Image *image, unsigned x, unsigned y) {
     return COLOR_RGBA(p[0], p[1], p[2], p[3]);
 }
 
+// Checks deterministic gallery fixture creation and rendered sample pixels.
 int main(void) {
     assert(!FilterGallery_photoFromPath("/nonexistent-filter-gallery-photo.png", 1, 1));
     assert(!FilterGallery_photoFromPath(nullptr, 0, 1));

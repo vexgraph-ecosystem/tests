@@ -17,6 +17,7 @@ static int g_failures = 0;
     else { printf("[search_calc_test] FAIL %s\n", name); g_failures++; } \
 } while (0)
 
+// Checks calculator parsing, search modes/ranking, expression detection, and draft sort helpers.
 int main(void) {
     printf("=== Running String Calc & Search Subsystem Test Suite ===\n");
 

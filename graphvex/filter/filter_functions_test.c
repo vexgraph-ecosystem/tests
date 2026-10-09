@@ -11,6 +11,7 @@
 #include <math.h>
 #include <stdio.h>
 
+// Asserts unsupported tokens return the documented filter-bounds status.
 static void unsupported(FilterToken token) {
     CompositorBounds before = {42, 43, 7, 9};
     CompositorBounds out = before;
@@ -22,6 +23,7 @@ static void unsupported(FilterToken token) {
     assert(surface == nullptr);
 }
 
+// Tests filter constructors, encoded parameters, and unsupported operations.
 int main(void) {
     assert(Filter_identity() == 0);
     assert(Filter_gain(1) == UINT64_C(0x000100003f800000));

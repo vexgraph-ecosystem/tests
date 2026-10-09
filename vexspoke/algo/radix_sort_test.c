@@ -29,6 +29,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+/** Returns whether the supplied u32 prefix is in nondecreasing order. */
 static bool sorted_u32(const uint32_t *a, size_t n) {
     for (size_t i = 1; i < n; i++)
         if (a[i - 1] > a[i])
@@ -36,6 +37,7 @@ static bool sorted_u32(const uint32_t *a, size_t n) {
     return true;
 }
 
+/** Returns whether the supplied u64 prefix is in nondecreasing order. */
 static bool sorted_u64(const uint64_t *a, size_t n) {
     for (size_t i = 1; i < n; i++)
         if (a[i - 1] > a[i])
@@ -43,16 +45,19 @@ static bool sorted_u64(const uint64_t *a, size_t n) {
     return true;
 }
 
+/** qsort comparator used as an independent oracle for u32 sorting. */
 static int cmp_u32(const void *a, const void *b) {
     uint32_t x = *(const uint32_t*) a, y = *(const uint32_t*) b;
     return (x > y) - (x < y);
 }
 
+/** qsort comparator used as an independent oracle for u64 sorting. */
 static int cmp_u64(const void *a, const void *b) {
     uint64_t x = *(const uint64_t*) a, y = *(const uint64_t*) b;
     return (x > y) - (x < y);
 }
 
+/** Checks empty, singleton, and already ordered input cases. */
 static void test_trivial(void) {
     RadixSort_u32(nullptr, 16);                          // safe
     RadixSort_u64(nullptr, 16);
@@ -80,6 +85,7 @@ static void test_trivial(void) {
     RadixSort_pairsU64(nullptr, vals, 2);
 }
 
+/** Exercises unsigned value extremes and duplicate values for radix sorting. */
 static void test_value_boundaries(void) {
     uint32_t a[] = { UINT32_MAX, 0, 1, 0x01000000u, 0x00FFFFFFu, 0, UINT32_MAX };
     size_t n = sizeof(a) / sizeof(a[0]);
@@ -97,6 +103,7 @@ static void test_value_boundaries(void) {
     CHECK(b[m - 1] == UINT64_MAX);
 }
 
+/** Compares deterministic randomized u32 results against the standard-library oracle. */
 static void test_oracle_random(void) {
     enum { N = 4096 };
     uint32_t a[N], ref[N];
@@ -112,6 +119,7 @@ static void test_oracle_random(void) {
     CHECK(memcmp(a, ref, sizeof(a)) == 0);
 }
 
+/** Compares deterministic randomized u64 results against the standard-library oracle. */
 static void test_oracle_random_u64(void) {
     enum { N = 2048 };
     uint64_t a[N], ref[N];
@@ -127,6 +135,7 @@ static void test_oracle_random_u64(void) {
     CHECK(memcmp(a, ref, sizeof(a)) == 0);
 }
 
+/** Verifies key/value pairs remain associated and ordered by key after sorting. */
 static void test_pairs(void) {
     // Keys with duplicates; the values are distinct tags. Stability means the
     // tags of equal keys keep their original relative order.
@@ -148,6 +157,7 @@ static void test_pairs(void) {
     }
 }
 
+/** Runs the RadixSort owner scenarios and reports aggregate assertion status. */
 int main(void) {
     CHECK(Memory_init(0));
 

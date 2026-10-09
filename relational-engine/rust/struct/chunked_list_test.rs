@@ -8,6 +8,7 @@ struct Row(u64);
 struct Tracked(Rc<Cell<usize>>);
 impl Drop for Tracked { fn drop(&mut self) { self.0.set(self.0.get() + 1); } }
 
+/// Exercises stable rows across growth, allocation rollback, chunk boundaries, alignment, and destruction.
 #[test]
 fn stable_rows_growth_and_failure() {
     assert!(ChunkedList!(u64).unwrap().is_empty());

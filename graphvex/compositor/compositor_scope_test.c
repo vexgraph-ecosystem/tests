@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// Creates a test surface initialized to the supplied pixel color.
 static CompositorSurface *makeSurface(CompositorBounds bounds, const float rgba[4]) {
     CompositorSurface *surface = nullptr;
     assert(CompositorSurface_create(bounds, &surface) == COMPOSITOR_OK);
@@ -23,6 +24,7 @@ static CompositorSurface *makeSurface(CompositorBounds bounds, const float rgba[
     return surface;
 }
 
+// Returns the pixel pointer when coordinates are within the surface bounds.
 static const float *at(const CompositorSurface *surface, int32_t x, int32_t y) {
     CompositorBounds b = CompositorSurface_bounds(surface);
     assert(x >= b.x && y >= b.y);
@@ -31,10 +33,12 @@ static const float *at(const CompositorSurface *surface, int32_t x, int32_t y) {
         4 * ((size_t) ((int64_t) y - b.y) * b.width + (size_t) ((int64_t) x - b.x));
 }
 
+// Asserts that a float result is within the test's numeric tolerance.
 static void near(float actual, double expected) {
     assert(isfinite(actual) && fabs(actual - expected) < 2e-6);
 }
 
+// Verifies crop bounds, pixels, and rejected-output preservation.
 static void cropContract(void) {
     const float translucent[4] = {.25f, .125f, 0, .5f};
     CompositorSurface *source = makeSurface((CompositorBounds) {-3, 7, 2, 2}, translucent);
@@ -69,6 +73,7 @@ static void cropContract(void) {
     CompositorSurface_destroy(source);
 }
 
+// Checks backdrop filtering replaces the prior scene region exactly once.
 static void backdropReplacement(void) {
     const float black[4] = {0, 0, 0, 1};
     CompositorSurface *prior = makeSurface((CompositorBounds) {-4, -4, 9, 9}, black);
@@ -127,6 +132,7 @@ static void backdropReplacement(void) {
     CompositorSurface_destroy(prior);
 }
 
+// Checks foreground clipping and element-filter spill beyond placement.
 static void foregroundClipAndElementSpill(void) {
     const float black[4] = {0, 0, 0, 1}, green[4] = {0, 1, 0, 1}, red[4] = {1, 0, 0, 1};
     CompositorSurface *prior = makeSurface((CompositorBounds) {0, 0, 9, 9}, black);
@@ -175,6 +181,7 @@ static void foregroundClipAndElementSpill(void) {
     CompositorSurface_destroy(prior);
 }
 
+// Ensures foreground-only composition does not capture prior scene pixels.
 static void noBackdropDoesNotBakePrior(void) {
     const float red[4] = {1, 0, 0, 1};
     CompositorSurface *prior = makeSurface((CompositorBounds) {0, 0, 7, 7}, red);
@@ -191,6 +198,7 @@ static void noBackdropDoesNotBakePrior(void) {
     CompositorSurface_destroy(prior);
 }
 
+// Verifies invalid scope inputs reject without changing prior content.
 static void rejections(void) {
     const float gray[4] = {.25f, .25f, .25f, 1};
     CompositorSurface *prior = makeSurface((CompositorBounds) {0, 0, 7, 7}, gray);
@@ -257,6 +265,7 @@ static void rejections(void) {
     CompositorSurface_destroy(prior);
 }
 
+// Runs crop, backdrop, foreground, spill, and rejection scope contracts.
 int main(void) {
     cropContract();
     backdropReplacement();

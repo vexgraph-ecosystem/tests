@@ -22,6 +22,7 @@ static int g_fail = 0;
         }                                                                  \
     } while (0)
 
+// Verifies a borrowed surface can be imported and rendered by Vulkan.
 int main(void) {
     void *surf = IosHost_create(32, 32);
     CHECK(surf != nullptr);

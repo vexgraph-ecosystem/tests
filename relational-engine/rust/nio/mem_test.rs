@@ -1,6 +1,7 @@
 // Shared owner proof for the Rust learning backend; not Vexspoke allocator parity.
 use relational_engine_scratchpad::{bytes, Bytes, Memory, MemoryError};
 
+/// Covers handle lifetime, growth, release, clear, binary bytes, and independent memory owners.
 #[test]
 fn memory_lifetime_growth_and_rejection() {
     let mut memory: Memory = Memory!();
@@ -30,6 +31,7 @@ fn memory_lifetime_growth_and_rejection() {
     assert_eq!(independent.len(), 1);
 }
 
+/// Checks primitive kinds, atomic values, wrong-kind boundaries, and concurrent byte access.
 #[test]
 fn primitive_kind_boundaries_and_atomic_cells() {
     const SNAPSHOT_BUDGET: usize = 4096;

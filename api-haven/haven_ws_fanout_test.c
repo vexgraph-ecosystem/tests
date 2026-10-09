@@ -35,6 +35,7 @@ typedef struct MockTransport {
     uint32_t framesToDeliver;
 } MockTransport;
 
+/* Records each assigned poll budget and returns the mock transport's queued frame count. */
 static uint32_t mockPoll(void *handle, uint64_t budgetMs) {
     if (!handle)
         return 0;
@@ -44,11 +45,13 @@ static uint32_t mockPoll(void *handle, uint64_t budgetMs) {
     return (*mock).framesToDeliver;
 }
 
+/* Supplies successful connect behavior for the fanout source table. */
 static bool mockConnect(void *handle) {
     (void)handle;
     return true;
 }
 
+/* Accepts outbound bytes without network activity for the mock source table. */
 static bool mockSend(void *handle, const uint8_t *Bytes, uint32_t len) {
     (void)handle;
     (void)Bytes;
@@ -56,6 +59,7 @@ static bool mockSend(void *handle, const uint8_t *Bytes, uint32_t len) {
     return true;
 }
 
+/* Supplies the no-op close callback for mock transports. */
 static void mockClose(void *handle) {
     (void)handle;
 }
@@ -67,6 +71,7 @@ static const HavenWsSource sMockSource = {
     mockClose,
 };
 
+/* Exercises fanout attachment, fair bounded polling, slot reuse, saturation, and null safety. */
 int main(int argc, const char **argv) {
     (void)argc;
     (void)argv;

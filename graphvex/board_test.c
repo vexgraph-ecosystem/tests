@@ -19,9 +19,12 @@ static int g_fail = 0;
 // recording revalidate steps, to prove order + count
 static int g_steps[8];
 static int g_stepCount = 0;
+// Records the first callback's order in the board test trace.
 static void step1(Board *board, void *ud) { (void)board; (void)ud; g_steps[g_stepCount++] = 1; }
+// Records the second callback's order in the board test trace.
 static void step2(Board *board, void *ud) { (void)board; (void)ud; g_steps[g_stepCount++] = 2; }
 
+// Verifies board composition, mutation, and lifecycle behavior.
 int main(void) {
     Board *b = Board_2(8, 8);
     CHECK(b != nullptr);

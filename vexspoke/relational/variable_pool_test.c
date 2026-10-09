@@ -35,6 +35,7 @@ static int g_failures = 0;
     else { printf("[variable_pool_test] FAIL %s\n", name); g_failures++; } \
 } while (0)
 
+// Exercises static StringPool lifecycle, validation, deduplication, growth, and relinking.
 int main(void) {
     printf("=== Running Variable Pool Test Suite ===\n");
 

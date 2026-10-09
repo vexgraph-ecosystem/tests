@@ -49,6 +49,7 @@ typedef struct Row2 {
     uint32_t v;
 } Row2;
 
+/** Verifies an empty cursor snapshots zero rows and handles null inputs safely. */
 static void testEmptyCursor(void) {
     printf("[1] empty cursor + null-safety\n");
 
@@ -76,6 +77,7 @@ static void testEmptyCursor(void) {
     DatabaseResult_free(r);
 }
 
+/** Verifies cursor iteration, exhaustion, rewind, and borrowed row identity. */
 static void testWalk(void) {
     printf("[2] walk an entity's rows dest-last, rewind, no copies\n");
 
@@ -131,6 +133,7 @@ static void testWalk(void) {
     Struct_free(player);
 }
 
+/** Verifies cursor string projections and bounded-buffer behavior. */
 static void testStrings(void) {
     printf("[3] string projections\n");
 

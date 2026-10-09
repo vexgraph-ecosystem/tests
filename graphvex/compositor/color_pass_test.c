@@ -29,6 +29,7 @@ typedef struct TestImage {
     VkFramebuffer framebuffer;
 } TestImage;
 
+// Finds a compatible Vulkan memory type for the requested properties.
 static uint32_t memoryType(uint32_t bits, VkMemoryPropertyFlags flags) {
     VkPhysicalDeviceMemoryProperties properties;
     vkGetPhysicalDeviceMemoryProperties(physical, &properties);
@@ -40,6 +41,7 @@ static uint32_t memoryType(uint32_t bits, VkMemoryPropertyFlags flags) {
     assert(false && "required test memory type unavailable");
     return 0;
 }
+// Creates and binds a test buffer with host-visible memory.
 static void buffer(VkBufferUsageFlags usage, VkBuffer *out, VkDeviceMemory *memory) {
     VkBufferCreateInfo info = {.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
         .size = BYTES, .usage = usage};
@@ -53,6 +55,7 @@ static void buffer(VkBufferUsageFlags usage, VkBuffer *out, VkDeviceMemory *memo
     VK(vkAllocateMemory(device, &allocation, nullptr, memory));
     VK(vkBindBufferMemory(device, *out, *memory, 0));
 }
+// Creates a color image and framebuffer for one filter-pass fixture.
 static TestImage image(VkRenderPass pass) {
     TestImage result = {0};
     VkImageCreateInfo info = {.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
@@ -80,12 +83,14 @@ static TestImage image(VkRenderPass pass) {
     VK(vkCreateFramebuffer(device, &fb, nullptr, &result.framebuffer));
     return result;
 }
+// Releases the image fixture's framebuffer, view, image, and memory.
 static void destroyImage(TestImage *self) {
     vkDestroyFramebuffer(device, (*self).framebuffer, nullptr);
     vkDestroyImageView(device, (*self).view, nullptr);
     vkDestroyImage(device, (*self).image, nullptr);
     vkFreeMemory(device, (*self).memory, nullptr);
 }
+// Records an image layout transition and its access dependency.
 static void transition(VkCommandBuffer cmd, VkImage target, VkImageLayout old,
                        VkImageLayout next, VkAccessFlags fromAccess, VkAccessFlags toAccess,
                        VkPipelineStageFlags fromStage, VkPipelineStageFlags toStage) {
@@ -96,6 +101,7 @@ static void transition(VkCommandBuffer cmd, VkImage target, VkImageLayout old,
         .subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1}};
     vkCmdPipelineBarrier(cmd, fromStage, toStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 }
+// Loads a staged SPIR-V module into an owned word buffer.
 static uint32_t *words(const char *name, size_t *size) {
     const char *home = getenv("B_HOME");
     char path[2048];
@@ -115,6 +121,7 @@ static uint32_t *words(const char *name, size_t *size) {
     fclose(file); *size = (size_t) length;
     return data;
 }
+// Computes the independent CPU reference for one color-filter token.
 static void oracle(const float *p, FilterToken token, float *out) {
     double alpha = p[3];
     double rgb[3] = {0};
@@ -139,6 +146,7 @@ static void oracle(const float *p, FilterToken token, float *out) {
     }
     out[3] = p[3];
 }
+// Records one ColorPass operation into the supplied Vulkan command buffer.
 static void draw(ColorPass *pass, VkCommandBuffer cmd, VkRenderPass render,
                  TestImage *target, VkDescriptorSet descriptor, FilterToken token) {
     VkRenderPassBeginInfo begin = {.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
@@ -149,6 +157,7 @@ static void draw(ColorPass *pass, VkCommandBuffer cmd, VkRenderPass render,
     vkCmdEndRenderPass(cmd);
 }
 
+// Compares Vulkan color-pass pixels with CPU references and rejection cases.
 int main(void) {
     assert(ColorPass_zero() == nullptr);
     assert(ColorPass_0() == nullptr && ColorPass() == nullptr);

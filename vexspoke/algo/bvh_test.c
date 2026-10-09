@@ -30,12 +30,14 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+/** Creates a cube AABB centered at the supplied coordinates with half-extent h. */
 static BvhAabb box_at(float x, float y, float z, float h) {
     float mn[3] = { x - h, y - h, z - h };
     float mx[3] = { x + h, y + h, z + h };
     return BvhAabb_from_points(mn, mx);
 }
 
+/** Creates a BVH primitive with the requested identity and centered cube bounds. */
 static BvhPrimitive prim(uint32_t id, float x, float y, float z, float h) {
     BvhPrimitive p;
     p.id = id;
@@ -46,6 +48,7 @@ static BvhPrimitive prim(uint32_t id, float x, float y, float z, float h) {
     return p;
 }
 
+/** Checks AABB construction, containment, and overlap boundary behavior. */
 static void test_aabb(void) {
     BvhAabb e = BvhAabb_empty();
     CHECK(e.min_point[0] == FLT_MAX && e.max_point[0] == -FLT_MAX);
@@ -74,6 +77,7 @@ static void test_aabb(void) {
     BvhAabb_merge(&other, nullptr);
 }
 
+/** Verifies ray/AABB intersection results for hit and miss cases. */
 static void test_ray_aabb(void) {
     BvhAabb b = box_at(0, 0, 0, 1);            // [-1,1]^3
     BvhRay ray = { { -5, 0, 0 }, { 1, 0, 0 }, 0.0f, 100.0f };
@@ -100,6 +104,7 @@ static void test_ray_aabb(void) {
     CHECK(BvhAabb_intersect_ray(&ray, &b, nullptr));
 }
 
+/** Exercises BVH creation, build, query, and destruction across ordinary inputs. */
 static void test_tree_lifecycle(void) {
     CHECK(!BvhTree_init(4, nullptr));
     BvhTree t;
@@ -116,6 +121,7 @@ static void test_tree_lifecycle(void) {
     BvhTree_destroy(&t);
 }
 
+/** Checks ray traversal returns the expected nearest primitive in the built tree. */
 static void test_ray_tree(void) {
     enum { N = 12 };
     BvhPrimitive prims[N];
@@ -154,6 +160,7 @@ static void test_ray_tree(void) {
     BvhTree_destroy(&tree);
 }
 
+/** Covers empty, repeated, and degenerate primitive bounds without invalid traversal. */
 static void test_degenerate(void) {
     // Five identical centroids: the split collapses to a leaf, still hittable.
     enum { N = 5 };
@@ -184,6 +191,7 @@ static void test_degenerate(void) {
     BvhTree_destroy(&tree);
 }
 
+/** Runs the BVH owner scenarios and reports aggregate assertion status. */
 int main(void) {
     test_aabb();
     test_ray_aabb();

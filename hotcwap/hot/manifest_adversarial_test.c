@@ -39,6 +39,7 @@ static int s_failures = 0;
         }                                                                       \
     } while (0)
 
+/** Creates missing parent directories for adversarial manifest fixtures. */
 static bool mkdir_p(const char *path) {
     if (mkdir(path, 0755) == 0 || errno == EEXIST)
         return true;
@@ -61,6 +62,7 @@ static bool mkdir_p(const char *path) {
     return true;
 }
 
+/** Removes the temporary adversarial manifest fixture tree. */
 static bool rmtree(const char *path) {
     DIR *dir = opendir(path);
     if (!dir)
@@ -92,6 +94,7 @@ static bool rmtree(const char *path) {
     return true;
 }
 
+/** Writes a NUL-terminated fixture string to the specified path. */
 static bool write_file(const char *path, const char *data) {
     FILE *f = fopen(path, "wb");
     if (!f)

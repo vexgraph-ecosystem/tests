@@ -45,6 +45,7 @@ static int g_checks = 0;
         }                                                                 \
     } while (0)
 
+// Test callable that doubles the uintptr_t-encoded argument.
 static void *doubleIt(void *arg) {
     return (void*) (uintptr_t) (((uintptr_t) arg) * 2u);
 }
@@ -53,14 +54,17 @@ typedef struct Holder {
     uintptr_t value;
 } Holder;
 
+// Reads the test Holder's value through the reflection getter signature.
 static void *holderGet(void *receiver) {
     return (void*) (uintptr_t) ((*(Holder*) receiver).value);
 }
 
+// Writes the test Holder's value through the reflection setter signature.
 static void holderSet(void *receiver, void *value) {
     (*(Holder*) receiver).value = (uintptr_t) value;
 }
 
+// Pins the byte sizes of each reflection record, including embedded fields.
 static void testLayouts(void) {
     printf("[1] per-kind layouts stay fixed\n");
     CHECK(sizeof(Variable) == 40u);
@@ -70,6 +74,7 @@ static void testLayouts(void) {
     CHECK(sizeof(Class) == 56u);   // name + construct + layout + methods + count + pad
 }
 
+// Verifies each reflective class carries and checks its own type identity.
 static void testKinds(void) {
     printf("[2] kind == the header typeId\n");
 
@@ -94,6 +99,7 @@ static void testKinds(void) {
     Variable_free(v);
 }
 
+// Checks folded dotted names and rejects malformed, overlong, and spaced names.
 static void testNames(void) {
     printf("[3] names use the atom grammar (fold + dotted)\n");
 
@@ -115,6 +121,7 @@ static void testNames(void) {
     CHECK(Variable("abcdefghijklmnopqrstuvwx") == nullptr); // 24
 }
 
+// Checks Field's first-member Variable layout and delegated read/write accessors.
 static void testFieldEmbedsVariable(void) {
     printf("[4] field embeds variable: name/read/target delegate, write is the setter\n");
 
@@ -145,6 +152,7 @@ static void testFieldEmbedsVariable(void) {
     Field_free(f);
 }
 
+// Checks Field physical metadata, derived stride, explicit size, flags, and null defaults.
 static void testFieldLayout(void) {
     printf("[8] field physical layout: typeId derives size, offset/flags round-trip\n");
 
@@ -190,6 +198,7 @@ static void testFieldLayout(void) {
     Field_free(f);
 }
 
+// Checks Struct field admission, indexed access, growth, and row address stability.
 static void testStruct(void) {
     printf("[5] struct: a growable list of field rows\n");
 
@@ -228,6 +237,7 @@ static void testStruct(void) {
     Struct_free(s);
 }
 
+// Checks Class layout/constructor dispatch, method registration, and callable access.
 static void testClass(void) {
     printf("[6] class: struct layout + methods + construct\n");
 
@@ -280,6 +290,7 @@ static void testClass(void) {
     Struct_free(layout);
 }
 
+// Checks bounded value/structure projections, truncation, hierarchy null safety, and freeing.
 static void testStringsAndNull(void) {
     printf("[7] string projections + null-safety\n");
 
@@ -318,6 +329,7 @@ static void testStringsAndNull(void) {
     Method_free(m);
 }
 
+// Runs layout, identity, name, field, struct, class, and projection contract cases.
 int main(void) {
     printf("=== Reflection (hierarchy) Test Suite ===\n\n");
 

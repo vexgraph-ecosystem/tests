@@ -45,6 +45,7 @@ static int s_failures = 0;
         }                                                                       \
     } while (0)
 
+/** Copies a built module fixture to its staged loader path. */
 static bool copy_file(const char *src, const char *dst) {
     FILE *in = fopen(src, "rb");
     if (!in)
@@ -69,6 +70,7 @@ static bool copy_file(const char *src, const char *dst) {
     return ok;
 }
 
+/** Creates missing parent directories for the shutdown fixture. */
 static bool mkdir_p(const char *path) {
     if (mkdir(path, 0755) == 0 || errno == EEXIST)
         return true;
@@ -91,6 +93,7 @@ static bool mkdir_p(const char *path) {
     return true;
 }
 
+/** Removes the temporary shutdown fixture directory tree. */
 static bool rmtree(const char *path) {
     DIR *dir = opendir(path);
     if (!dir)
@@ -122,6 +125,7 @@ static bool rmtree(const char *path) {
     return true;
 }
 
+/** Stages the module used to observe loader and shutdown ordering. */
 static bool stage_module(const char *loadBase) {
     char dir[512];
     int dl = snprintf(dir, sizeof(dir), "%s/payload", loadBase);

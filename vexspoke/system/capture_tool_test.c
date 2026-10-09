@@ -34,6 +34,9 @@ static int sFailures = 0;
         }                                                              \
     } while (0)
 
+// Verifies capture-tool registry rows, process/driver classification, and liveness probes.
+// Checks CaptureTool discovery, metadata, and safe handling of missing inputs.
+// Verifies capture-tool registry metadata and process/driver liveness probe behavior.
 int main(int argc, const char **argv) {
     CaptureTool *tools = CaptureTool_shared();
     CHECK(tools != NULL);

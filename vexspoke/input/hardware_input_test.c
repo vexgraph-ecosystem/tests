@@ -9,6 +9,7 @@
 #include "input/gamepad.h"
 #include "input/hardware_event.h"
 
+// Checks note conversion and piano note-on/note-off state transitions.
 static void test_piano_keys(void) {
     // A4 (note 69) is 440.0 Hz
     float a4_freq = PianoKey_frequency(PIANO_A4_NOTE);
@@ -50,6 +51,7 @@ static void test_piano_keys(void) {
     assert(!PianoState_isNoteOn(&state, 60));
 }
 
+// Checks turntable event processing and crossfader curve endpoints.
 static void test_turntable(void) {
     TurntableState tt;
     TurntableState_init(&tt, 0);
@@ -78,6 +80,7 @@ static void test_turntable(void) {
     assert(fabsf(right - 0.0f) < 0.001f);
 }
 
+// Checks gesture magnification and rotation accumulation.
 static void test_gesture(void) {
     GestureState state;
     GestureState_init(&state);
@@ -96,6 +99,7 @@ static void test_gesture(void) {
     GestureState_tick(&state, 0.016f);
 }
 
+// Checks button state and circular deadzone filtering.
 static void test_gamepad(void) {
     GamepadState pad;
     GamepadState_init(&pad);
@@ -120,6 +124,7 @@ static void test_gamepad(void) {
     assert(filtered.x > 0.0f);
 }
 
+// Checks tagged hardware-event constructors preserve device and payload data.
 static void test_hardware_event(void) {
     PianoKeyEvent pke;
     memset(&pke, 0, sizeof(pke));
@@ -139,6 +144,7 @@ static void test_hardware_event(void) {
     assert(he2.deviceId == 2);
 }
 
+// Runs headless owner checks for piano, turntable, gesture, gamepad, and events.
 int main(void) {
     printf("[Hardware Input Test] Starting test suite...\n");
     test_piano_keys();

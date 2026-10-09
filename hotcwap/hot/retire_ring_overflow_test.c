@@ -45,6 +45,7 @@ static int s_failures = 0;
         }                                                                       \
     } while (0)
 
+/** Copies a compiled module fixture into the loader's staged payload. */
 static bool copy_file(const char *src, const char *dst) {
     FILE *in = fopen(src, "rb");
     if (!in)
@@ -69,6 +70,7 @@ static bool copy_file(const char *src, const char *dst) {
     return ok;
 }
 
+/** Creates missing directory components for the overflow fixture. */
 static bool mkdir_p(const char *path) {
     if (mkdir(path, 0755) == 0 || errno == EEXIST)
         return true;
@@ -91,6 +93,7 @@ static bool mkdir_p(const char *path) {
     return true;
 }
 
+/** Removes the temporary loader fixture tree. */
 static bool rmtree(const char *path) {
     DIR *dir = opendir(path);
     if (!dir)
@@ -122,6 +125,7 @@ static bool rmtree(const char *path) {
     return true;
 }
 
+/** Places the test module under the manifest-selected payload name. */
 static bool stage_module(const char *loadBase) {
     char dir[512];
     int dl = snprintf(dir, sizeof(dir), "%s/payload", loadBase);
@@ -136,6 +140,7 @@ static bool stage_module(const char *loadBase) {
     return copy_file(HOT_BEHAVIOR_MODULE, dst);
 }
 
+/** Waits within the test deadline for the requested module generation. */
 static bool wait_for_generation(HotModule *hot, uint32_t target) {
     for (int i = 0; i < 100; i++) {
         struct timespec d = { 0, 20 * 1000 * 1000 };

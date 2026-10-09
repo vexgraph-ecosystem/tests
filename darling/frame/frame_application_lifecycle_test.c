@@ -14,6 +14,7 @@ typedef struct State {
     uint32_t polls;
 } State;
 
+// Marks that the worker start callback returned without closing the app.
 static void startup(Application *app, void *userdata) {
     State *state = userdata;
     (void)app;
@@ -22,6 +23,7 @@ static void startup(Application *app, void *userdata) {
     // Returning from startup MUST NOT close either window or stop the app.
 }
 
+// Drives owner-thread assertions for closed, hidden, and remaining windows.
 static void service(Application *app, void *userdata) {
     State *state = userdata;
     CHECK(pthread_equal(state->owner, pthread_self()));
@@ -45,18 +47,21 @@ static void service(Application *app, void *userdata) {
     }
 }
 
+// Requests idempotent application closure from the start worker.
 static void closeFromWorker(Application *app, void *userdata) {
     State *state = userdata;
     CHECK(!pthread_equal(state->owner, pthread_self()));
     Application_close(app); Application_close(app); // idempotent, owner closes natives
 }
 
+// Closes the app on its owner thread and marks the callback stage complete.
 static void closeOnOwner(Application *app, void *userdata) {
     State *state = userdata;
     CHECK(pthread_equal(state->owner, pthread_self()));
     Application_close(app);
     state->stage++;
 }
+// Tests that an admitted owner callback completes before later calls are refused.
 static void invokeThenClose(Application *app, void *userdata) {
     State *state = userdata;
     CHECK(Application_invoke(app, closeOnOwner, state));
@@ -64,6 +69,7 @@ static void invokeThenClose(Application *app, void *userdata) {
     CHECK(!Application_invoke(app, closeOnOwner, state)); // no post-close admissions
 }
 
+// Exercises worker startup, window-count lifetime, close-all, and owner invocation.
 int main(void) {
     Application *app = Application("multiwindow lifetime test");
     State state = { .owner = pthread_self() };

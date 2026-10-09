@@ -26,6 +26,7 @@ static int g_failures = 0;
         }                                                                  \
     } while (0)
 
+// Returns whether any byte in the supplied span is nonzero.
 static bool anyNonZero(const uint8_t *buf, size_t len) {
     for (size_t i = 0; i < len; i++)
         if (buf[i] != 0)
@@ -33,6 +34,7 @@ static bool anyNonZero(const uint8_t *buf, size_t len) {
     return false;
 }
 
+// Checks SecureRandom output properties, accepted sizes, null rejection, and draw counts.
 int main(void) {
     SecureRandom *sr = SecureRandom_0();
     CHECK(sr != nullptr);

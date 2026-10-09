@@ -43,6 +43,7 @@ static int s_failures = 0;
         }                                                                       \
     } while (0)
 
+/** Creates missing parent directories for the loader trust fixtures. */
 static bool mkdir_p(const char *path) {
     if (mkdir(path, 0755) == 0 || errno == EEXIST)
         return true;
@@ -65,6 +66,7 @@ static bool mkdir_p(const char *path) {
     return true;
 }
 
+/** Removes the temporary loader trust fixture tree. */
 static bool rmtree(const char *path) {
     DIR *dir = opendir(path);
     if (!dir)

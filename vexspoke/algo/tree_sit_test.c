@@ -38,6 +38,7 @@ typedef struct Trace {
     int     stop_after;
 } Trace;
 
+/** Records visited node indices and depths into the test's bounded observation buffer. */
 static bool record(const TreeSitTree *tree, int32_t node_idx, int depth, void *user_data) {
     (void) tree;
     Trace *t = (Trace*) user_data;
@@ -51,6 +52,7 @@ static bool record(const TreeSitTree *tree, int32_t node_idx, int depth, void *u
     return true;
 }
 
+/** Constructs a half-open test span from its start and end offsets. */
 static TreeSitSpan span(uint32_t s, uint32_t e) {
     TreeSitSpan sp = { s, e, 0, 0, 0, 0 };
     return sp;
@@ -58,6 +60,7 @@ static TreeSitSpan span(uint32_t s, uint32_t e) {
 
 // Builds: root(0)->A(1)->g(4); root->B(2); root->C(3).
 // Returns the tree root index via the tree struct held by the caller.
+/** Populates a small deterministic tree used by the traversal and lookup cases. */
 static void build(TreeSitTree *tree) {
     CHECK(TreeSitTree_add_node(-1, 1, "root", span(0, 100), tree) == 0);
     CHECK(TreeSitTree_add_node(0, 2, "A", span(0, 30), tree) == 1);
@@ -66,6 +69,7 @@ static void build(TreeSitTree *tree) {
     CHECK(TreeSitTree_add_node(1, 3, "g", span(5, 10), tree) == 4);
 }
 
+/** Verifies TreeSit initialization and teardown on a minimally populated tree. */
 static void test_lifecycle(void) {
     CHECK(!TreeSitTree_init(16, nullptr));
     TreeSitTree t;
@@ -88,6 +92,7 @@ static void test_lifecycle(void) {
     TreeSitTree_destroy(&t);
 }
 
+/** Checks parent/child and sibling links remain consistent as nodes are connected. */
 static void test_linking(void) {
     TreeSitTree t;
     CHECK(TreeSitTree_init(16, &t));
@@ -134,6 +139,7 @@ static void test_linking(void) {
     TreeSitTree_destroy(&t);
 }
 
+/** Exercises the supported traversal orders and validates recorded node visits. */
 static void test_walks(void) {
     TreeSitTree t;
     CHECK(TreeSitTree_init(16, &t));
@@ -178,6 +184,7 @@ static void test_walks(void) {
     TreeSitTree_destroy(&t);
 }
 
+/** Verifies span lookup and subtree counting against the deterministic fixture. */
 static void test_find_and_count(void) {
     TreeSitTree t;
     CHECK(TreeSitTree_init(16, &t));
@@ -201,6 +208,7 @@ static void test_find_and_count(void) {
     TreeSitTree_destroy(&t);
 }
 
+/** Runs the TreeSit owner scenarios and reports aggregate assertion status. */
 int main(void) {
     test_lifecycle();
     test_linking();

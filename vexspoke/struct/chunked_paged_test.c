@@ -46,6 +46,7 @@ typedef struct Row16 {
     uint32_t d;
 } Row16;
 
+// Confirms the public sentinel values used by paged chunk traversal.
 static void testSentinels(void) {
     printf("[1] sentinels: FourCC sugars are negative and byte-exact\n");
 
@@ -56,6 +57,7 @@ static void testSentinels(void) {
     CHECK((uint32_t) CHUNKED_LIST_THREE_LAYER_DEFAULT == 0xD4485245u);
 }
 
+// Checks page geometry and index-to-page calculations at their boundaries.
 static void testGeometry(void) {
     printf("[2] radix geometry: explicit depth, page leaf, pow2 rounding\n");
 
@@ -89,6 +91,7 @@ static void testGeometry(void) {
     }
 }
 
+// Verifies initial layer geometry and its empty-state defaults.
 static void testLayerDefaults(void) {
     printf("[3] *_LAYER_DEFAULT presets select depth + page leaf\n");
 
@@ -118,6 +121,7 @@ static void testLayerDefaults(void) {
     }
 }
 
+// Exercises multi-level growth and checks that previously admitted entries remain accessible.
 static void testDeepGrowth(void) {
     printf("[4] 3-level growth: stable rows across root doubling, leaf boundaries\n");
 
@@ -192,6 +196,7 @@ typedef struct ChainProbe {
     bool ok;
 } ChainProbe;
 
+// Records each chunk and index visited by the chain traversal callback.
 static void chainFn(uint8_t *chunk, uint32_t index, void *userdata) {
     ChainProbe *p = (ChainProbe*) userdata;
     if (!chunk || index != (*p).chunks)
@@ -199,6 +204,7 @@ static void chainFn(uint8_t *chunk, uint32_t index, void *userdata) {
     (*p).chunks++;
 }
 
+// Verifies chain traversal visits the expected chunks in order.
 static void testChain(void) {
     printf("[5] leaf tail-link chain: nextChunk + forEachChunk\n");
 
@@ -260,6 +266,7 @@ static void testChain(void) {
     ChunkedList_free(list);
 }
 
+// Runs the paged-chunk sentinel, geometry, growth, and chain callback checks.
 int main(void) {
     printf("=== ChunkedList Paged (radix) Test Suite ===\n\n");
 

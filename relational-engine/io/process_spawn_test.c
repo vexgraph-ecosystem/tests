@@ -6,18 +6,21 @@
 #include <assert.h>
 #include <time.h>
 
+/* Reads a monotonic timestamp for the bounded child-process reap watchdog. */
 static uint64_t nowNs(void) {
     struct timespec t;
     clock_gettime(CLOCK_MONOTONIC, &t);
     return (uint64_t) t.tv_sec * 1000000000ULL + (uint64_t) t.tv_nsec;
 }
 
+/* Polls a child until completion while enforcing a two-second external bound. */
 static void reap(ProcessSpawn *owner) {
     uint64_t start = nowNs();
     while (!ProcessSpawn_poll(owner, PROCESS_SPAWN_POLL_MAX_NS))
         assert(nowNs() - start < 2000000000ULL);
 }
 
+/* Proves spawn, capacity, reap/reuse, cancellation, and null-safe accessors. */
 int main(void) {
     ProcessSpawn *a = ProcessSpawn();
     ProcessSpawn *b = ProcessSpawn(20);
