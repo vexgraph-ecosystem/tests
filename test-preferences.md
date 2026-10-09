@@ -46,6 +46,7 @@ blueprints, so their first real commit lands already governed.
 - Resource and Lifetime Law
 - Concurrency and Bounded Progress Law
 - Adversarial and Hostile-Input Proof Law
+- Deliberate Exhaustion and Backend Trust Law
 - Hot-Path Minimal Guard Law
 - Darling Component Narrative and Focus Law
 - Runtime-Level Seam Law
@@ -411,6 +412,82 @@ prove nothing about the hostile case, which is the case an attacker supplies.
   finding fails the proof.
 
 ---
+
+## Deliberate Exhaustion and Backend Trust Law
+
+### Definition:
+Tests are an executable basis for trusting a backend under pressure, not a
+greenlighting ritual. Every resource-owning backend must deliberately reach its
+documented resource boundaries, attack failure and recovery, and verify the data
+and ownership invariants that consumers depend on. Passing ordinary examples or
+surviving without a crash does not establish production readiness.
+
+### The Why:
+Allocators, pools, queues and registries fail where capacities, lifetimes and
+interleavings meet. Thousands of successful operations may exercise one recycled
+slot repeatedly, never exhaust backing, never keep many objects alive together,
+and never reveal cross-thread corruption. Trust requires proof of those states,
+not an impressive operation counter.
+
+### The Rule:
+- **Write the pressure contract first.** Inventory each resource, its physical
+  capacity or growth policy, ownership, legal concurrency, exhaustion disposition,
+  post-failure state and recovery. Fixed arenas, slots, bump regions, retained
+  snapshots, handles/generations and queues have separate boundaries. Mark cases
+  inapplicable with source-grounded reasons, never because they are inconvenient.
+- **Actually exhaust each applicable resource.** Reach the last valid admission
+  and its first rejection, repeat rejection, and prove existing data/identity,
+  outputs and ownership remain correct. Growable owners must cross multiple growth
+  boundaries and inject backing/directory allocation failures; "it grows" is not
+  an exemption. Force controlled exhaustion in test-owned resources, not host-wide
+  RAM/disk depletion. Observe any fallback and prove its lifetime/reclamation.
+- **Prove recovery, not just refusal.** Release or reset under the legal contract,
+  retry, refill and exhaust again. Assert exact reclamation, permitted retained
+  capacity, survivor contents, count/identity and continued normal operation.
+  Inject independently reachable construction/growth/transfer failure stages.
+- **Distinguish concurrent occupancy from churn.** Memory/storage backends claiming
+  legal multithreaded use require a synchronized pressure case holding thousands
+  of allocations live together across multiple workers. The named test default
+  is at least 1,024 simultaneously live allocations across at least four workers,
+  with caller-selectable larger workloads and an explicit smaller-contract reason
+  when those minima are inapplicable. Record the achieved peak live count, workers,
+  operation counts, sizes and seeds. A barrier keeps the live set retained while
+  workers verify/use it; add overlapping allocate/read/write/free or transfer
+  phases only where legal. Thousands of serial operations, or four workers each
+  repeatedly freeing one block, do not satisfy this occupancy requirement.
+- **Test legal pressure and interleavings.** Include contention, mixed sizes/types,
+  growth while survivors are used, exhaustion with work pending, handoff visibility,
+  and coordinated shutdown/reset where the API offers them. State reader/writer
+  ownership. Non-thread-safe APIs use their real external serialization and do not
+  inherit a thread-safety claim. Never turn illegal racing reset/free into a required
+  conformance case unless safe rejection is promised. Synchronize with barriers or
+  explicit state, not sleeps; vary recorded seeds and controlled schedules.
+- **Verify the working data.** Assert full retained payloads or independently
+  computed content hashes, alignment, lengths/types, live-address non-overlap,
+  counts, permitted reuse/generation identity, output canaries and the state after
+  every failure. Exercise public operations while resources are under pressure,
+  not merely alloc/free. No leak, race, double release, lost update or unexpected
+  diagnostic is acceptable. Cleanup excludes borrowers before freeing backing.
+- **Cover interacting factors deliberately.** Publish a coverage matrix of size,
+  alignment, type/project, occupancy, lifetime, growth, failure stage, thread count
+  and legal schedule where applicable. Exhaust finite advertised boundaries; use
+  full Cartesian coverage when tractable, pairwise coverage plus targeted higher-
+  order combinations for interacting risks, and seeded state-machine/model histories
+  for large domains. State omitted combinations. A few random examples are not an
+  exhaustive claim; an impossible `n^n` sweep is not a substitute for a risk model.
+- **Run bounded proof with the right instruments.** Assertions remain active in
+  optimized/release-like owners. Use applicable ASan/UBSan, separate TSan, injected
+  failures and leak/resource accounting with external watchdogs. Unsupported
+  instrumentation/platforms are explicit gaps. Report exercised occupancy and
+  pressure, not just elapsed time. Benchmarks are separate: record workload, host,
+  warmup and latency/throughput distributions before making speed claims; a fast
+  corrupt allocator fails, and a watchdog is not a performance benchmark.
+- **Readiness follows evidence, not green status.** Missing pressure, occupancy,
+  recovery or applicable concurrency proof blocks a battle-tested/production-ready
+  claim. Checklist passes retain their narrower scope. Stronger laws do not
+  retroactively upgrade existing tests: inventory their gaps and strengthen them
+  before promoting readiness. Tests support trust within a stated contract and
+  environment; no finite suite proves every input or possible thread schedule.
 
 ## Hot-Path Minimal Guard Law
 

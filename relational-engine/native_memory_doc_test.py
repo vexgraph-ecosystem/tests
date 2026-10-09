@@ -51,7 +51,8 @@ class NativeMemoryDocumentation(unittest.TestCase):
         self.assertIn("docs/native-memory-proof.md", readme)
         self.assertIn("Twelve owners", readme)
         for gap in ("Windows/macOS 14 runtime", "first-use concurrency",
-                    "not leak detection", "performance/latency", "not blanket"):
+                    "not leak detection", "performance/latency", "not blanket",
+                    "at most four worker-owned blocks", "concurrent-occupancy"):
             self.assertIn(gap, doc)
 
 
