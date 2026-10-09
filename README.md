@@ -3,6 +3,25 @@
 Independent, tracked test-source repository for the ecosystem. Presence of a
 source file is **not** evidence that its target was built or executed.
 
+## Current State
+
+**Implemented:** the shared test-source repository — per-subsystem test trees,
+`test-checklist.md`, `test_support.h`, the runner scripts and the proof gates
+(`b check`, `b coverage`). **Proven:** the gates prove ownership, surface
+invocation and function execution for **vexspoke only** (macOS host); everything
+else below is unproven. **Platforms proven:** macOS (the executor host).
+
+## Scope and Limitations
+
+**Scope:** tracked test sources and their build/run wiring, one owner test per
+production unit (the Test Tree Mirror Law), plus the timestamped evidence ledger.
+**Deliberately not covered:** production sources (they live in their own repos);
+visual/monitor acceptance (the user's); app/GPU/audio runtime proof.
+**Known limits and gaps:** value boundaries, failure recovery, sanitizer
+cleanliness, concurrency, GPU behavior and non-macOS platforms are not yet proven
+— see `test-preferences.md` and "What is not yet proven" below. A passing
+documentation check proves no application runtime.
+
 ## Run
 
 ### Editor

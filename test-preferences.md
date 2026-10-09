@@ -1093,7 +1093,7 @@ Session sync and relay (R4).
 - **Sanitizer Proof Law** — PII and secrets are removed before transmit.
 
 ## samplerate Test Laws
-Audio engine (R4/R5).
+Native audio driver (R3).
 - **Realtime Allocation Law** — long-run soak with an allocation watchdog; zero allocation on the
   audio callback.
 - **Ring Concurrency Law** — SPSC overflow/underflow drop-degrade.
