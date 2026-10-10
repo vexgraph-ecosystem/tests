@@ -15,14 +15,15 @@ int main(void) {
     assert(Tui_add(&state, "visible", 7));
     assert(Tui_setInput(&state, "fixed", 5));
     char row[128];
-    assert(draw(&state, true, true, row, sizeof(row)));
+    assert(draw(&state, true, true, false, false, row, sizeof(row)));
     assert((mvinch(2, 1) & A_CHARTEXT) == 'v');
     assert((mvinch(18, 2) & A_CHARTEXT) == 'f');
     assert((mvinch(0, 45) & A_CHARTEXT) == '[');
     for (int i = 0; i < 30; ++i)
         assert(Tui_add(&state, "extra", 5));
     Tui_scrollBy(&state, 10);
-    assert(draw(&state, false, false, row, sizeof(row)));
+    assert(draw(&state, false, false, true, true, row, sizeof(row)));
+    assert((mvinch(19, 0) & A_CHARTEXT) == 'O');
     assert((mvinch(18, 2) & A_CHARTEXT) == 'f');
     MEVENT event = {0};
     mousemask(BUTTON1_PRESSED, nullptr);
@@ -35,7 +36,7 @@ int main(void) {
     assert(ungetch(KEY_PPAGE) == OK && getch() == KEY_PPAGE);
     assert(resizeterm(2, 10) != ERR);
     assert(Tui_setSize(&state, 2, 10));
-    assert(draw(&state, false, true, row, sizeof(row)));
+    assert(draw(&state, false, true, false, false, row, sizeof(row)));
     endwin(); delscreen(screen);
     fclose(input); fclose(output); Tui_free(&state);
 }

@@ -42,6 +42,16 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn('"built artifact "', tools)
         self.assertIn('run([str(Path(home.name) / "artifact")]', tools)
         self.assertNotIn("shell=True", "\n".join(p.read_text() for p in (APP / "src").glob("*.py")))
+        bridge = (APP / "session/session_bridge.c").read_text()
+        host = (APP / "src/session_host.py").read_text()
+        for name in ("Harness_run", "Harness_poll", "Harness_cancel", "EngineProvider_get", "Owo_instructions"):
+            self.assertIn(name, bridge)
+        for claim in ("Codex App Server is not implemented", "chat-only", "retained", "deny-all", "OpenCode V2"):
+            self.assertIn(claim, readme)
+        self.assertIn('"opencode", "api"', host)
+        self.assertIn('"effect": "deny"', host)
+        self.assertNotIn("load_env", host)
+        self.assertNotIn("auth.json", host)
 
     def test_cli_no_contact_doctor_and_standalone_source_root_build(self):
         result = subprocess.run([sys.executable, str(APP / "src/cli.py"), "doctor"], capture_output=True, timeout=5)
