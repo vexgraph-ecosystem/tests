@@ -50,6 +50,16 @@ int main(void) {
     CHECK(Stack_slot(s, Stack_size(s)) == nullptr);
     CHECK(Stack_slot(s, SIZE_MAX) == nullptr);
 
+    // Explicit-fault sibling: Stack_pushTry names the reason. Stack_push stays
+    // void for family consistency but is no longer silent.
+    TryValue okPush = Stack_pushTry(s, 7);
+    CHECK(TryValue_isOk(&okPush));
+    CHECK(TryValue_getValue(&okPush) == 7);
+    CHECK(Stack_size(s) == 999999);
+    CHECK(Stack_pop(s) == 7);
+    TryValue nullPush = Stack_pushTry(nullptr, 7);
+    CHECK(TryValue_getCode(&nullPush) == TRY_NULL_ARG);
+
     // Null-safety.
     Stack_push(nullptr, 1);
     CHECK(Stack_pop(nullptr) == 0);

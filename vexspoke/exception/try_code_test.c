@@ -20,7 +20,7 @@ static int g_failures = 0;
 
 static const TryCode ALL[] = {
     TRY_OK, TRY_NULL_ARG, TRY_BOUNDS, TRY_OVERFLOW, TRY_EMPTY,
-    TRY_NOT_FOUND, TRY_IO, TRY_FORMAT, TRY_UNSUPPORTED
+    TRY_NOT_FOUND, TRY_IO, TRY_FORMAT, TRY_UNSUPPORTED, TRY_NO_MEMORY
 };
 
 int main(void) {
