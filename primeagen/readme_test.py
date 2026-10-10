@@ -51,7 +51,7 @@ class ReadmeTest(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         with tempfile.TemporaryDirectory(prefix="primeagen-standalone-") as temp:
             target = Path(temp) / "independent checkout"
-            shutil.copytree(APP, target, ignore=shutil.ignore_patterns(".git", ".build", "__pycache__"))
+            shutil.copytree(APP, target, ignore=shutil.ignore_patterns(".git", ".build", "__pycache__", ".env"))
             roots = {"API_HAVEN_SOURCE_DIR": ROOT / "ecosystem/repos/api-haven/src",
                      "HARNESS_SOURCE_DIR": ROOT / "ecosystem/repos/harness/src",
                      "VEXSPOKE_SOURCE_DIR": ROOT / "ecosystem/repos/vexspoke/src"}
