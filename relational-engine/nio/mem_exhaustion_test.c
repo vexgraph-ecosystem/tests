@@ -80,6 +80,7 @@ static void construction(void) {
 static void exhaustion(void) {
     MemoryArena *a = MemoryArena_create(SLAB_BYTES + BUMP_BYTES);
     assert(a != nullptr);
+    assert(MemoryArena_exhaustionCount(a) == 0);   // fresh epoch
     uint8_t *blocks[SMALL_SLOTS + SPILL_SLOTS];
     size_t calls = heapCalls;
     for (size_t i = 0; i < SMALL_SLOTS + SPILL_SLOTS; i++) {
@@ -89,8 +90,12 @@ static void exhaustion(void) {
         memset(blocks[i], (uint8_t) i, SMALL_PAYLOAD);
     }
     assert(MemoryArena_activeBytes(a) == SMALL_SLOTS * 64u + BUMP_BYTES);
+    // Exhaustion is LOUD but bounded: each rejection is counted, exactly once
+    // reported (the Exhaustion Loudness Law).
+    uint64_t rejects = MemoryArena_exhaustionCount(a);
     for (size_t i = 0; i < 32; i++)
         assert(MemoryArena_alloc(a, TYPE_B, SMALL_PAYLOAD) == nullptr);
+    assert(MemoryArena_exhaustionCount(a) == rejects + 32);   // every reject counted
     assert(heapCalls == calls); // Exhaustion may not escape its owner into malloc.
     assert(MemoryArena_findAll(a, TYPE_A, nullptr, 0) == SMALL_SLOTS + SPILL_SLOTS);
     void *found[3] = { nullptr, (void*) blocks[0], (void*) blocks[1] };
@@ -109,10 +114,13 @@ static void exhaustion(void) {
     // Freed spill remains bump-resident and must NOT enter an unrelated slab list.
     uint8_t *reused = MemoryArena_alloc(a, TYPE_B, SMALL_PAYLOAD);
     assert(reused != nullptr && reused != spill);
+    uint64_t beforeReject = MemoryArena_exhaustionCount(a);
     assert(MemoryArena_alloc(a, TYPE_B, SMALL_PAYLOAD) == nullptr);
+    assert(MemoryArena_exhaustionCount(a) == beforeReject + 1);
     assert(MemoryArena_findAll(a, TYPE_A, nullptr, 0) == SMALL_SLOTS + SPILL_SLOTS - 2);
     MemoryArena_freeAll(a);
     assert(MemoryArena_activeBytes(a) == 0);
+    assert(MemoryArena_exhaustionCount(a) == 0);   // reset starts a fresh epoch
     assert(Memory_type(blocks[SMALL_SLOTS + 1]) == 0);
     assert(Memory_length(blocks[SMALL_SLOTS + 1]) == 0);
     assert(MemoryArena_findAll(a, TYPE_A, nullptr, 0) == 0);

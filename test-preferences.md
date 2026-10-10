@@ -441,6 +441,14 @@ not an impressive operation counter.
   boundaries and inject backing/directory allocation failures; "it grows" is not
   an exemption. Force controlled exhaustion in test-owned resources, not host-wide
   RAM/disk depletion. Observe any fallback and prove its lifetime/reclamation.
+- **Assert the refusal is LOUD, not merely returned.** The Exhaustion Loudness Law
+  in workspace `preferences.md` is the production contract this proves: reach the
+  boundary and assert the owner's *queryable refusal count* (e.g.
+  `MemoryArena_exhaustionCount`) increments per rejected request, that the epoch's
+  single `THROW` diagnostic names the owner, the request size and the bound, and
+  that `init`/`create`/`reset`/`freeAll`/`destroy` zeroes the count for a fresh
+  epoch. A backend whose exhaustion cannot be observed through the counter or the
+  diagnostic is not trusted for R5/custom-application use.
 - **Prove recovery, not just refusal.** Release or reset under the legal contract,
   retry, refill and exhaust again. Assert exact reclamation, permitted retained
   capacity, survivor contents, count/identity and continued normal operation.
