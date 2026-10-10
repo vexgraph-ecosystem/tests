@@ -1,9 +1,10 @@
 """Source-grounded documentation owner for func/Harness boundaries and backlog prose.
 
-Checks actual source absence and metadata, then forward-contract consistency.
+Checks source inventories and metadata, then forward-contract consistency.
 This is not compiler/provider/MCP execution or production-readiness evidence.
 """
 from pathlib import Path
+import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -16,15 +17,30 @@ class AgentToolContractTest(unittest.TestCase):
         for repo, relative in (("func", "personal/func"),
                                ("harness", "ecosystem/repos/harness")):
             owner = ROOT / relative
-            sources = [p for p in owner.rglob("*") if p.is_file()
-                       and ".git" not in p.relative_to(owner).parts
-                       and p.suffix in SOURCE_SUFFIXES]
-            self.assertEqual(sources, [], repo)
+            inventory = subprocess.run(
+                ["git", "-C", str(owner), "ls-files", "--cached", "--others",
+                 "--exclude-standard", "-z"], check=True, capture_output=True,
+                text=True, timeout=30).stdout.split("\0")
+            sources = [owner / name for name in inventory
+                       if name and Path(name).suffix in SOURCE_SUFFIXES]
             cmake = (owner / "CMakeLists.txt").read_text()
-            self.assertIn("LANGUAGES NONE", cmake)
             readme = (owner / "README.md").read_text()
-            for scope in ("## Current State", "## Scope and Limitations",
-                          "Platforms proven:** none", "nothing"):
+            if repo == "func":
+                self.assertEqual(sources, [], repo)
+                self.assertIn("LANGUAGES NONE", cmake)
+                self.assertIn("nothing", readme)
+                self.assertIn("Platforms proven:** none", readme)
+            else:
+                self.assertEqual({p.relative_to(owner).as_posix() for p in sources}, {
+                    f"src/space/{unit}.{suffix}"
+                    for unit in ("model_user", "channel", "message", "task")
+                    for suffix in ("c", "h")
+                } | {"src/space/support.h"})
+                self.assertIn("EXCLUDE_FROM_ALL", cmake)
+                self.assertIn("Runtime platforms proven:** none", readme)
+                self.assertIn("behaviorally", readme)
+                self.assertIn("no executed behavioral owner tests", readme)
+            for scope in ("## Current State", "## Scope and Limitations"):
                 self.assertIn(scope, readme)
             prefs = owner / f"{repo}-preferences.md"
             self.assertTrue(prefs.is_file())

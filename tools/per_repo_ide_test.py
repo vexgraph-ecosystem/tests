@@ -26,6 +26,7 @@ CODE = {
     "ecosystem/repos/relational-engine": "src/io/file.c",
     "ecosystem/repos/sesh": "src/snapshot/snapshot.c",
     "ecosystem/repos/darkbase": "src/database/database.c",
+    "ecosystem/repos/harness": "src/space/model_user.c",
 }
 EMPTY = (
     "ecosystem/repos/language",
