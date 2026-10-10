@@ -37,7 +37,7 @@ class ProviderTest(unittest.TestCase):
     def test_bad_responses_are_rejected_then_recovery(self):
         provider = Provider("local", "test")
         provider.render = lambda text: ("http://127.0.0.1/v1/chat/completions", "{}")
-        for response in (b"invalid", b"{}", b'{"choices":[]}', b'{"choices":[{"message":{"content":null}}]}',
+        for response in (b"invalid", b"[" * 2000 + b"0" + b"]" * 2000, b"{}", b'{"choices":[]}', b'{"choices":[{"message":{"content":null}}]}',
                          b'{"choices":[{"message":{"content":""}}]}'):
             with patch("provider.run", return_value=response):
                 with self.assertRaises((ValueError, KeyError, IndexError)):

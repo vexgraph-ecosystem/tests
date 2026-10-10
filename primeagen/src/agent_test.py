@@ -49,6 +49,8 @@ class AgentTest(unittest.TestCase):
             self.assertEqual(self.calls, [])
         with self.assertRaises(ValueError):
             strict_json('{"tool":"read","arguments":{"path":"a","path":"b"}}')
+        with self.assertRaisesRegex(ValueError, "nesting"):
+            strict_json("[" * 2000 + "0" + "]" * 2000)
         agent = Agent(self.provider(['{"answer":"ok"}']), self.tools(), history_cap=10)
         with self.assertRaises(ValueError):
             agent.ask("hello")
