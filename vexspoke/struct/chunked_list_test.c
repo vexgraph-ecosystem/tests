@@ -51,6 +51,8 @@ static void testDefaults(void) {
     CHECK(ChunkedList_getRowsPerChunk(list) == 8u);
     CHECK(ChunkedList_getChunkCount(list) == 0u);
     CHECK(ChunkedList_size(list) == 0u);
+    // The Exhaustion Loudness Law accessor: a fresh owner has no refusals.
+    CHECK(ChunkedList_exhaustionCount(list) == 0);
     CHECK(ChunkedList_length(list) == 0u);
     CHECK(ChunkedList_capacity(list) == 0u);
     CHECK(ChunkedList_isEmpty(list) == true);

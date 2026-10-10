@@ -73,6 +73,8 @@ static void test_null_safety(void) {
 static void test_bounds_and_queries(void) {
     Octree *t = Octree_create(box(-10.0f, 10.0f), 4, 2);
     CHECK(t != nullptr);
+    // The Exhaustion Loudness Law accessor: a fresh owner has no refusals.
+    CHECK(Octree_exhaustionCount(t) == 0);
     CHECK(Octree_count(t) == 0);
 
     // Outside the root AABB: refused, not counted.

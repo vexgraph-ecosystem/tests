@@ -24,6 +24,8 @@ int main(void) {
     CHECK(h != nullptr);
     CHECK(MinHeap_isEmpty(h));
     CHECK(MinHeap_size(h) == 0);
+    // The Exhaustion Loudness Law accessor: a fresh owner has no refusals.
+    CHECK(MinHeap_exhaustionCount(h) == 0);
     CHECK(MinHeap_capacity(h) >= 8);
 
     // Push out of order; popItem yields ascending priority.
@@ -44,6 +46,14 @@ int main(void) {
     for (int i = 2047; i >= 0; i--)
         CHECK(MinHeap_push(big, i, (float) i) == 1);
     CHECK(MinHeap_size(big) == 2048);
+    // A full fixed-capacity heap is a refusal, not a silent no-op: the push is
+    // rejected and the refusal is COUNTED (the Exhaustion Loudness Law).
+    CHECK(MinHeap_exhaustionCount(big) == 0);
+    CHECK(MinHeap_push(big, 99, 99.0f) == 0);
+    CHECK(MinHeap_exhaustionCount(big) == 1);
+    CHECK(MinHeap_push(big, 98, 98.0f) == 0);
+    CHECK(MinHeap_exhaustionCount(big) == 2);
+    CHECK(MinHeap_size(big) == 2048);   // unchanged by a refused push
     int prev = -1;
     int ok = 1;
     for (int i = 0; i < 2048; i++) {

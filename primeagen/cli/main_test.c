@@ -4,7 +4,9 @@
 #include "cli/main.c"
 #undef main
 #include <assert.h>
-int main(void) {
+int main(int argc, char **argv) {
+    if (argc == 3 && strcmp(argv[1], "--connect-probe") == 0)
+        return connectHost(argv[2], true);
     FILE *input = tmpfile(); FILE *output = tmpfile();
     assert(input != nullptr && output != nullptr);
     SCREEN *screen = newterm("xterm-256color", output, input);
@@ -19,6 +21,25 @@ int main(void) {
     assert((mvinch(2, 1) & A_CHARTEXT) == 'v');
     assert((mvinch(18, 2) & A_CHARTEXT) == 'f');
     assert((mvinch(0, 45) & A_CHARTEXT) == '[');
+    assert(Tui_setInput(&state, "/help", 5));
+    assert(command(&state, false) == TUI_COMMAND_MESSAGE);
+    assert(Tui_getInputLength(&state) == 0);
+    assert(Tui_setInput(&state, "/connect", 8));
+    assert(command(&state, false) == TUI_COMMAND_CONNECT);
+    assert(command(&state, true) == TUI_COMMAND_MESSAGE);
+    assert(Tui_setInput(&state, "/server add", 11));
+    size_t before = Tui_getCount(&state);
+    assert(command(&state, true) == TUI_COMMAND_MESSAGE);
+    assert(Tui_getCount(&state) == before + 1);
+    assert(Tui_setInput(&state, "/quit", 5));
+    assert(command(&state, true) == TUI_COMMAND_QUIT);
+    assert(Tui_setInput(&state, "ordinary text", 13));
+    assert(command(&state, true) == 0);
+    assert(Tui_getInputLength(&state) == 13);
+    assert(Tui_setInput(&state, "/clear", 6));
+    assert(command(&state, true) == TUI_COMMAND_MESSAGE);
+    assert(Tui_getCount(&state) == 0 && Tui_getInputLength(&state) == 0);
+    assert(Tui_setInput(&state, "fixed", 5));
     for (int i = 0; i < 30; ++i)
         assert(Tui_add(&state, "extra", 5));
     Tui_scrollBy(&state, 10);

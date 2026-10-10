@@ -3,6 +3,7 @@ No interactive terminal/gallery is launched. Appearance belongs to the user.
 """
 from pathlib import Path
 import os
+import json
 import subprocess
 import tempfile
 import unittest
@@ -55,6 +56,19 @@ class NativeTuiTest(unittest.TestCase):
                             self.assertTrue(all(line.startswith("[vex]") for line in lines), lines)
                         else:
                             self.assertEqual(result.stderr, b"")
+                        if owner == "cli/main_test.c":
+                            fixture = Path(directory) / "fake host with spaces.py"
+                            fixture.write_text("import json,sys\nprint(json.dumps(sys.argv[1:]))\n")
+                            handoff = subprocess.run([str(dest), "--connect-probe", str(fixture)],
+                                                     capture_output=True, timeout=10)
+                            self.assertEqual(handoff.returncode, 0, handoff.stderr)
+                            self.assertEqual(json.loads(handoff.stdout),
+                                             ["--engine", "opencode", "--model",
+                                              "opencode-go/deepseek-v4.1-flash", "--owo"])
+                            rejected = subprocess.run([str(dest), "--connect-probe", ""],
+                                                      capture_output=True, timeout=10)
+                            self.assertNotEqual(rejected.returncode, 0)
+                            self.assertIn(b"connect requires", rejected.stderr)
 
     def test_build_and_nonterminal_admission(self):
         subprocess.run(["sh", str(APP / "cli/build.sh")], check=True, capture_output=True, timeout=60)

@@ -23,6 +23,8 @@ int main(void) {
     SparseSet *s = SparseSet_3(1024, 2048, 4);
     CHECK(s != nullptr);
     CHECK(SparseSet_count(s) == 0);
+    // The Exhaustion Loudness Law accessor: a fresh owner has no refusals.
+    CHECK(SparseSet_exhaustionCount(s) == 0);
     CHECK(SparseSet_capacity(s) >= 64);
     CHECK(SparseSet_maxEntities(s) >= 1024);
 
