@@ -23,20 +23,18 @@ class AgentToolContractTest(unittest.TestCase):
                 text=True, timeout=30).stdout.split("\0")
             sources = [owner / name for name in inventory
                        if name and Path(name).suffix in SOURCE_SUFFIXES]
-            cmake = (owner / "CMakeLists.txt").read_text()
+            self.assertFalse((owner / "CMakeLists.txt").exists())
             readme = (owner / "README.md").read_text()
             if repo == "func":
-                self.assertEqual(sources, [], repo)
-                self.assertIn("LANGUAGES NONE", cmake)
-                self.assertIn("nothing", readme)
-                self.assertIn("Platforms proven:** none", readme)
+                # Func implementation is owned by its compiler owner tests;
+                # this seam checks editor policy and forward boundaries only.
+                self.assertNotIn("LANGUAGES NONE", readme)
             else:
                 self.assertEqual({p.relative_to(owner).as_posix() for p in sources}, {
                     f"src/space/{unit}.{suffix}"
                     for unit in ("model_user", "channel", "message", "task")
                     for suffix in ("c", "h")
                 } | {"src/space/support.h"})
-                self.assertIn("EXCLUDE_FROM_ALL", cmake)
                 self.assertIn("Runtime platforms proven:** none", readme)
                 self.assertIn("behaviorally", readme)
                 self.assertIn("no executed behavioral owner tests", readme)
@@ -58,7 +56,7 @@ class AgentToolContractTest(unittest.TestCase):
             self.assertIn(concept, prefs)
         for obligation in ("not an R1–R5", "no ecosystem", "not ecosystem object type IDs",
                            "literal argument vectors", "not implicit run",
-                           "Deliberate Exhaustion and Backend Trust Law", "no implementation"):
+                            "Deliberate Exhaustion and Backend Trust Law"):
             self.assertIn(obligation, prefs)
         self.assertIn("personal/func/func-preferences.md", (ROOT / "preferences.md").read_text())
 

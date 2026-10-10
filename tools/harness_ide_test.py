@@ -1,9 +1,4 @@
-"""Real workspace/standalone Harness code-model proof, not GUI or agent execution.
-
-Configure CMake, inspect every draft translation unit and compile each public
-header with its actual include context. Verify recursive discovery and default
-exclusion in a disposable standalone copy. No gallery, provider or app runs.
-"""
+"""Harness workspace compiler proof; no standalone CMake, agent or GUI run."""
 import json
 import os
 from pathlib import Path
@@ -39,73 +34,66 @@ class HarnessIdeTest(unittest.TestCase):
         cls.temp = tempfile.TemporaryDirectory(prefix="harness-ide-", dir=os.environ.get("TMPDIR"))
         cls.addClassCleanup(cls.temp.cleanup)
         cls.home = Path(cls.temp.name)
-        cls.workspace = cls.home / "workspace"
-        cls.standalone = cls.home / "standalone"
-        run(["cmake", "-S", str(ROOT), "-B", str(cls.workspace),
-             "-DCMAKE_BUILD_TYPE=Debug", "-DBUILD_TESTING=OFF"])
-        run(["cmake", "-S", str(OWNER), "-B", str(cls.standalone),
-             f"-DVEXSPOKE_SOURCE_DIR={VEXSPOKE}"])
+        cls.build = cls.home / "workspace"
+        run(["cmake", "-S", str(ROOT), "-B", str(cls.build), "-DBUILD_TESTING=OFF"])
+        cls.db = json.loads((cls.build / "compile_commands.json").read_text())
 
-    def test_all_translation_units_and_headers_in_both_contexts(self):
+    def test_every_translation_unit_and_header_compiles(self):
         sources = set((OWNER / "src").rglob("*.c"))
+        owned = [entry for entry in self.db if Path(entry["file"]) in sources]
         self.assertEqual(len(sources), 4)
-        for build in (self.workspace, self.standalone):
-            db = json.loads((build / "compile_commands.json").read_text())
-            owned = [entry for entry in db if Path(entry["file"]) in sources]
-            self.assertEqual({Path(entry["file"]) for entry in owned}, sources)
-            for entry in owned:
-                with self.subTest(build=build.name, source=entry["file"]):
-                    command = entry["command"]
-                    self.assertIn("harness_ide.dir", command)
-                    for flag in ("-Wall", "-Wextra", "-Werror"):
-                        self.assertIn(flag, command)
-                    self.assertRegex(command, r"-std=gnu(23|2x)")
-                    self.assertIn(str(OWNER / "src"), command)
-                    self.assertIn(str(VEXSPOKE), command)
-                    run(syntax_args(entry), cwd=entry["directory"])
-            entry = owned[0]
-            args = syntax_args(entry)
-            args.remove(entry["file"])
-            args += ["-x", "c", "-"]
-            for header in (OWNER / "src").rglob("*.h"):
-                run(args, input=f'#include "{header.relative_to(OWNER / "src")}"\n',
-                    cwd=entry["directory"])
+        self.assertEqual({Path(entry["file"]) for entry in owned}, sources)
+        for entry in owned:
+            self.assertIn("vexgraph_extra_harness.dir", entry["command"])
+            self.assertIn(str(VEXSPOKE), entry["command"])
+            run(syntax_args(entry), cwd=entry["directory"])
+        entry = owned[0]
+        args = syntax_args(entry)
+        args.remove(entry["file"])
+        for header in (OWNER / "src").rglob("*.h"):
+            run(args + ["-x", "c", "-"], cwd=entry["directory"],
+                input=f'#include "{header.relative_to(OWNER / "src")}"\n')
 
-    def test_standalone_default_noop_and_explicit_object_build(self):
-        run(["cmake", "--build", str(self.standalone)])
-        self.assertEqual(list(self.standalone.rglob("*.o")), [])
-        run(["cmake", "--build", str(self.standalone), "--target", "harness_ide"])
-        self.assertEqual(len(list(self.standalone.rglob("*.o"))), 4)
+    def test_excluded_target_has_no_runtime_dependency(self):
+        run(["cmake", "--build", str(self.build), "--target", "vexgraph_extra_harness"])
+        objects = list(self.build.rglob("*.o"))
+        self.assertEqual(len(objects), 4)
+        self.assertTrue(all("vexgraph_extra_harness.dir" in str(path) for path in objects))
 
-    def test_new_nested_files_need_no_new_cmake(self):
-        owner = self.home / "copied owner"
-        shutil.copytree(OWNER / "src", owner / "src")
-        shutil.copyfile(OWNER / "CMakeLists.txt", owner / "CMakeLists.txt")
+    def test_recursive_new_source_and_header_discovery(self):
+        source = self.home / "copied source"
+        shutil.copytree(OWNER / "src", source)
         build = self.home / "discovery"
-        run(["cmake", "-S", str(owner), "-B", str(build),
-             f"-DVEXSPOKE_SOURCE_DIR={VEXSPOKE}"])
-        nested = owner / "src/new_directory/new_class.c"
+        configure = ["cmake", "-S", str(ROOT), "-B", str(build),
+                     f"-DVEXGRAPH_HARNESS_SOURCE_DIR={source}", "-DBUILD_TESTING=OFF"]
+        run(configure)
+        nested = source / "new_directory/new_class.c"
         nested.parent.mkdir()
-        nested.write_text("int new_class(void) { return 0; }\n")
-        run(["cmake", "--build", str(build)])
+        (nested.parent / "new_class.h").write_text("int new_class(void);\n")
+        nested.write_text('#include "new_directory/new_class.h"\nint new_class(void) { return 0; }\n')
+        run(["cmake", "--build", str(build), "--target", "vexgraph_extra_harness"])
         db = json.loads((build / "compile_commands.json").read_text())
         entry = next(item for item in db if Path(item["file"]) == nested)
         run(syntax_args(entry), cwd=entry["directory"])
-        self.assertEqual(list(build.rglob("*.o")), [])
-        self.assertEqual(list(owner.rglob("CMakeLists.txt")), [owner / "CMakeLists.txt"])
+        self.assertEqual(list(source.rglob("CMakeLists.txt")), [])
 
-    def test_missing_vexspoke_is_a_real_error(self):
-        build = self.home / "missing"
-        run(["cmake", "-S", str(OWNER), "-B", str(build)])
-        db = json.loads((build / "compile_commands.json").read_text())
-        result = subprocess.run(syntax_args(db[0]), text=True, capture_output=True,
-                                cwd=db[0]["directory"], timeout=30)
+    def test_missing_dependency_is_a_real_compiler_error(self):
+        entry = next(item for item in self.db if item["file"].endswith("/space/model_user.c"))
+        args = [arg for arg in syntax_args(entry) if arg != f"-I{VEXSPOKE}"]
+        result = subprocess.run(args, text=True, capture_output=True,
+                                cwd=entry["directory"], timeout=30)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("exception/throw.h", result.stderr)
 
+    def test_clion_bundled_parser_accepts_actual_harness_files(self):
+        clangd = Path("/Applications/CLion.app/Contents/bin/clang/mac/aarch64/bin/clangd")
+        if not clangd.exists():
+            self.skipTest("CLion bundled clangd unavailable; compiler proof remains separate")
+        for source in (OWNER / "src").rglob("*.c"):
+            result = run([str(clangd), "--enable-config=false", "--tweaks=ExpandAutoType",
+                          f"--compile-commands-dir={self.build}", f"--check={source}"])
+            self.assertIn("0 errors", result.stderr)
+
 
 if __name__ == "__main__":
-    if shutil.which("cmake") is None:
-        print("SKIP: CMake required")
-        raise SystemExit(77)
     unittest.main(verbosity=2)

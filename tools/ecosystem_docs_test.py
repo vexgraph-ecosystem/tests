@@ -131,7 +131,7 @@ class EcosystemDocsTest(unittest.TestCase):
         engine = normalized("ecosystem/repos/relational-engine/README.md")
         for expected in ("chunk<t>", "chunkedlist<t>", "variableslot", "variableregistry",
                          "re_name_search", "append-only", "borrowed", "planned",
-                          "manifest-backed", "discussion", "engine_nio", "engine_search"):
+                           "manifest-backed", "discussion", "native io/nio", "native c search"):
             self.assertIn(expected, engine)
 
     def test_readiness_matrix_and_blockers_are_gist_canonical(self):

@@ -28,7 +28,7 @@ def main():
     result = run("git", "check-ignore", "--no-index", "--stdin",
                  input="\n".join(ignored + tracked) + "\n")
     assert set(result.stdout.splitlines()) == set(ignored)
-    assert "IDE metadata" in (ROOT / "README.md").read_text()
+    assert not (ROOT / "CMakeLists.txt").exists()
     assert "learning backend" in (ROOT / "README.md").read_text()
     assert "not a port" in (ROOT / "rust/README.md").read_text()
     for doc in (ROOT / "README.md", ROOT / "rust/README.md", SUITE / "README.md"):
@@ -49,12 +49,14 @@ def main():
     assert "relational-engine-preferences.md" in (ROOT / "CONTRIBUTING.md").read_text()
     assert (ROOT / "src/LICENSE").read_text().startswith("Boost Software License")
     assert (ROOT / "LICENSE").read_text().startswith("MIT License")
-    assert "EXCLUDE_FROM_ALL" in (ROOT / "CMakeLists.txt").read_text()
+    workspace = ROOT.parents[2]
+    assert "EXCLUDE_FROM_ALL" in (workspace / "CMakeLists.txt").read_text()
     scratch = os.environ.get("TMPDIR")
     with tempfile.TemporaryDirectory(prefix="relational-scaffold-", dir=scratch) as tmp:
         tmp = Path(tmp)
-        run("cmake", "-S", str(ROOT), "-B", str(tmp / "ide"))
+        run("cmake", "-S", str(workspace), "-B", str(tmp / "ide"), "-DBUILD_TESTING=OFF")
         commands = json.loads((tmp / "ide/compile_commands.json").read_text())
+        commands = [entry for entry in commands if Path(entry["file"]).is_relative_to(ROOT)]
         assert {Path(entry["file"]).resolve() for entry in commands} == set(sources)
         for entry in commands:
             command = entry["command"]

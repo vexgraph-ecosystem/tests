@@ -26,19 +26,10 @@ documentation check proves no application runtime.
 
 ### Editor
 
-Build/run with [b](https://github.com/vex-graph/b). The CMake adapters provide
-CLion navigation, diagnostics and inlay hints; they do not replace b's graph.
-Unlike the per-repo metadata-only object targets, this existing test adapter
-also offers native test Run/Debug targets. That opt-in testing seam is retained.
-
-The workspace build system is `b` (standalone repo at `personal/b/`); it is the
-source of truth for include paths, libraries, and targets. Open either the
-workspace-root `CMakeLists.txt` or this repository's `CMakeLists.txt` in CLion
-for C23 syntax analysis and native test Run/Debug targets. Both consume the
-same `b ide` metadata; CMake is an IDE adapter, not another build graph.
-The tests-only entry requires the parent workspace, or an explicit
-`-DVEXGRAPH_WORKSPACE_ROOT=/path/to/vexgraph`. Window/GPU/UI CTest execution is
-disabled by default. Terminal execution remains `./tools/b run <target>` or
+Build/run with [b](https://github.com/vex-graph/b). Open the workspace root for
+editor analysis and native test Run/Debug targets; editor setup is documented
+once in the workspace README. Window/GPU/UI CTest execution is disabled by
+default. Terminal execution remains `./tools/b run <target>` or
 `tests/run.sh <name>`.
 
 ### Terminal

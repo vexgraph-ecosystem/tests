@@ -60,7 +60,7 @@ class ReadmeTest(unittest.TestCase):
         text = (ROOT / "README.md").read_text()
         headings = re.findall(r"^## (.+)$", text, re.M)
         self.assertEqual(headings, [
-            "Disclaimer: CMake is just IDE metadata (not irony)", "Current State",
+            "Current State",
             "What does it do?", "List of languages", "Tree", "JetBrains IDEs",
             "Adapters", "Actual dogfooding across Vexgraph",
             "Future and b's own build", "Scope and Limitations",
