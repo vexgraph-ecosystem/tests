@@ -8,6 +8,7 @@
 // No generational pointer identity, hostile forged checksum rejection, OS OOM,
 // downstream lifetime, Windows, or full allocator readiness is claimed.
 #include "nio/mem.h"
+#include "annotation/test.h"
 #include <assert.h>
 #include <pthread.h>
 #include <stdatomic.h>
@@ -41,6 +42,7 @@ void *MemTest_calloc(size_t count, size_t bytes) { return failHeap() ? nullptr :
 void *MemTest_realloc(void *ptr, size_t bytes) { return failHeap() ? nullptr : realloc(ptr, bytes); }
 
 /** Assert every byte, not merely byte zero, survives a rejection or relocation. */
+;;TEST
 static void checkBytes(const uint8_t *ptr, size_t bytes, uint8_t value) {
     for (size_t i = 0; i < bytes; i++)
         assert(ptr[i] == value);
