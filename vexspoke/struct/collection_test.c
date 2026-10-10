@@ -77,6 +77,20 @@ int main(void) {
     CHECK(Collection_dataBuffer(nullptr) == nullptr);
     CHECK(Collection_type(nullptr) == 0);
 
+    // Exhaustion observability (the Exhaustion Loudness Law): the shared seam
+    // counts every refusal and arms one diagnostic per epoch.
+    Collection *ac = (Collection*) a;
+    CHECK(Collection_exhaustionCount(ac) == 0);
+    CHECK(!Collection_reportExhaustion(ac, 4096));       // always reports false
+    CHECK(Collection_exhaustionCount(ac) == 1);
+    CHECK(!Collection_reportExhaustion(ac, 8192));
+    CHECK(Collection_exhaustionCount(ac) == 2);          // counted, not re-reported
+    Collection_resetExhaustion(ac);
+    CHECK(Collection_exhaustionCount(ac) == 0);          // fresh epoch
+    CHECK(Collection_exhaustionCount(nullptr) == 0);
+    CHECK(!Collection_reportExhaustion(nullptr, 16));    // null owner: still false
+    Collection_resetExhaustion(nullptr);                 // no crash
+
     Array_free(a);
 
     if (g_failures == 0) {

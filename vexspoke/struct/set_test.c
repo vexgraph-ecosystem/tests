@@ -23,6 +23,8 @@ int main(void) {
     CHECK(s != nullptr);
     CHECK(Set_isEmpty(s));
     CHECK(Set_size(s) == 0);
+    // The Exhaustion Loudness Law accessor: a fresh container has no refusals.
+    CHECK(Set_exhaustionCount(s) == 0);
     CHECK(Set_elementClassId(s) == ID_INT);
     CHECK(Set_dataBuffer(s) != nullptr);
 

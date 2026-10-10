@@ -31,6 +31,8 @@ int main(void) {
     Deque_addLast(d, 2);
     Deque_addFirst(d, 0);
     CHECK(Deque_size(d) == 3);
+    // The Exhaustion Loudness Law accessor: a fresh container has no refusals.
+    CHECK(Deque_exhaustionCount(d) == 0);
     CHECK(Deque_peekFirst(d) == 0);
     CHECK(Deque_peekLast(d) == 2);
     CHECK(Deque_get(d, 0) == 0);

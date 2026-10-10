@@ -23,6 +23,8 @@ int main(void) {
     CHECK(m != nullptr);
     CHECK(Map_isEmpty(m));
     CHECK(Map_size(m) == 0);
+    // The Exhaustion Loudness Law accessor: a fresh container has no refusals.
+    CHECK(Map_exhaustionCount(m) == 0);
     CHECK(Map_keyClassId(m) == ID_INT);
     CHECK(Map_dataBuffer(m) != nullptr);
 

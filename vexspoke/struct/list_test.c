@@ -51,6 +51,8 @@ int main(void) {
     CHECK(list != nullptr);
     CHECK(List_isEmpty(list));
     CHECK(List_size(list) == 0);
+    // The Exhaustion Loudness Law accessor: a fresh container has no refusals.
+    CHECK(List_exhaustionCount(list) == 0);
     CHECK(List_elementClassId(list) == ID_INT);
     CHECK(List_stride(list) == 4);
     CHECK(List_dataBuffer(list) != nullptr);

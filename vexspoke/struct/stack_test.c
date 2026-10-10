@@ -20,6 +20,7 @@ static int g_failures = 0;
 // Verifies LIFO push/pop behavior, empty defaults, and stack cleanup.
 int main(void) {
     Stack *s = Stack_1(ID_INT);
+    CHECK(Stack_exhaustionCount(s) == 0);   // fresh: no refused grows yet
     CHECK(s != nullptr);
     CHECK(Stack_isEmpty(s));
     CHECK(Stack_size(s) == 0);

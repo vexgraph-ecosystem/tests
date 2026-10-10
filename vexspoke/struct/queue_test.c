@@ -31,6 +31,8 @@ int main(void) {
     Queue_push(q, 20);
     Queue_push(q, 30);
     CHECK(Queue_size(q) == 3);
+    // The Exhaustion Loudness Law accessor: a fresh container has no refusals.
+    CHECK(Queue_exhaustionCount(q) == 0);
     CHECK(Queue_peek(q) == 10);
     CHECK(Queue_pop(q) == 10);
     CHECK(Queue_pop(q) == 20);
