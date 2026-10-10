@@ -29,6 +29,7 @@ class NativeTuiTest(unittest.TestCase):
     def test_native_owners_strict_and_sanitized(self):
         owners = [
             ("tui/tui_test.c", []),
+            ("tui/markdown_test.c", []),
             ("tui/event/mouse_event_test.c", ["tui/tui.c", "tui/event/mouse_event.c"]),
             ("personality/owo_test.c", ["personality/owo.c"]),
             ("cli/main_test.c", ["tui/tui.c", "tui/event/mouse_event.c", "personality/owo.c", "session/session_bridge.c"]),
@@ -44,13 +45,14 @@ class NativeTuiTest(unittest.TestCase):
                             argv += ["-fsanitize=address,undefined", "-fno-omit-frame-pointer"]
                         argv += [str(ROOT / "tests/primeagen" / owner)]
                         argv += [str(APP / source) for source in sources]
+                        argv += [str(APP / "tui/markdown.c")]
                         argv += [str(API / "harness/harness.c"), str(API / "harness/engine_provider.c")]
                         argv += [str(VEX / "net/json.c"), "-Wl,-dead_strip", "-lncurses", "-o", str(dest)]
                         subprocess.run(argv, check=True, capture_output=True, timeout=60)
                         result = subprocess.run([str(dest)], capture_output=True, timeout=20,
                                                 env={**os.environ, "ASAN_OPTIONS": "detect_leaks=0"})
                         self.assertEqual(result.returncode, 0, result.stderr.decode())
-                        if owner == "tui/tui_test.c":
+                        if owner in ("tui/tui_test.c", "tui/markdown_test.c"):
                             lines = result.stderr.decode().splitlines()
                             self.assertTrue(lines)
                             self.assertTrue(all(line.startswith("[vex]") for line in lines), lines)

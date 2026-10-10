@@ -114,6 +114,32 @@ int main(void) {
     failed = Tui(1, 1); assert(!Tui_isReady(&failed));
     failAfter = -1;
     assert(Tui_add(&c, "recovered", 9));
+    Tui_clear(&c);
+    uint8_t styles[4096];
+    assert(Tui_addStyled(&c, "**1234567890123456789**", 23, TEXT_STYLE_ASSISTANT, true));
+    assert(Tui_getVisualRowCount(&c) == 2);
+    assert(Tui_copyStyledRow(&c, 1, output, styles, sizeof(output), &cut));
+    assert(strcmp(output, "9") == 0 && styles[0] == (TEXT_STYLE_ASSISTANT | TEXT_STYLE_BOLD));
+    assert(styles[1] == 0);
+    assert(!Tui_addStyled(&c, "bad", 3, 0x80, true) && Tui_getCount(&c) == 1);
+    assert(Tui_addStyled(&c, hostile, sizeof(hostile), 0, true));
+    assert(Tui_copyRow(&c, 2, output, sizeof(output), nullptr));
+    assert(strcmp(output, "\\x1b\\x00\\xff") == 0);
+    assert(!Tui_copyStyledRow(&c, 0, output, styles, 2, &cut) && cut);
+    assert(output[1] == 0 && styles[1] == 0);
+    Tui small = Tui(1, 1);
+    assert(Tui_setSize(&small, 9, 20));
+    assert(Tui_add(&small, "survivor", 8));
+    for (int stage = 0; stage < 4; ++stage) {
+        failAfter = stage; /* safe copy, flags, render text, directory growth */
+        assert(!Tui_addStyled(&small, "**new**", 7, 0, true));
+        assert(Tui_getCount(&small) == 1);
+        assert(Tui_copyRow(&small, 0, output, sizeof(output), nullptr));
+        assert(strcmp(output, "survivor") == 0);
+    }
+    failAfter = -1;
+    assert(Tui_addStyled(&small, "**new**", 7, 0, true));
+    Tui_free(&small);
     Tui_free(&c); Tui_free(&c);
     assert(!Tui_isReady(&c));
     failed = Tui(0); assert(!Tui_isReady(&failed));

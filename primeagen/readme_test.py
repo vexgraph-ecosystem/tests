@@ -52,6 +52,15 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn('"effect": "deny"', host)
         self.assertNotIn("load_env", host)
         self.assertNotIn("auth.json", host)
+        for claim in ("C terminal Markdown adapter", "before wrapping", "flat subset", "not CommonMark"):
+            self.assertIn(claim, readme)
+        tui = (APP / "tui/tui.c").read_text()
+        terminal = (APP / "cli/main.c").read_text()
+        self.assertIn("Markdown_render(copy, used", tui)
+        self.assertIn("Tui_copyStyledRow", terminal)
+        self.assertIn("attributes(styles[j])", terminal)
+        self.assertIn("A_BOLD", terminal)
+        self.assertIn("A_UNDERLINE", terminal)
 
     def test_cli_no_contact_doctor_and_standalone_source_root_build(self):
         result = subprocess.run([sys.executable, str(APP / "src/cli.py"), "doctor"], capture_output=True, timeout=5)

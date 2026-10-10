@@ -17,7 +17,8 @@ int main(int argc, char **argv) {
     assert(Tui_add(&state, "visible", 7));
     assert(Tui_setInput(&state, "fixed", 5));
     char row[128];
-    assert(draw(&state, true, true, false, false, row, sizeof(row)));
+    uint8_t styles[128];
+    assert(draw(&state, true, true, false, false, row, styles, sizeof(row)));
     assert((mvinch(2, 1) & A_CHARTEXT) == 'v');
     assert((mvinch(18, 2) & A_CHARTEXT) == 'f');
     assert((mvinch(0, 45) & A_CHARTEXT) == '[');
@@ -43,7 +44,7 @@ int main(int argc, char **argv) {
     for (int i = 0; i < 30; ++i)
         assert(Tui_add(&state, "extra", 5));
     Tui_scrollBy(&state, 10);
-    assert(draw(&state, false, false, true, true, row, sizeof(row)));
+    assert(draw(&state, false, false, true, true, row, styles, sizeof(row)));
     assert((mvinch(19, 0) & A_CHARTEXT) == 'O');
     assert((mvinch(18, 2) & A_CHARTEXT) == 'f');
     MEVENT event = {0};
@@ -55,9 +56,29 @@ int main(int argc, char **argv) {
     assert(getmouse(&received) == OK);
     assert(TuiMouse_dispatch(&state, received.x, received.y, TUI_MOUSE_CLICK) == TUI_MOUSE_CLEAR);
     assert(ungetch(KEY_PPAGE) == OK && getch() == KEY_PPAGE);
+    Tui_clear(&state);
+    start_color();
+    use_default_colors();
+    init_pair(TUI_PAIR_HEADER, COLOR_CYAN, -1);
+    init_pair(TUI_PAIR_CODE, COLOR_YELLOW, -1);
+    init_pair(TUI_PAIR_INPUT, COLOR_GREEN, -1);
+    assert(Tui_addStyled(&state, "You:", 4, TEXT_STYLE_USER | TEXT_STYLE_BOLD, false));
+    const char *markdown = "# Title\n**bold** and *soft* `code`\n\n\nnext";
+    assert(Tui_addStyled(&state, markdown, strlen(markdown), 0, true));
+    assert(draw(&state, false, false, true, false, row, styles, sizeof(row)));
+    assert((mvinch(2, 1) & A_BOLD) != 0);
+    assert(PAIR_NUMBER(mvinch(2, 1)) == TUI_PAIR_INPUT);
+    assert((mvinch(3, 1) & A_CHARTEXT) == 'T');
+    assert((mvinch(3, 1) & A_BOLD) != 0);
+    assert(PAIR_NUMBER(mvinch(3, 1)) == TUI_PAIR_HEADER);
+    assert((mvinch(4, 1) & A_CHARTEXT) == 'b');
+    assert((mvinch(4, 1) & A_BOLD) != 0);
+    assert((mvinch(4, 10) & A_UNDERLINE) != 0);
+    assert(PAIR_NUMBER(mvinch(4, 15)) == TUI_PAIR_CODE);
+    assert((mvinch(6, 1) & A_CHARTEXT) == 'n');
     assert(resizeterm(2, 10) != ERR);
     assert(Tui_setSize(&state, 2, 10));
-    assert(draw(&state, false, true, false, false, row, sizeof(row)));
+    assert(draw(&state, false, true, false, false, row, styles, sizeof(row)));
     endwin(); delscreen(screen);
     fclose(input); fclose(output); Tui_free(&state);
 }
