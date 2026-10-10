@@ -60,6 +60,19 @@ class RequestTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing"):
             Provider("local", "test", bridge=self.path / "missing").render("hello")
 
+    def test_owo_instructions_preserve_task_bytes_and_protocol_guidance(self):
+        text = 'actual task: edit path/owo.c; keep JSON "arguments" intact'
+        for bridge in (self.bridge, self.sanitized):
+            for family in ("openai", "anthropic", "local"):
+                _, body = Provider(family, "test", bridge=bridge, owo=True).render(text)
+                content = json.loads(body)["messages"][0]["content"]
+                self.assertTrue(content.endswith(text))
+                self.assertIn("Complete the user's actual task competently", content)
+                self.assertIn("required JSON action protocol", content)
+                self.assertIn("separate tool consent", content)
+        with self.assertRaises(ValueError):
+            Provider("openai", "test", owo="true")
+
     def test_real_binding_cold_rejections_growth_and_sanitizers(self):
         for bridge in (self.bridge, self.sanitized):
             for data in (b"", b"embedded\0nul", b"x" * (1024 * 1024 + 1)):
