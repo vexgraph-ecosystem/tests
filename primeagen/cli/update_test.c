@@ -15,7 +15,7 @@ static void render(HotModule *hot, Tui *state, char expected) {
     assert(fn);
     char row[128];
     uint8_t styles[128];
-    assert(fn(state, false, true, false, false, row, styles, sizeof(row)));
+    assert(fn(state, false, true, false, false, false, row, styles, sizeof(row)));
     assert((mvinch(0, 11) & A_CHARTEXT) == (chtype) expected);
     assert((mvinch(18, 2) & A_CHARTEXT) == 'd');
     assert(strcmp(Tui_getInput(state), "draft") == 0);

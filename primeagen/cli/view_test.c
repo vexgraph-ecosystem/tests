@@ -23,7 +23,7 @@ int main(void) {
     assert(Tui_setInput(&state, "draft", 5));
     char row[256];
     uint8_t styles[256];
-    assert(Primeagen_drawPanels(&state, false, true, false, false, 0, 0, 32, row, styles, sizeof row));
+    assert(Primeagen_drawPanels(&state, false, true, false, false, false, 0, 0, 32, row, styles, sizeof row));
     int caretY, caretX;
     getyx(stdscr, caretY, caretX);
     assert(caretY == 22 && caretX == left + 7);
@@ -40,7 +40,7 @@ int main(void) {
     assert((mvinch(2, 2) & A_ALTCHARSET) != 0); // shared separator row
     assert((mvinch(2, left + 1) & A_CHARTEXT) == 'l');
     size_t scroll = Tui_getScroll(&state);
-    assert(Primeagen_drawPanels(&state, false, true, false, false, 0, 1, 32, row, styles, sizeof row));
+    assert(Primeagen_drawPanels(&state, false, true, false, false, false, 0, 1, 32, row, styles, sizeof row));
     assert(Tui_getScroll(&state) == scroll);
     assert((mvinch(2, left + 1) & A_CHARTEXT) == 'S');
     assert((mvinch(22, left + 2) & A_CHARTEXT) == ' ');
@@ -55,7 +55,7 @@ int main(void) {
     assert(panel == 1 && selected == 5); // rejection preserves both outputs
     Tui_clear(&state);
     assert(Tui_addStyled(&state, "**Hello 👋 café 中文 é**", strlen("**Hello 👋 café 中文 é**"), 0, true));
-    assert(Primeagen_drawPanels(&state, false, true, false, false, 0, 0, 32, row, styles, sizeof row));
+    assert(Primeagen_drawPanels(&state, false, true, false, false, false, 0, 0, 32, row, styles, sizeof row));
     assert(mvin_wch(2, left + 7, &cell) == OK);
     assert(getcchar(&cell, text, &attr, &pair, nullptr) == OK);
     assert(text[0] == (wchar_t) 0x1f44b && (attr & A_BOLD));
@@ -72,15 +72,15 @@ int main(void) {
         left = Primeagen_chatLeft(columns, 32);
         assert(left == 0 || (left > PRIMEAGEN_RAIL_WIDTH && columns - left >= TUI_MIN_COLUMNS));
         assert(Tui_setSize(&state, 10, columns - left));
-        assert(Primeagen_drawPanels(&state, false, false, false, false, 2, 5, 32, row, styles, sizeof row));
-        assert(Primeagen_drawPanels(&state, false, true, false, false, 0, 0, 32, row, styles, sizeof row));
+        assert(Primeagen_drawPanels(&state, false, false, false, false, false, 2, 5, 32, row, styles, sizeof row));
+        assert(Primeagen_drawPanels(&state, false, true, false, false, false, 0, 0, 32, row, styles, sizeof row));
     }
-    assert(!Primeagen_drawPanels(nullptr, false, false, false, false, 0, 0, 32, row, styles, sizeof row));
-    assert(!Primeagen_drawPanels(&state, false, false, false, false, 0, 6, 32, row, styles, sizeof row));
+    assert(!Primeagen_drawPanels(nullptr, false, false, false, false, false, 0, 0, 32, row, styles, sizeof row));
+    assert(!Primeagen_drawPanels(&state, false, false, false, false, false, 0, 6, 32, row, styles, sizeof row));
     assert(resizeterm(24, 100) != ERR);
     assert(Tui_setSize(&state, 24, 63));
     assert(setlocale(LC_CTYPE, "C") != nullptr);
-    assert(Primeagen_drawPanels(&state, false, false, false, false, 0, 0, 32, row, styles, sizeof row));
+    assert(Primeagen_drawPanels(&state, false, false, false, false, false, 0, 0, 32, row, styles, sizeof row));
     assert((mvinch(1, 2) & A_CHARTEXT) == '@'); // usable non-UTF locale fallback
     assert((mvinch(2, 44) & A_CHARTEXT) == '?'); // no byte escapes or invalid terminal encoding
     endwin();

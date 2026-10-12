@@ -22,23 +22,32 @@ class ProcessTest(unittest.TestCase):
         self.assertEqual(run([sys.executable, "-c", "pass"]), b"")
 
     def test_overflow_error_timeout_and_cancel_paths_then_recovery(self):
-        for source, kwargs, message in [("import sys; sys.stdout.write('x'*10000)", {"cap": 100}, "truncated"),
-                                       ("import sys; sys.stderr.write('bad')", {}, "diagnostics"),
-                                       ("raise SystemExit(4)", {}, "exit 4"),
-                                       ("import time; time.sleep(30)", {"timeout": 0.1}, "deadline")]:
+        for source, kwargs, error, message in [("import sys; sys.stdout.write('x'*10000)", {"cap": 100}, ValueError, "truncated"),
+                                               ("import sys; sys.stderr.write('bad')", {}, ValueError, "diagnostics"),
+                                               ("raise SystemExit(4)", {}, ValueError, "exit 4"),
+                                               ("import time; time.sleep(30)", {"timeout": 0.1}, TimeoutError, "deadline")]:
             start = time.monotonic()
-            with self.assertRaisesRegex(ValueError, message):
+            with self.assertRaisesRegex(error, message):
                 run([sys.executable, "-c", source], **kwargs)
             self.assertLess(time.monotonic() - start, 5)
             self.assertEqual(run([sys.executable, "-c", "print('ok')"]), b"ok\n")
         for argv, kwargs in [([], {}), (["bad\0"], {}), ([sys.executable], {"timeout": float("nan")}),
-                             ([sys.executable], {"cap": 0}), ([sys.executable], {"data": b"x" * (1024 * 1024 + 1)})]:
+                             ([sys.executable], {"cap": 0}), ([sys.executable], {"data": b"x" * (1024 * 1024 + 1)}),
+                             ([sys.executable], {"allowStderr": "yes"})]:
             with self.assertRaises(ValueError):
                 run(argv, **kwargs)
 
+    def test_stdout_contract_can_tolerate_noisy_diagnostics(self):
+        # The official CLI's reply is its stdout; unrelated stderr noise must not
+        # be read as a failure there, while staying bounded and unsurfaced.
+        noisy = "import sys; sys.stderr.write('notice'); print('{\"data\":[]}')"
+        with self.assertRaisesRegex(ValueError, "diagnostics"):
+            run([sys.executable, "-c", noisy])
+        self.assertEqual(run([sys.executable, "-c", noisy], allowStderr=True), b'{"data":[]}\n')
+
     def test_descendant_inherited_pipe_is_in_whole_job_deadline(self):
         source = "import subprocess,sys; subprocess.Popen([sys.executable,'-c','import time; time.sleep(30)'])"
-        with self.assertRaisesRegex(ValueError, "deadline"):
+        with self.assertRaisesRegex(TimeoutError, "deadline"):
             run([sys.executable, "-c", source], timeout=0.2)
 
     def test_short_bash_overflow_preserves_failure_then_recovers(self):

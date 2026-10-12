@@ -24,7 +24,7 @@ class SessionHostTest(unittest.TestCase):
         self.calls = []
         self.message_id = None
         policy = host.SESSION_PERMISSIONS if permissions is None else permissions
-        def request(method, path, body=None, timeout=10, empty=False, cap=None):
+        def request(method, path, body=None, timeout=10, empty=False, cap=None, allowStderr=False):
             self.calls.append((method, path, body))
             if path == "/api/session":
                 return {"data": {"id": "ses_fake", "permissions": policy}}
@@ -176,6 +176,26 @@ class SessionHostTest(unittest.TestCase):
                     "newest": None, "said": set(), "held": [], "flowed": False}
             self.assertEqual(host.advance("ses_fake", turn), ([], None, None))
             self.assertEqual(child.call_args.kwargs["cap"], host.MESSAGE_CAP)
+
+    def test_approval_is_polled_while_the_turn_is_still_on_the_page(self):
+        # The regression: approvals used to be polled only when this turn's prompt
+        # message had already fallen off the newest page, so a request raised mid-turn
+        # was never seen and the agent blocked until the watchdog killed the turn.
+        self.pending = {"data": [{"id": "per_9", "sessionID": "ses_fake", "action": "shell",
+                                  "resources": ["rm -rf build"]}]}
+        turn = self.turn([{"id": "msg_step", "type": "assistant", "content": []}])
+        with patch.object(host, "api", self.api):
+            notes, ask, done = host.advance("ses_fake", turn)
+            self.assertEqual((notes, done), ([], None))
+            self.assertEqual(ask["action"], "shell")
+            self.assertEqual(host.advance("ses_fake", turn), ([], None, None))  # waiting
+
+    def test_slow_page_read_is_transient_not_fatal(self):
+        turn = {"messageId": "m", "deadline": host.time.monotonic() + 100, "awaiting": None,
+                "awaitingSince": 0.0, "nextCheck": host.time.monotonic() + 100, "seen": set(),
+                "said": set(), "held": [], "flowed": False, "newest": None}
+        with patch.object(host, "api", side_effect=TimeoutError("child deadline exceeded")):
+            self.assertEqual(host.advance("ses_fake", turn), ([], None, None))
 
     def test_tool_calls_stream_as_bounded_notes_and_never_execute_locally(self):
         tool = {"type": "tool", "id": "tool_1", "name": "edit",
@@ -342,6 +362,36 @@ class SessionHostTest(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertEqual(json.loads(result.stdout)["ok"], False)
                 self.assertNotIn(b"secret", result.stdout + result.stderr)
+
+    def test_worker_reports_a_classified_reason_before_failing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            executable = Path(directory) / "opencode"
+            permissions = json.dumps(host.SESSION_PERMISSIONS)
+            executable.write_text(
+                '#!/usr/bin/env python3\n'
+                'import json, sys\n'
+                f'permissions = json.loads({permissions!r})\n'
+                'path = sys.argv[3]\n'
+                'if path == "/api/session":\n'
+                '    print(json.dumps({"data": {"id": "ses_fixture", "permissions": permissions}}))\n'
+                'elif path == "/api/session/ses_fixture":\n'
+                '    print(json.dumps({"data": {"permissions": permissions}}))\n'
+                'elif path.endswith("/permission"):\n'
+                '    print(json.dumps({"data": []}))\n'
+                'elif path.endswith("/prompt"):\n'
+                '    print(json.dumps({"data": {}}))\n'
+                'else:\n'
+                '    print(json.dumps({"data": "not a message list"}))\n')
+            executable.chmod(0o700)
+            result = subprocess.run([sys.executable, str(APP / "src/session_host.py"), "--worker"],
+                                    input=b'{"prompt":"test","instructions":""}\n', cwd=directory,
+                                    env={**os.environ, "PATH": directory + ":" + os.environ["PATH"]},
+                                    capture_output=True, timeout=15)
+            self.assertEqual(result.returncode, 1)
+            frames = [json.loads(line) for line in result.stdout.splitlines()]
+            self.assertEqual(frames[0], {"note": "session error: invalid session messages"})
+            self.assertEqual(frames[-1]["ok"], False)
+            self.assertNotIn(b"Traceback", result.stderr)
 
     def test_native_real_haven_owner_strict_sanitized(self):
         with tempfile.TemporaryDirectory() as directory:
