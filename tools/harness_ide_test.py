@@ -9,8 +9,8 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-OWNER = ROOT / "ecosystem/repos/harness"
-VEXSPOKE = ROOT / "ecosystem/repos/vexspoke/src"
+OWNER = ROOT / "interfaces/harness"
+VEXSPOKE = ROOT / "host-behavior/vexspoke/src"
 
 
 def run(args, **kwargs):
@@ -44,7 +44,7 @@ class HarnessIdeTest(unittest.TestCase):
         self.assertEqual(len(sources), 4)
         self.assertEqual({Path(entry["file"]) for entry in owned}, sources)
         for entry in owned:
-            self.assertIn("vexgraph_extra_harness.dir", entry["command"])
+            self.assertIn("vexgraph_index_harness.dir", entry["command"])
             self.assertIn(str(VEXSPOKE), entry["command"])
             run(syntax_args(entry), cwd=entry["directory"])
         entry = owned[0]
@@ -55,10 +55,10 @@ class HarnessIdeTest(unittest.TestCase):
                 input=f'#include "{header.relative_to(OWNER / "src")}"\n')
 
     def test_excluded_target_has_no_runtime_dependency(self):
-        run(["cmake", "--build", str(self.build), "--target", "vexgraph_extra_harness"])
+        run(["cmake", "--build", str(self.build), "--target", "vexgraph_index_harness"])
         objects = list(self.build.rglob("*.o"))
         self.assertEqual(len(objects), 4)
-        self.assertTrue(all("vexgraph_extra_harness.dir" in str(path) for path in objects))
+        self.assertTrue(all("vexgraph_index_harness.dir" in str(path) for path in objects))
 
     def test_recursive_new_source_and_header_discovery(self):
         source = self.home / "copied source"
@@ -83,7 +83,21 @@ class HarnessIdeTest(unittest.TestCase):
         result = subprocess.run(args, text=True, capture_output=True,
                                 cwd=entry["directory"], timeout=30)
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("exception/throw.h", result.stderr)
+        self.assertIn("annotation/definition.h", result.stderr)
+
+    def test_header_only_blueprint_creates_no_fake_object_target(self):
+        source = self.home / "header-only"
+        source.mkdir()
+        (source / "planned.h").write_text("int planned(void);\n")
+        build = self.home / "header-only-build"
+        run(["cmake", "-S", str(ROOT), "-B", str(build),
+             f"-DVEXGRAPH_HARNESS_SOURCE_DIR={source}", "-DBUILD_TESTING=OFF"])
+        database = json.loads((build / "compile_commands.json").read_text())
+        self.assertFalse(any(str(source) in entry["file"] for entry in database))
+        result = subprocess.run(["cmake", "--build", str(build), "--target", "vexgraph_extra_harness"],
+                                text=True, capture_output=True, timeout=30)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("vexgraph_extra_harness", result.stderr)
 
     def test_clion_bundled_parser_accepts_actual_harness_files(self):
         clangd = Path("/Applications/CLion.app/Contents/bin/clang/mac/aarch64/bin/clangd")

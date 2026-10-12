@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 
 WORKSPACE = Path(__file__).resolve().parents[2]
-ROOT = WORKSPACE / "ecosystem/repos/relational-engine"
+ROOT = WORKSPACE / "host-behavior/relational-engine"
 prefs = (ROOT / "relational-engine-preferences.md").read_text()
 for title in ("Resident Storage Boundary Law", "Cross-Language Atomic Access Law",
               "One Rust Class Per File Law", "CamelCase Rust Constructor Macro Law",
@@ -11,8 +11,8 @@ for title in ("Resident Storage Boundary Law", "Cross-Language Atomic Access Law
     assert f"### {title}" in prefs
 assert "4132a6c45cb6d3797c3e8eff2e94035a" in prefs
 assert "record-schema migration" in prefs and "not" in prefs
-constitution = (WORKSPACE / "preferences.md").read_text()
-assert "ecosystem/repos/relational-engine/relational-engine-preferences.md" in constitution
+constitution = (WORKSPACE / "gist/PREFERENCES.md").read_text()
+assert "host-behavior/relational-engine/relational-engine-preferences.md" in constitution
 assert "No C/Rust atomic-layout compatibility is assumed" in constitution
 for path in (ROOT / "rust/src").rglob("*.rs"):
     if path.name == "helloworld.rs":
@@ -21,7 +21,7 @@ for path in (ROOT / "rust/src").rglob("*.rs"):
     assert len(declarations) <= 1, (path, declarations)
 assert "get_atomic_byte" in (ROOT / "rust/README.md").read_text()
 assert "atomic_string_owner" in (WORKSPACE / "tests/relational-engine/README.md").read_text()
-vex_prefs = (WORKSPACE / "ecosystem/repos/vexspoke/vexspoke-preferences.md").read_text()
+vex_prefs = (WORKSPACE / "host-behavior/vexspoke/vexspoke-preferences.md").read_text()
 assert "relational_engine/memory.h" in vex_prefs
 assert "actual Hotcwap reload integration remains unproved" in vex_prefs
 assert "relational-engine-preferences.md" in (ROOT / "README.md").read_text()

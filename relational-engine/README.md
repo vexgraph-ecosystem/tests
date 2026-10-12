@@ -1,6 +1,6 @@
 # Relational engine owner tests
 
-Tests for `ecosystem/repos/relational-engine`, maintained in the independent tests
+Tests for `../../host-behavior/relational-engine`, maintained in the independent tests
 repository rather than production source. Run from the workspace root:
 
 ```sh
@@ -68,7 +68,7 @@ client asserts ABI layout, growth, pointer rebinding and borrowed-value teardown
 borrows fail for the intended diagnostic. New fault injection is thread-local,
 deterministic, and scoped to isolated owner executables; no timing sleeps.
 
-Needs the sibling workspace `../../ecosystem/repos/relational-engine` checkout, Cargo,
+Needs the sibling workspace `../../host-behavior/relational-engine` checkout, Cargo,
 rustc, clang and CMake. Current evidence is macOS only. Rust internals are not
 sanitizer-instrumented here; OOM injection, concurrency, Vexspoke allocator
 equivalence, deterministic writer-busy injection, automatic record schema

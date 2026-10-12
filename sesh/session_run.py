@@ -7,7 +7,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 SUITE = ROOT / "tests/sesh"
-SRC = ROOT / "ecosystem/repos/sesh/src"
+SRC = ROOT / "interfaces/sesh/src"
 SOURCES = sorted((SRC / "session").glob("*.c"))
 TEXT_ERRORS = ["session text: missing destination"] * 2 + ["session text: truncated"]
 EXPECTED = {
@@ -41,9 +41,9 @@ with tempfile.TemporaryDirectory(prefix="sesh-classes-", dir=os.environ.get("TMP
                             ("tsan", ["-fsanitize=thread"])):
         flags = ["clang", "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-O2", "-UNDEBUG",
                  "-mcpu=apple-m1", "-mmacosx-version-min=14.0", *sanitizer,
-                 "-I" + str(SRC), "-I" + str(ROOT / "ecosystem/repos/vexspoke/src"),
-                 "-I" + str(ROOT / "ecosystem/repos/api-haven/src"),
-                 "-I" + str(ROOT / "ecosystem/repos/graphvex/src")]
+                 "-I" + str(SRC), "-I" + str(ROOT / "host-behavior/vexspoke/src"),
+                 "-I" + str(ROOT / "drivers/api-haven/src"),
+                 "-I" + str(ROOT / "drivers/graphvex/src")]
         owners = sorted((SUITE / "session").glob("*_test.c")) + sorted((SUITE / "lang").glob("*_test.c"))
         if mode == "tsan":
             owners = [SUITE / "session/sesh_test.c"]

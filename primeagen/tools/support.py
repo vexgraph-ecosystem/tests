@@ -11,7 +11,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
 APP = ROOT / "personal/primeagen"
-VEX = ROOT / "ecosystem/repos/vexspoke/src"
+VEX = ROOT / "host-behavior/vexspoke/src"
 SOURCES = ("main", "fs", "read", "list", "write", "create", "edit", "delete", "bash", "websearch")
 
 

@@ -10,9 +10,9 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
 APP = ROOT / "personal/primeagen"
-VEX = ROOT / "ecosystem/repos/vexspoke/src"
-API = ROOT / "ecosystem/repos/api-haven/src"
-HOT = ROOT / "ecosystem/repos/hotcwap"
+VEX = ROOT / "host-behavior/vexspoke/src"
+API = ROOT / "drivers/api-haven/src"
+HOT = ROOT / "host-behavior/hotcwap"
 
 
 class NativeTuiTest(unittest.TestCase):

@@ -9,8 +9,8 @@ import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-VEX = ROOT / "ecosystem/repos/vexspoke"
-ENGINE = ROOT / "ecosystem/repos/relational-engine"
+VEX = ROOT / "host-behavior/vexspoke"
+ENGINE = ROOT / "host-behavior/relational-engine"
 
 
 def run(*args):

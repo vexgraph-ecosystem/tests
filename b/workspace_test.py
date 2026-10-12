@@ -53,24 +53,87 @@ class WorkspaceTest(unittest.TestCase):
     def test_reorganized_paths_keep_storage_in_engine_and_cpu_in_vexspoke(self):
         """Assert migrated storage provenance without moving retained CPU reflection."""
         metadata = json.dumps(json.loads(self.invoke("ide")))
-        self.assertIn("ecosystem/repos/vexspoke/src", metadata)
-        self.assertIn("ecosystem/repos/graphvex/src", metadata)
-        self.assertIn("ecosystem/repos/hotcwap", metadata)
-        self.assertIn("ecosystem/repos/darling-framework/src", metadata)
+        self.assertIn("host-behavior/vexspoke/src", metadata)
+        self.assertIn("drivers/graphvex/src", metadata)
+        self.assertIn("host-behavior/hotcwap", metadata)
+        self.assertIn("interfaces/darling-framework/src", metadata)
+        self.assertNotIn("ecosystem/repos/", metadata)
+        self.assertNotIn("ecosystem/projects/", metadata)
         self.assertNotIn("ecosystem/drivers/", metadata)
         self.assertNotIn("ecosystem/interface/", metadata)
         self.assertNotIn("personal/relational-engine", metadata)
-        self.assertIn("ecosystem/repos/relational-engine/src", metadata)
+        self.assertIn("host-behavior/relational-engine/src", metadata)
         for part, unit in (("nio", "mem"), ("io", "file")):
             for suffix in (".c", ".h"):
-                self.assertTrue((ROOT / "ecosystem/repos/relational-engine/src" / part / (unit + suffix)).is_file())
-                self.assertFalse((ROOT / "ecosystem/repos/vexspoke/src" / part / (unit + suffix)).exists())
+                self.assertTrue((ROOT / "host-behavior/relational-engine/src" / part / (unit + suffix)).is_file())
+                self.assertFalse((ROOT / "host-behavior/vexspoke/src" / part / (unit + suffix)).exists())
         for part, unit in (("relational", "symbol_table"), ("reflection", "field")):
             for suffix in (".c", ".h"):
-                self.assertTrue((ROOT / "ecosystem/repos/vexspoke/src" / part / (unit + suffix)).is_file())
+                self.assertTrue((ROOT / "host-behavior/vexspoke/src" / part / (unit + suffix)).is_file())
 
     def test_color_pass_target_has_vulkan_headers_and_loader_link(self):
         self.assert_vulkan_target_client("color_pass_test")
+
+    def test_determinant_registration_is_r2_only_and_excludes_fixtures(self):
+        """Exercise registration over disposable names, not a fake runtime library."""
+        with tempfile.TemporaryDirectory(prefix="determinant graph ") as scratch:
+            home = Path(scratch)
+            for relative in ("drivers/determinant/src/cli/command.c",
+                             "drivers/determinant/src/terminal/console.c",
+                             "drivers/determinant/src/widgets/button.c",
+                             "tests/determinant/cli/command_test.c",
+                             "tests/determinant/terminal/console_test.c",
+                             "tests/determinant/terminal/terminal_reload_test.c",
+                             "tests/determinant/fixtures/view_module.c",
+                             "tests/determinant/fixtures/ignored_test.c",
+                             "tests/determinant/terminal/helper.c"):
+                path = home / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("")
+            client = home / "registration.c"
+            client.write_text(r'''
+#define main workspaceEntry
+#include "workspace.c"
+#undef main
+#include <assert.h>
+int main(int argc, char **argv) {
+    assert(argc == 2);
+    g_root = argv[1];
+    TargetList targets = {0};
+    g_out = strf("%s/out", g_root);
+    setup_determinant(&targets);
+    assert(targets.count == 6);
+    const Target *lib = find_target(&targets, "determinant");
+    assert(lib != nullptr && (*lib).kind == T_LIB && (*lib).srcs.count == 3);
+    assert((*lib).deps.count == 1 && !strcmp((*lib).deps.items[0], "vexspoke"));
+    const Target *owner = find_target(&targets, "determinant_console_test");
+    assert(owner != nullptr && (*owner).is_test && (*owner).srcs.count == 1);
+    assert((*owner).deps.count == 1 && !strcmp((*owner).deps.items[0], "determinant"));
+    assert(find_target(&targets, "command_test") != nullptr);
+    assert(find_target(&targets, "ignored_test") == nullptr);
+    assert(find_target(&targets, "helper") == nullptr);
+    const Target *moduleA = find_target(&targets, "determinant_view_a");
+    const Target *moduleB = find_target(&targets, "determinant_view_b");
+    assert(moduleA != nullptr && moduleB != nullptr);
+    assert((*moduleA).kind == T_MOD && (*moduleB).kind == T_MOD);
+    assert(sl_has(&(*moduleA).defs, "DETERMINANT_FIXTURE_MARK=65"));
+    assert(sl_has(&(*moduleB).defs, "DETERMINANT_FIXTURE_MARK=66"));
+    const Target *reload = find_target(&targets, "terminal_reload_test");
+    assert(reload != nullptr && (*reload).is_test);
+    assert(sl_has(&(*reload).defs, strf("DETERMINANT_MODULE_A=\"%s\"", (*moduleA).out_path)));
+    assert(sl_has(&(*reload).defs, strf("DETERMINANT_MODULE_B=\"%s\"", (*moduleB).out_path)));
+    g_root = strf("%s/source-free", argv[1]);
+    TargetList empty = {0};
+    setup_determinant(&empty);
+    assert(empty.count == 0);
+    return 0;
+}
+''')
+            binary = home / "registration"
+            subprocess.run([os.environ.get("CC", "cc"), "-std=gnu23", "-Wall", "-Wextra", "-Werror",
+                            "-I", str(ROOT / "tools"), str(client), "-o", str(binary)],
+                           capture_output=True, check=True, timeout=120)
+            subprocess.run([str(binary), str(home)], capture_output=True, check=True, timeout=30)
 
     def test_filter_gallery_target_has_vulkan_headers_and_loader_link(self):
         self.assert_vulkan_target_client("filter_gallery_fixture_test")
@@ -151,11 +214,11 @@ int main(int argc, char **argv) {
             self.skipTest("glslangValidator unavailable")
         with tempfile.TemporaryDirectory(prefix="b shader wiring ") as scratch:
             home = Path(scratch)
-            base = home / "ecosystem/repos/graphvex/src"
+            base = home / "drivers/graphvex/src"
             shaders = base / "shaders/compositor"
             shaders.mkdir(parents=True)
             (base / "filter").mkdir()
-            owner = ROOT / "ecosystem/repos/graphvex/src"
+            owner = ROOT / "drivers/graphvex/src"
             names = ["scatter.vert", "scatter.frag", "resolve.vert", "resolve.frag", "color.frag", "scope.frag"]
             for name in names:
                 shutil.copyfile(owner / "shaders/compositor" / name, shaders / name)
@@ -184,7 +247,7 @@ int main(int argc, char **argv) {
             continue;
         if (strstr(g_gens[i].src, "/filter/filter_type.h") != nullptr)
             ++headers;
-        char *includeRoot = strf("-I%s/ecosystem/repos/graphvex/src", g_root);
+        char *includeRoot = strf("-I%s/drivers/graphvex/src", g_root);
         const Cmd *command = &g_gens[i].cmd;
         bool hasCanonicalRoot = false;
         for (int k = 0; k < (*command).count; ++k)

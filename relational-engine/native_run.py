@@ -11,8 +11,8 @@ import tempfile
 
 SUITE = Path(__file__).resolve().parent
 WORKSPACE = SUITE.parents[1]
-ENGINE = WORKSPACE / "ecosystem/repos/relational-engine"
-CPU = WORKSPACE / "ecosystem/repos/vexspoke"
+ENGINE = WORKSPACE / "host-behavior/relational-engine"
+CPU = WORKSPACE / "host-behavior/vexspoke"
 
 assert not (CPU / "src/nio/mem.c").exists()
 assert not list((CPU / "src/io").glob("*"))

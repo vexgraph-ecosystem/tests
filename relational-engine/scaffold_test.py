@@ -5,7 +5,7 @@ import os
 import subprocess
 import tempfile
 
-ROOT = Path(__file__).resolve().parents[2] / "ecosystem" / "repos" / "relational-engine"
+ROOT = Path(__file__).resolve().parents[2] / "host-behavior" / "relational-engine"
 SUITE = Path(__file__).resolve().parent
 
 
@@ -49,7 +49,7 @@ def main():
     assert "relational-engine-preferences.md" in (ROOT / "CONTRIBUTING.md").read_text()
     assert (ROOT / "src/LICENSE").read_text().startswith("Boost Software License")
     assert (ROOT / "LICENSE").read_text().startswith("MIT License")
-    workspace = ROOT.parents[2]
+    workspace = ROOT.parents[1]
     assert "EXCLUDE_FROM_ALL" in (workspace / "CMakeLists.txt").read_text()
     scratch = os.environ.get("TMPDIR")
     with tempfile.TemporaryDirectory(prefix="relational-scaffold-", dir=scratch) as tmp:

@@ -42,7 +42,7 @@ class ReadmeTest(unittest.TestCase):
                          "writes a schema-1 JSON form", "portable directory",
                          "not implemented", "`targets` must be empty",
                        "parse-only", "exactly one", "SDK 10+", "main.rs",
-                         "../../tests/b/cli_test.py", "../../preferences.md",
+                          "../../tests/b/cli_test.py", "../../gist/PREFERENCES.md",
                          "https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a"):
             self.assertIn(phrase, text)
         adapters = (ROOT / "ADAPTERS.md").read_text()

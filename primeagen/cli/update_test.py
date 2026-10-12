@@ -16,8 +16,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
 APP = ROOT / "personal/primeagen"
-HOT = ROOT / "ecosystem/repos/hotcwap"
-VEX = ROOT / "ecosystem/repos/vexspoke/src"
+HOT = ROOT / "host-behavior/hotcwap"
+VEX = ROOT / "host-behavior/vexspoke/src"
 TEST = Path(__file__).resolve().parent
 
 

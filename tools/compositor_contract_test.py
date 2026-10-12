@@ -5,21 +5,25 @@ import json
 import re
 import subprocess
 import unittest
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
-GRAPHVEX = ROOT / "ecosystem/repos/graphvex"
+GRAPHVEX = ROOT / "drivers/graphvex"
+CONSTITUTION = "https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a"
+READINESS = "https://gist.github.com/vex-graph/6943f92acb931b25dad1073c46da6ce7#file-graphvex-md"
+BLOCKERS = "https://gist.github.com/vex-graph/e921fa188eebbd0c68c4e59646109887"
 
 
 class CompositorContractTest(unittest.TestCase):
     def test_picture_promotion_and_gallery_contract(self):
-        darling = ROOT / "ecosystem/interface/darling-framework"
+        darling = ROOT / "interfaces/darling-framework"
         manifest = json.loads((darling / "scaffolds.json").read_text())
         self.assertEqual(len(manifest["entries"]), 125)
         self.assertNotIn("Picture", [row["name"] for row in manifest["entries"]])
         self.assertIn("Picture", [row["name"] for row in manifest["existing"]])
         self.assertIn("125 draft pairs", (darling / "STATUS.md").read_text())
         self.assertIn("90 class drafts", (darling / "SCAFFOLDS.md").read_text())
-        readiness = (ROOT / "repos/.ecosystem/darling.md").read_text()
+        readiness = (ROOT / "gist/readiness/darling.md").read_text()
         self.assertIn("125 draft pairs", readiness)
         self.assertIn("native `filter_gallery --smoke` pass", readiness)
         law = (ROOT / "tests/test-preferences.md").read_text()
@@ -39,7 +43,7 @@ class CompositorContractTest(unittest.TestCase):
         self.assertIn("bypasses the content/focus FPS cap", documentation)
 
     def test_universal_ownership_is_reconciled(self):
-        for path in (ROOT / "preferences.md",):
+        for path in (ROOT / "gist/PREFERENCES.md",):
             text = path.read_text()
             with self.subTest(path=str(path)):
                 self.assertIn("graphical element trees and the widget/image compositor", text)
@@ -64,7 +68,7 @@ class CompositorContractTest(unittest.TestCase):
         self.assertNotIn("widget composition, and application behavior remain in Darling", text)
 
     def test_interface_ownership_and_relative_link(self):
-        path = ROOT / "ecosystem/interface/darling-framework/README.md"
+        path = ROOT / "interfaces/darling-framework/README.md"
         text = path.read_text()
         self.assertIn("Graphvex owns graphical element", text)
         self.assertIn("automatic widget-stack", text)
@@ -84,10 +88,22 @@ class CompositorContractTest(unittest.TestCase):
         readme = (GRAPHVEX / "README.md").read_text()
         self.assertIn("Graphvex owns widget/element composition", readme)
         self.assertIn("compositor/filter_pool", readme)
-        for path in (GRAPHVEX / "README.md", GRAPHVEX / "COMPOSITOR.md"):
+        contract = GRAPHVEX / "graphvex-preferences.md"
+        links = re.findall(r"\]\(([^)]+)\)", contract.read_text())
+        # Canonical publication identities are checked offline, never fetched.
+        for canonical in (CONSTITUTION, READINESS, BLOCKERS):
+            self.assertIn(canonical, links)
+        for path in (GRAPHVEX / "README.md", GRAPHVEX / "COMPOSITOR.md", contract):
             for target in re.findall(r"\]\(([^)]+)\)", path.read_text()):
                 with self.subTest(path=str(path), target=target):
-                    self.assertTrue((path.parent / target).is_file())
+                    link = urlsplit(target)
+                    if link.scheme or link.netloc:
+                        self.assertEqual(link.scheme, "https")
+                        self.assertTrue(link.netloc)
+                        self.assertIsNone(link.username)
+                        self.assertIsNone(link.password)
+                    else:
+                        self.assertTrue((path.parent / link.path).is_file())
 
     def test_filter_vocabulary_documents_encoding_not_effect_support(self):
         documentation = (GRAPHVEX / "FILTERS.md").read_text()
@@ -99,7 +115,7 @@ class CompositorContractTest(unittest.TestCase):
         for name in ("filter_type.h", "filter_functions.h"):
             self.assertTrue((GRAPHVEX / "src/filter" / name).is_file())
         self.assertIn("FILTERS.md", (GRAPHVEX / "COMPOSITOR.md").read_text())
-        readiness = (ROOT / "repos/.ecosystem/graphvex.md").read_text()
+        readiness = (ROOT / "gist/readiness/graphvex.md").read_text()
         self.assertIn("### Filter vocabulary (`src/filter/`)", readiness)
         self.assertIn("typed parameter allocation/COW/migration", readiness)
         self.assertIn("color_pass_test.c", readiness)

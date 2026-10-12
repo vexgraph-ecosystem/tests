@@ -8,7 +8,7 @@ from pathlib import Path
 import unittest
 
 WORKSPACE = Path(__file__).resolve().parents[2]
-ENGINE = WORKSPACE / "ecosystem/repos/relational-engine"
+ENGINE = WORKSPACE / "host-behavior/relational-engine"
 
 
 class NativeMemoryDocumentation(unittest.TestCase):

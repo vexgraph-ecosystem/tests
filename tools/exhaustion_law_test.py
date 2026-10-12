@@ -24,14 +24,14 @@ class ExhaustionLawTest(unittest.TestCase):
                             "latency/throughput distributions", "narrower scope",
                             "no finite suite proves every input"):
             self.assertIn(requirement, law)
-        constitution = (ROOT / "preferences.md").read_text()
+        constitution = (ROOT / "gist/PREFERENCES.md").read_text()
         feature = constitution.split("Feature Implementation and Adversarial Proof Law\n", 1)[1].split(
             "\n## ", 1)[0]
         self.assertIn(TITLE, feature)
         self.assertIn("Operation churn", feature)
 
     def test_existing_native_proof_declares_the_actual_gap(self):
-        engine = ROOT / "ecosystem/repos/relational-engine"
+        engine = ROOT / "host-behavior/relational-engine"
         owner = (ROOT / "tests/relational-engine/nio/mem_exhaustion_test.c").read_text()
         worker = owner.split("static void *worker(", 1)[1].split(
             "static void concurrent(", 1)[0]

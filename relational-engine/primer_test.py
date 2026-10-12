@@ -8,7 +8,7 @@ from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / "ecosystem/repos/relational-engine"
+ENGINE = ROOT / "host-behavior/relational-engine"
 
 
 class PrimerTest(unittest.TestCase):

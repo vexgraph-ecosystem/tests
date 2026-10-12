@@ -9,7 +9,7 @@ import shlex
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[3]
-REPO = ROOT / "ecosystem/interface/darling-framework"
+REPO = ROOT / "interfaces/darling-framework"
 
 
 # Raises the supplied diagnostic when a scaffold invariant is false.
@@ -23,7 +23,7 @@ def main():
     manifest = json.loads((REPO / "scaffolds.json").read_text())
     entries = manifest["entries"]
     require(manifest["schema"] == 1 and entries, "missing scaffold inventory")
-    require(manifest["intent"] == "repos/.ecosystem/darling.md", "wrong intent source")
+    require(manifest["intent"] == "gist/readiness/darling.md", "wrong intent source")
     paths, types = set(), set()
     sources = []
     includes = ['#include "frame/frame.h"', '#include "panel/panel.h"',
@@ -78,8 +78,8 @@ def main():
     # the live API. This checks coexistence, guards and cross-header conflicts.
     command = shlex.split(os.environ.get("CC", "cc"))
     command += ["-std=gnu23", "-Wall", "-Wextra", "-Werror", "-fsyntax-only", "-x", "c", "-"]
-    for relative in ("ecosystem/interface/darling-framework/src", "ecosystem/vexspoke/src",
-                     "ecosystem/drivers/graphvex/src", "ecosystem/hotcwap"):
+    for relative in ("interfaces/darling-framework/src", "host-behavior/vexspoke/src",
+                     "host-behavior/relational-engine/src", "drivers/graphvex/src", "host-behavior/hotcwap"):
         command += ["-I", str(ROOT / relative)]
     subprocess.run(command, input="\n".join(includes) + "\n", text=True,
                    cwd=ROOT, check=True, timeout=120)

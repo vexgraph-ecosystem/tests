@@ -6,8 +6,8 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
-LANGUAGE = ROOT / "ecosystem/repos/language"
-VEXSPOKE = ROOT / "ecosystem/repos/vexspoke/src"
+LANGUAGE = ROOT / "drivers/language"
+VEXSPOKE = ROOT / "host-behavior/vexspoke/src"
 CASES = (
     ("document/source_range", ("document/source_range.c",)),
     ("token/token", ("token/token.c", "document/source_range.c")),

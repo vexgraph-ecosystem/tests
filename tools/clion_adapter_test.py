@@ -44,8 +44,8 @@ class ClionAdapterTest(unittest.TestCase):
 
     def test_anchor_has_transitive_includes_and_libraries(self):
         target = self.targets["ui_anchor_pivot_pixels_test"]
-        self.assertIn(str(ROOT / "ecosystem/repos/darling-framework/src"), target["includes"])
-        self.assertIn(str(ROOT / "ecosystem/repos/graphvex/src"), target["includes"])
+        self.assertIn(str(ROOT / "interfaces/darling-framework/src"), target["includes"])
+        self.assertIn(str(ROOT / "drivers/graphvex/src"), target["includes"])
         self.assertIn("UNDEBUG", target["definitions"])
         self.assertIn("-std=gnu23", target["options"])
         archives = [Path(p).name for p in target["libraries"] if p.endswith(".a")]
@@ -93,13 +93,13 @@ class ClionAdapterTest(unittest.TestCase):
 
     def test_production_bvh_has_an_owned_c23_code_model(self):
         database = json.loads((BUILD / "compile_commands.json").read_text())
-        source = ROOT / "ecosystem/repos/vexspoke/src/algo/bvh.c"
+        source = ROOT / "host-behavior/vexspoke/src/algo/bvh.c"
         entry = next(item for item in database if Path(item["file"]) == source)
         command = entry["command"]
         self.assertIn("vexgraph_index_vexspoke", command)
         for flag in ("-std=gnu23", "-Werror", "-mcpu=apple-m1", "DEBUG_BORROW_CHECK=1"):
             self.assertIn(flag, command)
-        self.assertIn(str(ROOT / "ecosystem/repos/vexspoke/src"), command)
+        self.assertIn(str(ROOT / "host-behavior/vexspoke/src"), command)
         # Execute the actual indexing command for the reported problem file.
         import shlex
         result = subprocess.run(shlex.split(command), cwd=entry["directory"],
@@ -112,15 +112,32 @@ class ClionAdapterTest(unittest.TestCase):
         self.assertIn(str(ROOT / "tools/workspace.c"), ninja)
         self.assertIn(str(ROOT / "tools/build_annotation.h"), ninja)
 
+    def test_determinant_has_r2_only_owned_context(self):
+        indexed = {item["name"]: item for item in self.graph["index"]}
+        target = indexed["determinant"]
+        self.assertIn(str(ROOT / "drivers/determinant/src"), target["includes"])
+        for relative in ("host-behavior/vexspoke/src", "host-behavior/relational-engine/src"):
+            self.assertIn(str(ROOT / relative), target["includes"])
+        for include in target["includes"]:
+            self.assertNotIn("/interfaces/", include)
+            self.assertNotIn("/interactables/", include)
+            self.assertNotIn("/superapp/", include)
+            self.assertNotIn("/hotcwap", include)
+        database = json.loads((BUILD / "compile_commands.json").read_text())
+        for source in target["sources"]:
+            entry = next(item for item in database if item["file"] == source)
+            self.assertIn("vexgraph_index_determinant.dir", entry["command"])
+            self.assertIn("-std=gnu23", entry["command"])
+
     def test_gallery_and_shared_helpers_have_owned_contexts(self):
         import shlex
         indexed = {item["name"]: item for item in self.graph["index"]}
         for target in ("filter_gallery", "darling_tests"):
             self.assertIn(target, indexed)
             self.assertNotIn(target, self.tests)
-            for repo in ("darling-framework/src", "graphvex/src", "hotcwap",
-                         "vexspoke/src"):
-                self.assertIn(str(ROOT / "ecosystem/repos" / repo), indexed[target]["includes"])
+            for repo in ("interfaces/darling-framework/src", "drivers/graphvex/src",
+                         "host-behavior/hotcwap", "host-behavior/vexspoke/src"):
+                self.assertIn(str(ROOT / repo), indexed[target]["includes"])
         database = json.loads((BUILD / "compile_commands.json").read_text())
         sources = indexed["filter_gallery"]["sources"]
         self.assertIn(str(ROOT / "tests/darling/compositor/filter_gallery.c"), sources)
@@ -154,13 +171,13 @@ class ClionAdapterTest(unittest.TestCase):
             source = ROOT / "tests/vexspoke/algo/algo_suite_test.c"
         entry = next(item for item in database if Path(item["file"]) == source)
         self.assertIn("-std=gnu23", entry["command"])
-        self.assertIn(str(ROOT / "ecosystem/repos/vexspoke/src"), entry["command"])
+        self.assertIn(str(ROOT / "host-behavior/vexspoke/src"), entry["command"])
         documentation = (ROOT / "tests/README.md").read_text()
         self.assertIn("Open the workspace root", documentation)
         source = ROOT / "tests/darling/compositor/filter_gallery.c"
         entry = next(item for item in database if Path(item["file"]) == source)
         self.assertIn("vexgraph_index_filter_gallery", entry["command"])
-        self.assertIn(str(ROOT / "ecosystem/repos/darling-framework/src"), entry["command"])
+        self.assertIn(str(ROOT / "interfaces/darling-framework/src"), entry["command"])
 
 
 if __name__ == "__main__":

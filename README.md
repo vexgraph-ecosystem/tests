@@ -6,7 +6,7 @@ source file is **not** evidence that its target was built or executed.
 ## Current State
 
 **Implemented:** the shared test-source repository — per-subsystem test trees,
-`test-checklist.md`, `test_support.h`, the runner scripts and the proof gates
+`test_support.h`, the runner scripts and the proof gates
 (`b check`, `b coverage`). **Proven:** the gates prove ownership, surface
 invocation and function execution for **vexspoke only** (macOS host); everything
 else below is unproven. **Platforms proven:** macOS (the executor host).
@@ -14,7 +14,9 @@ else below is unproven. **Platforms proven:** macOS (the executor host).
 ## Scope and Limitations
 
 **Scope:** tracked test sources and their build/run wiring, one owner test per
-production unit (the Test Tree Mirror Law), plus the timestamped evidence ledger.
+production unit (the Test Tree Mirror Law). The timestamped evidence ledger is
+Git-ignored at `../gist/test-checklist.md` and published to its existing Gist,
+not tracked in this test-source repository.
 **Deliberately not covered:** production sources (they live in their own repos);
 visual/monitor acceptance (the user's); app/GPU/audio runtime proof.
 **Known limits and gaps:** value boundaries, failure recovery, sanitizer
@@ -62,15 +64,16 @@ are unfinished, and a passing documentation check proves no application runtime.
 
 ## Timestamped evidence ledger
 
-`test-checklist.md` inventories every framework, with directory tables and one
-row per file, plus shared tests and workspace tools. ✅ means its automated lab
+`../gist/test-checklist.md` inventories executable tests and registered runners,
+with directory tables and one row per test. It excludes production sources,
+Markdown and configuration. ✅ means its automated lab
 command passed for its recorded hash and scope, not universal battle readiness
 or visual approval. The user tests visual appearance and reports defects.
 Descriptions replace authorship; no agent names or session IDs are stored.
 
 ```sh
 python3 tools/test_checklist.py sync
-python3 tools/test_checklist.py run --file tools/agents.sh --scope 'Bash syntax only; runtime unproved' -- bash -n tools/agents.sh
+python3 tools/test_checklist.py run --file tests/tools/test_checklist_test.py --scope 'Checklist owner only; not ecosystem runtime proof' -- python3 -B tests/tools/test_checklist_test.py
 python3 tools/test_checklist.py check
 python3 tests/tools/test_checklist_test.py
 python3 tests/tools/agents_test.py

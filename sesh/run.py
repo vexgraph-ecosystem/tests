@@ -7,9 +7,9 @@ import tempfile
 
 SUITE = Path(__file__).resolve().parent
 ROOT = SUITE.parents[1]
-CPU = ROOT / "ecosystem/repos/vexspoke/src"
-API = ROOT / "ecosystem/repos/api-haven/src"
-SESH = ROOT / "ecosystem/repos/sesh/src"
+CPU = ROOT / "host-behavior/vexspoke/src"
+API = ROOT / "drivers/api-haven/src"
+SESH = ROOT / "interfaces/sesh/src"
 fixture = SUITE / "test.txt"
 # Disposable runtime input, intentionally ignored. Never touch preferences.md.
 assert not fixture.is_symlink(), "Disposable fixture must not be a symlink"

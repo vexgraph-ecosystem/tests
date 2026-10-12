@@ -13,22 +13,22 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 CODE = {
-    "ecosystem/repos/vexspoke": "src/algo/bvh.c",
-    "ecosystem/repos/api-haven": "src/ai/ai_provider.c",
-    "ecosystem/repos/graphvex": "src/graphics/viewport.c",
-    "ecosystem/repos/hotcwap": "kernel/process.c",
-    "ecosystem/repos/darling-framework": "src/panel/panel.c",
-    "ecosystem/repos/relational-engine": "src/io/file.c",
-    "ecosystem/repos/sesh": "src/snapshot/snapshot.c",
-    "ecosystem/repos/darkbase": "src/database/database.c",
-    "ecosystem/repos/samplerate": "src/audio/audio_format.c",
-    "ecosystem/repos/harness": "src/space/model_user.c",
-    "ecosystem/projects/impedance": "src/impedance.c",
+    "host-behavior/vexspoke": "src/algo/bvh.c",
+    "drivers/api-haven": "src/ai/ai_provider.c",
+    "drivers/graphvex": "src/graphics/viewport.c",
+    "host-behavior/hotcwap": "kernel/process.c",
+    "interfaces/darling-framework": "src/panel/panel.c",
+    "host-behavior/relational-engine": "src/io/file.c",
+    "interfaces/sesh": "src/snapshot/snapshot.c",
+    "drivers/darkbase": "src/database/database.c",
+    "drivers/samplerate": "src/audio/audio_format.c",
+    "drivers/determinant": "src/cli/command.c",
+    "interfaces/harness": "src/space/model_user.c",
+    "interactables/impedance": "src/impedance.c",
     "personal/b": "b.c",
 }
-BLUEPRINTS = ("ecosystem/repos/language", "personal/func",
-              "ecosystem/projects/anti", "ecosystem/projects/drawling",
-              "ecosystem/projects/semicolon")
+BLUEPRINTS = ("drivers/language", "personal/func",
+              "superapp/anti", "interactables/drawling", "superapp/semicolon")
 
 
 def run(args, **kwargs):
@@ -57,7 +57,7 @@ class PerRepoIdeTest(unittest.TestCase):
                 self.assertNotIn("## CLion: CMake is IDE metadata only", readme)
                 self.assertNotIn("## Disclaimer: CMake", readme)
                 self.assertNotIn("LANGUAGES NONE", readme)
-        constitution = (ROOT / "preferences.md").read_text()
+        constitution = (ROOT / "gist/PREFERENCES.md").read_text()
         self.assertIn("only maintained `CMakeLists.txt`", constitution)
         self.assertIn("opt-in native", constitution)
         self.assertIn("inlay hints", (ROOT / "README.md").read_text())
@@ -67,7 +67,7 @@ class PerRepoIdeTest(unittest.TestCase):
         count = 0
         for relative in (*CODE, *BLUEPRINTS):
             owner = ROOT / relative
-            source_root = owner if relative in ("personal/b", "ecosystem/repos/hotcwap") else owner / "src"
+            source_root = owner if relative in ("personal/b", "host-behavior/hotcwap") else owner / "src"
             for source in source_root.rglob("*"):
                 if source.suffix not in (".c", ".m"):
                     continue
@@ -81,6 +81,13 @@ class PerRepoIdeTest(unittest.TestCase):
                 count += 1
         self.assertGreater(count, 400)
         print(f"Workspace host source inventory: {count} translation units have contexts")
+
+    def test_source_free_blueprints_have_no_fake_target(self):
+        cmake = (ROOT / "CMakeLists.txt").read_text()
+        self.assertIn("if(NOT translation_units)", cmake)
+        self.assertTrue(all(Path(entry["file"]).is_file() for entry in self.db))
+        self.assertNotIn("ecosystem/repos/", json.dumps(self.db))
+        self.assertNotIn("ecosystem/projects/", json.dumps(self.db))
 
     def test_representative_c23_commands_use_real_owner_headers(self):
         for owner, relative in CODE.items():

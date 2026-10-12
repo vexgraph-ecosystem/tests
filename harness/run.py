@@ -13,9 +13,9 @@ import tempfile
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-APP = ROOT / "ecosystem/repos/harness"
-VEX = ROOT / "ecosystem/repos/vexspoke/src"
-REL = ROOT / "ecosystem/repos/relational-engine/src"
+APP = ROOT / "interfaces/harness"
+VEX = ROOT / "host-behavior/vexspoke/src"
+REL = ROOT / "host-behavior/relational-engine/src"
 SPACE_SRCS = [APP / "src/space/model_user.c", APP / "src/space/channel.c",
               APP / "src/space/message.c", APP / "src/space/task.c"]
 

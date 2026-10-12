@@ -2,7 +2,7 @@
 
 This is the ecosystem's proof lawbook. It defines the evidence required before a production file,
 class, component, or subsystem is called tested across the R1–R5 ecosystem. It governs **proof and
-readiness only**; universal architecture is governed by the real workspace-root `preferences.md`
+readiness only**; universal architecture is governed by the real workspace `../gist/PREFERENCES.md`
 (the Living Documentation Law). When a test law is cited, cite its **Title** — never a position,
 never a number (the Law Identity Doctrine).
 
@@ -17,8 +17,8 @@ never a number (the Law Identity Doctrine).
    **mapped but unwired** → **failing** → **passing with stated gaps** → **battle tested**.
 5. **Never promote a whole layer from partial file results.** A subsystem is battle tested only when
    every applicable law here has executed evidence.
-6. **Read and maintain `tests/test-checklist.md` for every executable test**, per the
-   Timestamped Test Checklist Law in workspace `preferences.md`. The ledger admits only
+6. **Read and maintain `gist/test-checklist.md` for every executable test**, per the
+   Timestamped Test Checklist Law in workspace `../gist/PREFERENCES.md`. The ledger admits only
    compilable/runnable test units, runner scripts and the shared harness — not markdown,
    documentation, configuration or production source. Record actual
    Unix timestamps, subject hashes, command/scope, result, and description after
@@ -442,7 +442,7 @@ not an impressive operation counter.
   an exemption. Force controlled exhaustion in test-owned resources, not host-wide
   RAM/disk depletion. Observe any fallback and prove its lifetime/reclamation.
 - **Assert the refusal is LOUD, not merely returned.** The Exhaustion Loudness Law
-  in workspace `preferences.md` is the production contract this proves: reach the
+  in workspace `../gist/PREFERENCES.md` is the production contract this proves: reach the
   boundary and assert the owner's *queryable refusal count* (e.g.
   `MemoryArena_exhaustionCount`) increments per rejected request, that the epoch's
   single `THROW` diagnostic names the owner, the request size and the bound, and
@@ -1225,7 +1225,47 @@ Native audio driver (R3).
 
 ---
 
+## determinant Test Laws (R3 terminal toolkit)
+
+Determinant owns terminal-cell rendering, reusable widgets, CLI parsing and
+caller-fed input. Vexspoke retains bare one-line output; R2 never calls this R3
+toolkit. Part I laws apply to each extracted and new file independently.
+
+### Terminal Admission and Presentation Proof Law
+
+- Registered mirrored owners under `tests/determinant/{cli,terminal}` prove
+  public construction/arity, bounded projections, empty/normal/boundary inputs,
+  overflow/truncation, counted capacity refusal, growth, preserved state after
+  failure and reset/recovery. Input is fed by the caller; tests cannot depend on
+  blocking stdin or synthetic sleeps.
+- Render into caller-owned terminal-cell backing and an injected output seam.
+  Assert cells and widget/input behavior, no raw application stdout, and quiet
+  admitted hot rendering. A fake sink proves routing, not a physical terminal.
+- Explicit host serialization excludes active callbacks before backing
+  relocation or module replacement. Configurable state has validated symmetric
+  APIs; derived geometry/count/ownership/generation can only change through the
+  documented lifecycle operations, not setters that forge lifetime truth.
+
+### Resident Terminal Reload Proof Law
+
+- Preserve terminal ownership and admitted state across view/command replacement;
+  test busy exclusion, incompatible candidates, retained old callbacks/state,
+  successful replacement and teardown after users detach. Real loaded modules
+  require an externally supervised owner; callback substitution alone is narrower
+  evidence and must be labelled as such.
+- R1 owns trusted loading and code residency. Toolkit extraction is not proof of
+  Primeagen hot reload. The scheduled Primeagen consumer cycle must reproduce the
+  reported restart-required defect, then change a view/command in the same
+  production terminal process without reacquiring the terminal or losing
+  conversation, draft, consent, pipe or host state. Candidate rejection preserves
+  old code/state; unresolved rollback blocks resumption. No live model call or
+  visual acceptance is implicitly authorized.
+- Vexspoke's independent bare-output owner proves one-line behavior and does not
+  grant managed-screen ownership. Hotcwap's Console remains an R1 lifecycle
+  object. Other hosts, physical terminal behavior, Unicode shaping and production
+  Primeagen integration retain explicit proof gaps until their owners execute.
+
 *This lawbook governs proof and readiness. Universal architecture is governed by
-the real workspace-root `preferences.md`, published at
+the real workspace `../gist/PREFERENCES.md`, published at
 https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a.
 Cite every law by its Title.*

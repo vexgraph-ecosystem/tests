@@ -22,8 +22,8 @@ def null_tokens(text):
 class C23MigrationTest(unittest.TestCase):
     def test_production_uses_native_nullptr(self):
         count = 0
-        for name in ("ecosystem/repos", "ecosystem/projects", "personal/b",
-                     "personal/relational-engine", "tools"):
+        for name in ("host-behavior", "drivers", "interfaces", "interactables",
+                     "superapp", "personal/b", "tools"):
             for path in (ROOT / name).rglob("*"):
                 if path.suffix not in (".c", ".h", ".m") or EXCLUDED.intersection(path.parts):
                     continue
@@ -61,7 +61,7 @@ class C23MigrationTest(unittest.TestCase):
         clangd = Path("/Applications/CLion.app/Contents/bin/clang/mac/aarch64/bin/clangd")
         if not clangd.exists():
             self.skipTest("CLion bundled clangd unavailable on this host")
-        for source in ("ecosystem/repos/vexspoke/src/algo/bvh.c",
+        for source in ("host-behavior/vexspoke/src/algo/bvh.c",
                        "tests/vexspoke/algo/algo_suite_test.c",
                        "tests/darling/compositor/filter_gallery.c",
                        "tests/darling/darling_tests.c"):

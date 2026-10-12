@@ -7,7 +7,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-SHADERS = ROOT / "ecosystem/drivers/graphvex/src/shaders/compositor"
+SHADERS = ROOT / "drivers/graphvex/src/shaders/compositor"
 TEMP_ROOT = Path(tempfile.gettempdir()) / "opencode"
 
 

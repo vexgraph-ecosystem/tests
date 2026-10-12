@@ -118,10 +118,10 @@ class ReadmeTest(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="primeagen-standalone-") as temp:
             target = Path(temp) / "independent checkout"
             shutil.copytree(APP, target, ignore=shutil.ignore_patterns(".git", ".build", "__pycache__", ".env"))
-            roots = {"API_HAVEN_SOURCE_DIR": ROOT / "ecosystem/repos/api-haven/src",
-                     "HARNESS_SOURCE_DIR": ROOT / "ecosystem/repos/harness/src",
-                      "VEXSPOKE_SOURCE_DIR": ROOT / "ecosystem/repos/vexspoke/src"}
-            roots["HOTCWAP_SOURCE_DIR"] = ROOT / "ecosystem/repos/hotcwap"
+            roots = {"API_HAVEN_SOURCE_DIR": ROOT / "drivers/api-haven/src",
+                     "HARNESS_SOURCE_DIR": ROOT / "interfaces/harness/src",
+                      "VEXSPOKE_SOURCE_DIR": ROOT / "host-behavior/vexspoke/src"}
+            roots["HOTCWAP_SOURCE_DIR"] = ROOT / "host-behavior/hotcwap"
             env = {**os.environ, **{key: str(value) for key, value in roots.items()}}
             result = subprocess.run([sys.executable, str(target / "build.py")], capture_output=True, timeout=120, env=env)
             self.assertEqual(result.returncode, 0, result.stderr)

@@ -6,7 +6,7 @@ import tempfile
 
 SUITE = Path(__file__).resolve().parent
 WORKSPACE = SUITE.parents[2]
-ROOT = WORKSPACE / "ecosystem" / "repos" / "relational-engine"
+ROOT = WORKSPACE / "host-behavior" / "relational-engine"
 
 def run(*args, env=None):
     subprocess.run(args, cwd=ROOT, env=env, check=True, timeout=90)
@@ -36,7 +36,7 @@ with tempfile.TemporaryDirectory(prefix="relational-owner-", dir=os.environ.get(
     print("PASS: debug/release owners, executable docs, C ABI, C ASan/UBSan, E0502 borrow rejection")
     for sanitizers in ([], ["-fsanitize=address,undefined"]):
         run("clang", "-std=c23", "-Wall", "-Wextra", "-Werror", *sanitizers,
-            "-Irust/include", "-Isrc", "-I" + str(WORKSPACE / "ecosystem/repos/vexspoke/src"),
+            "-Irust/include", "-Isrc", "-I" + str(WORKSPACE / "host-behavior/vexspoke/src"),
             str(WORKSPACE / "tests/relational-engine/nio/relational_memory_test.c"),
             str(target / "debug/librelational_engine_scratchpad.a"), "-o", binary)
         run(binary)

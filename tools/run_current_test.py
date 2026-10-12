@@ -46,7 +46,11 @@ class RunCurrentTest(unittest.TestCase):
 
     def test_finder_style_path_still_finds_rust(self):
         self.env["PATH"] = "/usr/bin:/bin:/usr/sbin:/sbin"
-        result = self.invoke(ROOT / "personal/relational-engine/rust/src/helloworld.rs", "GUI path")
+        # A test-owned source keeps the PATH proof independent of editable user scratch.
+        source = self.home / "finder_path.rs"
+        source.write_text('fn main() { println!("{}", std::env::args().nth(1).unwrap());'
+                          ' std::process::exit(5); }\n')
+        result = self.invoke(source, "GUI path")
         self.assertEqual(result.returncode, 5, result.stderr)
         self.assertEqual(result.stdout, "GUI path\n")
 
@@ -89,8 +93,9 @@ class RunCurrentTest(unittest.TestCase):
             launcher.write_text(f'#!/bin/sh\nprintf "{label}\\n"\nprintf "%s\\n" "$@"\n')
             launcher.chmod(0o755)
         for relative, route in (("tests/ui/gallery.c", "graph"),
-                                ("ecosystem/projects/demo/main.c", "graph"),
-                                ("personal/demo/main.c", "generic")):
+                                 ("interactables/demo/main.c", "graph"),
+                                ("superapp/demo/main.c", "graph"),
+                                 ("personal/demo/main.c", "generic")):
             source = workspace / relative
             source.parent.mkdir(parents=True)
             source.write_text("unused fixture\n")

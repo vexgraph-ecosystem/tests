@@ -6,7 +6,7 @@ import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-DARLING = ROOT / "ecosystem/interface/darling-framework"
+DARLING = ROOT / "interfaces/darling-framework"
 
 
 def code(text):
@@ -35,8 +35,9 @@ class DarlingLifecycleDocumentation(unittest.TestCase):
         example = re.search(r"```c\n(.*?)\n```", documentation, re.S)
         self.assertIsNotNone(example)
         command = ["cc", "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-fsyntax-only", "-x", "c", "-"]
-        for include in (DARLING / "src", ROOT / "ecosystem/hotcwap",
-                        ROOT / "ecosystem/vexspoke/src", ROOT / "ecosystem/drivers/graphvex/src"):
+        for include in (DARLING / "src", ROOT / "host-behavior/hotcwap",
+                        ROOT / "host-behavior/vexspoke/src", ROOT / "host-behavior/relational-engine/src",
+                        ROOT / "drivers/graphvex/src"):
             command += ["-I", str(include)]
         result = subprocess.run(command, input='#include "frame/frame.h"\n' + example.group(1),
                                 text=True, capture_output=True, timeout=30)
@@ -52,7 +53,7 @@ class DarlingLifecycleDocumentation(unittest.TestCase):
         self.assertEqual(lifecycle.count(";;INTENTION("), 3)
         self.assertIn("Implemented contract", lifecycle)
         self.assertIn("Automatic display-rate", lifecycle)
-        preferences = (ROOT / "ecosystem/vexspoke/preferences.md").read_text()
+        preferences = (ROOT / "gist/PREFERENCES.md").read_text()
         self.assertIn("`Application_start` is the", preferences)
         self.assertIn("`Application_close/stop` request all-window", preferences)
         readme = (ROOT / "tests/darling/frame/README.md").read_text()

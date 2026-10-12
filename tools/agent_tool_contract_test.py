@@ -15,7 +15,7 @@ SOURCE_SUFFIXES = {".c", ".h", ".m", ".mm", ".rs", ".cpp", ".cc"}
 class AgentToolContractTest(unittest.TestCase):
     def test_actual_blueprints_and_discovery(self):
         for repo, relative in (("func", "personal/func"),
-                               ("harness", "ecosystem/repos/harness")):
+                               ("harness", "interfaces/harness")):
             owner = ROOT / relative
             inventory = subprocess.run(
                 ["git", "-C", str(owner), "ls-files", "--cached", "--others",
@@ -35,17 +35,29 @@ class AgentToolContractTest(unittest.TestCase):
                     for unit in ("model_user", "channel", "message", "task")
                     for suffix in ("c", "h")
                 } | {"src/space/support.h"})
-                self.assertIn("Runtime platforms proven:** none", readme)
-                self.assertIn("behaviorally", readme)
-                self.assertIn("no executed behavioral owner tests", readme)
+                # These are offline value owners, not an implemented agent host.
+                scope = " ".join(readme.split())
+                for claim in ("Behavioral owners (offline)", "tests/harness/run.py",
+                              "strict `-Wall -Wextra -Werror` and ASan/UBSan",
+                              "**not** prove a provider, server, UI or cross-platform runtime",
+                              "no provider/server/UI integration", "Message text is borrowed"):
+                    self.assertIn(claim, scope)
+                self.assertNotIn("no executed behavioral owner tests", readme)
+                runner = (ROOT / "tests/harness/run.py").read_text()
+                for registration in ('HERE.rglob("*_test.c")', 'HERE.rglob("*_test.py")',
+                                     "-Wall", "-Wextra", "-Werror", "-fsanitize=address,undefined"):
+                    self.assertIn(registration, runner)
+                for unit in ("support", "model_user", "channel", "message", "task"):
+                    self.assertTrue((ROOT / f"tests/harness/space/{unit}_test.c").is_file())
+                self.assertTrue((ROOT / "tests/harness/space/space_arity_test.py").is_file())
             for scope in ("## Current State", "## Scope and Limitations"):
                 self.assertIn(scope, readme)
             prefs = owner / f"{repo}-preferences.md"
             self.assertTrue(prefs.is_file())
             self.assertIn(CONSTITUTION, prefs.read_text())
             self.assertIn(CONSTITUTION, (owner / "CONTRIBUTING.md").read_text())
-            constitution = (ROOT / "preferences.md").read_text()
-            self.assertIn(f"]({relative}/{repo}-preferences.md)", constitution)
+            constitution = (ROOT / "gist/PREFERENCES.md").read_text()
+            self.assertIn(f"{relative}/{repo}-preferences.md", constitution)
 
     def test_func_numeric_native_and_bounded_contracts(self):
         owner = ROOT / "personal/func"
@@ -58,10 +70,10 @@ class AgentToolContractTest(unittest.TestCase):
                            "literal argument vectors", "not implicit run",
                             "Deliberate Exhaustion and Backend Trust Law"):
             self.assertIn(obligation, prefs)
-        self.assertIn("personal/func/func-preferences.md", (ROOT / "preferences.md").read_text())
+        self.assertIn("personal/func/func-preferences.md", (ROOT / "gist/PREFERENCES.md").read_text())
 
     def test_harness_objects_do_not_duplicate_api_drivers(self):
-        owner = ROOT / "ecosystem/repos/harness"
+        owner = ROOT / "interfaces/harness"
         prefs = (owner / "harness-preferences.md").read_text()
         readme = (owner / "README.md").read_text()
         for concept in ("Model", "Prompt", "Conversation", "Answer", "Question",
@@ -71,12 +83,12 @@ class AgentToolContractTest(unittest.TestCase):
         for boundary in ("never a parallel R4", "not", "bounded", "planned",
                          "Deliberate Exhaustion and Backend Trust Law"):
             self.assertIn(boundary, prefs)
-        constitution = (ROOT / "preferences.md").read_text()
+        constitution = (ROOT / "gist/PREFERENCES.md").read_text()
         self.assertIn("no competing R4 JSON-RPC or transport driver", constitution)
         self.assertIn("remain unimplemented contracts", constitution)
 
     def test_blockers_introduction_is_impersonal_and_non_authorizing(self):
-        intro = (ROOT / "_notes/blockers.md").read_text().split("## How to use", 1)[0]
+        intro = (ROOT / "gist/BLOCKERS.md").read_text().split("## How to use", 1)[0]
         self.assertNotRegex(intro.lower(), r"\byou(?:r)?\b")
         self.assertIn("does not imply oversight or forgotten", intro)
         self.assertIn("does not authorize implementation", intro)

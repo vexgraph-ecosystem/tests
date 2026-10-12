@@ -16,7 +16,7 @@ class SampledTextureTest(unittest.TestCase):
             base = Path(directory)
             shader = base / "out/debug/shader/compositor"
             shader.mkdir(parents=True)
-            graph = ROOT / "ecosystem/repos/graphvex/src"
+            graph = ROOT / "drivers/graphvex/src"
             for name in ("scatter.vert", "scatter.frag", "resolve.vert", "scope.frag"):
                 subprocess.run(["glslangValidator", "-V", str(graph / "shaders/compositor" / name),
                                 "-o", str(shader / (name + ".spv"))], check=True, timeout=30)
@@ -25,7 +25,7 @@ class SampledTextureTest(unittest.TestCase):
             flags = ["cc", "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-O2", "-g",
                      "-mcpu=apple-m1", "-mmacosx-version-min=14.0", "-fsanitize=address,undefined",
                      "-fno-omit-frame-pointer", "-I" + str(graph),
-                     "-I" + str(ROOT / "ecosystem/repos/vexspoke/src"), "-I" + str(ROOT / "tests"),
+                     "-I" + str(ROOT / "host-behavior/vexspoke/src"), "-I" + str(ROOT / "tests"),
                      "-I/opt/homebrew/include", "-I" + str(STATE / "out/debug/shader")]
             links = ["-L/opt/homebrew/lib", "-lvulkan", "-Wl,-rpath,/opt/homebrew/lib"]
             for owner, diagnostics in (("vulkan/sampled_image_test", 3), ("image_test", 3),

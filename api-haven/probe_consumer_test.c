@@ -2,7 +2,7 @@
 
 // api-haven is the CLI/MCP-facing layer: it CONSUMES vexspoke's R1
 // system probes (AppDetect, CaptureTool, ProcessProbe) instead of
-// owning them — preferences.md Rule 17 (api-haven connector clause:
+// owning them — PREFERENCES.md Rule 17 (api-haven connector clause:
 // descriptor registries + fn-pointer client shapes, never re-implemented
 // OS probes). This test proves the seam: the probes resolve and behave
 // through api_haven's link against vexspoke.

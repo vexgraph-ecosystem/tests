@@ -21,8 +21,8 @@ class SessionAnswerTest(unittest.TestCase):
             self.fail("live answer model is not the user-authorized Go model")
         with tempfile.TemporaryDirectory() as directory:
             home = Path(directory)
-            vex = ROOT / "ecosystem/repos/vexspoke/src"
-            api = ROOT / "ecosystem/repos/api-haven/src"
+            vex = ROOT / "host-behavior/vexspoke/src"
+            api = ROOT / "drivers/api-haven/src"
             output = home / "client"
             subprocess.run(["clang", "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-O1",
                             "-mcpu=apple-m1", "-mmacosx-version-min=14.0", f"-I{APP}", f"-I{vex}", f"-I{api}",

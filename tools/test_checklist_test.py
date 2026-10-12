@@ -46,7 +46,7 @@ class ChecklistTest(unittest.TestCase):
             return CHECKLIST.main(args)
 
     def test_predicate_accepts_tests_and_rejects_documentation(self):
-        for good in ("tests/a_test.c", "x/b_test.py", "c_test.rs", "d_test.m",
+        for good in ("tests/a_test.c", "x/b_test.py", "c_test.rs", "d_test.m", "loader_test.ts",
                      "tests/run.py", "tests/native_run.py", "tests/test_support.h",
                      "tests/test_widget.py"):
             self.assertTrue(CHECKLIST.is_executable_test(good), good)
@@ -90,6 +90,24 @@ class ChecklistTest(unittest.TestCase):
         self.assertNotIn("b/util.c", groups["b"])
         self.assertNotIn("b/b.json", groups["b"])
         self.assertNotIn("b/util_test.c", groups["workspace"])
+
+    def test_tier_repositories_and_gist_only_report(self):
+        with (self.root / ".gitignore").open("a") as ignore:
+            ignore.write("gist/\nhost-behavior/\ndrivers/\ninterfaces/\ninteractables/\nsuperapp/\n")
+        for tier in ("host-behavior", "drivers", "interfaces", "interactables", "superapp"):
+            relative = f"{tier}/fixture"
+            repo = self.root / relative
+            subprocess.run(["git", "init", "-q", str(repo)], check=True)
+            (repo / "unit_test.c").write_text("int main(void){return 0;}\n")
+        self.assertEqual(CHECKLIST.REPORT.as_posix(), "gist/test-checklist.md")
+        self.assertEqual(self.run_cli(["sync"]), 0)
+        groups = CHECKLIST.inventory(self.root)
+        for tier in ("host-behavior", "drivers", "interfaces", "interactables", "superapp"):
+            relative = f"{tier}/fixture"
+            self.assertEqual(groups[relative], [f"{relative}/unit_test.c"])
+        self.assertTrue((self.root / "gist/test-checklist.md").is_file())
+        self.assertFalse((self.root / "tests/test-checklist.md").exists())
+        self.assertEqual(self.run_cli(["check"]), 0)
 
     def test_ignored_repos_use_their_own_ignores_for_tests(self):
         with (self.root / ".gitignore").open("a") as ignore:

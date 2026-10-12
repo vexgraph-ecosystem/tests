@@ -46,7 +46,7 @@ class ArtworkHeadersTest(unittest.TestCase):
     def test_single_artwork_headers_preserve_document_titles(self):
         for path, filename, alt, title in (
             ("personal/b/README.md", "b.png", "build, breeze, box!", "# b\n"),
-            ("preferences.md", "preferences-dot-md.png", "preferences.md",
+            ("gist/PREFERENCES.md", "preferences-dot-md.png", "preferences.md",
              "# vexgraph — C23/Rust Ecosystem & Multi-Repo Preferences\n"),
         ):
             with self.subTest(document=path):
@@ -57,7 +57,7 @@ class ArtworkHeadersTest(unittest.TestCase):
                 self.assertTrue((ROOT / "personal/vex-graph/resources" / filename).is_file())
 
     def test_ecosystem_combined_row_links_only_vexgraph(self):
-        images, body = header("ecosystem/.github/profile/README.md")
+        images, body = header("ecosystem/README.md")
         self.assertEqual(images, [
             ({"src": ARTWORK + "vexgraph.png", "alt": "vexgraph", "width": "48%"},
              [("p", {"align": "center"}), ("a", {"href": "https://github.com/vex-graph"})]),

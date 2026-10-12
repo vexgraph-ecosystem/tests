@@ -15,9 +15,9 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
-APP = ROOT / "ecosystem/repos/harness"
-VEX = ROOT / "ecosystem/repos/vexspoke/src"
-REL = ROOT / "ecosystem/repos/relational-engine/src"
+APP = ROOT / "interfaces/harness"
+VEX = ROOT / "host-behavior/vexspoke/src"
+REL = ROOT / "host-behavior/relational-engine/src"
 CC = "clang"
 INCLUDES = [f"-I{APP / 'src'}", f"-I{VEX}", f"-I{ROOT / 'tests'}", f"-I{REL}"]
 
