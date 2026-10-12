@@ -24,7 +24,7 @@ class SessionHostTest(unittest.TestCase):
         self.calls = []
         self.message_id = None
         policy = host.SESSION_PERMISSIONS if permissions is None else permissions
-        def request(method, path, body=None, timeout=10, empty=False):
+        def request(method, path, body=None, timeout=10, empty=False, cap=None):
             self.calls.append((method, path, body))
             if path == "/api/session":
                 return {"data": {"id": "ses_fake", "permissions": policy}}
@@ -149,9 +149,32 @@ class SessionHostTest(unittest.TestCase):
                     {"type": "idle", "outcome": "succeeded"}, {"type": "assistant", "content": content},
                     {"id": "msg_a"}]}):
                 turn = {"messageId": "msg_a", "deadline": float("inf"), "awaiting": None,
-                        "awaitingSince": 0.0, "nextCheck": float("inf"), "seen": set()}
+                        "awaitingSince": 0.0, "nextCheck": float("inf"), "seen": set(), "newest": None}
                 with self.assertRaises(ValueError):
                     host.advance("ses_fake", turn)
+
+    def test_idle_window_restarts_on_remote_progress(self):
+        clock = {"now": 0.0}
+        page = {"newest": "msg_progress"}
+        self.api = self.scripted(lambda: {"data": [{"id": page["newest"], "type": "assistant", "content": []}]})
+        with patch.object(host, "api", self.api), patch.object(host.time, "monotonic", lambda: clock["now"]):
+            turn = host.begin("ses_fake", "p", "")
+            clock["now"] = 170.0
+            self.assertEqual(host.advance("ses_fake", turn), ([], None, None))  # new message = progress
+            clock["now"] = 340.0  # past the original deadline, inside the restarted one
+            self.assertEqual(host.advance("ses_fake", turn), ([], None, None))
+            clock["now"] = 520.0  # silence beyond the idle window
+            with self.assertRaises(ValueError):
+                host.advance("ses_fake", turn)
+
+    def test_message_page_gets_its_own_bounded_read_budget(self):
+        self.assertGreater(host.MESSAGE_CAP, host.WIRE_CAP)
+        with patch.object(host, "run", return_value=b'{"data":[]}') as child:
+            turn = {"messageId": "m", "deadline": host.time.monotonic() + 100, "awaiting": None,
+                    "awaitingSince": 0.0, "nextCheck": host.time.monotonic() + 100, "seen": set(),
+                    "newest": None}
+            self.assertEqual(host.advance("ses_fake", turn), ([], None, None))
+            self.assertEqual(child.call_args.kwargs["cap"], host.MESSAGE_CAP)
 
     def test_tool_calls_stream_as_bounded_notes_and_never_execute_locally(self):
         tool = {"type": "tool", "id": "tool_1", "name": "edit",
@@ -199,7 +222,7 @@ class SessionHostTest(unittest.TestCase):
         clock = {"now": 0.0}
         with patch.object(host, "api", self.api), patch.object(host.time, "monotonic", lambda: clock["now"]):
             turn = host.begin("ses_fake", "test", "")
-            clock["now"] = 121
+            clock["now"] = host.TURN_TIMEOUT + 1
             with self.assertRaises(ValueError):
                 host.advance("ses_fake", turn)
         self.api = self.scripted({"data": [{"id": f"msg_{i}"} for i in range(host.PAGE_LIMIT)]})

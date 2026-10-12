@@ -196,8 +196,19 @@ int main(void) {
     char oversized[SESSION_REQUEST_CAP]; memset(oversized, 'x', sizeof(oversized) - 1);
     oversized[sizeof(oversized) - 1] = '\0';
     assert(!SessionBridge_submit(&bridge, oversized));
-    assert(SessionBridge_submit(&bridge, "recover after admission rejection"));
-    bridge.startedMs = 1; /* Inject clock deadline, no scheduling sleeps. */
+    assert(SessionBridge_submit(&bridge, "idle watchdog"));
+    const uint64_t admitted = bridge.startedMs;
+    const char *firstNote = "{\"note\":\"first\"}\n";
+    assert(write(response[1], firstNote, strlen(firstNote)) == (ssize_t) strlen(firstNote));
+    struct timespec pause = {0, 20000000}; /* 20ms: advance the millisecond clock only. */
+    nanosleep(&pause, nullptr);
+    assert(SessionBridge_poll(&bridge) == 0);
+    assert(strcmp(SessionBridge_takeNote(&bridge), "first") == 0);
+    /* Any consumed frame restarts the idle watchdog, so a long tool-using turn is
+     * bounded by remote silence rather than by its total duration. */
+    assert(bridge.startedMs > admitted);
+    /* With nothing buffered and the watchdog expired, the turn now fails. */
+    bridge.startedMs = 1;
     assert(SessionBridge_poll(&bridge) == -1);
     cleanup(request, response, &bridge);
     fixture(request, response, &bridge);
