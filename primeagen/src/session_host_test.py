@@ -149,7 +149,8 @@ class SessionHostTest(unittest.TestCase):
                     {"type": "idle", "outcome": "succeeded"}, {"type": "assistant", "content": content},
                     {"id": "msg_a"}]}):
                 turn = {"messageId": "msg_a", "deadline": float("inf"), "awaiting": None,
-                        "awaitingSince": 0.0, "nextCheck": float("inf"), "seen": set(), "newest": None}
+                        "awaitingSince": 0.0, "nextCheck": float("inf"), "seen": set(), "newest": None,
+                        "said": set(), "held": [], "flowed": False}
                 with self.assertRaises(ValueError):
                     host.advance("ses_fake", turn)
 
@@ -172,7 +173,7 @@ class SessionHostTest(unittest.TestCase):
         with patch.object(host, "run", return_value=b'{"data":[]}') as child:
             turn = {"messageId": "m", "deadline": host.time.monotonic() + 100, "awaiting": None,
                     "awaitingSince": 0.0, "nextCheck": host.time.monotonic() + 100, "seen": set(),
-                    "newest": None}
+                    "newest": None, "said": set(), "held": [], "flowed": False}
             self.assertEqual(host.advance("ses_fake", turn), ([], None, None))
             self.assertEqual(child.call_args.kwargs["cap"], host.MESSAGE_CAP)
 
@@ -200,10 +201,30 @@ class SessionHostTest(unittest.TestCase):
                          ["edit: a", "  (no line change)"])
         self.assertTrue(all(len(line) <= host.NOTE_CAP for line in host.summarize("read", {"filePath": "x" * 900})))
 
+    def test_interleaved_narration_thinking_and_final_answer(self):
+        first = {"id": "m1", "type": "assistant", "content": [
+            {"type": "text", "text": "lemme do it for you"},
+            {"type": "tool", "id": "t1", "name": "shell",
+             "state": {"status": "completed", "input": {"command": "ls -la"}}},
+            {"type": "reasoning", "text": "I should check the layout first"},
+            {"type": "text", "text": "ah interesting\nso that is the shape"},
+            {"type": "tool", "id": "t2", "name": "read",
+             "state": {"status": "completed", "input": {"filePath": "a.c"}}}]}
+        final = {"id": "m2", "type": "assistant", "content": [{"type": "text", "text": "here is my honest read"}]}
+        turn = self.turn([final, first])
+        with patch.object(host, "api", self.api):
+            notes, ask, done = host.advance("ses_fake", turn)
+            self.assertEqual(notes, ["lemme do it for you", "shell: ls -la",
+                                     "thinking: I should check the layout first",
+                                     "ah interesting", "so that is the shape", "read: a.c"])
+            self.assertEqual((ask, done), (None, "here is my honest read"))
+            # Re-polling reports nothing new and never duplicates the answer.
+            self.assertEqual(host.advance("ses_fake", turn), ([], None, "here is my honest read"))
+
     def test_tool_only_and_silent_turns_still_complete(self):
         for content, expected in (([{"type": "tool", "id": "t1", "name": "shell",
                                      "state": {"status": "running", "input": {"command": "ls"}}}],
-                                   (["shell: ls"], None, "(no text returned)")),
+                                   (["shell: ls"], None, "")),
                                   ([], ([], None, "(no text returned)"))):
             turn = self.turn([{"type": "assistant", "content": content}])
             with patch.object(host, "api", self.api):

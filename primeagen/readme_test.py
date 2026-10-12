@@ -48,7 +48,8 @@ class ReadmeTest(unittest.TestCase):
         for claim in ("Native tools and JSON tags", "Bash is unsandboxed", "--websearch-tool",
                       "inspection is automatic", "ask first", "r]eject", "Python remains",
                       "The turn is a stream, not one lump", "working...", "answer:",
-                      "Up/Down arrows", "wheel-down is not declared"):
+                      "thinking:", "The newest message's prose is held back",
+                      "wheel-down cannot be expressed"):
             self.assertIn(claim, readme)
         self.assertNotIn("shell=True", "\n".join(p.read_text() for p in (APP / "src").glob("*.py")))
         bridge = (APP / "session/session_bridge.c").read_text()
