@@ -402,8 +402,8 @@ class SessionHostTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             for sanitized in (False, True):
                 output = Path(directory) / "owner"
-                vex = ROOT / "ecosystem/repos/vexspoke/src"
-                api = ROOT / "ecosystem/repos/api-haven/src"
+                vex = ROOT / "host-behavior/vexspoke/src"
+                api = ROOT / "drivers/api-haven/src"
                 argv = ["clang", "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-O1",
                         "-mcpu=apple-m1", "-mmacosx-version-min=14.0", f"-I{APP}", f"-I{vex}", f"-I{api}"]
                 if sanitized:

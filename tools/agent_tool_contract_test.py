@@ -66,7 +66,7 @@ class AgentToolContractTest(unittest.TestCase):
         for concept in ("numeric", "arity", "FuncProgram", "native", "interpreted"):
             self.assertIn(concept, inventory)
             self.assertIn(concept, prefs)
-        for obligation in ("not an R1–R5", "no ecosystem", "not ecosystem object type IDs",
+        for obligation in ("not an R1–R6", "no ecosystem", "not ecosystem object type IDs",
                            "literal argument vectors", "not implicit run",
                             "Deliberate Exhaustion and Backend Trust Law"):
             self.assertIn(obligation, prefs)

@@ -1,7 +1,7 @@
 # vexgraph — Test Preferences (Ecosystem Test Laws)
 
 This is the ecosystem's proof lawbook. It defines the evidence required before a production file,
-class, component, or subsystem is called tested across the R1–R5 ecosystem. It governs **proof and
+class, component, or subsystem is called tested across the R1–R6 ecosystem. It governs **proof and
 readiness only**; universal architecture is governed by the real workspace `../gist/PREFERENCES.md`
 (the Living Documentation Law). When a test law is cited, cite its **Title** — never a position,
 never a number (the Law Identity Doctrine).
@@ -355,7 +355,7 @@ wrong order.
   released exactly once by the new owner.
 - Run memory checking on tests that exercise manual allocation. An identified leak, invalid access,
   or use-after-free fails the proof.
-- For R1–R5 integration, test reverse teardown order and cancellation before freeing resources a
+- For R1–R6 integration, test reverse teardown order and cancellation before freeing resources a
   worker, GPU submission, or callback may still use.
 
 ---
