@@ -36,6 +36,10 @@ int main(int argc, char **argv) {
     assert(command(&state, true) == TUI_COMMAND_QUIT);
     assert(Tui_setInput(&state, "/update", 7));
     assert(command(&state, true) == TUI_COMMAND_UPDATE);
+    assert(strcmp(approvalReply('o'), "once") == 0 && strcmp(approvalReply('y'), "once") == 0);
+    assert(strcmp(approvalReply('a'), "always") == 0);
+    assert(strcmp(approvalReply('r'), "reject") == 0 && strcmp(approvalReply('n'), "reject") == 0);
+    assert(approvalReply('x') == nullptr && approvalReply('\n') == nullptr && approvalReply(TUI_CTRL_Q) == nullptr);
     assert(Tui_setInput(&state, "ordinary text", 13));
     assert(command(&state, true) == 0);
     assert(Tui_getInputLength(&state) == 13);

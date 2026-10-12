@@ -32,10 +32,13 @@ class SessionAnswerTest(unittest.TestCase):
             env = dict(os.environ)
             if not live:
                 fake = home / "opencode"
-                fake.write_text('#!/usr/bin/env python3\nimport json,sys\np=sys.argv[3]\n'
-                                'rules=[{"action":"*","resource":"*","effect":"deny"}]\n'
+                fake.write_text('#!/usr/bin/env python3\nimport json,sys\n'
+                                f'sys.path.insert(0,{str(APP / "src")!r})\n'
+                                'from session_host import SESSION_PERMISSIONS as rules\n'
+                                'p=sys.argv[3]\n'
                                 'if p=="/api/session": r={"data":{"id":"ses_test","permissions":rules}}\n'
                                 'elif p=="/api/session/ses_test": r={"data":{"permissions":rules}}\n'
+                                'elif p.endswith("/permission"): r={"data":[]}\n'
                                 'elif p.endswith("/prompt"):\n b=json.loads(sys.argv[-1]);open("message","w").write(b["id"]);r={"data":{}}\n'
                                 'else: r={"data":[{"type":"idle","outcome":"succeeded"},{"type":"assistant","content":[{"type":"text","text":"2 + 2 is 4, owo!"}]},{"id":open("message").read()}]}\n'
                                 'print(json.dumps(r))\n')

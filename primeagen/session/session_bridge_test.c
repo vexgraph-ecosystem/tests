@@ -87,6 +87,60 @@ int main(void) {
     assert(SessionBridge_poll(&bridge) == 1);
     assert(strcmp(SessionBridge_getText(&bridge), "Hello 👋 café 中文") == 0);
     cleanup(request, response, &bridge);
+    assert(!SessionBridge_isAwaiting(nullptr));
+    assert(strcmp(SessionBridge_getApprovalLabel(nullptr), "") == 0);
+    assert(SessionBridge_getApprovalSerial(nullptr) == 0);
+    assert(!SessionBridge_decide(nullptr, "once"));
+    fixture(request, response, &bridge);
+    assert(!SessionBridge_isAwaiting(&bridge) && SessionBridge_getApprovalSerial(&bridge) == 0);
+    assert(strcmp(SessionBridge_getApprovalLabel(&bridge), "") == 0);
+    assert(!SessionBridge_decide(&bridge, "once")); /* idle: nothing to answer */
+    cleanup(request, response, &bridge);
+    fixture(request, response, &bridge);
+    assert(SessionBridge_submit(&bridge, "approve me"));
+    assert(SessionBridge_poll(&bridge) == 0);
+    count = read(request[0], frame, sizeof(frame) - 1);
+    assert(count > 0); frame[count] = '\0';
+    assert(!SessionBridge_isAwaiting(&bridge));
+    assert(!SessionBridge_decide(&bridge, "sometimes"));
+    const char *ask = "{\"ask\":{\"id\":\"per_abc\",\"label\":\"shell: git push\"}}\n";
+    assert(write(response[1], ask, strlen(ask)) == (ssize_t) strlen(ask));
+    assert(SessionBridge_poll(&bridge) == 0);
+    assert(SessionBridge_isAwaiting(&bridge) && SessionBridge_getApprovalSerial(&bridge) == 1);
+    assert(strcmp(SessionBridge_getApprovalLabel(&bridge), "shell: git push") == 0);
+    assert(SessionBridge_toString(&bridge, projection, sizeof(projection), &cut));
+    assert(strstr(projection, "approval pending"));
+    assert(SessionBridge_toStringStruct(&bridge, projection, sizeof(projection), &cut));
+    assert(!cut && strstr(projection, "approvalId:redacted") && !strstr(projection, "git push"));
+    assert(!SessionBridge_submit(&bridge, "queued during approval"));
+    assert(!SessionBridge_decide(&bridge, "sometimes"));
+    bridge.startedMs = 1; /* A displayed approval suspends the model deadline. */
+    assert(SessionBridge_poll(&bridge) == 0);
+    assert(SessionBridge_decide(&bridge, "once"));
+    assert(!SessionBridge_isAwaiting(&bridge) && SessionBridge_getApprovalSerial(&bridge) == 1);
+    assert(SessionBridge_poll(&bridge) == 0);
+    memset(frame, 0, sizeof(frame));
+    count = read(request[0], frame, sizeof(frame) - 1);
+    assert(count > 0); frame[count] = '\0';
+    assert(strstr(frame, "\"decision\":\"once\"") != nullptr);
+    assert(!SessionBridge_decide(&bridge, "always")); /* one decision per ask frame */
+    const char *approved = "{\"ok\":true,\"text\":\"approved\"}\n";
+    assert(write(response[1], approved, strlen(approved)) == (ssize_t) strlen(approved));
+    assert(SessionBridge_poll(&bridge) == 1);
+    assert(strcmp(SessionBridge_getText(&bridge), "approved") == 0);
+    cleanup(request, response, &bridge);
+    const char *malformed[] = {"{\"ask\":{\"id\":\"per_abc\"}}\n",
+                               "{\"ask\":{\"id\":\"per_abc\",\"label\":\"x\",\"extra\":1}}\n",
+                               "{\"ask\":{\"id\":5,\"label\":\"x\"}}\n"};
+    for (size_t i = 0; i < sizeof(malformed) / sizeof(*malformed); ++i) {
+        fixture(request, response, &bridge);
+        assert(SessionBridge_submit(&bridge, "malformed"));
+        assert(write(response[1], malformed[i], strlen(malformed[i])) == (ssize_t) strlen(malformed[i]));
+        assert(SessionBridge_poll(&bridge) == -1);
+        assert(!SessionBridge_isAwaiting(&bridge));
+        cleanup(request, response, &bridge);
+    }
+    fixture(request, response, &bridge);
     const char *bad[] = {"{}\n", "{\"ok\":true,\"ok\":true}\n", "{\"ok\":false,\"text\":\"secret\"}\n",
                         "{\"ok\":true,\"text\":\"a\\u0000b\"}\n", "{\"ok\":true,\"text\":\"ok\"}\nextra\n", "not-json\n"};
     for (size_t i = 0; i < sizeof(bad) / sizeof(*bad); ++i) {

@@ -45,17 +45,22 @@ class ReadmeTest(unittest.TestCase):
             self.assertTrue((APP / f"tools/{tag}.c").is_file())
             self.assertTrue((APP / f"tools/{tag}.h").is_file())
             self.assertIn(f'"{tag}"', tools)
-        for claim in ("Native tools and JSON tags", "Bash is unsandboxed", "--websearch-tool", "chat-only/deny-all", "Python remains"):
+        for claim in ("Native tools and JSON tags", "Bash is unsandboxed", "--websearch-tool",
+                      "inspection is automatic", "ask first", "r]eject", "Python remains"):
             self.assertIn(claim, readme)
         self.assertNotIn("shell=True", "\n".join(p.read_text() for p in (APP / "src").glob("*.py")))
         bridge = (APP / "session/session_bridge.c").read_text()
         host = (APP / "src/session_host.py").read_text()
         for name in ("Harness_run", "Harness_poll", "Harness_cancel", "EngineProvider_get", "Owo_instructions"):
             self.assertIn(name, bridge)
-        for claim in ("Codex App Server is not implemented", "chat-only", "retained", "deny-all", "OpenCode V2"):
+        for claim in ("Codex App Server is not implemented", "no longer deny-all", "retained", "default policy", "OpenCode V2"):
             self.assertIn(claim, readme)
         self.assertIn('"opencode", "api"', host)
         self.assertIn('"effect": "deny"', host)
+        self.assertIn('"effect": "ask"', host)
+        self.assertIn("SESSION_PERMISSIONS", host)
+        self.assertIn("SessionBridge_decide", bridge)
+        self.assertIn("SessionBridge_isAwaiting", bridge)
         self.assertNotIn("load_env", host)
         self.assertNotIn("auth.json", host)
         for claim in ("C terminal Markdown adapter", "before wrapping", "flat subset", "not CommonMark"):
@@ -63,6 +68,9 @@ class ReadmeTest(unittest.TestCase):
         tui = (APP / "tui/tui.c").read_text()
         terminal = (APP / "cli/main.c").read_text()
         view = (APP / "cli/view.c").read_text()
+        self.assertIn("SessionBridge_isAwaiting(&bridge)", terminal)
+        self.assertIn("Approve %s?", terminal)
+        self.assertIn("SessionBridge_decide(&bridge", terminal)
         self.assertIn("Markdown_render(copy, used", tui)
         self.assertIn("Tui_copyStyledRow", view)
         self.assertIn("attributes(styles[at])", view)
