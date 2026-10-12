@@ -448,7 +448,7 @@ not an impressive operation counter.
   single `THROW` diagnostic names the owner, the request size and the bound, and
   that `init`/`create`/`reset`/`freeAll`/`destroy` zeroes the count for a fresh
   epoch. A backend whose exhaustion cannot be observed through the counter or the
-  diagnostic is not trusted for R5/custom-application use.
+  diagnostic is not trusted for R5/R6 custom-application use.
 - **Prove recovery, not just refusal.** Release or reset under the legal contract,
   retry, refill and exhaust again. Assert exact reclamation, permitted retained
   capacity, survivor contents, count/identity and continued normal operation.
@@ -575,8 +575,8 @@ boundary.
   and supervised worker or window lifecycle.
 - R4 (`darling`, `sesh`): prove input routing, layout, focus, compositing, session ordering, and
   recovery after disconnect as applicable.
-- R5 applications: prove representative user workflows, save/restore or undo/redo where offered, and
-  integration across the levels they actually use.
+- R5 applications and R6 superapps: prove representative user workflows, save/restore or undo/redo where offered, and
+  integration across the levels they actually use (superapps compose R1–R5 workflows).
 - Keep fault injection at the public cold seam and use minimal guards on hot paths, consistent with
   the Cold-Strict, Hot-Minimal Validation Law.
 
