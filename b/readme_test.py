@@ -21,7 +21,7 @@ class ReadmeTest(unittest.TestCase):
         text = (ROOT / "TREE.md").read_text()
         for phrase in ("build <adapter>", "exec <file>", "instance <file>",
                        "upload", "--port <port>", "--fqbn <matching-board>",
-                        "PLANNED", "not implemented", "tools/workspace.c",
+                        "PLANNED", "backend exists", "tools/workspace.c",
                        "B_SQL_DATABASE", "no default database", "not a sandbox",
                        "not type-checking", "file suffix", "./tools/b targets",
                        "[Back to README](README.md)", "b run exec ./hello.c"):
@@ -38,8 +38,8 @@ class ReadmeTest(unittest.TestCase):
         for phrase in ("general-purpose, language-agnostic build system", "Tsoding",
                        "nob", "git clone https://github.com/vex-graph/b.git",
                         "b run <exec|instance>", "b build <adapter>",
-                       "b export <manifestmainfile>", "JETBRAINS.md",
-                       "No export format or manifest schema is implemented yet",
+                        "b create manifest <path>", "b box <manifest.json>", "JETBRAINS.md",
+                         "creates a JSON starter template", "packaging backend exists",
                        "parse-only", "exactly one", "SDK 10+", "main.rs",
                          "../../tests/b/cli_test.py", "../../preferences.md",
                          "https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a"):
@@ -131,7 +131,8 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn('// b_build("arduino:avr:uno")', text)
         self.assertIn("Serial Monitor", text)
         self.assertIn("b does not add those IDE features", text)
-        self.assertIn("export is still planned", text)
+        self.assertIn("b create manifest", text)
+        self.assertIn("no packaging backend yet", text)
 
     def test_jetbrains_two_methods_and_xml_reference_consistency(self):
         text = (ROOT / "JETBRAINS.md").read_text()

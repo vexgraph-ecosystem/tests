@@ -1,9 +1,10 @@
 """CLI owner proof: public grammar, process status, source builds and rejection.
 
 Temporary projects use real compilers; every child has an external timeout.
-Java needs an installed JDK; other platforms and instance/export remain gaps.
+Java needs an installed JDK; other platforms and packaging remain gaps.
 """
 
+import json
 import os
 from pathlib import Path
 import shutil
@@ -188,7 +189,7 @@ class CliTest(unittest.TestCase):
 
     def test_help_and_invalid_grammar(self):
         help_text = self.invoke("--help").stdout
-        for command in ("b run", "b build", "b export", "b java"):
+        for command in ("b run", "b build", "b create manifest", "b box", "b java"):
             self.assertIn(command, help_text)
             self.assertIn(command, (ROOT / "README.md").read_text())
         for arguments in (("nonsense",), ("build",), ("run", "exec"),
@@ -254,10 +255,41 @@ class CliTest(unittest.TestCase):
         self.invoke("run", "instance", source, expected=1)
         manifest = self.project / "manifest.json"
         manifest.write_text("{}\n")
-        for kind in ("exe", "app", "msi", "iso", "zip", "invalid"):
-            destination = self.project / f"export.{kind}"
-            self.invoke("export", manifest, destination, kind, expected=1)
-            self.assertFalse(destination.exists())
+        destination = self.project / "release"
+        self.invoke("box", manifest, destination, expected=1)
+        self.assertFalse(destination.exists())
+        destination.mkdir()
+        marker = destination / "previous-export.txt"
+        marker.write_text("preserve previous output\n")
+        self.invoke("box", manifest, destination, expected=1)
+        self.assertEqual(marker.read_text(), "preserve previous output\n")
+        self.assertIn("does not exist or is not a regular file",
+                      self.invoke("box", self.project / "missing.json", destination,
+                                  expected=1).stderr)
+        self.invoke("export", manifest, destination, "zip", expected=1)
+        self.assertEqual(marker.read_text(), "preserve previous output\n")
+
+    def test_create_manifest_template_and_preserve_existing_file(self):
+        manifest = self.project / "box.json"
+        result = self.invoke("create", "manifest", manifest)
+        self.assertEqual(result.stdout.strip(), str(manifest))
+        text = manifest.read_text()
+        parsed = json.loads(text)
+        self.assertEqual(parsed["schemaVersion"], 1)
+        self.assertEqual(parsed["application"]["version"], "1.0.0")
+        self.assertEqual(parsed["payload"]["entry"], "dist/myapp")
+        self.assertEqual(parsed["statePolicy"], "clean")
+        for field in ('"schemaVersion"', '"application"', '"id"', '"name"',
+                      '"version"', '"authors"', '"publisher"', '"description"',
+                      '"license"', '"payload"', '"entry"', '"files"',
+                      '"targets"', '"formats"', '"statePolicy"'):
+            self.assertIn(field, text)
+        self.assertIn("clean", text)
+        self.assertIn("com.example.myapp", text)
+        self.assertIn("cannot create manifest", self.invoke(
+            "create", "manifest", manifest, expected=1).stderr)
+        self.assertEqual(manifest.read_text(), text)
+        self.assertIn("b create manifest <path>", self.invoke("--help").stdout)
 
     def test_java_source_alias_and_direct_instance(self):
         self.require_java()

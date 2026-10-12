@@ -1113,6 +1113,20 @@ Registered runners use `PYTHONPATH=tests/b python3 -m unittest discover
 -s tests/b/adapters -p '*_test.py' -v` with bounded child watchdogs. README,
 ADAPTERS.md and TREE.md remain checked by `tests/b/readme_test.py`.
 
+### Box Manifest Foundation Proof Law
+
+`tests/b/cli_test.py` owns the standalone box entry points. Prove that
+`b create manifest <path>` writes a complete starter JSON template, refuses an
+existing path without modifying it, and reports write failures without leaving
+a partial file. Prove `b box <manifest> <destination>` rejects missing/non-file
+manifests and never creates or mutates the destination while packaging backends
+are unavailable. The current `box` command does not parse or validate manifest
+contents; tests and documentation must not imply that it does. As parsing and
+format backends are added, extend the adversarial contract to malformed/duplicate
+JSON keys, path traversal and symlinks, state exclusions, dependency closure,
+staging rollback, signatures, installer lifecycle and host/target mismatch.
+Manifest metadata is project/toolchain agnostic and is not Vexgraph-specific.
+
 ---
 
 # Part III — Blueprint Repos
