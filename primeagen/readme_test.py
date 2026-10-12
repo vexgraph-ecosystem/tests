@@ -59,6 +59,16 @@ class ReadmeTest(unittest.TestCase):
         for claim in ("Codex App Server is not implemented", "no longer deny-all", "retained", "default policy", "OpenCode V2"):
             self.assertIn(claim, readme)
         self.assertIn('"opencode", "api"', host)
+        controlled = (APP / "src/controlled_session.py").read_text()
+        self.assertIn('"--worker", "--controlled"', host)
+        self.assertIn('"/api/experimental/generate"', controlled)
+        self.assertIn("self.tools = Tools", controlled)
+        self.assertIn("self.agent = Agent", controlled)
+        self.assertIn("self.always.add(identity)", controlled)
+        for claim in ("Default: local execution gate", "text-only generation",
+                      "exact tool and arguments", "No starts no tool child",
+                      "Legacy remote adapter", "HTTP 400", "not a saved OpenCode conversation"):
+            self.assertIn(claim, readme)
         self.assertIn('"effect": "deny"', host)
         self.assertIn('"effect": "ask"', host)
         self.assertIn("SESSION_PERMISSIONS", host)
