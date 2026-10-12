@@ -42,9 +42,21 @@ int main(void) {
     assert(TerminalCanvas_charAt(&left, 0, 0) == ' ');
 
     TerminalFrame_drawRules(&frame, &root, TerminalPen_1(TERMINAL_STYLE_DIM));
-    assert(TerminalCanvas_charAt(&root, 10, 2) == '|');
+    assert(TerminalCanvas_charAt(&root, 10, 1) == '+');       // junction: run meets the left rail
+    assert(TerminalCanvas_charAt(&root, W - 10 - 1, 1) == '+'); // junction: run meets the right rail
+    assert(TerminalCanvas_charAt(&root, 5, 1) == '-');        // run between the rails
+    assert(TerminalCanvas_charAt(&root, 10, 2) == '|');       // rail below the junction
     assert(TerminalCanvas_charAt(&root, W - 10 - 1, 2) == '|');
-    assert(TerminalCanvas_charAt(&root, 5, 1) == '-');
+
+    // A striped connector run, and a custom glyph set.
+    TerminalRule striped = TerminalRule('-', '|', '.', 4);
+    assert(TerminalFrame_setRule(&frame, striped));
+    TerminalRule got = TerminalRule_0();
+    TerminalFrame_getRule(&frame, &got);
+    assert(got.stripe == '.' && got.stripeEvery == 4);
+    TerminalFrame_drawRules(&frame, &root, TerminalPen_1(TERMINAL_STYLE_DIM));
+    assert(TerminalCanvas_charAt(&root, 3, 1) == '.');        // every 4th cell is the stripe
+    assert(TerminalCanvas_charAt(&root, 4, 1) == '-');
 
     // A very narrow root collapses the rails so the centre stays usable.
     static char narrow[6 * 6];
@@ -71,6 +83,10 @@ int main(void) {
     TerminalFrame_paintBackground(nullptr, &root);
     TerminalFrame_drawRules(nullptr, &root, TerminalPen());
     REJECT(TerminalFrame_setRails(nullptr, 1, 1), "null self");
+    REJECT(TerminalFrame_setRule(nullptr, TerminalRule_0()), "null self");
+    TerminalFrame_getRule(nullptr, &got);
+    TerminalRule_draw(nullptr, &root, 0, TerminalPen());
+    TerminalRule_draw(&striped, nullptr, 0, TerminalPen());
     TerminalFrame_getRails(nullptr, nullptr, nullptr);
     TerminalFrame_getBands(nullptr, nullptr, nullptr);
 
