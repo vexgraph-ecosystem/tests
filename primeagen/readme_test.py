@@ -49,7 +49,7 @@ class ReadmeTest(unittest.TestCase):
                       "inspection is automatic", "ask first", "r]eject", "Python remains",
                       "The turn is a stream, not one lump", "working...", "answer:",
                       "thinking:", "The newest message's prose is held back",
-                      "wheel-down cannot be expressed"):
+                      "SGR", "Always yes", "x-opencode-directory"):
             self.assertIn(claim, readme)
         self.assertNotIn("shell=True", "\n".join(p.read_text() for p in (APP / "src").glob("*.py")))
         bridge = (APP / "session/session_bridge.c").read_text()
@@ -72,7 +72,9 @@ class ReadmeTest(unittest.TestCase):
         terminal = (APP / "cli/main.c").read_text()
         view = (APP / "cli/view.c").read_text()
         self.assertIn("SessionBridge_isAwaiting(&bridge)", terminal)
-        self.assertIn("Approve %s?", terminal)
+        self.assertIn("Do you accept %s?", terminal)
+        self.assertIn("readMouse", terminal)
+        self.assertNotIn("TUI_WHEEL_DOWN", terminal)
         self.assertIn("SessionBridge_decide(&bridge", terminal)
         self.assertIn("Markdown_render(copy, used", tui)
         self.assertIn("Tui_copyStyledRow", view)

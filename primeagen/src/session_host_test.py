@@ -95,7 +95,9 @@ class SessionHostTest(unittest.TestCase):
             self.assertFalse(host.confirmed(bad))
         self.assertFalse(host.confirmed(host.SESSION_PERMISSIONS[1:]))  # dropped catch-all deny
         self.assertFalse(host.confirmed(host.SESSION_PERMISSIONS
-                                        + [{"action": "shell", "resource": "*", "effect": "allow"}]))
+                                         + [{"action": "shell", "resource": "*", "effect": "allow"}]))
+        self.assertFalse(host.confirmed(host.SESSION_PERMISSIONS
+                                         + [{"action": "shell", "resource": "git *", "effect": "allow"}]))
         self.assertTrue(host.matches("*", "anything/at all"))
         self.assertTrue(host.matches("git*", "git push"))
         self.assertFalse(host.matches("git*", "hg push"))
@@ -116,7 +118,7 @@ class SessionHostTest(unittest.TestCase):
             self.assertEqual(done, None)
             self.assertIsNotNone(ask)
             self.assertEqual(ask["id"], "per_1")
-            self.assertEqual(host.label(ask), "shell: git push  [31mnow")
+            self.assertEqual(host.label(ask), "this Bash script: git push  [31mnow")
             self.assertNotIn("\x1b", host.label(ask))
             self.assertEqual(host.advance("ses_fake", turn), ([], None, None))
             self.assertEqual(self.replies, [])
@@ -289,6 +291,7 @@ class SessionHostTest(unittest.TestCase):
             self.assertEqual(host.api("post", "/api/session", {"text": "$(id)"}), {"data": []})
             argv = child.call_args.args[0]
             self.assertEqual(argv[:4], ["opencode", "api", "post", "/api/session"])
+            self.assertEqual(argv[4:6], ["--header", "x-opencode-directory:" + host.quote(str(Path.cwd()), safe="")])
             self.assertEqual(json.loads(argv[-1])["text"], "$(id)")
         with patch.object(host, "run", return_value=b""):
             self.assertEqual(host.api("post", "/api/session/x/permission/per_1/reply", {"decision": "once"}, empty=True), {})
@@ -341,8 +344,10 @@ class SessionHostTest(unittest.TestCase):
             try:
                 child.stdin.write(b'{"prompt":"test","instructions":""}\n')
                 child.stdin.flush()
+                self.assertEqual(json.loads(child.stdout.readline()), {"note": "Bash approval requested:"})
+                self.assertEqual(json.loads(child.stdout.readline()), {"note": "  rm -rf build"})
                 self.assertEqual(json.loads(child.stdout.readline()),
-                                 {"ask": {"id": "per_1", "label": "shell: rm -rf build"}})
+                                  {"ask": {"id": "per_1", "label": "this Bash script: rm -rf build"}})
                 child.stdin.write(b'{"decision":"once"}\n')
                 child.stdin.flush()
                 self.assertEqual(json.loads(child.stdout.readline()), {"note": "read: notes.md (lines 2-5)"})

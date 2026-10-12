@@ -4,6 +4,14 @@
 #include "cli/main.c"
 #undef main
 #include <assert.h>
+
+static bool mouseSuffix(int key, const char *suffix, int *x, int *y, TuiMouseKind *kind) {
+    size_t length = strlen(suffix);
+    while (length > 0)
+        assert(ungetch((unsigned char) suffix[--length]) == OK);
+    return readMouse(key, x, y, kind);
+}
+
 int main(int argc, char **argv) {
     if (argc == 3 && strcmp(argv[1], "--connect-probe") == 0)
         return connectHost(argv[2], true);
@@ -40,6 +48,26 @@ int main(int argc, char **argv) {
     assert(strcmp(approvalReply('a'), "always") == 0);
     assert(strcmp(approvalReply('r'), "reject") == 0 && strcmp(approvalReply('n'), "reject") == 0);
     assert(approvalReply('x') == nullptr && approvalReply('\n') == nullptr && approvalReply(TUI_CTRL_Q) == nullptr);
+    // Real protocol suffixes, not fabricated fifth-button/modifier bits.
+    int mouseX = -1, mouseY = -1;
+    TuiMouseKind mouseKind;
+    assert(mouseSuffix(TUI_MOUSE_SGR, "64;50;4M", &mouseX, &mouseY, &mouseKind));
+    assert(mouseKind == TUI_MOUSE_WHEEL_UP && mouseX == 49 && mouseY == 3);
+    assert(mouseSuffix(TUI_MOUSE_SGR, "65;50;4M", &mouseX, &mouseY, &mouseKind));
+    assert(mouseKind == TUI_MOUSE_WHEEL_DOWN);
+    assert(mouseSuffix(TUI_MOUSE_SGR, "4;50;4M", &mouseX, &mouseY, &mouseKind));
+    assert(mouseKind == TUI_MOUSE_CLICK); // shift-click is never wheel-down
+    assert(mouseSuffix(TUI_MOUSE_SGR, "81;50;4M", &mouseX, &mouseY, &mouseKind));
+    assert(mouseKind == TUI_MOUSE_WHEEL_DOWN); // modifier plus wheel
+    assert(mouseSuffix(TUI_MOUSE_X10, "aR$", &mouseX, &mouseY, &mouseKind));
+    assert(mouseKind == TUI_MOUSE_WHEEL_DOWN && mouseX == 49 && mouseY == 3);
+    for (size_t i = 0; i < 4; ++i) {
+        const char *bad[] = {"65;0;4M", "65;99999;4M", "65;50;4m", "32;50;4M"};
+        assert(!mouseSuffix(TUI_MOUSE_SGR, bad[i], &mouseX, &mouseY, &mouseKind));
+        assert(mouseX == 49 && mouseY == 3);
+    }
+    drawApproval(20, 0, 60);
+    assert((mvinch(18, 0) & A_CHARTEXT) == 'A');
     // The speaker label is opened once per turn, then reused for notes/answers.
     bool open = false;
     size_t mark = Tui_getCount(&state);
@@ -55,6 +83,10 @@ int main(int argc, char **argv) {
     for (int i = 0; i < 30; ++i)
         assert(Tui_add(&state, "extra", 5));
     Tui_scrollBy(&state, 10);
+    size_t scrollBefore = Tui_getScroll(&state);
+    assert(mouseSuffix(TUI_MOUSE_SGR, "65;2;4M", &mouseX, &mouseY, &mouseKind));
+    TuiMouse_dispatch(&state, mouseX, mouseY, mouseKind);
+    assert(Tui_getScroll(&state) < scrollBefore);
     assert(draw(&state, false, false, true, true, false, row, styles, sizeof(row)));
     assert((mvinch(19, 0) & A_CHARTEXT) == 'O');
     assert((mvinch(18, 2) & A_CHARTEXT) == 'f');
@@ -66,7 +98,7 @@ int main(int argc, char **argv) {
     MEVENT received;
     assert(getmouse(&received) == OK);
     assert(TuiMouse_dispatch(&state, received.x, received.y, TUI_MOUSE_CLICK) == TUI_MOUSE_CLEAR);
-    assert(ungetch(KEY_PPAGE) == OK && getch() == KEY_PPAGE);
+    assert(ungetch(KEY_DOWN) == OK && getch() == KEY_DOWN);
     Tui_clear(&state);
     start_color();
     use_default_colors();

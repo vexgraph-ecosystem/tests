@@ -4,6 +4,7 @@ Host ASan/UBSan does not establish ASan module unload/reload support on Apple.
 """
 from pathlib import Path
 import hashlib
+import json
 import os
 import pty
 import select
@@ -35,6 +36,88 @@ def build_views(base):
 
 
 class UpdateTest(unittest.TestCase):
+    def test_real_mouse_bytes_both_directions_and_visible_approval(self):
+        # Exercise actual getch/prefix decoding through the production process,
+        # not ungetmouse(): Apple v1 silently loses wheel-down in that path.
+        subprocess.run(["sh", str(APP / "cli/build.sh")], check=True, capture_output=True, timeout=90)
+        import fcntl
+        import struct
+        import termios
+        master, slave = pty.openpty()
+        fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 24, 100, 0, 0))
+        requestRead, requestWrite = os.pipe()
+        responseRead, responseWrite = os.pipe()
+        os.set_blocking(requestWrite, False)
+        os.set_blocking(responseRead, False)
+        child = subprocess.Popen([str(APP / ".build/tui"), "--bridge-read", str(responseRead),
+                                  "--bridge-write", str(requestWrite)], stdin=slave, stdout=slave, stderr=slave,
+                                 pass_fds=(responseRead, requestWrite), env={**os.environ, "TERM": "xterm-256color"})
+        os.close(slave)
+        os.close(responseRead)
+        os.close(requestWrite)
+        output = bytearray()
+
+        def until(marker):
+            deadline = time.monotonic() + 10
+            while marker not in output:
+                remaining = deadline - time.monotonic()
+                self.assertGreater(remaining, 0, bytes(output))
+                self.assertTrue(select.select([master], [], [], remaining)[0])
+                output.extend(os.read(master, 65536))
+
+        def wire():
+            deadline = time.monotonic() + 10
+            while time.monotonic() < deadline:
+                ready = select.select([requestRead, master], [], [], deadline - time.monotonic())[0]
+                if requestRead in ready:
+                    return json.loads(os.read(requestRead, 16384))
+                if master in ready:
+                    output.extend(os.read(master, 65536))
+            self.fail("terminal did not send wire request: " + repr(bytes(output)))
+
+        try:
+            until(b"People")
+            self.assertIn(b"?1006h", output)
+            os.write(master, b"probe\n")
+            self.assertEqual(wire()["prompt"], "probe")
+            text = "\n".join(("Older block" if i < 30 else "Latest block") + f" entry {i}" for i in range(60))
+            os.write(responseWrite, json.dumps({"ok": True, "text": text}).encode() + b"\n")
+            until(b"Latest block")
+            output.clear()
+            os.write(master, b"\x1b[<64;50;4M" * 20)
+            until(b"Older")
+            output.clear()
+            os.write(master, b"\x1b[<65;50;4M" * 20)
+            until(b"Latest")
+            # Return to older history, then prove the approval brings the live
+            # chat/tail back and offers decisions in a fixed input-row bar.
+            output.clear()
+            os.write(master, b"\x1b[<64;50;4M" * 20)
+            until(b"Older")
+            os.write(master, b"next\n")
+            self.assertEqual(wire()["prompt"], "next")
+            output.clear()
+            os.write(responseWrite, b'{"ask":{"id":"per_probe","label":"this Bash script: printf probe"}}\n')
+            until(b"Do you accept this Bash script")
+            until(b"Always yes")
+            os.write(master, b"n")
+            self.assertEqual(wire(), {"decision": "reject"})
+            os.write(master, b"\x11")
+            deadline = time.monotonic() + 10
+            while child.poll() is None and time.monotonic() < deadline:
+                if select.select([master], [], [], .1)[0]:
+                    try:
+                        output.extend(os.read(master, 65536))
+                    except OSError:
+                        break
+            self.assertEqual(child.wait(timeout=3), 0)
+        finally:
+            if child.poll() is None:
+                child.kill()
+                child.wait(timeout=3)
+            for fd in (master, requestRead, responseWrite):
+                os.close(fd)
+
     def test_terminal_native_selection_toggle(self):
         # Actual terminal protocol, not appearance/clipboard acceptance: disable
         # mouse capture for native selection, then restore it without losing draft.
