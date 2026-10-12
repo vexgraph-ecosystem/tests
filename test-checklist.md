@@ -490,26 +490,32 @@ No inventoried files yet; not verified.
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/language/run.py` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/language/run.py` | ✅ | 1791781819 | f727d430e923ed4c8a35cdd60f4e5ee7937ac0598f975e5e9955ed87574b512a | ['python3', '-B', 'tests/language/run.py']; Apple Silicon macOS; Clang GNU C23; -Wall -Wextra -Werror; strict and ASan/UBSan owner runs | Language value-object accessors and unified-diff structural classification; boundary/transition cases, nine asserted rejection diagnostics, state/output preservation; strict plus sanitizers | passed |
+
+### `tests/language/adapters/diff`
+
+| Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
+| :--- | :---: | ---: | :--- | :--- | :--- | :--- |
+| `tests/language/adapters/diff/diff_adapter_test.c` | ✅ | 1791781819 | e5a27320c9726aadeac1036300489c1d746cd639a3991ed1fdd75fa1ab5f4937 | ['python3', '-B', 'tests/language/run.py']; Apple Silicon macOS; Clang GNU C23; -Wall -Wextra -Werror; strict and ASan/UBSan owner runs | Language value-object accessors and unified-diff structural classification; boundary/transition cases, nine asserted rejection diagnostics, state/output preservation; strict plus sanitizers | passed |
 
 ### `tests/language/document`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/language/document/source_range_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/language/document/source_range_test.c` | ✅ | 1791781819 | e37735b18036a0df13e3c78f9be7bcce202a1e3cc00017c4a3c2e9e61495857e | ['python3', '-B', 'tests/language/run.py']; Apple Silicon macOS; Clang GNU C23; -Wall -Wextra -Werror; strict and ASan/UBSan owner runs | Language value-object accessors and unified-diff structural classification; boundary/transition cases, nine asserted rejection diagnostics, state/output preservation; strict plus sanitizers | passed |
 
 ### `tests/language/semantic`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/language/semantic/reference_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
-| `tests/language/semantic/symbol_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/language/semantic/reference_test.c` | ✅ | 1791781819 | 4371170ee76e6cff5309025aa5684034088f819d9369a34dd48715e2a0121fe4 | ['python3', '-B', 'tests/language/run.py']; Apple Silicon macOS; Clang GNU C23; -Wall -Wextra -Werror; strict and ASan/UBSan owner runs | Language value-object accessors and unified-diff structural classification; boundary/transition cases, nine asserted rejection diagnostics, state/output preservation; strict plus sanitizers | passed |
+| `tests/language/semantic/symbol_test.c` | ✅ | 1791781819 | 23c44dd7433b49f4cb314610dbbf85c67ebaddeb914438af4c64248857eaa711 | ['python3', '-B', 'tests/language/run.py']; Apple Silicon macOS; Clang GNU C23; -Wall -Wextra -Werror; strict and ASan/UBSan owner runs | Language value-object accessors and unified-diff structural classification; boundary/transition cases, nine asserted rejection diagnostics, state/output preservation; strict plus sanitizers | passed |
 
 ### `tests/language/token`
 
 | Filename | Lab tested? | Last checked (Unix seconds) | SHA-256 at check | Evidence / scope | Description | Result |
 | :--- | :---: | ---: | :--- | :--- | :--- | :--- |
-| `tests/language/token/token_test.c` | ❌ | — | — | No executed evidence | Awaiting automated lab check | untested |
+| `tests/language/token/token_test.c` | ✅ | 1791781819 | 10b06928f2200c76474560cab45ae1362cd36b3c1c47ae9f5544558c3e8d9c03 | ['python3', '-B', 'tests/language/run.py']; Apple Silicon macOS; Clang GNU C23; -Wall -Wextra -Werror; strict and ASan/UBSan owner runs | Language value-object accessors and unified-diff structural classification; boundary/transition cases, nine asserted rejection diagnostics, state/output preservation; strict plus sanitizers | passed |
 
 ### `tests/primeagen`
 
