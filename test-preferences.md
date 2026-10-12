@@ -1113,19 +1113,44 @@ Registered runners use `PYTHONPATH=tests/b python3 -m unittest discover
 -s tests/b/adapters -p '*_test.py' -v` with bounded child watchdogs. README,
 ADAPTERS.md and TREE.md remain checked by `tests/b/readme_test.py`.
 
-### Box Manifest Foundation Proof Law
+### Box Manifest and Portable Export Proof Law
 
-`tests/b/cli_test.py` owns the standalone box entry points. Prove that
-`b create manifest <path>` writes a complete starter JSON template, refuses an
-existing path without modifying it, and reports write failures without leaving
-a partial file. Prove `b box <manifest> <destination>` rejects missing/non-file
-manifests and never creates or mutates the destination while packaging backends
-are unavailable. The current `box` command does not parse or validate manifest
-contents; tests and documentation must not imply that it does. As parsing and
-format backends are added, extend the adversarial contract to malformed/duplicate
-JSON keys, path traversal and symlinks, state exclusions, dependency closure,
-staging rollback, signatures, installer lifecycle and host/target mismatch.
-Manifest metadata is project/toolchain agnostic and is not Vexgraph-specific.
+`tests/b/box_test.c` (run by `tests/b/box_test.py` under strict C23, assertions
+and ASan/UBSan) owns the `BoxManifest` class, and `tests/b/cli_test.py` owns the
+`b create manifest` / `b box` CLI seam. Prove template exclusivity (a second
+`create manifest` refuses without modifying the file), the template's parsed
+schema-1 fields, and a cold rejection matrix that covers malformed JSON,
+unknown and duplicate keys, unsupported `\u` escapes, control characters,
+schema version, unknown/empty format sets, absolute paths, `.`/`..` components,
+a non-`clean` state policy, a non-empty `targets` array, duplicate export
+destinations, an oversized manifest and trailing content. The C owner captures
+its own stderr, asserts the exact diagnostic count and one expected message
+fragment per case, and therefore fails on a silent rejection, a duplicate report
+or stray output. Prove owned-string lifetime (`BoxManifest_free` including a
+partially parsed record), null-input safety, and that `toString` /
+`toStringStruct` are bounded, truncation-flagged and null-safe.
+
+For the export itself, prove the published payload layout: the entry under its
+own name plus each declared file at its declared destination (file name by
+default), nested destinations, preserved permission bits, that undeclared
+sources are not copied, and that no private staging directory survives. Prove
+refusal preserves state: an existing destination is never replaced, an
+unavailable entry/source, a symlink payload, an unsupported format and a
+non-directory destination parent each reject without creating anything, and a
+mid-copy failure (a FIFO in the payload tree) removes staging and leaves the
+destination absent. Only the `portable` format is implemented and every other
+format name must reject loudly; per-target exports, signing, notarization,
+installer lifecycle and exported machine/user state remain unimplemented and must
+not be implied by tests or documentation. Export is not a sandbox: tests may
+require a stable payload tree but must not claim hostile-writer confinement.
+
+`tests/b/blueprint_test.py` also requires `box.h`/`box.c` to carry the
+`;;DEFINITION`/`;;OVERVIEW` blueprints naming every function, and
+`tests/b/readme_test.py` keeps README, TREE.md, ADAPTERS.md and JETBRAINS.md
+honest about what box does and does not implement. The standalone recursive
+workspace owner `tests/b/adapters/workspace_test.py` compiles the CLI including
+`box.c`, so a new b source file that breaks the launcher or sanitized build is
+caught there.
 
 ---
 
