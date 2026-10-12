@@ -34,6 +34,8 @@ int main(int argc, char **argv) {
     assert(Tui_getCount(&state) == before + 1);
     assert(Tui_setInput(&state, "/quit", 5));
     assert(command(&state, true) == TUI_COMMAND_QUIT);
+    assert(Tui_setInput(&state, "/update", 7));
+    assert(command(&state, true) == TUI_COMMAND_UPDATE);
     assert(Tui_setInput(&state, "ordinary text", 13));
     assert(command(&state, true) == 0);
     assert(Tui_getInputLength(&state) == 13);

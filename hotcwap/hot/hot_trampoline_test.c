@@ -77,13 +77,48 @@ int main(void) {
     memset(big, 'z', sizeof big - 1);
     big[sizeof big - 1] = '\0';
     int c = HotTrampolineTable_register(&table, big);
-    CHECK(c == 2);
+    CHECK(c == -1);
     char clamped[HOT_MANIFEST_MAX_NAME];
     memset(clamped, 'z', HOT_MANIFEST_MAX_NAME - 1);
     clamped[HOT_MANIFEST_MAX_NAME - 1] = '\0';
-    CHECK(HotTrampolineTable_find(&table, clamped) == 2);
-    HotTrampoline *row = &table.rows[2];
-    CHECK(strlen((*row).name) == HOT_MANIFEST_MAX_NAME - 1);
+    CHECK(HotTrampolineTable_find(&table, clamped) == -1);
+    CHECK(HotTrampolineTable_register(&table, "alpha") == a);
+    CHECK(atomic_load(&table.count) == 2);
+    for (int i = 2; i < 4096; ++i) {
+        char name[64];
+        snprintf(name, sizeof name, "symbol_%d", i);
+        CHECK(HotTrampolineTable_register(&table, name) == i);
+        HotTrampolineTable_set(&table, i, pa);
+    }
+    CHECK(atomic_load(&table.count) == 4096);
+    CHECK(HotTrampolineTable_find(&table, "symbol_4095") == 4095);
+    CHECK(HotTrampolineTable_get(&table, 4095) == pa);
+    for (int i = 0; i < 10000; ++i) {
+        HotTrampolineTable_set(&table, a, i % 2 ? pa : pb);
+        CHECK(HotTrampolineTable_get(&table, a) == (i % 2 ? pa : pb));
+    }
+    CHECK(!HotTrampolineTable_reserve(&table, UINT32_MAX));
+    CHECK(!HotTrampolineTable_reserve(&table, UINT32_MAX));
+    CHECK(HotTrampolineTable_exhaustionCount(&table) == 2);
+    CHECK(atomic_load(&table.count) == 4096);
+    CHECK(HotTrampolineTable_get(&table, 4095) == pa);
+    CHECK(!HotTrampolineTable_reserve(nullptr, 1));
+    char projection[256];
+    bool cut;
+    CHECK(HotTrampolineTable_toString(&table, projection, sizeof projection, &cut));
+    CHECK(!cut);
+    CHECK(HotTrampolineTable_toStringStruct(&table, projection, sizeof projection, nullptr));
+    CHECK(HotTrampolineTable_toString(nullptr, projection, sizeof projection, nullptr));
+    CHECK(strcmp(projection, "nullptr") == 0);
+    CHECK(!HotTrampolineTable_toString(&table, projection, 1, &cut) && cut);
+    HotTrampolineTable_free(&table);
+    CHECK(HotTrampolineTable_exhaustionCount(&table) == 0);
+    CHECK(HotTrampolineTable_register(&table, "recovered") == 0);
+    HotTrampolineTable_free(&table);
+    HotTrampolineTable_free(nullptr);
+    HotTrampolineTable empty = HotTrampolineTable();
+    CHECK(atomic_load(&empty.count) == 0);
+    HotTrampolineTable_free(&empty);
 
     if (g_failures == 0) {
         printf("hot_trampoline_test: all assertions held\n");

@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[3]
 APP = ROOT / "personal/primeagen"
 VEX = ROOT / "ecosystem/repos/vexspoke/src"
 API = ROOT / "ecosystem/repos/api-haven/src"
+HOT = ROOT / "ecosystem/repos/hotcwap"
 
 
 class NativeTuiTest(unittest.TestCase):
@@ -32,7 +33,7 @@ class NativeTuiTest(unittest.TestCase):
             ("tui/markdown_test.c", []),
             ("tui/event/mouse_event_test.c", ["tui/tui.c", "tui/event/mouse_event.c"]),
             ("personality/owo_test.c", ["personality/owo.c"]),
-            ("cli/main_test.c", ["tui/tui.c", "tui/event/mouse_event.c", "personality/owo.c", "session/session_bridge.c"]),
+            ("cli/main_test.c", ["tui/tui.c", "tui/event/mouse_event.c", "personality/owo.c", "session/session_bridge.c", "cli/view.c", "cli/update.c"]),
         ]
         with tempfile.TemporaryDirectory() as directory:
             for sanitized in (False, True):
@@ -40,7 +41,7 @@ class NativeTuiTest(unittest.TestCase):
                     with self.subTest(owner=owner, sanitized=sanitized):
                         dest = Path(directory) / "owner"
                         argv = ["clang", "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-O1",
-                                "-mcpu=apple-m1", "-mmacosx-version-min=14.0", f"-I{APP}", f"-I{VEX}", f"-I{API}"]
+                                "-mcpu=apple-m1", "-mmacosx-version-min=14.0", f"-I{APP}", f"-I{VEX}", f"-I{API}", f"-I{HOT}"]
                         if sanitized:
                             argv += ["-fsanitize=address,undefined", "-fno-omit-frame-pointer"]
                         argv += [str(ROOT / "tests/primeagen" / owner)]
@@ -48,6 +49,9 @@ class NativeTuiTest(unittest.TestCase):
                         argv += [str(APP / "tui/markdown.c")]
                         argv += [str(API / "harness/harness.c"), str(API / "harness/engine_provider.c")]
                         argv += [str(VEX / "net/json.c"), "-Wl,-dead_strip", "-lncurses", "-o", str(dest)]
+                        if owner == "cli/main_test.c":
+                            argv += [str(HOT / "hot" / name) for name in ("hot.c", "hot_trampoline.c", "hot_retire.c", "manifest.c", "ledger.c")]
+                            argv += [str(VEX / "security/crypto.c"), "-pthread"]
                         subprocess.run(argv, check=True, capture_output=True, timeout=60)
                         result = subprocess.run([str(dest)], capture_output=True, timeout=20,
                                                 env={**os.environ, "ASAN_OPTIONS": "detect_leaks=0"})

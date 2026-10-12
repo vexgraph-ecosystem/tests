@@ -56,11 +56,18 @@ class ReadmeTest(unittest.TestCase):
             self.assertIn(claim, readme)
         tui = (APP / "tui/tui.c").read_text()
         terminal = (APP / "cli/main.c").read_text()
+        view = (APP / "cli/view.c").read_text()
         self.assertIn("Markdown_render(copy, used", tui)
-        self.assertIn("Tui_copyStyledRow", terminal)
-        self.assertIn("attributes(styles[j])", terminal)
-        self.assertIn("A_BOLD", terminal)
-        self.assertIn("A_UNDERLINE", terminal)
+        self.assertIn("Tui_copyStyledRow", view)
+        self.assertIn("attributes(styles[j])", view)
+        self.assertIn("A_BOLD", view)
+        self.assertIn("A_UNDERLINE", view)
+        for claim in ("explicit `/update`", "trusted local", "not a network updater", "fully ASan-instrumented"):
+            self.assertIn(claim.lower(), readme.lower())
+        self.assertIn("Primeagen_update", terminal)
+        self.assertIn("Hot_requiresRecovery", terminal)
+        self.assertIn("updateRequested && !SessionBridge_isBusy", terminal)
+        self.assertIn('"Primeagen_command"', view)
 
     def test_cli_no_contact_doctor_and_standalone_source_root_build(self):
         result = subprocess.run([sys.executable, str(APP / "src/cli.py"), "doctor"], capture_output=True, timeout=5)
@@ -73,11 +80,15 @@ class ReadmeTest(unittest.TestCase):
             shutil.copytree(APP, target, ignore=shutil.ignore_patterns(".git", ".build", "__pycache__", ".env"))
             roots = {"API_HAVEN_SOURCE_DIR": ROOT / "ecosystem/repos/api-haven/src",
                      "HARNESS_SOURCE_DIR": ROOT / "ecosystem/repos/harness/src",
-                     "VEXSPOKE_SOURCE_DIR": ROOT / "ecosystem/repos/vexspoke/src"}
+                      "VEXSPOKE_SOURCE_DIR": ROOT / "ecosystem/repos/vexspoke/src"}
+            roots["HOTCWAP_SOURCE_DIR"] = ROOT / "ecosystem/repos/hotcwap"
             env = {**os.environ, **{key: str(value) for key, value in roots.items()}}
             result = subprocess.run([sys.executable, str(target / "build.py")], capture_output=True, timeout=120, env=env)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertTrue((target / ".build/request").is_file())
+            result = subprocess.run(["sh", str(target / "cli/build.sh")], capture_output=True, timeout=120, env=env)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue((target / ".build/payload/cli_view.dylib").is_file())
             result = subprocess.run([str(target / ".build/request"), "openai", "test", "https://example.com/v1"],
                                     input=b"standalone request", capture_output=True, timeout=5)
             self.assertEqual(result.returncode, 0, result.stderr)
