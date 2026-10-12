@@ -21,7 +21,8 @@ class BlueprintTest(unittest.TestCase):
                     self.assertRegex(overview, rf"\b{re.escape(name)}\b")
 
     def test_public_headers_carry_contract_blueprints(self):
-        for path in [ROOT / "b.h", ROOT / "inspect.h", *sorted((ROOT / "adapters").glob("*.h"))]:
+        for path in [ROOT / "b.h", ROOT / "inspect.h", ROOT / "box.h",
+                     *sorted((ROOT / "adapters").glob("*.h"))]:
             with self.subTest(file=path.name):
                 text = path.read_text()
                 self.assertIn(";;DEFINITION", text)

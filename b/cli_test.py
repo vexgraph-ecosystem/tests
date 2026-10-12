@@ -291,6 +291,46 @@ class CliTest(unittest.TestCase):
         self.assertEqual(manifest.read_text(), text)
         self.assertIn("b create manifest <path>", self.invoke("--help").stdout)
 
+    def test_box_exports_declared_payload_and_rejects_defects(self):
+        (self.project / "dist").mkdir()
+        program = self.source("dist/app", "#!/bin/sh\necho exported\n")
+        program.chmod(0o755)
+        (self.project / "assets").mkdir()
+        self.source("assets/logo.txt", "logo bytes\n")
+        manifest = self.project / "box.json"
+        manifest.write_text(json.dumps({
+            "schemaVersion": 1,
+            "application": {"id": "com.example.app", "name": "Example App",
+                            "version": "2.0.0", "authors": ["Ada"]},
+            "payload": {"entry": "dist/app",
+                        "files": [{"source": "assets/logo.txt",
+                                   "destination": "resources/logo.txt"}]},
+            "targets": [], "formats": ["portable"], "statePolicy": "clean",
+        }) + "\n")
+        destination = self.project / "release"
+        result = self.invoke("box", manifest, destination)
+        self.assertEqual(result.stdout.strip(), str(destination))
+        self.assertEqual(result.stderr, "")
+        self.assertEqual((destination / "app").read_text(), "#!/bin/sh\necho exported\n")
+        self.assertTrue((destination / "app").stat().st_mode & 0o100)
+        self.assertEqual((destination / "resources" / "logo.txt").read_text(), "logo bytes\n")
+        self.assertFalse((destination / "assets").exists())
+        self.assertFalse(list(self.project.glob(".b-box-staging-*")))
+        # An existing destination is never replaced.
+        refused = self.invoke("box", manifest, destination, expected=1)
+        self.assertIn("already exists", refused.stderr)
+        self.assertEqual((destination / "resources" / "logo.txt").read_text(), "logo bytes\n")
+        # Unimplemented formats and invalid manifests reject without a destination.
+        manifest.write_text(manifest.read_text().replace('"portable"', '"zip"'))
+        self.assertIn("not implemented", self.invoke("box", manifest, "zip-out", expected=1).stderr)
+        manifest.write_text('{"schemaVersion": 1, "application": {"name": "X", '
+                            '"version": "1.0"}, "payload": {"entry": "dist/app"}, '
+                            '"formats": ["portable"]}\n')
+        self.assertIn("application.id is required",
+                      self.invoke("box", manifest, "invalid-out", expected=1).stderr)
+        self.assertEqual(list(self.project.glob("*-out")), [])
+        self.assertIn("only the portable format is implemented", self.invoke("--help").stdout)
+
     def test_java_source_alias_and_direct_instance(self):
         self.require_java()
         self.source("Hello.java", 'class Hello { public static void main(String[] args) {'

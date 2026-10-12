@@ -21,7 +21,7 @@ class ReadmeTest(unittest.TestCase):
         text = (ROOT / "TREE.md").read_text()
         for phrase in ("build <adapter>", "exec <file>", "instance <file>",
                        "upload", "--port <port>", "--fqbn <matching-board>",
-                        "PLANNED", "backend exists", "tools/workspace.c",
+                       "portable", "tools/workspace.c",
                        "B_SQL_DATABASE", "no default database", "not a sandbox",
                        "not type-checking", "file suffix", "./tools/b targets",
                        "[Back to README](README.md)", "b run exec ./hello.c"):
@@ -39,7 +39,8 @@ class ReadmeTest(unittest.TestCase):
                        "nob", "git clone https://github.com/vex-graph/b.git",
                         "b run <exec|instance>", "b build <adapter>",
                         "b create manifest <path>", "b box <manifest.json>", "JETBRAINS.md",
-                         "creates a JSON starter template", "packaging backend exists",
+                         "writes a schema-1 JSON form", "portable directory",
+                         "not implemented", "`targets` must be empty",
                        "parse-only", "exactly one", "SDK 10+", "main.rs",
                          "../../tests/b/cli_test.py", "../../preferences.md",
                          "https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a"):
@@ -61,7 +62,8 @@ class ReadmeTest(unittest.TestCase):
         headings = re.findall(r"^## (.+)$", text, re.M)
         self.assertEqual(headings, [
             "Current State",
-            "What does it do?", "List of languages", "Tree", "JetBrains IDEs",
+            "What does it do?", "List of languages", "Tree",
+            "Box: manifest and portable export", "JetBrains IDEs",
             "Adapters", "Actual dogfooding across Vexgraph",
             "Future and b's own build", "Scope and Limitations",
         ])
@@ -132,7 +134,7 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn("Serial Monitor", text)
         self.assertIn("b does not add those IDE features", text)
         self.assertIn("b create manifest", text)
-        self.assertIn("no packaging backend yet", text)
+        self.assertIn("other packaging formats are still unimplemented", text)
 
     def test_jetbrains_two_methods_and_xml_reference_consistency(self):
         text = (ROOT / "JETBRAINS.md").read_text()

@@ -107,6 +107,7 @@ class WorkspaceBuildTest(AdapterCase):
             (tools / name).symlink_to(path)
         base = [os.environ.get("CC", "cc"), "-std=gnu23", "-Wall", "-Wextra", "-Werror",
                 "-g", "-I", str(ROOT), str(ROOT / "b.c"), str(ROOT / "inspect.c"),
+                str(ROOT / "box.c"),
                 str(ROOT / "util.c"), *map(str, sorted((ROOT / "adapters").glob("*.c")))]
         cli = self.project / "leak-cli"
         subprocess.run([*base, "-o", str(cli)], capture_output=True, check=True, timeout=120)
@@ -182,7 +183,8 @@ int main(void) {
 ''')
         common = [os.environ.get("CC", "cc"), "-std=gnu23", "-Wall", "-Wextra", "-Werror",
                   "-fsanitize=address,undefined", "-g", "-I", str(ROOT)]
-        dependencies = [str(ROOT / "util.c"), *map(str, sorted((ROOT / "adapters").glob("*.c")))]
+        dependencies = [str(ROOT / "util.c"),
+                        *map(str, sorted((ROOT / "adapters").glob("*.c")))]
         binary = self.project / "client"
         subprocess.run([*common, "-x", "c", str(client), *dependencies, "-o", str(binary)],
                        capture_output=True, check=True, timeout=120)
@@ -193,8 +195,8 @@ int main(void) {
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stderr.count("[vex]"), 7)
         cli = self.project / "sanitized-b"
-        subprocess.run([*common, str(ROOT / "b.c"), str(ROOT / "inspect.c"), *dependencies,
-                        "-o", str(cli)], capture_output=True, check=True, timeout=120)
+        subprocess.run([*common, str(ROOT / "b.c"), str(ROOT / "inspect.c"), str(ROOT / "box.c"),
+                        *dependencies, "-o", str(cli)], capture_output=True, check=True, timeout=120)
         tree = self.project / "tree"
         tree.mkdir()
         for i in range(40):
