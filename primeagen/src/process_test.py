@@ -41,6 +41,44 @@ class ProcessTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "deadline"):
             run([sys.executable, "-c", source], timeout=0.2)
 
+    def test_short_bash_overflow_preserves_failure_then_recovers(self):
+        with self.assertRaisesRegex(ValueError, "truncated"):
+            run(["/bin/bash", "--noprofile", "--norc", "-c", "printf '%1024s' x"], cap=128)
+        self.assertEqual(run(["/bin/bash", "--noprofile", "--norc", "-c", "printf recovery"]), b"recovery")
+
+    def test_selector_admission_failure_reaps_real_child(self):
+        from unittest.mock import patch
+        import process
+        import subprocess
+        real_spawn = subprocess.Popen
+        children = []
+        def spawn(*args, **kwargs):
+            child = real_spawn(*args, **kwargs)
+            children.append(child)
+            return child
+        with patch.object(process.subprocess, "Popen", side_effect=spawn), \
+             patch.object(process.selectors, "DefaultSelector", side_effect=OSError("selector admission")):
+            with self.assertRaisesRegex((OSError, ValueError), "selector admission"):
+                run([sys.executable, "-c", "import time; time.sleep(30)"], timeout=0.2)
+        self.assertEqual(len(children), 1)
+        self.assertIsNotNone(children[0].poll())
+        self.assertTrue(all(stream.closed for stream in (children[0].stdin, children[0].stdout, children[0].stderr)))
+
+    def test_refused_group_cleanup_is_loud_and_no_implicit_wait(self):
+        from unittest.mock import patch, MagicMock
+        import process
+        child = MagicMock()
+        child.poll.return_value = None
+        child.wait.return_value = 0
+        with patch.object(process.subprocess, "Popen", return_value=child), \
+             patch.object(process.selectors, "DefaultSelector", side_effect=OSError("selector admission")), \
+             patch.object(process.os, "killpg", side_effect=PermissionError("refused")):
+            with self.assertRaisesRegex(ValueError, "process-group cleanup refused"):
+                run(["trusted-test-child"], timeout=0.2)
+        child.kill.assert_called_once()
+        child.wait.assert_called_once_with(timeout=5)
+        child.__exit__.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

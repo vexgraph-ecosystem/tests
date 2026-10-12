@@ -41,6 +41,12 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn("if not self.approve", tools)
         self.assertIn('"built artifact "', tools)
         self.assertIn('run([str(Path(home.name) / "artifact")]', tools)
+        for tag in ("read", "list", "create", "write", "edit", "delete", "bash", "websearch"):
+            self.assertTrue((APP / f"tools/{tag}.c").is_file())
+            self.assertTrue((APP / f"tools/{tag}.h").is_file())
+            self.assertIn(f'"{tag}"', tools)
+        for claim in ("Native tools and JSON tags", "Bash is unsandboxed", "--websearch-tool", "chat-only/deny-all", "Python remains"):
+            self.assertIn(claim, readme)
         self.assertNotIn("shell=True", "\n".join(p.read_text() for p in (APP / "src").glob("*.py")))
         bridge = (APP / "session/session_bridge.c").read_text()
         host = (APP / "src/session_host.py").read_text()

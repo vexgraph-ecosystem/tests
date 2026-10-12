@@ -97,7 +97,7 @@ class EnvFileTest(unittest.TestCase):
                 (src / name).write_text((APP / "src" / name).read_text())
             (src / "agent.py").write_text("class Agent:\n def __init__(self,*args): pass\n def reset(self): pass\n")
             (src / "provider.py").write_text("import os\nclass Provider:\n def __init__(self,*args,**kw):\n  assert os.environ['OPENAI_API_KEY']=='fake-project-key'\n")
-            (src / "tools.py").write_text("class Tools:\n def __init__(self,*args): pass\n def close(self): pass\n")
+            (src / "tools.py").write_text("class Tools:\n def __init__(self,*args,websearch=None,byte_cap=131072):\n  assert websearch is None and byte_cap==131072\n def close(self): pass\n")
             (app / ".env").write_text("OPENAI_API_KEY=fake-project-key\n")
             env = {k: v for k, v in os.environ.items() if k not in ("OPENAI_API_KEY", "ANTHROPIC_API_KEY")}
             result = subprocess.run([sys.executable, str(src / "cli.py"), "chat", "--provider", "openai", "--model", "fake"],
