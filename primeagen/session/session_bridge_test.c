@@ -80,6 +80,13 @@ int main(void) {
     assert(!SessionBridge_isBusy(&bridge) && fcntl(request[1], F_GETFL) >= 0);
     assert(!SessionBridge_submit(&bridge, "after cancel"));
     cleanup(request, response, &bridge);
+    fixture(request, response, &bridge);
+    assert(SessionBridge_submit(&bridge, "unicode"));
+    const char *unicode = "{\"ok\":true,\"text\":\"Hello 👋 café 中文\"}\n";
+    assert(write(response[1], unicode, strlen(unicode)) == (ssize_t) strlen(unicode));
+    assert(SessionBridge_poll(&bridge) == 1);
+    assert(strcmp(SessionBridge_getText(&bridge), "Hello 👋 café 中文") == 0);
+    cleanup(request, response, &bridge);
     const char *bad[] = {"{}\n", "{\"ok\":true,\"ok\":true}\n", "{\"ok\":false,\"text\":\"secret\"}\n",
                         "{\"ok\":true,\"text\":\"a\\u0000b\"}\n", "{\"ok\":true,\"text\":\"ok\"}\nextra\n", "not-json\n"};
     for (size_t i = 0; i < sizeof(bad) / sizeof(*bad); ++i) {

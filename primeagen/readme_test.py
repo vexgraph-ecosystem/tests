@@ -59,7 +59,13 @@ class ReadmeTest(unittest.TestCase):
         view = (APP / "cli/view.c").read_text()
         self.assertIn("Markdown_render(copy, used", tui)
         self.assertIn("Tui_copyStyledRow", view)
-        self.assertIn("attributes(styles[j])", view)
+        self.assertIn("attributes(styles[at])", view)
+        for claim in ("Ctrl-T", "UTF-8 JSON", "never splits a UTF-8 scalar", "BMP-only"):
+            self.assertIn(claim, readme)
+        self.assertIn("ensure_ascii=False", host)
+        self.assertIn('frame.encode("utf-8")', host)
+        self.assertIn("mvadd_wch", view)
+        self.assertIn("TuiUtf8_decode", tui)
         self.assertIn("A_BOLD", view)
         self.assertIn("A_UNDERLINE", view)
         for claim in ("explicit `/update`", "trusted local", "not a network updater", "fully ASan-instrumented"):
@@ -68,6 +74,11 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn("Hot_requiresRecovery", terminal)
         self.assertIn("updateRequested && !SessionBridge_isBusy", terminal)
         self.assertIn('"Primeagen_command"', view)
+        for claim in ("three columns", "offline previews", "shared line borders", "install-command.sh", "caller's working directory"):
+            self.assertIn(claim, readme)
+        self.assertIn("Primeagen_panelsClick", view)
+        self.assertIn("selection == 0 &&", terminal)
+        self.assertIn("readlink", (APP / "primeagen").read_text())
 
     def test_cli_no_contact_doctor_and_standalone_source_root_build(self):
         result = subprocess.run([sys.executable, str(APP / "src/cli.py"), "doctor"], capture_output=True, timeout=5)

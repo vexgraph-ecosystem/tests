@@ -78,6 +78,49 @@ int main(int argc, char **argv) {
     assert((mvinch(4, 10) & A_UNDERLINE) != 0);
     assert(PAIR_NUMBER(mvinch(4, 15)) == TUI_PAIR_CODE);
     assert((mvinch(6, 1) & A_CHARTEXT) == 'n');
+    // Three-column terminal: rail buttons share a border; only the right pane
+    // shows/scrolls the actual chat. Example people/channels never inherit it.
+    assert(resizeterm(24, 100) != ERR);
+    int left = Primeagen_chatLeft(100, PRIMEAGEN_LIST_WIDTH_DEFAULT);
+    assert(left == 37);
+    assert(Primeagen_chatLeft(40, 32) == 0);
+    assert(Primeagen_chatLeft(100, -1) == 0);
+    assert(Primeagen_chatLeft(100, 1000) == 55);
+    assert(Tui_setSize(&state, 24, 100 - left));
+    int panel = PRIMEAGEN_PANEL_PEOPLE, selected = 0;
+    assert(Primeagen_drawPanels(&state, false, true, true, false, panel, selected, 32, row, styles, sizeof row));
+    assert((mvinch(0, 6) & A_CHARTEXT) == 'P');
+    assert((mvinch(2, 0) & A_ALTCHARSET) != 0); // shared join, not a blank gap
+    assert((mvinch(2, 6) & A_CHARTEXT) == 'O');
+    assert((mvinch(2, left + 1) & A_CHARTEXT) == 'Y');
+    assert((mvinch(22, left + 2) & A_CHARTEXT) == 'f');
+    size_t retainedCount = Tui_getCount(&state);
+    assert(Primeagen_panelsClick(8, 5, 24, 100, 32, panel, selected, &panel, &selected));
+    assert(selected == 1);
+    assert(Primeagen_drawPanels(&state, false, true, true, false, panel, selected, 32, row, styles, sizeof row));
+    assert((mvinch(2, left + 1) & A_CHARTEXT) == 'S');
+    assert((mvinch(4, left + 1) & A_CHARTEXT) == 'P'); // Preview only
+    assert((mvinch(22, left + 2) & A_CHARTEXT) == ' '); // live draft hidden
+    assert(Tui_getCount(&state) == retainedCount && strcmp(Tui_getInput(&state), "fixed") == 0);
+    assert(Primeagen_panelsClick(2, 3, 24, 100, 32, panel, selected, &panel, &selected));
+    assert(panel == PRIMEAGEN_PANEL_SERVERS);
+    assert(Primeagen_panelsClick(8, 2, 24, 100, 32, panel, selected, &panel, &selected));
+    assert(panel == PRIMEAGEN_PANEL_CHANNELS && selected == 3);
+    assert(Primeagen_panelsClick(8, 6, 24, 100, 32, panel, selected, &panel, &selected));
+    assert(selected == 5);
+    assert(Primeagen_drawPanels(&state, false, false, false, false, panel, selected, 32, row, styles, sizeof row));
+    assert((mvinch(6, 6) & A_CHARTEXT) == '#');
+    assert(Primeagen_panelsClick(2, 1, 24, 100, 32, panel, selected, &panel, &selected));
+    assert(Primeagen_panelsClick(8, 2, 24, 100, 32, panel, selected, &panel, &selected));
+    assert(panel == PRIMEAGEN_PANEL_PEOPLE && selected == 0);
+    assert(!Primeagen_panelsClick(0, 1, 24, 100, 32, panel, selected, &panel, &selected));
+    assert(!Primeagen_panelsClick(8, 10, 24, 100, 32, panel, selected, &panel, &selected));
+    assert(!Primeagen_panelsClick(left, 2, 24, 100, 32, panel, selected, &panel, &selected));
+    assert(!Primeagen_panelsClick(8, 2, 24, 40, 32, panel, selected, &panel, &selected));
+    assert(!Primeagen_panelsClick(8, 2, 24, 100, 32, panel, selected, nullptr, &selected));
+    assert(!Primeagen_drawPanels(&state, false, false, false, false, -1, 0, 32, row, styles, sizeof row));
+    assert(Primeagen_drawPanels(&state, false, true, true, false, panel, selected, 32, row, styles, sizeof row));
+    assert((mvinch(2, left + 1) & A_CHARTEXT) == 'Y'); // live history restored
     assert(resizeterm(2, 10) != ERR);
     assert(Tui_setSize(&state, 2, 10));
     assert(draw(&state, false, true, false, false, row, styles, sizeof(row)));

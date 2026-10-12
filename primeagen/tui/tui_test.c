@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 static int failAfter = -1;
 static bool fail(void) {
@@ -140,6 +141,24 @@ int main(void) {
     failAfter = -1;
     assert(Tui_addStyled(&small, "**new**", 7, 0, true));
     Tui_free(&small);
+    assert(setlocale(LC_CTYPE, "en_US.UTF-8") != nullptr);
+    Tui_clear(&c);
+    const char *unicode = "12345678901234567👋é中文é";
+    assert(Tui_addStyled(&c, unicode, strlen(unicode), TEXT_STYLE_ASSISTANT, true));
+    assert(Tui_getVisualRowCount(&c) == 2);
+    assert(Tui_copyRow(&c, 0, output, sizeof(output), nullptr));
+    assert(strcmp(output, "12345678901234567") == 0); // wide glyph fits next row
+    assert(Tui_copyStyledRow(&c, 1, output, styles, sizeof(output), nullptr));
+    assert(strcmp(output, "👋é中文é") == 0 && styles[0] == TEXT_STYLE_ASSISTANT);
+    assert(Tui_getRowCapacity(&c) == strlen(unicode) + 1);
+    assert(Tui_getRowCapacity(nullptr) == 1);
+    assert(!Tui_copyRow(&c, 1, output, 4, &cut) && cut && output[0] == 0); // no half emoji
+    assert(!Tui_copyRow(&c, 1, output, 6, &cut) && cut && strcmp(output, "👋") == 0);
+    Tui_clear(&c);
+    const char *invalid = "\xed\xa0\xbd\xed\xb1\x8b\033\xc0\xaf";
+    assert(Tui_add(&c, invalid, strlen(invalid)));
+    assert(Tui_copyRow(&c, 0, output, sizeof(output), nullptr));
+    assert(strstr(output, "\\xed\\xa0\\xbd") != nullptr);
     Tui_free(&c); Tui_free(&c);
     assert(!Tui_isReady(&c));
     failed = Tui(0); assert(!Tui_isReady(&failed));

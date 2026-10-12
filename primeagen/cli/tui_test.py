@@ -31,9 +31,11 @@ class NativeTuiTest(unittest.TestCase):
         owners = [
             ("tui/tui_test.c", []),
             ("tui/markdown_test.c", []),
+            ("tui/utf8_test.c", []),
             ("tui/event/mouse_event_test.c", ["tui/tui.c", "tui/event/mouse_event.c"]),
             ("personality/owo_test.c", ["personality/owo.c"]),
             ("cli/main_test.c", ["tui/tui.c", "tui/event/mouse_event.c", "personality/owo.c", "session/session_bridge.c", "cli/view.c", "cli/update.c"]),
+            ("cli/view_test.c", ["tui/tui.c", "cli/view.c"]),
         ]
         with tempfile.TemporaryDirectory() as directory:
             for sanitized in (False, True):

@@ -28,6 +28,8 @@ int main(void) {
     check("```c\n  **literal**\n\n\nend\n```\nafter", "  **literal**\n\n\nend\nafter");
     check("`**literal**`", "**literal**");
     check("####### literal", "####### literal");
+    check("**👋 café 中文**", "👋 café 中文");
+    check("`é`", "é");
     char dest[256];
     uint8_t styles[256];
     size_t length;
@@ -50,6 +52,8 @@ int main(void) {
     const char hostile[] = {'x', '\033', '[', 'm'};
     strcpy(dest, "keep");
     assert(!Markdown_render(hostile, sizeof(hostile), dest, styles, sizeof(dest), &length, nullptr));
+    assert(strcmp(dest, "keep") == 0);
+    assert(!Markdown_render("\xed\xa0\xbd", 3, dest, styles, sizeof(dest), &length, nullptr));
     assert(strcmp(dest, "keep") == 0);
     const size_t pressure = 65536;
     char *input = malloc(pressure + 1);

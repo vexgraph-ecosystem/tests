@@ -35,6 +35,60 @@ def build_views(base):
 
 
 class UpdateTest(unittest.TestCase):
+    def test_terminal_native_selection_toggle(self):
+        # Actual terminal protocol, not appearance/clipboard acceptance: disable
+        # mouse capture for native selection, then restore it without losing draft.
+        subprocess.run(["sh", str(APP / "cli/build.sh")], check=True, capture_output=True, timeout=90)
+        import fcntl
+        import struct
+        import termios
+        master, slave = pty.openpty()
+        fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 24, 100, 0, 0))
+        child = subprocess.Popen([str(APP / ".build/tui")], stdin=slave, stdout=slave, stderr=slave,
+                                 env={**os.environ, "TERM": "xterm-256color"})
+        os.close(slave)
+        output = bytearray()
+
+        def until(marker):
+            deadline = time.monotonic() + 10
+            while marker not in output:
+                remaining = deadline - time.monotonic()
+                self.assertGreater(remaining, 0, bytes(output))
+                ready, _, _ = select.select([master], [], [], remaining)
+                self.assertTrue(ready)
+                output.extend(os.read(master, 65536))
+
+        try:
+            until(b"People")
+            self.assertIn(b"?1000h", output)
+            output.clear()
+            os.write(master, b"draft-selection\x14")
+            until(b"Select text: drag")
+            self.assertIn(b"?1000l", output)
+            self.assertIn(b"draft-selection", output)
+            output.clear()
+            os.write(master, b"\x14")
+            until(b"People")
+            self.assertIn(b"?1000h", output)
+            until(b"draft-selection")
+            os.write(master, b"\x11")
+            deadline = time.monotonic() + 10
+            while child.poll() is None:
+                remaining = deadline - time.monotonic()
+                self.assertGreater(remaining, 0)
+                ready, _, _ = select.select([master], [], [], remaining)
+                if ready:
+                    try:
+                        output.extend(os.read(master, 65536))
+                    except OSError:
+                        break
+            self.assertEqual(child.wait(timeout=3), 0)
+        finally:
+            if child.poll() is None:
+                child.kill()
+                child.wait(timeout=3)
+            os.close(master)
+
     def test_headless_view_state_and_recovery(self):
         with tempfile.TemporaryDirectory(prefix="primeagen-update-") as directory:
             base = Path(directory)

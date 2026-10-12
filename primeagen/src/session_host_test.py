@@ -65,7 +65,8 @@ class SessionHostTest(unittest.TestCase):
         with patch.object(host, "api", return_value={"data": {"id": "ses_bad", "permissions": []}}):
             with self.assertRaises(ValueError):
                 host.turn(None, "test", "", None)
-        for content in ([{"type": "tool", "text": "secret"}], [{"type": "text", "text": "x" * host.WIRE_CAP}]):
+        for content in ([{"type": "tool", "text": "secret"}], [{"type": "text", "text": "x" * host.WIRE_CAP}],
+                        [{"type": "text", "text": "\ud83d"}]):
             def api(method, path, body=None, timeout=10):
                 if "/message?" in path:
                     return {"data": [{"type": "idle", "outcome": "succeeded"},
@@ -104,7 +105,7 @@ class SessionHostTest(unittest.TestCase):
                                   'if path=="/api/session": result={"data":{"id":"ses_fixture","permissions":[{"action":"*","resource":"*","effect":"deny"}]}}\n'
                                   'elif path=="/api/session/ses_fixture": result={"data":{"permissions":[{"action":"*","resource":"*","effect":"deny"}]}}\n'
                                   'elif path.endswith("/prompt"):\n body=json.loads(sys.argv[-1]);open("boundary","w").write(body["id"]);result={"data":{}}\n'
-                                  'else: result={"data":[{"type":"idle","outcome":"succeeded"},{"type":"assistant","content":[{"type":"text","text":"offline reply"}]},{"id":open("boundary").read()}]}\n'
+                                  'else: result={"data":[{"type":"idle","outcome":"succeeded"},{"type":"assistant","content":[{"type":"text","text":"offline reply \\U0001f44b café 中文"}]},{"id":open("boundary").read()}]}\n'
                                   'print(json.dumps(result))\n')
             executable.chmod(0o700)
             result = subprocess.run([sys.executable, str(APP / "src/session_host.py"), "--worker"],
@@ -112,7 +113,9 @@ class SessionHostTest(unittest.TestCase):
                                     env={**os.environ, "PATH": directory + ":" + os.environ["PATH"]},
                                     capture_output=True, timeout=10)
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertEqual(json.loads(result.stdout), {"ok": True, "text": "offline reply"})
+            self.assertEqual(json.loads(result.stdout), {"ok": True, "text": "offline reply 👋 café 中文"})
+            self.assertIn("👋 café 中文".encode("utf-8"), result.stdout)
+            self.assertNotIn(b"\\ud83d", result.stdout)
             for wire in (b'{"prompt":"secret","prompt":"duplicate"}\n', b'x' * 16384, b'[]\n'):
                 result = subprocess.run([sys.executable, str(APP / "src/session_host.py"), "--worker"], input=wire,
                                         cwd=directory, env={**os.environ, "PATH": directory}, capture_output=True, timeout=5)
