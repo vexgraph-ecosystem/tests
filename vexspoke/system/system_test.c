@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <inttypes.h>
 
 #include "system/system.h"
@@ -75,5 +77,24 @@ int main(void) {
     }
 
     printf("\n=== System Discovery Complete ===\n");
-    return 0;
+
+    // Environment surface self-check: the ONE env handler on System.
+    int failures = 0;
+    setenv("VEX_SYSTEM_ENV_TEST", "value-42", 1);
+    if (!System_getEnvironment("/debug/session", "/manifest/export")) failures++;
+    if (System_getEnvValue("VEX_SYSTEM_ENV_TEST") == nullptr) failures++;
+    if (strcmp(System_getEnvValue("VEX_SYSTEM_ENV_TEST"), "value-42") != 0) failures++;
+    if (!System_hasEnv("VEX_SYSTEM_ENV_TEST")) failures++;
+    if (System_getEnvValue("VEX_SYSTEM_ENV_TEST_ABSENT") != nullptr) failures++;
+    if (!System_hasEnv("VEX_SYSTEM_ENV_TEST")) failures++;
+    if (System_getEnvValue(nullptr) != nullptr) failures++;
+    // Bad paths reject WITHOUT disturbing the live capture.
+    if (System_getEnvironment(nullptr, "/x")) failures++;
+    if (System_getEnvValue("VEX_SYSTEM_ENV_TEST") == nullptr) failures++;
+    // Release is explicit and idempotent.
+    System_freeEnvironment();
+    if (System_getEnvValue("VEX_SYSTEM_ENV_TEST") != nullptr) failures++;
+    System_freeEnvironment();
+    printf("System env owner: %s\n", failures == 0 ? "all checks passed" : "FAILED");
+    return failures == 0 ? 0 : 1;
 }
