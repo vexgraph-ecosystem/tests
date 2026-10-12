@@ -56,6 +56,23 @@ int main(void) {
     assert(Tui_getFirstVisibleRow(&c) == 0);
     Tui_scrollBy(&c, INT64_MIN);
     assert(Tui_getScroll(&c) == 0);
+    /* Scrolling up then back down returns to the tail, one row per step. */
+    Tui_scrollBy(&c, 5);
+    assert(Tui_getScroll(&c) == 5);
+    Tui_scrollBy(&c, -1);
+    assert(Tui_getScroll(&c) == 4);
+    Tui_scrollBy(&c, -4);
+    assert(Tui_getScroll(&c) == 0);
+    Tui_scrollBy(&c, -1);
+    assert(Tui_getScroll(&c) == 0);
+    /* The live "working..." placeholder is the trailing entry and pops alone. */
+    size_t before = Tui_getCount(&c);
+    assert(Tui_add(&c, "working...", 10));
+    assert(Tui_getCount(&c) == before + 1);
+    assert(Tui_popLast(&c) && Tui_getCount(&c) == before);
+    assert(Tui_copyRow(&c, Tui_getVisualRowCount(&c) - 1, output, sizeof(output), nullptr));
+    assert(strcmp(output, "next") == 0);
+    assert(!Tui_popLast(nullptr));
     assert(Tui_setInput(&c, "quote\"\\", 7));
     assert(Tui_toStringStruct(&c, output, sizeof(output), &cut));
     assert(strstr(output, "input=\"quote\\\"\\\\\"") != nullptr);

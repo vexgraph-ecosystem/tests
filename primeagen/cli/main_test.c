@@ -40,6 +40,11 @@ int main(int argc, char **argv) {
     assert(strcmp(approvalReply('a'), "always") == 0);
     assert(strcmp(approvalReply('r'), "reject") == 0 && strcmp(approvalReply('n'), "reject") == 0);
     assert(approvalReply('x') == nullptr && approvalReply('\n') == nullptr && approvalReply(TUI_CTRL_Q) == nullptr);
+    // The speaker label is opened once per turn, then reused for notes/answers.
+    bool open = false;
+    size_t mark = Tui_getCount(&state);
+    assert(openTurn(&state, &open) && open && Tui_getCount(&state) == mark + 1);
+    assert(openTurn(&state, &open) && Tui_getCount(&state) == mark + 1);
     assert(Tui_setInput(&state, "ordinary text", 13));
     assert(command(&state, true) == 0);
     assert(Tui_getInputLength(&state) == 13);

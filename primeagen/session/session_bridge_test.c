@@ -142,7 +142,7 @@ int main(void) {
     }
     fixture(request, response, &bridge);
     const char *bad[] = {"{}\n", "{\"ok\":true,\"ok\":true}\n", "{\"ok\":false,\"text\":\"secret\"}\n",
-                        "{\"ok\":true,\"text\":\"a\\u0000b\"}\n", "{\"ok\":true,\"text\":\"ok\"}\nextra\n", "not-json\n"};
+                        "{\"ok\":true,\"text\":\"a\\u0000b\"}\n", "not-json\n"};
     for (size_t i = 0; i < sizeof(bad) / sizeof(*bad); ++i) {
         fixture(request, response, &bridge);
         assert(SessionBridge_submit(&bridge, "test"));
@@ -150,6 +150,46 @@ int main(void) {
         assert(SessionBridge_poll(&bridge) == -1);
         assert(!strstr(SessionBridge_getText(&bridge), "secret"));
         assert(!SessionBridge_submit(&bridge, "retry"));
+        cleanup(request, response, &bridge);
+    }
+    assert(SessionBridge_takeNote(nullptr) == nullptr);
+    /* Exactly one frame is consumed per poll, so a burst of streamed notes stays
+     * ordered and none is dropped; the remainder waits in the buffer. */
+    fixture(request, response, &bridge);
+    assert(SessionBridge_submit(&bridge, "stream"));
+    const char *stream = "{\"note\":\"read: a.c (lines 1-3)\"}\n{\"note\":\"shell: git status\"}\n"
+                         "{\"ok\":true,\"text\":\"done\"}\n";
+    assert(write(response[1], stream, strlen(stream)) == (ssize_t) strlen(stream));
+    assert(SessionBridge_takeNote(&bridge) == nullptr);
+    assert(SessionBridge_poll(&bridge) == 0);
+    const char *note = SessionBridge_takeNote(&bridge);
+    assert(note != nullptr && strcmp(note, "read: a.c (lines 1-3)") == 0);
+    assert(SessionBridge_takeNote(&bridge) == nullptr); /* taken exactly once */
+    assert(SessionBridge_poll(&bridge) == 0);
+    note = SessionBridge_takeNote(&bridge);
+    assert(note != nullptr && strcmp(note, "shell: git status") == 0);
+    assert(SessionBridge_poll(&bridge) == 1);
+    assert(strcmp(SessionBridge_getText(&bridge), "done") == 0);
+    assert(SessionBridge_takeNote(&bridge) == nullptr);
+    cleanup(request, response, &bridge);
+    /* The valid frame is consumed even when junk follows it in the pipe; the new
+     * submit below starts a clean turn rather than inheriting stale bytes. */
+    fixture(request, response, &bridge);
+    assert(SessionBridge_submit(&bridge, "trailing junk"));
+    const char *junk = "{\"ok\":true,\"text\":\"ok\"}\nextra\n";
+    assert(write(response[1], junk, strlen(junk)) == (ssize_t) strlen(junk));
+    assert(SessionBridge_poll(&bridge) == 1);
+    assert(strcmp(SessionBridge_getText(&bridge), "ok") == 0);
+    assert(SessionBridge_submit(&bridge, "clean retry"));
+    cleanup(request, response, &bridge);
+    /* A malformed note frame is a wire defect, not a silent skip. */
+    const char *badNote[] = {"{\"note\":5}\n", "{\"note\":\"x\",\"extra\":1}\n", "{\"note\":\"a\\u0000b\"}\n"};
+    for (size_t i = 0; i < sizeof(badNote) / sizeof(*badNote); ++i) {
+        fixture(request, response, &bridge);
+        assert(SessionBridge_submit(&bridge, "bad note"));
+        assert(write(response[1], badNote[i], strlen(badNote[i])) == (ssize_t) strlen(badNote[i]));
+        assert(SessionBridge_poll(&bridge) == -1);
+        assert(SessionBridge_takeNote(&bridge) == nullptr);
         cleanup(request, response, &bridge);
     }
     fixture(request, response, &bridge);
