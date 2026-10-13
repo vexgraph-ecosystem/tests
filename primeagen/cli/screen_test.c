@@ -69,34 +69,28 @@ int main(void) {
     PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, &banner);
     // The frame draws its OWN box with real corners (never '+').
     assert(AT(0, 0) == 0x250C);                     // ┌ top-left
-    assert(AT(0, COLS - 1) == 0x2510);              // ┐ top-right
+    assert(AT(0, 1) == '-');                        // the run between the corners
     assert(AT(ROWS - 1, 0) == 0x2514);              // └ bottom-left
     assert(AT(ROWS - 1, COLS - 1) == 0x2518);       // ┘ bottom-right
-    assert(AT(0, 1) == '-');                        // the run between the corners
-    // The left column is DETACHED boxes: a title box, then one per menu entry,
-    // each with its own corners and a blank row between them.
-    assert(AT(1, 1) == 0x250C);                     // the title box's corner
-    assert(AT(1, 22) == 0x2510);
-    assert(AT(3, 1) == 0x2514);                     // ...and its bottom
-    assert(AT(4, 1) == ' ');                        // blank row: nothing welded
-    assert(AT(5, 1) == 0x250C);                     // the People box
-    assert(AT(9, 1) == 0x250C);                     // the Servers box
-    assert(AT(13, 1) == 0x250C);                    // the Settings box
-    int titleSeen = 0, peopleSeen = 0;
-    for (size_t x = 2; x < 22; ++x) {
-        if (AT(2, x) == 'P') { titleSeen = 1; }     // "Primeagen"
-        if (AT(6, x) == 'P') { peopleSeen = 1; }    // "People"
-    }
-    assert(titleSeen && peopleSeen);
-    // The selected entry is HIGHLIGHTED only while it owns focus.
-    assert(TerminalCanvas_styleAt(&canvas, 9, 6) & TERMINAL_STYLE_REVERSE);
-    // The banner is its own detached box on the right, decor filled edge to edge.
-    assert(AT(1, 25) == 0x250C);                     // its own top-left corner
-    assert(AT(2, 25) == '|');
-    assert(AT(2, COLS - 2) == '|');
+    assert(AT(1, 0) == '|');                        // left edge
+    // The tui.txt basics: a title rail (1..22), the separator (23), the panel.
+    assert(AT(1, 7) != ' ');                        // the title
+    // Its dividers are CUT: they stop short and end in an endpoint glyph.
+    assert(AT(2, 1) == ' ');                        // inset, not touching the edge
+    assert(AT(2, 2) == 0x2576);                     // ╶ cut end
+    assert(AT(2, 5) == '.');                        // the stripe continues inside
+    assert(AT(2, 21) == 0x2574);                    // ╴ cut end
+    assert(AT(1, 23) == '|');                       // column separator
+    assert(AT(4, 9) != ' ');                        // the menu entries
+    assert(AT(6, 9) != ' ');
+    assert(AT(8, 9) != ' ');
+    // The selected entry is HIGHLIGHTED while it owns focus.
+    assert(TerminalCanvas_styleAt(&canvas, 9, 4) & TERMINAL_STYLE_REVERSE);
+    // The picture is zoom-fit in the panel, and its decor fills the panel.
+    assert(AT(1, 24) == ' ');
     int bannerInk = 0;
-    for (size_t y = 2; y < ROWS - 2; ++y)
-        for (size_t x = 26; x < COLS - 2; ++x)
+    for (size_t y = 0; y < ROWS; ++y)
+        for (size_t x = 24; x < COLS - 1; ++x)
             if (AT(y, x) != ' ')
                 bannerInk = 1;
     assert(bannerInk);
@@ -143,20 +137,18 @@ int main(void) {
     state.focused = true;
     assert(PrimeagenScreen_renderChat(&screen, &state));
     assert(AT(0, 0) == 0x250C);                      // the frame's own corner
-    assert(AT(1, 1) == 0x250C);                      // the left panel is detached too
-    assert(AT(1, 25) == 0x250C);                     // ...and so is the centre panel
+    assert(AT(1, 0) == '|');                         // left edge
+    assert(AT(2, 25) == 0x2576);                     // the centre divider, cut short
     // FOCUS: the rail HIGHLIGHTS its selected row only while it owns the keyboard;
     // when another panel has focus the same row is a COLOUR change, not a highlight.
     state.focusPanel = 0;
     assert(PrimeagenScreen_renderChat(&screen, &state));
-    assert(TerminalCanvas_styleAt(&canvas, 4, 6) & TERMINAL_STYLE_REVERSE);
-    // Internal dividers are CUT: they stop short with an endpoint glyph.
-    assert(AT(3, 3) == 0x2576);                      // ╶ the divider's cut end
+    assert(TerminalCanvas_styleAt(&canvas, 3, 5) & TERMINAL_STYLE_REVERSE);
     state.focusPanel = 2;
     assert(PrimeagenScreen_renderChat(&screen, &state));
-    assert(!(TerminalCanvas_styleAt(&canvas, 4, 6) & TERMINAL_STYLE_REVERSE));
-    assert(TerminalCanvas_styleAt(&canvas, 4, 6) & TERMINAL_STYLE_ACCENT);
-    assert(TerminalCanvas_fgAt(&canvas, 4, 6) != TERMINAL_COLOR_DEFAULT);
+    assert(!(TerminalCanvas_styleAt(&canvas, 3, 5) & TERMINAL_STYLE_REVERSE));
+    assert(TerminalCanvas_styleAt(&canvas, 3, 5) & TERMINAL_STYLE_ACCENT);
+    assert(TerminalCanvas_fgAt(&canvas, 3, 5) != TERMINAL_COLOR_DEFAULT);
     // The input prompt sits on the input row; the transcript carries the text.
     int seen = 0;
     for (size_t i = 0; i < ROWS * COLS; ++i)
@@ -188,14 +180,14 @@ int main(void) {
     PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, stored);
     // Edge to edge: the banner box's interior carries decor at both far corners,
     // so the field is sized by the panel rather than by the picture's fit rect.
-    assert(AT(2, 26) != ' ');
-    assert(AT(ROWS - 3, COLS - 3) != ' ');
+    assert(AT(1, 24) != ' ');
+    assert(AT(ROWS - 2, COLS - 2) != ' ');
     uint32_t paper[COLS];
-    for (size_t x = 26; x < COLS - 2; ++x)
+    for (size_t x = 24; x < COLS - 2; ++x)
         paper[x] = AT(9, x);
     PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, stored);
     int rescattered = 0;
-    for (size_t x = 26; x < COLS - 2; ++x)
+    for (size_t x = 24; x < COLS - 2; ++x)
         if (AT(9, x) != paper[x])
             rescattered = 1;
     assert(rescattered);
