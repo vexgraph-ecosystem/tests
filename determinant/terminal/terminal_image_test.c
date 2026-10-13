@@ -23,7 +23,7 @@ int main(void) {
     TerminalImage_setInvert(&img, false);
 
     // 1:1 render into cells.
-    char cells[4] = {0, 0, 0, 0};
+    uint32_t cells[4] = {0, 0, 0, 0};
     TerminalCanvas c = TerminalCanvas(cells, nullptr, 2, 2);
     TerminalImage_render(&img, &c, 0, 0);
     assert(cells[0] == ' ' && cells[1] == '@');
@@ -31,7 +31,7 @@ int main(void) {
     // Transparent pixels are skipped when requested.
     static const uint8_t clear[1 * 4] = { 255, 255, 255, 0 };
     TerminalImage ghost = TerminalImage(clear, 1, 1);
-    char keep[1] = {'.'};
+    uint32_t keep[1] = {'.'};
     TerminalCanvas k = TerminalCanvas(keep, nullptr, 1, 1);
     TerminalImage_render(&ghost, &k, 0, 0);
     assert(keep[0] == '.');
@@ -51,7 +51,7 @@ int main(void) {
     assert(TerminalImage_sampleCell(&box, 5, 0, 1, 1, &r, &g, &b, &a) == false);
 
     // renderFit covers a whole region deterministically.
-    char big[6 * 2];
+    uint32_t big[6 * 2];
     uint8_t bigStyles[6 * 2];
     TerminalCanvas region = TerminalCanvas(big, bigStyles, 6, 2);
     TerminalImage_setStyle(&img, TERMINAL_STYLE_DIM);
@@ -60,7 +60,7 @@ int main(void) {
     assert(TerminalCanvas_styleAt(&region, 0, 0) == TERMINAL_STYLE_DIM);
 
     // Colour plane: cells carry the sampled colour when color is on.
-    static char cc[4];
+    static uint32_t cc[4];
     static uint32_t cf[4];
     TerminalCanvas colored = TerminalCanvas(cc, nullptr, cf, nullptr, 2, 2);
     TerminalImage_render(&img, &colored, 0, 0);

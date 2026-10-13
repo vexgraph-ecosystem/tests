@@ -5,7 +5,7 @@
 
 int main(void) {
     enum { W = 40, H = 10 };
-    static char cells[W * H];
+    static uint32_t cells[W * H];
     static uint8_t styles[W * H];
     static uint32_t fg[W * H];
     static uint32_t bg[W * H];
@@ -38,15 +38,15 @@ int main(void) {
 
     // Regions are disjoint views over one grid.
     TerminalCanvas_text(&center, 0, 0, "C", 1, TerminalPen());
-    assert(TerminalCanvas_charAt(&root, 11, 2) == 'C');
-    assert(TerminalCanvas_charAt(&left, 0, 0) == ' ');
+    assert(TerminalCanvas_glyphAt(&root, 11, 2) == 'C');
+    assert(TerminalCanvas_glyphAt(&left, 0, 0) == ' ');
 
     TerminalFrame_drawRules(&frame, &root, TerminalPen_1(TERMINAL_STYLE_DIM));
-    assert(TerminalCanvas_charAt(&root, 10, 1) == '+');       // junction: run meets the left rail
-    assert(TerminalCanvas_charAt(&root, W - 10 - 1, 1) == '+'); // junction: run meets the right rail
-    assert(TerminalCanvas_charAt(&root, 5, 1) == '-');        // run between the rails
-    assert(TerminalCanvas_charAt(&root, 10, 2) == '|');       // rail below the junction
-    assert(TerminalCanvas_charAt(&root, W - 10 - 1, 2) == '|');
+    assert(TerminalCanvas_glyphAt(&root, 10, 1) == '+');       // junction: run meets the left rail
+    assert(TerminalCanvas_glyphAt(&root, W - 10 - 1, 1) == '+'); // junction: run meets the right rail
+    assert(TerminalCanvas_glyphAt(&root, 5, 1) == '-');        // run between the rails
+    assert(TerminalCanvas_glyphAt(&root, 10, 2) == '|');       // rail below the junction
+    assert(TerminalCanvas_glyphAt(&root, W - 10 - 1, 2) == '|');
 
     // A striped connector run, and a custom glyph set.
     TerminalRule striped = TerminalRule('-', '|', '.', 4);
@@ -55,11 +55,11 @@ int main(void) {
     TerminalFrame_getRule(&frame, &got);
     assert(got.stripe == '.' && got.stripeEvery == 4);
     TerminalFrame_drawRules(&frame, &root, TerminalPen_1(TERMINAL_STYLE_DIM));
-    assert(TerminalCanvas_charAt(&root, 3, 1) == '.');        // every 4th cell is the stripe
-    assert(TerminalCanvas_charAt(&root, 4, 1) == '-');
+    assert(TerminalCanvas_glyphAt(&root, 3, 1) == '.');        // every 4th cell is the stripe
+    assert(TerminalCanvas_glyphAt(&root, 4, 1) == '-');
 
     // A very narrow root collapses the rails so the centre stays usable.
-    static char narrow[6 * 6];
+    static uint32_t narrow[6 * 6];
     TerminalCanvas small = TerminalCanvas(narrow, nullptr, 6, 6);
     TerminalFrame_getLayout(&frame, &small, &l, &r, &rails);
     assert(!rails && l == 0 && r == 0);
@@ -73,7 +73,7 @@ int main(void) {
     TerminalImage_setRamp(&image, "#");
     assert(TerminalFrame_setBackground(&frame, &image));
     TerminalFrame_paintBackground(&frame, &root);
-    assert(TerminalCanvas_charAt(&root, W - 1, H - 1) == '#');
+    assert(TerminalCanvas_glyphAt(&root, W - 1, H - 1) == '#');
     assert(TerminalFrame_setBackground(&frame, nullptr));
 
     TerminalCanvas none = TerminalFrame_center(nullptr, &root);

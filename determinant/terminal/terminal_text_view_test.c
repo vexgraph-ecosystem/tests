@@ -5,7 +5,7 @@
 int main(void) {
     static const char *lines[] = { "one", "two", "three", "four", "five" };
     enum { W = 10, H = 3 };
-    static char cells[W * H];
+    static uint32_t cells[W * H];
     static uint32_t fg[W * H];
     TerminalCanvas canvas = TerminalCanvas(cells, nullptr, fg, nullptr, W, H);
     TerminalCanvas_fill(&canvas, ' ', TerminalPen());
@@ -16,15 +16,15 @@ int main(void) {
 
     // Tail: the newest three lines are shown.
     TerminalTextView_render(&view, &canvas);
-    assert(TerminalCanvas_charAt(&canvas, 0, 0) == 't');   // "three"
-    assert(TerminalCanvas_charAt(&canvas, 0, 2) == 'f');   // "five"
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == 't');   // "three"
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 2) == 'f');   // "five"
 
     // Scroll up one row: "two" becomes the first visible line.
     assert(TerminalTextView_scrollBy(&view, -1, 3));
     assert(TerminalTextView_getScroll(&view) == 1);
     TerminalTextView_render(&view, &canvas);
-    assert(TerminalCanvas_charAt(&canvas, 0, 0) == 't' && TerminalCanvas_charAt(&canvas, 1, 0) == 'w');
-    assert(TerminalCanvas_charAt(&canvas, 0, 2) == 'f');
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == 't' && TerminalCanvas_glyphAt(&canvas, 1, 0) == 'w');
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 2) == 'f');
 
     // Scroll back to the tail is bounded.
     assert(TerminalTextView_scrollBy(&view, 1, 3));

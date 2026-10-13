@@ -6,7 +6,7 @@
 int main(void) {
     static const char *labels[] = { "alpha", "beta", "gamma", "delta" };
     enum { W = 16, H = 3 };
-    static char cells[W * H];
+    static uint32_t cells[W * H];
     static uint32_t fg[W * H];
     TerminalCanvas canvas = TerminalCanvas(cells, nullptr, fg, nullptr, W, H);
     TerminalCanvas_fill(&canvas, ' ', TerminalPen());
@@ -16,8 +16,8 @@ int main(void) {
     assert(TerminalListView_getSelection(&view) == 0 && TerminalListView_getScroll(&view) == 0);
 
     TerminalListView_render(&view, &canvas);
-    assert(TerminalCanvas_charAt(&canvas, 0, 0) == '>' && TerminalCanvas_charAt(&canvas, 2, 0) == 'a');
-    assert(TerminalCanvas_charAt(&canvas, 0, 1) == ' ' && TerminalCanvas_charAt(&canvas, 2, 1) == 'b');
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == '>' && TerminalCanvas_glyphAt(&canvas, 2, 0) == 'a');
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 1) == ' ' && TerminalCanvas_glyphAt(&canvas, 2, 1) == 'b');
 
     // Selection moves and keeps visible; false at an edge.
     assert(TerminalListView_move(&view, 1, 3));

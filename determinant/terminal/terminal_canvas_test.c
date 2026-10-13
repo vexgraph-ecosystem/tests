@@ -6,7 +6,7 @@
 
 int main(void) {
     enum { W = 12, H = 4 };
-    char cells[W * H];
+    uint32_t cells[W * H];
     uint8_t styles[W * H];
     uint32_t fg[W * H];
     uint32_t bg[W * H];
@@ -26,20 +26,20 @@ int main(void) {
     assert(TerminalCanvas_fgAt(&c, 0, 0) == TERMINAL_COLOR_DEFAULT);
 
     TerminalCanvas_fill(&c, '.', TerminalPen_1(TERMINAL_STYLE_MUTED));
-    assert(TerminalCanvas_charAt(&c, 0, 0) == '.' && TerminalCanvas_styleAt(&c, 0, 0) == TERMINAL_STYLE_MUTED);
+    assert(TerminalCanvas_glyphAt(&c, 0, 0) == '.' && TerminalCanvas_styleAt(&c, 0, 0) == TERMINAL_STYLE_MUTED);
 
     TerminalCanvas_text(&c, 10, 0, "abcdef", 6, TerminalPen_1(TERMINAL_STYLE_BOLD));
-    assert(TerminalCanvas_charAt(&c, 10, 0) == 'a' && TerminalCanvas_charAt(&c, 11, 0) == 'b');
+    assert(TerminalCanvas_glyphAt(&c, 10, 0) == 'a' && TerminalCanvas_glyphAt(&c, 11, 0) == 'b');
     assert(TerminalCanvas_styleAt(&c, 10, 0) == TERMINAL_STYLE_BOLD);
     TerminalCanvas_text(&c, 0, 1, "\x1b", 1, TerminalPen());   // non-printable -> '?'
-    assert(TerminalCanvas_charAt(&c, 0, 1) == '?');
+    assert(TerminalCanvas_glyphAt(&c, 0, 1) == '?');
 
     TerminalCanvas_hline(&c, 2, '-', TerminalPen_1(TERMINAL_STYLE_DIM));
-    assert(TerminalCanvas_charAt(&c, 5, 2) == '-');
+    assert(TerminalCanvas_glyphAt(&c, 5, 2) == '-');
     TerminalCanvas_vline(&c, 3, '|', TerminalPen_1(TERMINAL_STYLE_DIM));
-    assert(TerminalCanvas_charAt(&c, 3, 0) == '|');
+    assert(TerminalCanvas_glyphAt(&c, 3, 0) == '|');
     TerminalCanvas_box(&c, TerminalPen_1(TERMINAL_STYLE_DIM));
-    assert(TerminalCanvas_charAt(&c, 0, 0) == '+' && TerminalCanvas_charAt(&c, W - 1, 0) == '+');
+    assert(TerminalCanvas_glyphAt(&c, 0, 0) == '+' && TerminalCanvas_glyphAt(&c, W - 1, 0) == '+');
 
     // Sub-region clips to the parent and grid.
     TerminalCanvas s = TerminalCanvas_sub(&c, 10, 3, 100, 100);
@@ -47,11 +47,11 @@ int main(void) {
     TerminalCanvas outside = TerminalCanvas_sub(&c, 99, 0, 4, 4);
     assert(!TerminalCanvas_isValid(&outside));
     TerminalCanvas_fill(&s, '#', TerminalPen());
-    assert(TerminalCanvas_charAt(&c, 11, 3) == '#' && TerminalCanvas_charAt(&c, 9, 3) != '#');
+    assert(TerminalCanvas_glyphAt(&c, 11, 3) == '#' && TerminalCanvas_glyphAt(&c, 9, 3) != '#');
 
     // Full four-plane canvas: colours land and read back (separate buffers so the
     // earlier glyph assertions stand).
-    static char colorCells[W * H];
+    static uint32_t colorCells[W * H];
     static uint8_t colorStyles[W * H];
     memset(fg, 0, sizeof fg);
     memset(bg, 0, sizeof bg);
@@ -77,7 +77,7 @@ int main(void) {
 
     // Null / invalid safety.
     assert(!TerminalCanvas_isValid(nullptr));
-    assert(TerminalCanvas_charAt(nullptr, 0, 0) == '\0');
+    assert(TerminalCanvas_glyphAt(nullptr, 0, 0) == '\0');
     assert(TerminalCanvas_fgAt(nullptr, 0, 0) == TERMINAL_COLOR_DEFAULT);
     assert(!TerminalCanvas_hasColorPlane(nullptr));
     TerminalCanvas_fill(nullptr, 'x', TerminalPen());
@@ -87,6 +87,27 @@ int main(void) {
     assert(!TerminalCanvas_isValid(&zero) && !TerminalCanvas_isValid(&rejected));
     REJECT(TerminalCanvas_copyRow(&c, 0, nullptr, 4, &cut), "destination");
     assert(cut);
+
+    // UTF-8: decode, wide-glyph continuation, malformed input, re-encode.
+    uint32_t cp = 0;
+    assert(TerminalCanvas_utf8Decode("A", 1, &cp) == 1 && cp == 'A');
+    assert(TerminalCanvas_utf8Decode("\xC3\xA9", 2, &cp) == 2 && cp == 0xE9u);        // é
+    assert(TerminalCanvas_utf8Decode("\xE6\xBC\xA2", 3, &cp) == 3 && cp == 0x6F22u);  // 漢 (wide)
+    assert(TerminalCanvas_utf8Decode("\xFF", 1, &cp) == 0);                           // malformed
+    assert(TerminalCanvas_utf8Decode("", 0, &cp) == 0 && TerminalCanvas_utf8Decode("A", 1, nullptr) == 0);
+
+    TerminalCanvas utf = TerminalCanvas(cells, styles, W, H);
+    TerminalCanvas_fill(&utf, ' ', TerminalPen());
+    TerminalCanvas_text(&utf, 0, 0, "\xE6\xBC\xA2", 3, TerminalPen());   // 漢 spans two cells
+    assert(TerminalCanvas_glyphAt(&utf, 0, 0) == 0x6F22u);
+    assert(TerminalCanvas_glyphAt(&utf, 1, 0) == 0);                     // continuation marker
+    TerminalCanvas_text(&utf, 3, 0, "\xC3\xA9!", 3, TerminalPen());      // é ! = two cells
+    assert(TerminalCanvas_glyphAt(&utf, 3, 0) == 0xE9u && TerminalCanvas_glyphAt(&utf, 4, 0) == '!');
+    TerminalCanvas_text(&utf, 0, 1, "\xFF", 1, TerminalPen());           // malformed -> '?'
+    assert(TerminalCanvas_glyphAt(&utf, 0, 1) == '?');
+    char utfRow[32];
+    assert(TerminalCanvas_copyRow(&utf, 0, utfRow, sizeof utfRow, &cut) && !cut);
+    assert(strncmp(utfRow, "\xE6\xBC\xA2  \xC3\xA9!", 8) == 0);         // re-encoded, continuation as space
 
     PROJECT(TerminalCanvas, &c);
     return 0;

@@ -4,7 +4,7 @@
 
 int main(void) {
     enum { W = 12, H = 1 };
-    static char cells[W * H];
+    static uint32_t cells[W * H];
     static uint32_t fg[W * H];
     TerminalCanvas wide = TerminalCanvas(cells, nullptr, fg, nullptr, W, H);
     TerminalCanvas_fill(&wide, ' ', TerminalPen());
@@ -15,21 +15,21 @@ int main(void) {
     assert(TerminalStatusBar_setRight(&bar, "[on]"));
     TerminalStatusBar_setPens(&bar, TerminalPen(0, TERMINAL_RGB(1, 1, 1)), TerminalPen(0, TERMINAL_RGB(2, 2, 2)));
     TerminalStatusBar_render(&bar, &wide);
-    assert(TerminalCanvas_charAt(&wide, 0, 0) == 'l');
-    assert(TerminalCanvas_charAt(&wide, 8, 0) == '[');        // right string, right-aligned
+    assert(TerminalCanvas_glyphAt(&wide, 0, 0) == 'l');
+    assert(TerminalCanvas_glyphAt(&wide, 8, 0) == '[');        // right string, right-aligned
     assert(TerminalCanvas_fgAt(&wide, 8, 0) == TERMINAL_RGB(2, 2, 2));
     TerminalPen lp = TerminalPen_0(), rp = TerminalPen_0();
     TerminalStatusBar_getPens(&bar, &lp, &rp);
     assert(lp.fg == TERMINAL_RGB(1, 1, 1) && rp.fg == TERMINAL_RGB(2, 2, 2));
 
     // Collision: a right string that would touch the left is dropped, not drawn.
-    static char narrow[8 * 1];
+    static uint32_t narrow[8 * 1];
     TerminalCanvas tight = TerminalCanvas(narrow, nullptr, nullptr, nullptr, 8, 1);
     TerminalCanvas_fill(&tight, ' ', TerminalPen());
     assert(TerminalStatusBar_setLeft(&bar, "leftside"));      // 8 wide
     TerminalStatusBar_render(&bar, &tight);
-    assert(TerminalCanvas_charAt(&tight, 0, 0) == 'l');
-    assert(TerminalCanvas_charAt(&tight, 7, 0) == 'e');       // no '[on]' overwrite
+    assert(TerminalCanvas_glyphAt(&tight, 0, 0) == 'l');
+    assert(TerminalCanvas_glyphAt(&tight, 7, 0) == 'e');       // no '[on]' overwrite
 
     // Null / invalid safety.
     TerminalStatusBar_render(nullptr, &wide);
