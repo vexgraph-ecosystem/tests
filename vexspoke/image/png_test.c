@@ -119,6 +119,19 @@ int main(void) {
         Memory_free(rgba);
     }
 
+    // The malloc-backed entry point (a host with no engine arena) decodes the same
+    // stream and is released with free().
+    {
+        const uint8_t raw[] = { 0, 9, 8, 7 };
+        size_t n = buildPng(png, 1, 1, 2, raw, sizeof raw);
+        uint8_t *heap = nullptr;
+        uint32_t hw = 0, hh = 0;
+        assert(Png_decodeMalloc(png, n, &heap, &hw, &hh) == PNG_OK);
+        assert(hw == 1 && hh == 1 && heap[0] == 9 && heap[1] == 8 && heap[2] == 7 && heap[3] == 255);
+        free(heap);
+        assert(Png_decodeMalloc(png, n, nullptr, &hw, &hh) == PNG_INVALID);
+    }
+
     // 2x1 RGB, filter 0 → alpha forced opaque.
     {
         const uint8_t raw[] = { 0, 1, 2, 3, 4, 5, 6 };
