@@ -41,6 +41,7 @@ class NativeTuiTest(unittest.TestCase):
             ("cli/main_test.c", ["tui/tui.c", "tui/event/mouse_event.c", "personality/owo.c", "session/session_bridge.c", "cli/view.c", "cli/update.c"]),
             ("cli/view_test.c", ["tui/tui.c", "cli/view.c"]),
             ("cli/appearance_test.c", ["cli/appearance.c"]),
+            ("cli/screen_test.c", ["tui/tui.c", "cli/screen.c", "cli/appearance.c"]),
         ]
         with tempfile.TemporaryDirectory() as directory:
             for sanitized in (False, True):
