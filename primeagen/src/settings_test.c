@@ -43,12 +43,14 @@ int main(void) {
     CHECK(strcmp(Settings_getModel(&settings), "") == 0);
     CHECK(!Settings_isOwo(&settings));
     CHECK(Settings_getConsent(&settings) == SETTINGS_CONSENT_PROMPT);
+    CHECK(strcmp(Settings_getAppearance(&settings), SETTINGS_APPEARANCE_DEFAULT) == 0);
 
     CHECK(Settings_setProvider(&settings, "openai"));
     CHECK(Settings_setModel(&settings, "gpt-x"));
     Settings_setOwo(&settings, true);
     CHECK(Settings_setConsent(&settings, SETTINGS_CONSENT_DENY));
     CHECK(!Settings_setConsent(&settings, 99));  // out of range
+    CHECK(Settings_setAppearance(&settings, "unicode-emdash"));
 
     char path[600];
     CHECK(Settings_resolvePath(path, sizeof path));
@@ -62,6 +64,7 @@ int main(void) {
     CHECK(strcmp(Settings_getModel(&loaded), "gpt-x") == 0);
     CHECK(Settings_isOwo(&loaded));
     CHECK(Settings_getConsent(&loaded) == SETTINGS_CONSENT_DENY);
+    CHECK(strcmp(Settings_getAppearance(&loaded), "unicode-emdash") == 0);
 
     // Missing file: defaults kept, still true.
     Settings absent = Settings_0();
