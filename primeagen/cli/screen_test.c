@@ -32,16 +32,25 @@ int main(void) {
     TerminalImage_setColorRamp(&badge, TerminalImage_rampPurple(nullptr), 8);
     static const char *menu[] = { "People", "Servers", "Settings" };
     PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, &badge);
-    // Rail (0..21) | separator (22) | panel (23..69); the rule is the connector.
-    assert(screen.cells[0 * 70 + 0] != 0);          // rail row 0 has the title
-    assert(screen.cells[1 * 70 + 0] == '-');        // striped connector rule
-    assert(screen.cells[1 * 70 + 3] == '.');
-    assert(screen.cells[0 * 70 + 22] == '|');       // column separator
+    // The frame draws its OWN border with corners, so it reads as a TUI inside
+    // the window instead of leaning on the window's edges.
+    assert(screen.cells[0 * 70 + 0] == '+');        // top-left corner
+    assert(screen.cells[0 * 70 + 1] == '-');        // top border run
+    assert(screen.cells[19 * 70 + 0] == '+');       // bottom-left corner
+    assert(screen.cells[19 * 70 + 69] == '+');      // bottom-right corner
+    assert(screen.cells[1 * 70 + 0] == '|');        // left border
+    // Inset rail (1..22) | separator (23) | panel (24..68); the rule is the connector.
+    assert(screen.cells[1 * 70 + 7] != ' ');        // rail row 0 carries the title
+    assert(screen.cells[2 * 70 + 1] == '-');        // striped connector rule
+    assert(screen.cells[2 * 70 + 4] == '.');
+    assert(screen.cells[1 * 70 + 23] == '|');       // column separator
+    // The selected menu row is HIGHLIGHTED (reverse video) while it owns focus.
+    assert(TerminalCanvas_styleAt(&canvas, 9, 4) & TERMINAL_STYLE_REVERSE);
     // The badge is ZOOM-FIT: letterboxed (blank margin) and centred, never squashed.
-    assert(screen.cells[0 * 70 + 23] == ' ');
+    assert(screen.cells[1 * 70 + 24] == ' ');
     int badgeInk = 0;
     for (size_t y = 0; y < 20; ++y)
-        for (size_t x = 23; x < 70; ++x)
+        for (size_t x = 24; x < 69; ++x)
             if (screen.cells[y * 70 + x] != ' ')
                 badgeInk = 1;
     assert(badgeInk);
@@ -70,7 +79,18 @@ int main(void) {
     state.tui = &tui;
     state.focused = true;
     assert(PrimeagenScreen_renderChat(&screen, &state));
-    assert(screen.cells[1 * 70 + 0] == '-');        // centre rule
+    assert(screen.cells[1 * 70 + 0] == '|');         // left border
+    assert(screen.cells[2 * 70 + 24] == '-');        // centre rule (inset by the border)
+    // FOCUS: the rail HIGHLIGHTS its selected row only while it owns the keyboard;
+    // when another panel has focus the same row is a COLOUR change, not a highlight.
+    state.focusPanel = 0;
+    assert(PrimeagenScreen_renderChat(&screen, &state));
+    assert(TerminalCanvas_styleAt(&canvas, 3, 5) & TERMINAL_STYLE_REVERSE);
+    state.focusPanel = 2;
+    assert(PrimeagenScreen_renderChat(&screen, &state));
+    assert(!(TerminalCanvas_styleAt(&canvas, 3, 5) & TERMINAL_STYLE_REVERSE));
+    assert(TerminalCanvas_styleAt(&canvas, 3, 5) & TERMINAL_STYLE_ACCENT);
+    assert(TerminalCanvas_fgAt(&canvas, 3, 5) != TERMINAL_COLOR_DEFAULT);
     // The input prompt sits on the input row; the transcript carries the text.
     int seen = 0;
     for (size_t i = 0; i < 20 * 70; ++i)
@@ -80,13 +100,32 @@ int main(void) {
     assert(!PrimeagenScreen_renderChat(nullptr, &state));
 
     // Badge: the app's white-paper image; the screen inverts it and the caller's
-    // palette treats the ink. NULL/zero clears it.
+    // palette treats the ink. NULL/zero clears it. The paper is NOT blank — it is
+    // a gray glyph field that re-scatters on every render (so a revalidate shows
+    // a fresh decor).
     PrimeagenScreen_setBadge(pixels, 2, 1);
     assert(PrimeagenScreen_hasBadge());
     const TerminalImage *stored = PrimeagenScreen_badge();
     assert(stored != nullptr && TerminalImage_inverted(stored));
     size_t rampCount = 0;
     assert(TerminalImage_getColorRamp(stored, &rampCount) != nullptr && rampCount > 0);
+    assert(TerminalImage_getNoise(stored) != nullptr);
+    assert(TerminalImage_getNoiseDensity(stored) > 0 && TerminalImage_getNoiseDensity(stored) < 100);
+    PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, stored);
+    uint32_t paper[70];
+    int paperNoise = 0;
+    for (size_t x = 24; x < 69; ++x) {
+        paper[x] = screen.cells[8 * 70 + x];
+        if (paper[x] != ' ')
+            paperNoise = 1;
+    }
+    assert(paperNoise);
+    PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, stored);
+    int rescattered = 0;
+    for (size_t x = 24; x < 69; ++x)
+        if (screen.cells[8 * 70 + x] != paper[x])
+            rescattered = 1;
+    assert(rescattered);
     PrimeagenScreen_setBadge(nullptr, 0, 0);
     assert(!PrimeagenScreen_hasBadge() && PrimeagenScreen_badge() == nullptr);
 

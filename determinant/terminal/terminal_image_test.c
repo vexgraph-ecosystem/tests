@@ -73,6 +73,50 @@ int main(void) {
     assert(TerminalCanvas_fgAt(&colored, 1, 0) == TERMINAL_COLOR_DEFAULT);
     TerminalImage_setColor(&img, true);
 
+    // Background NOISE: the blank "paper" becomes a glyph field, re-scattered by
+    // the seed, so a revalidate draws a fresh decor while a fixed seed repeats.
+    {
+        static uint32_t noiseCells[8];
+        static uint32_t noiseFg[8];
+        TerminalCanvas noisyCanvas = TerminalCanvas(noiseCells, nullptr, noiseFg, nullptr, 8, 1);
+        TerminalImage noisy = TerminalImage(two, 2, 1);
+        TerminalImage_setInvert(&noisy, true);
+        assert(!TerminalImage_setNoise(&noisy, "", 0));            // empty clears
+        assert(TerminalImage_getNoise(&noisy) == nullptr);
+        assert(!TerminalImage_setNoise(&noisy, nullptr, 0));
+        assert(TerminalImage_setNoise(&noisy, "abcxyz", TERMINAL_RGB(0x40, 0x40, 0x40)));
+        assert(TerminalImage_getNoise(&noisy) != nullptr);
+        TerminalImage_setNoiseStyle(&noisy, TERMINAL_STYLE_DIM);
+        assert(TerminalImage_getNoiseStyle(&noisy) == TERMINAL_STYLE_DIM);
+        TerminalImage_setNoiseSeed(&noisy, 7);
+        assert(TerminalImage_getNoiseSeed(&noisy) == 7);
+        TerminalImage_render(&noisy, &noisyCanvas, 0, 0);
+        assert(TerminalCanvas_glyphAt(&noisyCanvas, 0, 0) == '@');  // the ink half
+        char first = (char) TerminalCanvas_glyphAt(&noisyCanvas, 1, 0);
+        assert(strchr("abcxyz", first) != nullptr);                 // the paper half
+        // Same seed -> the same scatter; a new seed -> (normally) a new one.
+        TerminalImage_setNoiseSeed(&noisy, 7);
+        TerminalImage_render(&noisy, &noisyCanvas, 0, 0);
+        assert((char) TerminalCanvas_glyphAt(&noisyCanvas, 1, 0) == first);
+        int reshuffled = 0;
+        for (uint32_t seed = 1; seed <= 8 && !reshuffled; ++seed) {
+            TerminalImage_setNoiseSeed(&noisy, seed);
+            TerminalImage_render(&noisy, &noisyCanvas, 0, 0);
+            if ((char) TerminalCanvas_glyphAt(&noisyCanvas, 1, 0) != first)
+                reshuffled = 1;
+        }
+        assert(reshuffled);
+        // Density: 100 is the default cover; 0 leaves the paper blank again.
+        assert(TerminalImage_getNoiseDensity(&noisy) == 100);
+        TerminalImage_setNoiseDensity(&noisy, 250);              // clamped to 100
+        assert(TerminalImage_getNoiseDensity(&noisy) == 100);
+        TerminalImage_setNoiseDensity(&noisy, 0);
+        TerminalImage_render(&noisy, &noisyCanvas, 0, 0);
+        assert(TerminalCanvas_glyphAt(&noisyCanvas, 1, 0) == ' ');
+        // A clean image carries no noise.
+        assert(TerminalImage_getNoise(&img) == nullptr);
+    }
+
     // CONTAIN: uniform zoom-to-fit — one scale for both axes, centred, and the
     // cellAspect correction keeps a wide picture wide (letterboxed, never squashed).
     {
