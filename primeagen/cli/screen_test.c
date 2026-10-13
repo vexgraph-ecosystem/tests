@@ -31,6 +31,34 @@ int main(void) {
     assert(TerminalCanvas_isValid(&canvas));
     assert(TerminalCanvas_getWidth(&canvas) == COLS && TerminalCanvas_getHeight(&canvas) == ROWS);
 
+    // Terminal EVENTS: a zoom (font size), a fullscreen toggle and a window drag
+    // all arrive as a resize and are their own event — revalidated at once, never
+    // deferred to a later "settle".
+    assert(PrimeagenScreen_classify(KEY_RESIZE) == PRIMEAGEN_SCREEN_EVENT_RESIZE);
+    assert(PrimeagenScreen_classify('q') == PRIMEAGEN_SCREEN_EVENT_QUIT);
+    assert(PrimeagenScreen_classify('Q') == PRIMEAGEN_SCREEN_EVENT_QUIT);
+    assert(PrimeagenScreen_classify('1') == PRIMEAGEN_SCREEN_EVENT_HOME);
+    assert(PrimeagenScreen_classify('2') == PRIMEAGEN_SCREEN_EVENT_CHAT);
+    assert(PrimeagenScreen_classify('f') == PRIMEAGEN_SCREEN_EVENT_FOCUS);
+    assert(PrimeagenScreen_classify('z') == PRIMEAGEN_SCREEN_EVENT_NONE);
+    {
+        PrimeagenScreen zoom;
+        PrimeagenScreen_init(&zoom);
+        // Zoomed below the floor: re-bound (so the notice has a real grid) and
+        // reported as not renderable.
+        assert(!PrimeagenScreen_revalidate(&zoom, 24, 70));
+        TerminalCanvas zoomed = PrimeagenScreen_canvas(&zoom);
+        assert(TerminalCanvas_getWidth(&zoomed) == 70);
+        assert(!PrimeagenScreen_revalidate(&zoom, 0, 10));       // unusable size refused
+        assert(PrimeagenScreen_revalidate(&zoom, 40, 120));      // zoom back in
+        zoomed = PrimeagenScreen_canvas(&zoom);
+        assert(TerminalCanvas_getWidth(&zoomed) == 120);
+        assert(TerminalCanvas_getHeight(&zoomed) == 40);
+        // Still renderable at exactly the advertised minimum.
+        assert(PrimeagenScreen_revalidate(&zoom, PRIMEAGEN_SCREEN_MIN_ROWS, PRIMEAGEN_SCREEN_MIN_COLUMNS));
+        PrimeagenScreen_free(&zoom);
+    }
+
     // --- HOME: rail with the menu, badge (and its decor field) in the panel ---
     TerminalImage badge = TerminalImage(pixels, 2, 1);
     TerminalImage_setInvert(&badge, true);          // white paper -> blank

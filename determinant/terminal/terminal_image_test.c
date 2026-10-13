@@ -169,12 +169,19 @@ int main(void) {
     assert(purple != nullptr && rampCount >= 4);
     assert(TerminalImage_setColorRamp(&img, purple, rampCount));
     assert(TerminalImage_getColorRamp(&img, &rampCount) == purple && rampCount >= 4);
-    // LIGHT ONLY: no dark entries, so a badge never sinks into the background.
+    // The palette's darkest entry is ~30% of full range (0x4C ≈ 255 * 0.3) and
+    // nothing is darker, so the ramp spans ~30% up to near-white.
+    size_t darkest = 255;
     for (size_t i = 0; i < rampCount; ++i) {
-        assert(TERMINAL_COLOR_RED(purple[i]) >= 0x80);
-        assert(TERMINAL_COLOR_GREEN(purple[i]) >= 0x80);
-        assert(TERMINAL_COLOR_BLUE(purple[i]) >= 0x80);
+        uint8_t r = TERMINAL_COLOR_RED(purple[i]);
+        uint8_t g = TERMINAL_COLOR_GREEN(purple[i]);
+        uint8_t b = TERMINAL_COLOR_BLUE(purple[i]);
+        assert(r >= 0x4C && g >= 0x4C && b >= 0x4C);
+        uint8_t low = r < g ? (r < b ? r : b) : (g < b ? g : b);
+        if (low < darkest)
+            darkest = low;
     }
+    assert(darkest >= 0x4C && darkest <= 0x60);
     TerminalImage_setJitter(&img, 0, 0);
     TerminalImage_render(&img, &paletteCanvas, 0, 0);
     assert(TerminalCanvas_fgAt(&paletteCanvas, 0, 0) == purple[0]);                 // black -> the ramp's low end
@@ -188,6 +195,42 @@ int main(void) {
     assert(TERMINAL_COLOR_BLUE(scattered) >= TERMINAL_COLOR_BLUE(purple[0]));
     TerminalImage_render(&img, &paletteCanvas, 0, 0);
     assert(TerminalCanvas_fgAt(&paletteCanvas, 0, 0) == scattered);                 // deterministic for a seed
+
+    // Palette SCATTER: every ink cell shares one luminance, yet which one reads
+    // light and which reads dark is randomized per cell instead of luminance-ordered.
+    {
+        static uint8_t ink[64 * 4];
+        static uint32_t wideCells[64];
+        static uint32_t wideFg[64];
+        for (size_t i = 0; i < 64; ++i) {
+            ink[i * 4 + 0] = 0; ink[i * 4 + 1] = 0; ink[i * 4 + 2] = 0; ink[i * 4 + 3] = 255;
+        }
+        TerminalImage flat = TerminalImage(ink, 64, 1);
+        assert(TerminalImage_setColorRamp(&flat, purple, rampCount));
+        TerminalCanvas wide = TerminalCanvas(wideCells, nullptr, wideFg, nullptr, 64, 1);
+        TerminalImage_setPaletteScatter(&flat, (uint8_t) rampCount);
+        assert(TerminalImage_getPaletteScatter(&flat) == rampCount);
+        TerminalImage_render(&flat, &wide, 0, 0);
+        uint32_t firstColour = TerminalCanvas_fgAt(&wide, 0, 0);
+        int distinct = 0;
+        for (size_t x = 0; x < 64; ++x) {
+            uint32_t colour = TerminalCanvas_fgAt(&wide, x, 0);
+            int inRamp = 0;
+            for (size_t i = 0; i < rampCount; ++i)
+                if (colour == purple[i])
+                    inRamp = 1;
+            assert(inRamp);
+            if (colour != firstColour)
+                distinct = 1;
+        }
+        assert(distinct);
+        // With the scatter off the same cells all take the luminance's one entry.
+        TerminalImage_setPaletteScatter(&flat, 0);
+        TerminalCanvas_fill(&wide, ' ', TerminalPen());
+        TerminalImage_render(&flat, &wide, 0, 0);
+        for (size_t x = 0; x < 64; ++x)
+            assert(TerminalCanvas_fgAt(&wide, x, 0) == firstColour);
+    }
     TerminalImage_setJitter(&img, 0, 0);
     assert(TerminalImage_setColorRamp(&img, nullptr, 0));
     assert(TerminalImage_getColorRamp(&img, &rampCount) == nullptr && rampCount == 0);
