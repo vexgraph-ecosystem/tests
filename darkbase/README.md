@@ -1,8 +1,8 @@
 # tests/darkbase
 
-Owner-test partition for `../../drivers/darkbase`, mirroring its production
+Owner-test partition for `../../drivers/darkbase-engine`, mirroring its production
 source tree (the Test Tree Mirror Law). A production unit at
-`../../drivers/darkbase/src/<dir>/<unit>.c` owns
+`../../drivers/darkbase-engine/src/<dir>/<unit>.c` owns
 `tests/darkbase/<dir>/<unit>_test.c`.
 
 Current owner tests:
