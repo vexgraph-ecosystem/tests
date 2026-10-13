@@ -73,46 +73,64 @@ int main(void) {
     assert(TerminalCanvas_fgAt(&colored, 1, 0) == TERMINAL_COLOR_DEFAULT);
     TerminalImage_setColor(&img, true);
 
-    // Background NOISE: the blank "paper" becomes a glyph field, re-scattered by
-    // the seed, so a revalidate draws a fresh decor while a fixed seed repeats.
+    // Background NOISE: a decor field covering the WHOLE region the picture draws
+    // into — edge to edge, sized by the region rather than the picture — with the
+    // picture's own content painted over it. Re-seeded per render → fresh decor.
     {
-        static uint32_t noiseCells[8];
-        static uint32_t noiseFg[8];
-        TerminalCanvas noisyCanvas = TerminalCanvas(noiseCells, nullptr, noiseFg, nullptr, 8, 1);
+        static uint32_t noiseCells[6 * 4];
+        static uint32_t noiseFg[6 * 4];
+        TerminalCanvas noisyCanvas = TerminalCanvas(noiseCells, nullptr, noiseFg, nullptr, 6, 4);
         TerminalImage noisy = TerminalImage(two, 2, 1);
         TerminalImage_setInvert(&noisy, true);
         assert(!TerminalImage_setNoise(&noisy, "", 0));            // empty clears
         assert(TerminalImage_getNoise(&noisy) == nullptr);
         assert(!TerminalImage_setNoise(&noisy, nullptr, 0));
-        assert(TerminalImage_setNoise(&noisy, "abcxyz", TERMINAL_RGB(0x40, 0x40, 0x40)));
+        assert(TerminalImage_setNoise(&noisy, "abcxyz", TERMINAL_RGB(0x80, 0x80, 0xA0)));
         assert(TerminalImage_getNoise(&noisy) != nullptr);
         TerminalImage_setNoiseStyle(&noisy, TERMINAL_STYLE_DIM);
         assert(TerminalImage_getNoiseStyle(&noisy) == TERMINAL_STYLE_DIM);
+        TerminalImage_setNoiseDensity(&noisy, 100);
+        assert(TerminalImage_getNoiseDensity(&noisy) == 100);
         TerminalImage_setNoiseSeed(&noisy, 7);
         assert(TerminalImage_getNoiseSeed(&noisy) == 7);
-        TerminalImage_render(&noisy, &noisyCanvas, 0, 0);
-        assert(TerminalCanvas_glyphAt(&noisyCanvas, 0, 0) == '@');  // the ink half
-        char first = (char) TerminalCanvas_glyphAt(&noisyCanvas, 1, 0);
-        assert(strchr("abcxyz", first) != nullptr);                 // the paper half
-        // Same seed -> the same scatter; a new seed -> (normally) a new one.
+        TerminalCanvas_fill(&noisyCanvas, ' ', TerminalPen());
+        TerminalImage_renderContain(&noisy, &noisyCanvas);
+        // The field reaches every corner of the region (no letterbox gap), and the
+        // ink half of the picture is painted over it.
+        assert(strchr("abcxyz", (char) TerminalCanvas_glyphAt(&noisyCanvas, 0, 0)) != nullptr);
+        assert(strchr("abcxyz", (char) TerminalCanvas_glyphAt(&noisyCanvas, 5, 3)) != nullptr);
+        assert(TerminalCanvas_glyphAt(&noisyCanvas, 0, 1) == '@');
+        // A fixed seed reproduces the field exactly; a new seed re-scatters it.
+        uint32_t first = TerminalCanvas_glyphAt(&noisyCanvas, 5, 3);
         TerminalImage_setNoiseSeed(&noisy, 7);
-        TerminalImage_render(&noisy, &noisyCanvas, 0, 0);
-        assert((char) TerminalCanvas_glyphAt(&noisyCanvas, 1, 0) == first);
-        int reshuffled = 0;
-        for (uint32_t seed = 1; seed <= 8 && !reshuffled; ++seed) {
+        TerminalCanvas_fill(&noisyCanvas, ' ', TerminalPen());
+        TerminalImage_renderContain(&noisy, &noisyCanvas);
+        assert(TerminalCanvas_glyphAt(&noisyCanvas, 5, 3) == first);
+        int rescattered = 0;
+        for (uint32_t seed = 1; seed <= 8 && !rescattered; ++seed) {
             TerminalImage_setNoiseSeed(&noisy, seed);
-            TerminalImage_render(&noisy, &noisyCanvas, 0, 0);
-            if ((char) TerminalCanvas_glyphAt(&noisyCanvas, 1, 0) != first)
-                reshuffled = 1;
+            TerminalCanvas_fill(&noisyCanvas, ' ', TerminalPen());
+            TerminalImage_renderContain(&noisy, &noisyCanvas);
+            if (TerminalCanvas_glyphAt(&noisyCanvas, 5, 3) != first)
+                rescattered = 1;
         }
-        assert(reshuffled);
-        // Density: 100 is the default cover; 0 leaves the paper blank again.
-        assert(TerminalImage_getNoiseDensity(&noisy) == 100);
-        TerminalImage_setNoiseDensity(&noisy, 250);              // clamped to 100
-        assert(TerminalImage_getNoiseDensity(&noisy) == 100);
+        assert(rescattered);
+        // The decor is the region's, not the picture's: a 1:1 render covers the
+        // picture's own rect instead.
+        TerminalImage_setNoiseSeed(&noisy, 3);
+        TerminalCanvas_fill(&noisyCanvas, ' ', TerminalPen());
+        TerminalImage_render(&noisy, &noisyCanvas, 2, 2);
+        assert(TerminalCanvas_glyphAt(&noisyCanvas, 2, 2) == '@');   // ink over the field
+        assert(strchr("abcxyz", (char) TerminalCanvas_glyphAt(&noisyCanvas, 3, 2)) != nullptr);
+        assert(TerminalCanvas_glyphAt(&noisyCanvas, 4, 0) == ' ');   // outside the picture rect
+        // Density 0 leaves the field empty but never the picture.
         TerminalImage_setNoiseDensity(&noisy, 0);
-        TerminalImage_render(&noisy, &noisyCanvas, 0, 0);
-        assert(TerminalCanvas_glyphAt(&noisyCanvas, 1, 0) == ' ');
+        TerminalCanvas_fill(&noisyCanvas, ' ', TerminalPen());
+        TerminalImage_renderContain(&noisy, &noisyCanvas);
+        assert(TerminalCanvas_glyphAt(&noisyCanvas, 0, 0) == ' ');
+        assert(TerminalCanvas_glyphAt(&noisyCanvas, 0, 1) == '@');
+        TerminalImage_setNoiseDensity(&noisy, 250);                // clamped to 100
+        assert(TerminalImage_getNoiseDensity(&noisy) == 100);
         // A clean image carries no noise.
         assert(TerminalImage_getNoise(&img) == nullptr);
     }
@@ -151,14 +169,23 @@ int main(void) {
     assert(purple != nullptr && rampCount >= 4);
     assert(TerminalImage_setColorRamp(&img, purple, rampCount));
     assert(TerminalImage_getColorRamp(&img, &rampCount) == purple && rampCount >= 4);
+    // LIGHT ONLY: no dark entries, so a badge never sinks into the background.
+    for (size_t i = 0; i < rampCount; ++i) {
+        assert(TERMINAL_COLOR_RED(purple[i]) >= 0x80);
+        assert(TERMINAL_COLOR_GREEN(purple[i]) >= 0x80);
+        assert(TERMINAL_COLOR_BLUE(purple[i]) >= 0x80);
+    }
     TerminalImage_setJitter(&img, 0, 0);
     TerminalImage_render(&img, &paletteCanvas, 0, 0);
-    assert(TerminalCanvas_fgAt(&paletteCanvas, 0, 0) == purple[0]);                 // black -> darkest
-    assert(TerminalCanvas_fgAt(&paletteCanvas, 1, 0) == purple[rampCount - 1]);     // white -> brightest
+    assert(TerminalCanvas_fgAt(&paletteCanvas, 0, 0) == purple[0]);                 // black -> the ramp's low end
+    assert(TerminalCanvas_fgAt(&paletteCanvas, 1, 0) == purple[rampCount - 1]);     // white -> the high end
     TerminalImage_setJitter(&img, 60, 7);
     assert(TerminalImage_getJitter(&img) == 60 && TerminalImage_getJitterSeed(&img) == 7);
     TerminalImage_render(&img, &paletteCanvas, 0, 0);
     uint32_t scattered = TerminalCanvas_fgAt(&paletteCanvas, 0, 0);
+    // The jitter only LIGHTENS, so a light ramp never dips dark on some cells.
+    assert(TERMINAL_COLOR_RED(scattered) >= TERMINAL_COLOR_RED(purple[0]));
+    assert(TERMINAL_COLOR_BLUE(scattered) >= TERMINAL_COLOR_BLUE(purple[0]));
     TerminalImage_render(&img, &paletteCanvas, 0, 0);
     assert(TerminalCanvas_fgAt(&paletteCanvas, 0, 0) == scattered);                 // deterministic for a seed
     TerminalImage_setJitter(&img, 0, 0);

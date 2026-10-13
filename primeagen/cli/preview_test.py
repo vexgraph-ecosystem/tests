@@ -6,10 +6,13 @@ in a terminal; it does not describe the live view, which still paints ncurses
 directly until the migration is wired.
 """
 from pathlib import Path
+import fcntl
 import os
 import pty
 import select
+import struct
 import subprocess
+import termios
 import time
 import unittest
 
@@ -20,6 +23,9 @@ APP = ROOT / "personal/primeagen"
 class PreviewTest(unittest.TestCase):
     def test_home_frame_composes_in_a_pty(self):
         master, slave = pty.openpty()
+        # Give the PTY a real window size ABOVE the frame's advertised minimum, so
+        # the preview composes the frame instead of its too-small notice.
+        fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
         env = {**os.environ,
                "TERM": "xterm-256color",
                "PRIMEAGEN_ROOT": str(APP),
