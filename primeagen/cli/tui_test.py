@@ -13,6 +13,10 @@ APP = ROOT / "personal/primeagen"
 VEX = ROOT / "host-behavior/vexspoke/src"
 API = ROOT / "drivers/api-haven/src"
 HOT = ROOT / "host-behavior/hotcwap"
+DET = ROOT / "drivers/determinant/src"
+# The R3 terminal toolkit the view now draws through (canvas → frame → appearance).
+DET_SOURCES = ["terminal/terminal_canvas.c", "terminal/terminal_frame.c",
+               "terminal/terminal_image.c", "terminal/terminal_appearance.c"]
 
 
 class NativeTuiTest(unittest.TestCase):
@@ -36,6 +40,7 @@ class NativeTuiTest(unittest.TestCase):
             ("personality/owo_test.c", ["personality/owo.c"]),
             ("cli/main_test.c", ["tui/tui.c", "tui/event/mouse_event.c", "personality/owo.c", "session/session_bridge.c", "cli/view.c", "cli/update.c"]),
             ("cli/view_test.c", ["tui/tui.c", "cli/view.c"]),
+            ("cli/appearance_test.c", ["cli/appearance.c"]),
         ]
         with tempfile.TemporaryDirectory() as directory:
             for sanitized in (False, True):
@@ -43,11 +48,15 @@ class NativeTuiTest(unittest.TestCase):
                     with self.subTest(owner=owner, sanitized=sanitized):
                         dest = Path(directory) / "owner"
                         argv = ["clang", "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-O1",
-                                "-mcpu=apple-m1", "-mmacosx-version-min=14.0", f"-I{APP}", f"-I{VEX}", f"-I{API}", f"-I{HOT}"]
+                                "-mcpu=apple-m1", "-mmacosx-version-min=14.0", f"-I{APP}", f"-I{VEX}", f"-I{API}", f"-I{HOT}", f"-I{DET}"]
                         if sanitized:
                             argv += ["-fsanitize=address,undefined", "-fno-omit-frame-pointer"]
                         argv += [str(ROOT / "tests/primeagen" / owner)]
                         argv += [str(APP / source) for source in sources]
+                        if "cli/view.c" in sources or "cli/appearance.c" in sources:
+                            if "cli/appearance.c" not in sources:
+                                argv += [str(APP / "cli/appearance.c")]
+                            argv += [str(DET / source) for source in DET_SOURCES]
                         argv += [str(APP / "tui/markdown.c")]
                         argv += [str(API / "harness/harness.c"), str(API / "harness/engine_provider.c")]
                         argv += [str(VEX / "net/json.c"), "-Wl,-dead_strip", "-lncurses", "-o", str(dest)]

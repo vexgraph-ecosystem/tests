@@ -28,9 +28,15 @@ def build_views(base):
         module = dest / "cli_view.dylib"
         command = ["clang", "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-O1", "-mcpu=apple-m1",
                    "-mmacosx-version-min=14.0", f"-I{APP}", f"-I{VEX}", f"-I{HOT}",
+                   f"-I{ROOT / 'drivers/determinant/src'}",
                    f'-DPRIMEAGEN_VIEW_TITLE="Primeagen {title}"', "-dynamiclib",
-                   str(APP / "cli/view.c"), str(APP / "tui/tui.c"), str(APP / "tui/markdown.c"),
-                   str(VEX / "net/json.c"), "-lncurses", "-o", str(module)]
+                   str(APP / "cli/view.c"), str(APP / "cli/appearance.c"),
+                   str(APP / "tui/tui.c"), str(APP / "tui/markdown.c"),
+                   str(VEX / "net/json.c"),
+                   *[str(ROOT / "drivers/determinant/src" / name) for name in
+                     ("terminal/terminal_canvas.c", "terminal/terminal_frame.c",
+                      "terminal/terminal_image.c", "terminal/terminal_appearance.c")],
+                   "-lncurses", "-o", str(module)]
         subprocess.run(command, check=True, capture_output=True, timeout=60)
         (base / f"{title}.sha256").write_text(hashlib.sha256(module.read_bytes()).hexdigest() + "\n")
 

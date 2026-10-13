@@ -27,6 +27,10 @@ int main(void) {
     int caretY, caretX;
     getyx(stdscr, caretY, caretX);
     assert(caretY == 22 && caretX == left + 7);
+    // The header rule is the toolkit CONNECTOR run (striped), not a bare ACS_HLINE.
+    // (mvinch moves the caret, so it must follow the getyx above.)
+    assert((mvinch(1, left + 0) & A_CHARTEXT) == '-');
+    assert((mvinch(1, left + 3) & A_CHARTEXT) == '.');
     cchar_t cell;
     wchar_t text[CCHARW_MAX];
     attr_t attr;
