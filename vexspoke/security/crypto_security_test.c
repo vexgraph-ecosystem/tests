@@ -101,7 +101,7 @@ static void test_prng(void) {
 
     uint8_t Bytes[64];
     memset(Bytes, 0, sizeof(Bytes));
-    Crypto_randomBytes(Bytes, sizeof(Bytes));
+    Crypto_prngBytes(Bytes, sizeof(Bytes));
     bool hasNonZero = false;
     for (size_t i = 0; i < sizeof(Bytes); i++) {
         if (Bytes[i] != 0) {

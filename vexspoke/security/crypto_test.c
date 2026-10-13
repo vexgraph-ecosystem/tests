@@ -167,19 +167,19 @@ static void test_rng(void) {
 
 // Checks reseeding reproduces global scalar and byte streams and changes with seed.
 static void test_global_rng(void) {
-    Crypto_randomSeed(42);
-    uint64_t a = Crypto_randomU64();
-    Crypto_randomSeed(42);
-    uint64_t b = Crypto_randomU64();
+    Crypto_prngSeed(42);
+    uint64_t a = Crypto_prngU64();
+    Crypto_prngSeed(42);
+    uint64_t b = Crypto_prngU64();
     CHECK(a == b);
-    Crypto_randomSeed(43);
-    CHECK(Crypto_randomU64() != a);
+    Crypto_prngSeed(43);
+    CHECK(Crypto_prngU64() != a);
 
-    Crypto_randomSeed(7);
+    Crypto_prngSeed(7);
     uint8_t x[16], y[16];
-    Crypto_randomBytes(x, sizeof(x));
-    Crypto_randomSeed(7);
-    Crypto_randomBytes(y, sizeof(y));
+    Crypto_prngBytes(x, sizeof(x));
+    Crypto_prngSeed(7);
+    Crypto_prngBytes(y, sizeof(y));
     CHECK(memcmp(x, y, sizeof(x)) == 0);
 }
 
