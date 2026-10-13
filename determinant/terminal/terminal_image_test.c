@@ -73,6 +73,33 @@ int main(void) {
     assert(TerminalCanvas_fgAt(&colored, 1, 0) == TERMINAL_COLOR_DEFAULT);
     TerminalImage_setColor(&img, true);
 
+    // Palette treatment: a mono mask renders in the purple ramp with a
+    // deterministic per-cell scatter (the `>w<` idea).
+    static uint32_t pc[2];
+    static uint32_t pfg[2];
+    TerminalCanvas paletteCanvas = TerminalCanvas(pc, nullptr, pfg, nullptr, 2, 1);
+    size_t rampCount = 0;
+    const uint32_t *purple = TerminalImage_rampPurple(&rampCount);
+    assert(purple != nullptr && rampCount >= 4);
+    assert(TerminalImage_setColorRamp(&img, purple, rampCount));
+    assert(TerminalImage_getColorRamp(&img, &rampCount) == purple && rampCount >= 4);
+    TerminalImage_setJitter(&img, 0, 0);
+    TerminalImage_render(&img, &paletteCanvas, 0, 0);
+    assert(TerminalCanvas_fgAt(&paletteCanvas, 0, 0) == purple[0]);                 // black -> darkest
+    assert(TerminalCanvas_fgAt(&paletteCanvas, 1, 0) == purple[rampCount - 1]);     // white -> brightest
+    TerminalImage_setJitter(&img, 60, 7);
+    assert(TerminalImage_getJitter(&img) == 60 && TerminalImage_getJitterSeed(&img) == 7);
+    TerminalImage_render(&img, &paletteCanvas, 0, 0);
+    uint32_t scattered = TerminalCanvas_fgAt(&paletteCanvas, 0, 0);
+    TerminalImage_render(&img, &paletteCanvas, 0, 0);
+    assert(TerminalCanvas_fgAt(&paletteCanvas, 0, 0) == scattered);                 // deterministic for a seed
+    TerminalImage_setJitter(&img, 0, 0);
+    assert(TerminalImage_setColorRamp(&img, nullptr, 0));
+    assert(TerminalImage_getColorRamp(&img, &rampCount) == nullptr && rampCount == 0);
+    TerminalImage_render(&img, &paletteCanvas, 0, 0);
+    assert(TerminalCanvas_fgAt(&paletteCanvas, 1, 0) == TERMINAL_RGB(255, 255, 255));
+    REJECT(TerminalImage_setColorRamp(&img, nullptr, 4), "color ramp");
+
     // Ramp + config.
     assert(TerminalImage_setRamp(&img, "01") && strcmp(TerminalImage_getRamp(&img), "01") == 0);
     assert(TerminalImage_glyph(&img, 0) == '0' && TerminalImage_glyph(&img, 255) == '1');
