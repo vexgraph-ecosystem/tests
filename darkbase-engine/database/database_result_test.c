@@ -1,4 +1,4 @@
-// tests/darkbase/database/database_result_test.c — owner test for database/database_result.c.
+// tests/darkbase-engine/database/database_result_test.c — owner test for database/database_result.c.
 
 #include "annotation/overview.h"
 
@@ -18,7 +18,7 @@
 ;;OVERVIEW
 /**
  * ============================================================================
- * MODULE: DatabaseResultTest (tests/darkbase/database/database_result_test.c)
+ * MODULE: DatabaseResultTest (tests/darkbase-engine/database/database_result_test.c)
  * LEVEL: L3 — Module Code (headless verification harness)
  * ============================================================================
  * Owner test for the dest-last row cursor: a DatabaseResult borrows one

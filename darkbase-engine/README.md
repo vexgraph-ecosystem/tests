@@ -3,7 +3,7 @@
 Owner-test partition for `../../drivers/darkbase-engine`, mirroring its production
 source tree (the Test Tree Mirror Law). A production unit at
 `../../drivers/darkbase-engine/src/<dir>/<unit>.c` owns
-`tests/darkbase/<dir>/<unit>_test.c`.
+`tests/darkbase-engine/<dir>/<unit>_test.c`.
 
 Current owner tests:
 - `database/database_test.c` — L2 `Database` entity registry and live-row binding.

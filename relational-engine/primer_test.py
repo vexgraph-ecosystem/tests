@@ -70,12 +70,12 @@ class PrimerTest(unittest.TestCase):
         preferences = (ENGINE / "relational-engine-preferences.md").read_text()
         self.assertIn("RowPool C API", preferences)
         self.assertIn("explicit status codes", preferences)
-        mapping = (ENGINE / "rust/src/nio/mapped_file.rs").read_text()
+        mapping = (ENGINE / "rust/src/nio/fixed_mapped_file.rs").read_text()
         self.assertIn("pub unsafe fn open", mapping)
         self.assertIn("offset.checked_add(length)", mapping)
         for path in ("README.md", "rust/README.md"):
             doc = (ENGINE / path).read_text()
-            for note in ("MappedFile", "unsafe", "truncation", "offset", "no hard latency bound"):
+            for note in ("FixedMappedFile", "unsafe", "truncation", "offset", "no hard latency bound"):
                 self.assertIn(note, doc)
 
 

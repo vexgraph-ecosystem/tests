@@ -1,4 +1,4 @@
-// tests/darkbase/database/database_test.c — owner test for database/database.c.
+// tests/darkbase-engine/database/database_test.c — owner test for database/database.c.
 
 #include "annotation/overview.h"
 
@@ -19,7 +19,7 @@
 ;;OVERVIEW
 /**
  * ============================================================================
- * MODULE: DatabaseTest (tests/darkbase/database/database_test.c)
+ * MODULE: DatabaseTest (tests/darkbase-engine/database/database_test.c)
  * LEVEL: L3 — Module Code (headless verification harness)
  * ============================================================================
  * Owner test for the L2 Database switchboard: register a reflection Struct as
