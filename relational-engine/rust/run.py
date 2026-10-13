@@ -93,7 +93,7 @@ with tempfile.TemporaryDirectory(prefix="relational-owner-", dir=os.environ.get(
         ("preallocation_move", "E0382"), ("preallocation_borrow", "E0502"),
         ("preallocation_unsafe", "E0133")]:
         result = subprocess.run(["rustc", "--edition=2024", "--cfg", form,
-            str(SUITE / "nio/mapped_file_rejection.rs"), "--extern",
+            str(SUITE / "nio/fixed_mapped_file_rejection.rs"), "--extern",
             f"relational_engine_scratchpad={target}/debug/librelational_engine_scratchpad.rlib",
             "-L", f"dependency={target}/debug/deps", "-o", str(target / "mapping-negative")],
             cwd=ROOT, capture_output=True, text=True, timeout=90)

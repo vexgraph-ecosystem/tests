@@ -2,9 +2,13 @@
 //! stability, wrong-owner/zero/stale rejection, read/write, reclaim and OOM recovery.
 #[path = "../fail_allocator.rs"] mod faults;
 use relational_engine_scratchpad::{RowPool, RowHandle, StorageError};
+use std::sync::Mutex;
+
+static OWNER_TEST_LOCK: Mutex<()> = Mutex::new(());
 
 #[test]
 fn grow_copy_mutate_reclaim_and_owner_isolation() {
+    let _guard = OWNER_TEST_LOCK.lock().unwrap();
     assert_eq!(RowPool!(3, 8).unwrap().rows_per_chunk(), 1024);
     assert!(RowPool::zero(3, 8).unwrap().is_empty());
     assert!(matches!(RowPool::new(0, 8, 1), Err(StorageError::Layout)));
@@ -47,6 +51,7 @@ fn grow_copy_mutate_reclaim_and_owner_isolation() {
 
 #[test]
 fn all_fallible_growth_stages_preserve_state_and_retry() {
+    let _guard = OWNER_TEST_LOCK.lock().unwrap();
     for stage in 0..5 {
         let mut pool = RowPool!(8, 8, 1).unwrap();
         faults::fail_after(stage);

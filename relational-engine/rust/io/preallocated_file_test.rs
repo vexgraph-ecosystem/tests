@@ -4,7 +4,7 @@
 //! All files live in disposable scratch directories, NOT actual Application Support.
 //! This is macOS/Linux reservation proof, not Windows, transactions, future COW
 //! space guarantees or a hostile writable-parent sandbox. Runner provides watchdog.
-use relational_engine_scratchpad::{PreallocatedFile, PreallocationError, MappedFile, MappingError};
+use relational_engine_scratchpad::{PreallocatedFile, PreallocationError, FixedMappedFile, MappingError};
 use std::{fs, path::PathBuf, sync::atomic::{AtomicUsize, Ordering}};
 
 const ONE_GIGABYTE: u64 = 1_000_000_000;
@@ -43,7 +43,7 @@ fn one_gigabyte_is_physically_reserved_and_bits_survive_reopen() {
     assert_eq!(fs::metadata(&path).unwrap().len(), ONE_GIGABYTE);
     owner.sync().unwrap();
     // SAFETY: private stable file, no other content access until mapping closes.
-    let mut mapping = unsafe { MappedFile::from_preallocated(owner).unwrap() };
+    let mut mapping = unsafe { FixedMappedFile::from_preallocated(owner).unwrap() };
     assert_eq!(mapping.len(), ONE_GIGABYTE as usize);
     assert!(mapping.is_writable());
     for offset in [0, ONE_GIGABYTE as usize / 2, ONE_GIGABYTE as usize - 1] {
@@ -60,7 +60,7 @@ fn one_gigabyte_is_physically_reserved_and_bits_survive_reopen() {
         assert!(fs::metadata(&path).unwrap().blocks() * 512 >= ONE_GIGABYTE);
     }
     // SAFETY: previous mapping closed; file remains exclusively owned by fixture.
-    let reopened = unsafe { MappedFile::new(&path).unwrap() };
+    let reopened = unsafe { FixedMappedFile::new(&path).unwrap() };
     for offset in [0, ONE_GIGABYTE as usize / 2, ONE_GIGABYTE as usize - 1] {
         assert_eq!(reopened.read(offset, 1).unwrap(), &[0b1010_0101]);
     }
@@ -121,7 +121,7 @@ fn closed_identity_getters_and_bounded_escaped_projections() {
         closed.close();
         closed.close();
         // SAFETY: closed owner is rejected before mapping admission.
-        assert!(matches!(unsafe { MappedFile::from_preallocated(closed) },
+        assert!(matches!(unsafe { FixedMappedFile::from_preallocated(closed) },
             Err(MappingError::Preallocation(PreallocationError::Closed))));
     }
     let fixture = Fixture::new();
@@ -158,7 +158,7 @@ fn mapping_transfer_uses_original_descriptor_not_replaced_path() {
     fs::write(&fixture.path, b"replacement inode").unwrap();
     // SAFETY: original unlinked inode is owned exclusively; pathname replacement
     // did not mutate/truncate the original retained file.
-    let mut mapping = unsafe { MappedFile::from_preallocated(owner).unwrap() };
+    let mut mapping = unsafe { FixedMappedFile::from_preallocated(owner).unwrap() };
     assert_eq!(mapping.len(), 31);
     assert_eq!(mapping.read(0, 1).unwrap(), &[0]);
     mapping.write(0, &[9]).unwrap();
