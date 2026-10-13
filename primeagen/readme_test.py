@@ -123,6 +123,7 @@ class ReadmeTest(unittest.TestCase):
                       "VEXSPOKE_SOURCE_DIR": ROOT / "host-behavior/vexspoke/src"}
             roots["HOTCWAP_SOURCE_DIR"] = ROOT / "host-behavior/hotcwap"
             roots["DETERMINANT_SOURCE_DIR"] = ROOT / "drivers/determinant/src"
+            roots["RELATIONAL_ENGINE_SOURCE_DIR"] = ROOT / "host-behavior/relational-engine/src"
             env = {**os.environ, **{key: str(value) for key, value in roots.items()}}
             result = subprocess.run([sys.executable, str(target / "build.py")], capture_output=True, timeout=120, env=env)
             self.assertEqual(result.returncode, 0, result.stderr)
