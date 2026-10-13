@@ -37,12 +37,28 @@ int main(void) {
     assert(screen.cells[1 * 70 + 0] == '-');        // striped connector rule
     assert(screen.cells[1 * 70 + 3] == '.');
     assert(screen.cells[0 * 70 + 22] == '|');       // column separator
-    // The badge fills the panel: dark ink -> a glyph, white paper -> blank.
-    assert(screen.cells[0 * 70 + 23] != ' ');
-    assert(screen.cells[0 * 70 + 69] == ' ');
+    // The badge is ZOOM-FIT: letterboxed (blank margin) and centred, never squashed.
+    assert(screen.cells[0 * 70 + 23] == ' ');
+    int badgeInk = 0;
+    for (size_t y = 0; y < 20; ++y)
+        for (size_t x = 23; x < 70; ++x)
+            if (screen.cells[y * 70 + x] != ' ')
+                badgeInk = 1;
+    assert(badgeInk);
     // A null badge and an empty menu must not fault.
     PrimeagenScreen_renderHome(&screen, "Primeagen", nullptr, 0, 0, nullptr);
     PrimeagenScreen_renderHome(nullptr, "x", menu, 3, 0, nullptr);
+
+    // Too small: one centred notice instead of a half-drawn frame (it re-centres
+    // every render, so it stays anchored while the window is dragged).
+    {
+        PrimeagenScreen small;
+        PrimeagenScreen_init(&small);
+        assert(PrimeagenScreen_bind(&small, 8, 30));
+        PrimeagenScreen_renderHome(&small, "Primeagen", menu, 3, 0, nullptr);
+        assert(small.cells[2 * 30 + 1] == 'R');          // word-wrapped, centred
+        PrimeagenScreen_free(&small);
+    }
 
     // --- CHAT: the three-column layout over resident Tui state ---
     Tui tui = Tui();

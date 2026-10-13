@@ -73,6 +73,30 @@ int main(void) {
     assert(TerminalCanvas_fgAt(&colored, 1, 0) == TERMINAL_COLOR_DEFAULT);
     TerminalImage_setColor(&img, true);
 
+    // CONTAIN: uniform zoom-to-fit — one scale for both axes, centred, and the
+    // cellAspect correction keeps a wide picture wide (letterboxed, never squashed).
+    {
+        static uint32_t containCells[8 * 4];
+        static uint32_t containFg[8 * 4];
+        TerminalCanvas contain = TerminalCanvas(containCells, nullptr, containFg, nullptr, 8, 4);
+        TerminalCanvas_fill(&contain, ' ', TerminalPen());
+        assert(TerminalImage_getCellAspect(&img) == 2.0);
+        TerminalImage_renderContain(&img, &contain);
+        // A 2x1 source at cellAspect 2 fits as 8x2, centred on rows 1..2.
+        assert(TerminalCanvas_glyphAt(&contain, 7, 1) != ' ');   // the white half
+        assert(TerminalCanvas_glyphAt(&contain, 7, 0) == ' ');   // letterbox top
+        assert(TerminalCanvas_glyphAt(&contain, 7, 3) == ' ');   // letterbox bottom
+        TerminalImage_setCellAspect(&img, 1.0);
+        assert(TerminalImage_getCellAspect(&img) == 1.0);
+        TerminalCanvas_fill(&contain, ' ', TerminalPen());
+        TerminalImage_renderContain(&img, &contain);
+        assert(TerminalCanvas_glyphAt(&contain, 7, 0) != ' ');   // square pixels: fills
+        TerminalImage_setCellAspect(&img, 0.0);                  // rejected, keeps 1.0
+        assert(TerminalImage_getCellAspect(&img) == 1.0);
+        TerminalImage_renderContain(&img, nullptr);
+        TerminalImage_renderContain(nullptr, &contain);
+    }
+
     // Palette treatment: a mono mask renders in the purple ramp with a
     // deterministic per-cell scatter (the `>w<` idea).
     static uint32_t pc[2];
