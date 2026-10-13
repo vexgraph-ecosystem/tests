@@ -1,5 +1,5 @@
 // Owner: PrimeagenScreen — the toolkit-composed frame. Home layout (rail + menu
-// + badge panel), chat layout (three columns), focus-aware selection, the
+// + banner panel), chat layout (three detached columns), focus, the frame's
 // frame's own border, one-pass present. Headless.
 #define _XOPEN_SOURCE_EXTENDED 1
 #include <assert.h>
@@ -16,6 +16,8 @@
 
 // A tiny "white paper, dark ink" image: one dark pixel, one blank.
 static uint8_t pixels[2 * 4] = { 0, 0, 0, 255,   255, 255, 255, 255 };
+// A bright-paper banner (the other polarity).
+static uint8_t brightPixels[2 * 4] = { 255, 255, 255, 255,   255, 255, 255, 255 };
 
 int main(void) {
     assert(setlocale(LC_CTYPE, "en_US.UTF-8") != nullptr);
@@ -59,35 +61,46 @@ int main(void) {
         PrimeagenScreen_free(&zoom);
     }
 
-    // --- HOME: rail with the menu, badge (and its decor field) in the panel ---
-    TerminalImage badge = TerminalImage(pixels, 2, 1);
-    TerminalImage_setInvert(&badge, true);          // white paper -> blank
-    TerminalImage_setColorRamp(&badge, TerminalImage_rampPurple(nullptr), 8);
+    // --- HOME: stacked menu boxes, the app's banner box beside them ---
+    TerminalImage banner = TerminalImage(pixels, 2, 1);
+    TerminalImage_setInvert(&banner, true);          // white paper -> blank
+    TerminalImage_setColorRamp(&banner, TerminalImage_rampPurple(nullptr), 8);
     static const char *menu[] = { "People", "Servers", "Settings" };
-    PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, &badge);
-    // The frame draws its OWN border with corners, so it reads as a TUI inside
-    // the window instead of leaning on the window's edges.
-    assert(AT(0, 0) == '+');                        // top-left corner
-    assert(AT(0, 1) == '-');                        // top border run
-    assert(AT(ROWS - 1, 0) == '+');                 // bottom-left corner
-    assert(AT(ROWS - 1, COLS - 1) == '+');          // bottom-right corner
-    assert(AT(1, 0) == '|');                        // left border
-    // Inset rail (1..22) | separator (23) | panel (24..COLS-2); connector rule.
-    assert(AT(1, 7) != ' ');                        // rail row 0 carries the title
-    assert(AT(2, 1) == '-');                        // striped connector rule
-    assert(AT(2, 4) == '.');
-    assert(AT(1, 23) == '|');                       // column separator
-    // The selected menu row is HIGHLIGHTED (reverse video) while it owns focus.
-    assert(TerminalCanvas_styleAt(&canvas, 9, 4) & TERMINAL_STYLE_REVERSE);
-    // The badge is ZOOM-FIT: letterboxed (blank margin) and centred, never squashed.
-    assert(AT(1, 24) == ' ');
-    int badgeInk = 0;
-    for (size_t y = 0; y < ROWS; ++y)
-        for (size_t x = 24; x < COLS - 1; ++x)
+    PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, &banner);
+    // The frame draws its OWN box with real corners (never '+').
+    assert(AT(0, 0) == 0x250C);                     // ┌ top-left
+    assert(AT(0, COLS - 1) == 0x2510);              // ┐ top-right
+    assert(AT(ROWS - 1, 0) == 0x2514);              // └ bottom-left
+    assert(AT(ROWS - 1, COLS - 1) == 0x2518);       // ┘ bottom-right
+    assert(AT(0, 1) == '-');                        // the run between the corners
+    // The left column is DETACHED boxes: a title box, then one per menu entry,
+    // each with its own corners and a blank row between them.
+    assert(AT(1, 1) == 0x250C);                     // the title box's corner
+    assert(AT(1, 22) == 0x2510);
+    assert(AT(3, 1) == 0x2514);                     // ...and its bottom
+    assert(AT(4, 1) == ' ');                        // blank row: nothing welded
+    assert(AT(5, 1) == 0x250C);                     // the People box
+    assert(AT(9, 1) == 0x250C);                     // the Servers box
+    assert(AT(13, 1) == 0x250C);                    // the Settings box
+    int titleSeen = 0, peopleSeen = 0;
+    for (size_t x = 2; x < 22; ++x) {
+        if (AT(2, x) == 'P') { titleSeen = 1; }     // "Primeagen"
+        if (AT(6, x) == 'P') { peopleSeen = 1; }    // "People"
+    }
+    assert(titleSeen && peopleSeen);
+    // The selected entry is HIGHLIGHTED only while it owns focus.
+    assert(TerminalCanvas_styleAt(&canvas, 9, 6) & TERMINAL_STYLE_REVERSE);
+    // The banner is its own detached box on the right, decor filled edge to edge.
+    assert(AT(1, 25) == 0x250C);                     // its own top-left corner
+    assert(AT(2, 25) == '|');
+    assert(AT(2, COLS - 2) == '|');
+    int bannerInk = 0;
+    for (size_t y = 2; y < ROWS - 2; ++y)
+        for (size_t x = 26; x < COLS - 2; ++x)
             if (AT(y, x) != ' ')
-                badgeInk = 1;
-    assert(badgeInk);
-    // A null badge and an empty menu must not fault.
+                bannerInk = 1;
+    assert(bannerInk);
+    // A null banner and an empty menu must not fault.
     PrimeagenScreen_renderHome(&screen, "Primeagen", nullptr, 0, 0, nullptr);
     PrimeagenScreen_renderHome(nullptr, "x", menu, 3, 0, nullptr);
 
@@ -115,7 +128,7 @@ int main(void) {
         assert(notice);
         assert(PrimeagenScreen_bind(&edge, PRIMEAGEN_SCREEN_MIN_ROWS, PRIMEAGEN_SCREEN_MIN_COLUMNS));
         PrimeagenScreen_renderHome(&edge, "Primeagen", menu, 3, 0, nullptr);
-        assert(edge.cells[0 * PRIMEAGEN_SCREEN_MIN_COLUMNS + 0] == '+');   // the real frame
+        assert(edge.cells[0 * PRIMEAGEN_SCREEN_MIN_COLUMNS + 0] == 0x250C);   // the real frame
         PrimeagenScreen_free(&edge);
     }
 
@@ -129,18 +142,21 @@ int main(void) {
     state.tui = &tui;
     state.focused = true;
     assert(PrimeagenScreen_renderChat(&screen, &state));
-    assert(AT(1, 0) == '|');                         // left border
-    assert(AT(2, 24) == '-');                        // centre rule (inset by the border)
+    assert(AT(0, 0) == 0x250C);                      // the frame's own corner
+    assert(AT(1, 1) == 0x250C);                      // the left panel is detached too
+    assert(AT(1, 25) == 0x250C);                     // ...and so is the centre panel
     // FOCUS: the rail HIGHLIGHTS its selected row only while it owns the keyboard;
     // when another panel has focus the same row is a COLOUR change, not a highlight.
     state.focusPanel = 0;
     assert(PrimeagenScreen_renderChat(&screen, &state));
-    assert(TerminalCanvas_styleAt(&canvas, 3, 5) & TERMINAL_STYLE_REVERSE);
+    assert(TerminalCanvas_styleAt(&canvas, 4, 6) & TERMINAL_STYLE_REVERSE);
+    // Internal dividers are CUT: they stop short with an endpoint glyph.
+    assert(AT(3, 3) == 0x2576);                      // ╶ the divider's cut end
     state.focusPanel = 2;
     assert(PrimeagenScreen_renderChat(&screen, &state));
-    assert(!(TerminalCanvas_styleAt(&canvas, 3, 5) & TERMINAL_STYLE_REVERSE));
-    assert(TerminalCanvas_styleAt(&canvas, 3, 5) & TERMINAL_STYLE_ACCENT);
-    assert(TerminalCanvas_fgAt(&canvas, 3, 5) != TERMINAL_COLOR_DEFAULT);
+    assert(!(TerminalCanvas_styleAt(&canvas, 4, 6) & TERMINAL_STYLE_REVERSE));
+    assert(TerminalCanvas_styleAt(&canvas, 4, 6) & TERMINAL_STYLE_ACCENT);
+    assert(TerminalCanvas_fgAt(&canvas, 4, 6) != TERMINAL_COLOR_DEFAULT);
     // The input prompt sits on the input row; the transcript carries the text.
     int seen = 0;
     for (size_t i = 0; i < ROWS * COLS; ++i)
@@ -154,36 +170,44 @@ int main(void) {
     // palette treats the ink. The paper is NOT blank — a gray glyph field fills
     // the WHOLE panel (edge to edge, not just the picture) and re-scatters on
     // every render, so a revalidate shows a fresh decor.
-    PrimeagenScreen_setBadge(pixels, 2, 1);
-    assert(PrimeagenScreen_hasBadge());
-    const TerminalImage *stored = PrimeagenScreen_badge();
-    assert(stored != nullptr && TerminalImage_inverted(stored));
+    PrimeagenScreen_setBanner(pixels, 2, 1);
+    assert(PrimeagenScreen_hasBanner());
+    // The POLARITY is derived from the picture, not assumed: a bright paper is
+    // inverted (paper -> blank) while a dark paper is left alone. That is why one
+    // banner can be white-on-black and another black-on-white with no setting —
+    // 68% of resources/banner.png is near-black, so it must NOT be inverted.
+    PrimeagenScreen_setBanner(brightPixels, 2, 1);
+    assert(TerminalImage_inverted(PrimeagenScreen_banner()));
+    PrimeagenScreen_setBanner(pixels, 2, 1);
+    const TerminalImage *stored = PrimeagenScreen_banner();
+    assert(stored != nullptr && !TerminalImage_inverted(stored));
     size_t rampCount = 0;
     assert(TerminalImage_getColorRamp(stored, &rampCount) != nullptr && rampCount > 0);
     assert(TerminalImage_getNoise(stored) != nullptr);
     assert(TerminalImage_getNoiseDensity(stored) > 0);
     PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, stored);
-    // Edge to edge: the top-left panel cell carries decor, so there is no gap.
-    assert(AT(1, 24) != ' ');
-    assert(AT(ROWS - 2, COLS - 2) != ' ');
+    // Edge to edge: the banner box's interior carries decor at both far corners,
+    // so the field is sized by the panel rather than by the picture's fit rect.
+    assert(AT(2, 26) != ' ');
+    assert(AT(ROWS - 3, COLS - 3) != ' ');
     uint32_t paper[COLS];
-    for (size_t x = 24; x < COLS - 1; ++x)
-        paper[x] = AT(8, x);
+    for (size_t x = 26; x < COLS - 2; ++x)
+        paper[x] = AT(9, x);
     PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, stored);
     int rescattered = 0;
-    for (size_t x = 24; x < COLS - 1; ++x)
-        if (AT(8, x) != paper[x])
+    for (size_t x = 26; x < COLS - 2; ++x)
+        if (AT(9, x) != paper[x])
             rescattered = 1;
     assert(rescattered);
-    PrimeagenScreen_setBadge(nullptr, 0, 0);
-    assert(!PrimeagenScreen_hasBadge() && PrimeagenScreen_badge() == nullptr);
+    PrimeagenScreen_setBanner(nullptr, 0, 0);
+    assert(!PrimeagenScreen_hasBanner() && PrimeagenScreen_banner() == nullptr);
 
     // --- present: one pass into a headless screen ---
     FILE *in = fopen("/dev/null", "r");
     FILE *out = fopen("/dev/null", "w");
     SCREEN *term = newterm(nullptr, out, in);
     assert(term && resizeterm(ROWS, COLS) != ERR);
-    PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 1, &badge);
+    PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 1, &banner);
     assert(PrimeagenScreen_present(&screen, stdscr));
     assert(!PrimeagenScreen_present(nullptr, stdscr));
     assert(!PrimeagenScreen_present(&screen, nullptr));

@@ -87,6 +87,73 @@ int main(void) {
     TerminalFrame_getRule(nullptr, &got);
     TerminalRule_draw(nullptr, &root, 0, TerminalPen());
     TerminalRule_draw(&striped, nullptr, 0, TerminalPen());
+
+    // DETACHED box: real corners, its own verticals, nothing joined to a neighbour.
+    {
+        static uint32_t bc[6 * 3];
+        TerminalCanvas box = TerminalCanvas(bc, nullptr, 6, 3);
+        TerminalCanvas_fill(&box, ' ', TerminalPen());
+        // Box glyphs set directly: the frame owns the rule, not the palette.
+        TerminalRule boxed = TerminalRule_0();
+        boxed.horizontal = 0x2500;        // ─
+        boxed.vertical = 0x2502;          // │
+        boxed.cornerTopLeft = 0x250C;     // ┌
+        boxed.cornerTopRight = 0x2510;    // ┐
+        boxed.cornerBottomLeft = 0x2514;  // └
+        boxed.cornerBottomRight = 0x2518; // ┘
+        boxed.cutLeft = 0x2576;           // ╶
+        boxed.cutRight = 0x2574;          // ╴
+        TerminalRule_drawBox(&boxed, &box, TerminalPen_1(TERMINAL_STYLE_DIM));
+        assert(TerminalCanvas_glyphAt(&box, 0, 0) == 0x250C);            // ┌
+        assert(TerminalCanvas_glyphAt(&box, 5, 0) == 0x2510);            // ┐
+        assert(TerminalCanvas_glyphAt(&box, 0, 2) == 0x2514);            // └
+        assert(TerminalCanvas_glyphAt(&box, 5, 2) == 0x2518);            // ┘
+        assert(TerminalCanvas_glyphAt(&box, 0, 1) == 0x2502);            // │
+        assert(TerminalCanvas_glyphAt(&box, 3, 0) == 0x2500);            // ─
+        TerminalRule_drawBox(&boxed, nullptr, TerminalPen());            // no-op
+        TerminalRule_drawBox(nullptr, &box, TerminalPen());              // no-op
+        // A rule with no corner glyphs falls back to `corner` (the '+ ' default).
+        TerminalRule plain = TerminalRule_0();
+        TerminalCanvas_fill(&box, ' ', TerminalPen());
+        TerminalRule_drawBox(&plain, &box, TerminalPen_1(TERMINAL_STYLE_DIM));
+        assert(TerminalCanvas_glyphAt(&box, 0, 0) == '+');
+        assert(TerminalCanvas_glyphAt(&box, 5, 2) == '+');
+        // A 1-cell region cannot hold a box; it must no-op rather than scribble.
+        TerminalCanvas tiny = TerminalCanvas(bc, nullptr, 1, 1);
+        TerminalCanvas_fill(&tiny, 'x', TerminalPen());
+        TerminalRule_drawBox(&boxed, &tiny, TerminalPen());
+        assert(TerminalCanvas_glyphAt(&tiny, 0, 0) == 'x');
+    }
+
+    // CUT run: it stops short of both edges and ends in the endpoint glyphs, so a
+    // divider never runs into the panel's verticals.
+    {
+        static uint32_t cut[10];
+        TerminalCanvas line = TerminalCanvas(cut, nullptr, 10, 1);
+        TerminalCanvas_fill(&line, ' ', TerminalPen());
+        TerminalRule boxed = TerminalRule_0();
+        boxed.horizontal = 0x2500;        // ─
+        boxed.cutLeft = 0x2576;           // ╶
+        boxed.cutRight = 0x2574;          // ╴
+        TerminalRule_drawCut(&boxed, &line, 0, 1, TerminalPen_1(TERMINAL_STYLE_DIM));
+        assert(TerminalCanvas_glyphAt(&line, 0, 0) == ' ');              // inset, untouched
+        assert(TerminalCanvas_glyphAt(&line, 1, 0) == 0x2576);           // ╶ cut end
+        assert(TerminalCanvas_glyphAt(&line, 4, 0) == 0x2500);           // ─ run
+        assert(TerminalCanvas_glyphAt(&line, 8, 0) == 0x2574);           // ╴ cut end
+        assert(TerminalCanvas_glyphAt(&line, 9, 0) == ' ');
+        TerminalRule_drawCut(&boxed, &line, 0, 5, TerminalPen());        // too narrow: no-op
+        assert(TerminalCanvas_glyphAt(&line, 1, 0) == 0x2576);            // unchanged
+        // With no cut glyphs the run simply stops short, leaving blank ends.
+        TerminalRule plain = TerminalRule_0();
+        TerminalCanvas_fill(&line, ' ', TerminalPen());
+        TerminalRule_drawCut(&plain, &line, 0, 1, TerminalPen_1(TERMINAL_STYLE_DIM));
+        assert(TerminalCanvas_glyphAt(&line, 0, 0) == ' ');
+        assert(TerminalCanvas_glyphAt(&line, 1, 0) == '-');
+        assert(TerminalCanvas_glyphAt(&line, 8, 0) == '-');
+        assert(TerminalCanvas_glyphAt(&line, 9, 0) == ' ');
+        TerminalRule_drawCut(&boxed, nullptr, 0, 1, TerminalPen());
+        TerminalRule_drawCut(nullptr, &line, 0, 1, TerminalPen());
+    }
     TerminalFrame_getRails(nullptr, nullptr, nullptr);
     TerminalFrame_getBands(nullptr, nullptr, nullptr);
 
