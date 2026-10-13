@@ -63,6 +63,17 @@ int main(void) {
     assert(!PrimeagenScreen_renderChat(&screen, nullptr));
     assert(!PrimeagenScreen_renderChat(nullptr, &state));
 
+    // Badge: the app's white-paper image; the screen inverts it and the caller's
+    // palette treats the ink. NULL/zero clears it.
+    PrimeagenScreen_setBadge(pixels, 2, 1);
+    assert(PrimeagenScreen_hasBadge());
+    const TerminalImage *stored = PrimeagenScreen_badge();
+    assert(stored != nullptr && TerminalImage_inverted(stored));
+    size_t rampCount = 0;
+    assert(TerminalImage_getColorRamp(stored, &rampCount) != nullptr && rampCount > 0);
+    PrimeagenScreen_setBadge(nullptr, 0, 0);
+    assert(!PrimeagenScreen_hasBadge() && PrimeagenScreen_badge() == nullptr);
+
     // --- present: one pass into a headless screen ---
     FILE *in = fopen("/dev/null", "r");
     FILE *out = fopen("/dev/null", "w");

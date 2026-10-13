@@ -30,7 +30,7 @@ def build_views(base):
                    "-mmacosx-version-min=14.0", f"-I{APP}", f"-I{VEX}", f"-I{HOT}",
                    f"-I{ROOT / 'drivers/determinant/src'}",
                    f'-DPRIMEAGEN_VIEW_TITLE="Primeagen {title}"', "-dynamiclib",
-                   str(APP / "cli/view.c"), str(APP / "cli/appearance.c"),
+                   str(APP / "cli/view.c"), str(APP / "cli/appearance.c"), str(APP / "cli/screen.c"),
                    str(APP / "tui/tui.c"), str(APP / "tui/markdown.c"),
                    str(VEX / "net/json.c"),
                    *[str(ROOT / "drivers/determinant/src" / name) for name in
