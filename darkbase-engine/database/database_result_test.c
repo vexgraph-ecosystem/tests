@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdint.h>
 
-#include "darkbase/type.h"
+#include "oop/type.h"
 #include "database/database.h"
 #include "database/database_result.h"
 #include "nio/mem.h"
