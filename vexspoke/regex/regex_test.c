@@ -1,4 +1,4 @@
-// tests/vexspoke/search/regex_test.c — owner test for search/regex.
+// tests/vexspoke/regex/regex_test.c — owner test for regex/regex.
 //
 // Proves the compiled byte regex end to end:
 //   - literals and leftmost substring search, with find offsets;
@@ -24,7 +24,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "search/regex.h"
+#include "regex/regex.h"
 
 static int g_failures = 0;
 
