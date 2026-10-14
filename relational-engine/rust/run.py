@@ -40,6 +40,13 @@ with tempfile.TemporaryDirectory(prefix="relational-owner-", dir=os.environ.get(
             str(WORKSPACE / "tests/relational-engine/nio/relational_memory_test.c"),
             str(target / "debug/librelational_engine_scratchpad.a"), "-o", binary)
         run(binary)
+    for sanitizers in ([], ["-fsanitize=address,undefined"]):
+        run("clang", "-std=c23", "-Wall", "-Wextra", "-Werror", *sanitizers,
+            "-Irust/include", "-Isrc", "-I" + str(WORKSPACE / "host-behavior/vexspoke/src"),
+            str(WORKSPACE / "tests/relational-engine/nio/fixed_mapped_file_abi_test.c"),
+            str(target / "debug/librelational_engine_scratchpad.a"), "-o", binary)
+        run(binary)
+    print("PASS: C client of the fixed-extent mapping ABI (strict + ASan/UBSan)")
     print("PASS: engine-owned separate atomic byte/string extern handshake")
     for sanitizers in ([], ["-fsanitize=address,undefined"]):
         run("clang", "-std=c23", "-Wall", "-Wextra", "-Werror", "-O2", *sanitizers,
