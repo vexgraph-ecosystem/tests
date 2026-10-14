@@ -12,19 +12,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 static char path[512];
+static char otherPath[512];
 
 /* A path that does NOT exist yet: mkstemp reserves a unique name, then we remove it. */
-static void reservePath(void) {
+static void reservePathInto(char *dest, size_t cap) {
     const char *dir = getenv("TMPDIR");
-    (void) snprintf(path, sizeof path, "%s/re-gmap-XXXXXX", dir != nullptr ? dir : "/tmp");
-    int fd = mkstemp(path);
+    (void) snprintf(dest, cap, "%s/re-gmap-XXXXXX", dir != nullptr ? dir : "/tmp");
+    int fd = mkstemp(dest);
     assert(fd >= 0);
     assert(close(fd) == 0);
-    assert(unlink(path) == 0);
+    assert(unlink(dest) == 0);
 }
+
+static void reservePath(void) { reservePathInto(path, sizeof path); }
 
 int main(void) {
     ReGrowableMappedFile *owner = nullptr;
@@ -162,6 +166,99 @@ int main(void) {
     assert(re_gmap_write(owner, 63u, (const uint8_t*) "!", 1u) == 0u);
     assert(re_gmap_read(owner, 63u, 1u, dest, sizeof dest, &truncated) == 0u);
     assert(dest[0] == '!');
+    re_gmap_drop(owner);
+    assert(unlink(path) == 0);
+
+    /* ── reopening an existing store: the counterpart of create ───────────── */
+
+    /* A file that cannot hold the reservation is refused, never mapped as something
+     * it is not — and the refusal does not resize it. */
+    reservePath();
+    int shortFd = open(path, O_CREAT | O_WRONLY, 0600);
+    assert(shortFd >= 0);
+    assert(write(shortFd, payload, sizeof payload) == (ssize_t) sizeof payload);
+    assert(close(shortFd) == 0);
+    struct stat st;
+    assert(stat(path, &st) == 0);
+    off_t shortLength = st.st_size;
+    assert(re_gmap_open(path, 65536u, 0u, &owner) == 3u);
+    assert(stat(path, &st) == 0 && st.st_size == shortLength);
+    assert(unlink(path) == 0);
+
+    /* Make a reservation, write through the mapping, and drop it: the clean
+     * equivalent of a store being closed for the day. */
+    reservePath();
+    assert(re_gmap_create(path, 65536u, 512u, &owner) == 0u);
+    assert(re_gmap_write(owner, 0u, payload, sizeof payload) == 0u);
+    assert(re_gmap_sync(owner) == 0u);
+    re_gmap_drop(owner);
+    assert(stat(path, &st) == 0);
+    off_t lengthBefore = st.st_size;
+
+    /* Argument admission happens before anything reaches the OS, exactly as create. */
+    assert(re_gmap_open(nullptr, 65536u, 0u, &owner) == 1u);
+    assert(re_gmap_open(path, 65536u, 0u, nullptr) == 1u);
+    /* Geometry admission is create's contract: committed past the reservation, zero. */
+    assert(re_gmap_open(path, 64u, 65u, &owner) == 3u);
+    assert(re_gmap_open(path, 0u, 0u, &owner) == 3u);
+    /* A missing file is an OS failure, never a silent create. */
+    char absent[512];
+    (void) snprintf(absent, sizeof absent, "%s/re-gmap-absent",
+                    getenv("TMPDIR") != nullptr ? getenv("TMPDIR") : "/tmp");
+    assert(re_gmap_open(absent, 65536u, 0u, &owner) == 2u);
+    /* A committed extent the filesystem cannot back is refused, not trusted: a file
+     * created with NO allocated prefix cannot be opened asking for a page of it. This
+     * uses its OWN fixture, so it cannot disturb the reopen fixture above. */
+    reservePathInto(otherPath, sizeof otherPath);
+    assert(re_gmap_create(otherPath, 65536u, 0u, &owner) == 0u);
+    re_gmap_drop(owner);
+    assert(re_gmap_open(otherPath, 65536u, 512u, &owner) == 2u);
+    assert(unlink(otherPath) == 0);
+
+    /* The real reopen: the same bytes come back, the reservation holds, and opening
+     * did NOT resize the file. */
+    assert(re_gmap_open(path, 65536u, 512u, &owner) == 0u);
+    assert(stat(path, &st) == 0 && st.st_size == lengthBefore);
+    assert(re_gmap_is_open(owner, &flag) == 0u && flag);
+    assert(re_gmap_len(owner, &len) == 0u && len == 512u);
+    assert(re_gmap_reserved(owner, &reserved) == 0u && reserved == 65536u);
+    assert(re_gmap_read(owner, 0u, sizeof payload, dest, sizeof dest, &truncated) == 0u);
+    assert(memcmp(dest, payload, sizeof payload) == 0);
+
+    /* Growth into blocks the file ALREADY holds must not reserve a second copy past
+     * the physical end. The target comes from the observed allocation, so the claim
+     * does not depend on this host's block granularity. */
+    const uint8_t *reopened = nullptr;
+    size_t reopenedLen = 0u;
+    assert(re_gmap_borrow(owner, &reopened, &reopenedLen) == 0u);
+    assert(re_gmap_allocated_bytes(owner, &allocated) == 0u && allocated >= 512u);
+    size_t freeTarget = allocated < 65536u ? (size_t) allocated : 65536u;
+    assert(re_gmap_grow_to(owner, freeTarget) == 0u);
+    assert(re_gmap_len(owner, &len) == 0u && len == freeTarget);
+    uint64_t afterFree = 0u;
+    assert(re_gmap_allocated_bytes(owner, &afterFree) == 0u && afterFree == allocated);
+    const uint8_t *afterRegrow = nullptr;
+    size_t afterRegrowLen = 0u;
+    assert(re_gmap_borrow(owner, &afterRegrow, &afterRegrowLen) == 0u);
+    assert(afterRegrow == reopened && afterRegrowLen == freeTarget);
+    assert(memcmp(afterRegrow, payload, sizeof payload) == 0);
+
+    /* Growth past what is allocated still reserves for real. */
+    if (freeTarget < 65536u) {
+        assert(re_gmap_grow_to(owner, 65536u) == 0u);
+        uint64_t afterGrow = 0u;
+        assert(re_gmap_allocated_bytes(owner, &afterGrow) == 0u && afterGrow >= 65536u);
+    }
+
+    /* A write after reopening is visible on the next reopen, so this is a real round
+     * trip rather than a fresh mapping of a stale file. */
+    assert(re_gmap_write(owner, 600u, (const uint8_t*) "reopened", 8u) == 0u);
+    assert(re_gmap_sync(owner) == 0u);
+    re_gmap_drop(owner);
+    assert(re_gmap_open(path, 65536u, 1024u, &owner) == 0u);
+    assert(re_gmap_read(owner, 600u, 8u, dest, sizeof dest, &truncated) == 0u);
+    assert(memcmp(dest, "reopened", 8u) == 0);
+    assert(re_gmap_write(owner, 65536u, payload, 1u) == 3u);   /* still bounded */
     re_gmap_drop(owner);
     assert(unlink(path) == 0);
 

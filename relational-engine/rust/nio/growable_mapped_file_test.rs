@@ -1,8 +1,9 @@
 //! GrowableMappedFile owner: the fixed reservation, sparse step growth, allocate
-//! before publish, and above all that growth NEVER remaps — a pointer taken before
-//! a growth step is still the same pointer after it. Files are private disposable
-//! fixtures; no external mutation occurs while mapped. Hostile truncation, shrink,
-//! the C ABI, a database format and crash durability are not offered here.
+//! before publish, reopening an existing file without resizing it, and above all
+//! that growth NEVER remaps — a pointer taken before a growth step is still the same
+//! pointer after it. Files are private disposable fixtures; no external mutation
+//! occurs while mapped. Hostile truncation, shrink, the C ABI, a database format and
+//! crash durability are not offered here.
 use relational_engine_scratchpad::{GrowableMappedFile, MappingError};
 use std::{fs, path::PathBuf, sync::atomic::{AtomicUsize, Ordering}};
 
@@ -125,4 +126,87 @@ fn admission_empty_owner_and_projections() {
     assert!(file.to_string_struct(&mut fields, &mut cut_fields));
     let dumped = std::str::from_utf8(&fields).unwrap();
     assert!(dumped.contains("reserved=") && dumped.contains("committed="), "{dumped}");
+}
+
+#[test]
+fn reopen_maps_the_same_file_without_resizing_it() {
+    if !GrowableMappedFile::supported() {
+        return; // no reservation backend on this host: open rejects, proven below
+    }
+    let fixture = Fixture::new();
+    let reserved = 4096u64;
+    let length_before;
+    {
+        // SAFETY: private fixture directory; nothing else opens or truncates it.
+        let mut file = unsafe { GrowableMappedFile::create(&fixture.path, reserved, 512) }.unwrap();
+        file.write(0, &[0xAB; 512]).unwrap();
+        file.sync().unwrap();
+        file.close();
+        length_before = fs::metadata(&fixture.path).unwrap().len();
+        assert_eq!(length_before, reserved, "create fixes the reservation as the file's length");
+    }
+
+    // Reopening is not creating — a missing file is refused, never silently made.
+    let missing = Fixture::new();
+    // SAFETY: private fixture directory; this path does not exist.
+    assert!(unsafe { GrowableMappedFile::open(&missing.path, reserved, 512) }.is_err());
+
+    // A file too short to hold the reservation is refused rather than mapped as
+    // something it is not, and the refusal does not resize it.
+    let short = Fixture::new();
+    fs::write(&short.path, vec![0u8; 128]).unwrap();
+    // SAFETY: private fixture directory; no other writer.
+    assert!(matches!(unsafe { GrowableMappedFile::open(&short.path, reserved, 0) },
+                     Err(MappingError::Bounds)));
+    assert_eq!(fs::metadata(&short.path).unwrap().len(), 128);
+
+    // committed > reserved rejects before the file is touched, exactly as create does.
+    // SAFETY: private fixture directory; the file exists.
+    assert!(matches!(unsafe { GrowableMappedFile::open(&fixture.path, 64, 65) },
+                     Err(MappingError::Bounds)));
+
+    // The real reopen: the same bytes come back and the file is NOT resized by opening.
+    // SAFETY: private fixture directory; nothing else opens or truncates it.
+    let mut file = unsafe { GrowableMappedFile::open(&fixture.path, reserved, 512) }.unwrap();
+    assert_eq!(fs::metadata(&fixture.path).unwrap().len(), length_before, "open never resizes");
+    assert_eq!(file.len(), 512);
+    assert_eq!(file.reserved(), reserved as usize);
+    assert!(file.is_open());
+    assert_eq!(file.read(0, 512).unwrap(), &[0xAB; 512][..], "the bytes came back");
+
+    // Raising the extent back to what the file already holds must be FREE: no second
+    // reservation past the physical end, and the mapping still does not move.
+    let before = file.as_slice().as_ptr();
+    let allocated_before = file.allocated_bytes().unwrap();
+    file.grow_to(2048).unwrap();
+    assert_eq!(file.len(), 2048);
+    assert_eq!(file.as_slice().as_ptr(), before, "a re-grow must not move the mapping");
+    assert!(file.allocated_bytes().unwrap() >= 2048);
+    assert!(file.allocated_bytes().unwrap() >= allocated_before);
+    assert_eq!(file.read(0, 512).unwrap(), &[0xAB; 512][..], "bytes survive the re-grow");
+
+    // A committed region the filesystem cannot back is refused: a file created with
+    // no allocated prefix cannot be opened asking for a page of it.
+    let bare = Fixture::new();
+    // SAFETY: private fixture directory; nothing else opens it.
+    let mut sparse = unsafe { GrowableMappedFile::create(&bare.path, reserved, 0) }.unwrap();
+    assert!(sparse.allocated_bytes().unwrap() < 512, "nothing is allocated yet");
+    sparse.close();
+    // SAFETY: private fixture directory; no other writer.
+    assert!(matches!(unsafe { GrowableMappedFile::open(&bare.path, reserved, 512) },
+                     Err(MappingError::Preallocation(_))));
+
+    file.write(600, &[1, 2, 3]).unwrap();
+    assert_eq!(file.read(600, 3).unwrap(), &[1, 2, 3]);
+    file.sync().unwrap();
+    file.close();
+
+    // A second reopen sees that write, so reopening is a real round trip and not a
+    // fresh mapping of a stale file.
+    // SAFETY: private fixture directory; nothing else opens it.
+    let mut again = unsafe { GrowableMappedFile::open(&fixture.path, reserved, 2048) }.unwrap();
+    assert_eq!(again.read(600, 3).unwrap(), &[1, 2, 3]);
+    assert!(matches!(again.write(4096, &[1]), Err(MappingError::Bounds)),
+            "still bounded by the reservation");
+    again.close();
 }
