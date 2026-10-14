@@ -95,3 +95,7 @@ path = "io/preallocation_test.rs"
 [[test]]
 name = "preallocated_failure_owner"
 path = "io/preallocated_failure_test.rs"
+
+[[test]]
+name = "growable_mapped_file_owner"
+path = "nio/growable_mapped_file_test.rs"
