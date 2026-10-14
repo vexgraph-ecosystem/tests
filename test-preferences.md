@@ -1170,6 +1170,17 @@ Grammar and LSP driver (R3).
 
 ## darkbase Test Laws
 Native database store (R3).
+- **Row Borrow and Owned Copy Law** — `tests/darkbase-engine/database/database_test.c`
+  proves exact-stride copy-in, caller-buffer independence, per-entity mode
+  exclusion, loaded-row extension and rejection preservation. Schemas and borrowed
+  rows outlive Database; Database frees only its owned copies.
+- **Atomic Snapshot Compatibility Law** — the same owner proves complete payload
+  validation and staged row publication; checksum/schema rejection leaves every
+  entity unchanged. Allocation-failure injection during staging remains unproved.
+  The flat M2 snapshot is compatibility-only, not the pages + WAL persistence path.
+- **CRC32 Owner Law** — `tests/darkbase-engine/util/crc32_test.c` proves the
+  standard check vector, incremental equivalence and zero-length identity; the
+  database and WAL owners cover stored-format call sites.
 - **Persistence Durability Law** — WAL replay, torn-write injection, and backup/restore with a real
   change between them (Failure Atomicity and Recovery Law).
 - **Cursor Boundary Law** — zero-copy result overrun, null bitmask, and dest-last lifetime.

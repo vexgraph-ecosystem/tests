@@ -163,6 +163,58 @@ static void testInsertAndRead(void) {
     Struct_free(player);
 }
 
+/** Verifies owned copy-in stride checks and the entity-wide ownership mode. */
+static void testInsertOwned(void) {
+    printf("[4] owned row copy-in, exact stride, and per-entity ownership\n");
+
+    Database *db = Database();
+    Struct *player = Struct("player");
+    CHECK(db && player);
+    if (!db || !player) {
+        Database_free(db);
+        Struct_free(player);
+        return;
+    }
+    Struct_setSize(player, (uint32_t) sizeof(Row));
+    CHECK(Database_define(db, player) == 0);
+
+    Row borrowed = { 17u, 23 };
+    CHECK(Database_insertOwned(db, "player", &borrowed, sizeof borrowed - 1u) == -1);
+    CHECK(Database_errorCode(db) == DATABASE_INVALID);
+    CHECK(Database_count(db, "player") == 0u);
+    uint8_t oversized[sizeof(Row) + 1u] = {0};
+    CHECK(Database_insertOwned(db, "player", oversized, sizeof oversized) == -1);
+    CHECK(Database_count(db, "player") == 0u);
+    CHECK(Database_insert(db, "player", &borrowed) == 0); // bad owned size did not change mode
+    CHECK(Database_insertOwned(db, "player", &borrowed, sizeof borrowed) == -1);
+    CHECK(Database_count(db, "player") == 1u); // borrowed and owned rows never mix
+
+    Database_free(db);
+    Struct_free(player);
+
+    db = Database();
+    player = Struct("player");
+    CHECK(db && player);
+    if (!db || !player) {
+        Database_free(db);
+        Struct_free(player);
+        return;
+    }
+    Struct_setSize(player, (uint32_t) sizeof(Row));
+    CHECK(Database_define(db, player) == 0);
+    Row input = { 29u, 31 };
+    CHECK(Database_insertOwned(db, "player", &input, sizeof input) == 0);
+    input.health = 99;
+    Row *stored = (Row*) Database_row(db, "player", 0u);
+    CHECK(stored != nullptr && stored != &input);
+    CHECK(stored != nullptr && stored->id == 29u && stored->health == 31);
+    CHECK(Database_insert(db, "player", &borrowed) == -1);
+    CHECK(Database_count(db, "player") == 1u);
+
+    Database_free(db); // releases the copied row, not input/borrowed
+    Struct_free(player);
+}
+
 /** Verifies recorded database errors and bounded value/structure projections. */
 static void testDiagnostics(void) {
     printf("[4] recorded rejection is legible and bounded\n");
@@ -257,9 +309,18 @@ static void testPersistence(void) {
     CHECK(Database_insert(db2, "player", &rows[0]) == -1);
     CHECK(Database_errorCode(db2) == DATABASE_INVALID);
 
+    // Owned copy-in may extend a loaded/owned entity; it copies rather than
+    // retaining the caller's pointer and is released with the loaded rows.
+    Row appended = { 88u, 99 };
+    CHECK(Database_insertOwned(db2, "player", &appended, sizeof appended) == 4);
+    appended.health = 0;
+    Row *owned = (Row*) Database_row(db2, "player", 4u);
+    CHECK(owned != nullptr && owned != &appended && owned->health == 99);
+    CHECK(Database_count(db2, "player") == 5u);
+
     // Re-loading into a non-empty entity rejects without mutation.
     CHECK(Database_load(db2, path) == DATABASE_DUPLICATE);
-    CHECK(Database_count(db2, "player") == 4u);
+    CHECK(Database_count(db2, "player") == 5u);
 
     // Corrupt the trailing checksum: reject and load nothing (atomic).
     FILE *fp = fopen(path, "r+b");
@@ -382,6 +443,7 @@ int main(void) {
     testConstructorAndNull();
     testDefineAndLookup();
     testInsertAndRead();
+    testInsertOwned();
     testDiagnostics();
     testPersistence();
     testSafeSave();

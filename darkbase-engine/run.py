@@ -23,7 +23,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 B = ROOT / "tools" / "b"
-OWNERS = ["database", "database_result"]
+OWNERS = ["database", "database_result", "crc32"]
 
 
 def execute(argv, timeout=900):
