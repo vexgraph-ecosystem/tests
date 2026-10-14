@@ -128,6 +128,16 @@ static void testClasses(void) {
 static void testRejections(void) {
     RegexParser parser;
     struct { const char *pattern; const char *fragment; } cases[] = {
+        { "a+?", "quantifier unsupported" },
+        { "a++", "quantifier unsupported" },
+        { "a**", "quantifier unsupported" },
+        { "a{2}{3}", "quantifier unsupported" },
+        { "a{2,3}?", "quantifier unsupported" },
+        { "\\b", "unsupported escape" },
+        { "\\B", "unsupported escape" },
+        { "\\1", "unsupported escape" },
+        { "\\q", "unsupported escape" },
+        { "[\\b]", "unsupported escape" },
         { "(", "missing closing ')'" },
         { "a)", "unexpected ')'" },
         { "[a", "missing closing ']'" },

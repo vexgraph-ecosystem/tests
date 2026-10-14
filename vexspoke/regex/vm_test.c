@@ -210,7 +210,33 @@ static void testLifecycle(void) {
         Memory_free(classes);
 }
 
+// Full admission must keep alternatives alive after a premature MATCH.
+static void testFullAdmission(void) {
+    const char *patterns[] = {"a|ab", "|ab", "(a|ab)", "a?|ab", "a*|ab"};
+    for (size_t i = 0; i < sizeof patterns / sizeof patterns[0]; i++) {
+        RegexProgram program;
+        RegexProgram_init(&program);
+        RegexCharClass *classes = nullptr;
+        uint32_t classCount = 0, groupCount = 0;
+        CHECK(compile(patterns[i], false, &program, &classes, &classCount, &groupCount));
+        RegexVm vm;
+        CHECK(RegexVm_init(&vm, &program, groupCount));
+        CHECK(RegexVm_runFull(&vm, classes, "ab", 2, plain()));
+        RegexSpan span = RegexVm_span(&vm, 0);
+        CHECK(span.start == 0 && span.end == 2);
+        if (groupCount) {
+            span = RegexVm_span(&vm, 1);
+            CHECK(span.start == 0 && span.end == 2);
+        }
+        CHECK(!RegexVm_runFull(&vm, classes, "abc", 3, plain()));
+        RegexVm_free(&vm);
+        RegexProgram_free(&program);
+        Memory_free(classes);
+    }
+}
+
 int main(void) {
+    testFullAdmission();
     testSearch();
     testOptions();
     testCaptures();

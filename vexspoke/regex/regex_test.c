@@ -476,7 +476,55 @@ static void testSafetyBounds(void) {
 }
 
 // Runs the regex owner cases.
+static void testFullAlternatives(void) {
+    const char *patterns[] = {"a|ab", "|ab", "(a|ab)", "a?|ab", "a*|ab"};
+    for (size_t i = 0; i < sizeof patterns / sizeof patterns[0]; i++) {
+        Regex *re = Regex(patterns[i]);
+        CHECK(re != nullptr);
+        CHECK(Regex_isFullMatch(re, "ab"));
+        CHECK(!Regex_isFullMatch(re, "abc"));
+        Regex_free(re);
+    }
+    // Search still prefers the first alternative; full admission is distinct.
+    Regex *re = Regex("a|ab");
+    RegexSpan span;
+    CHECK(Regex_find(re, "ab", 2, &span));
+    CHECK(span.start == 0 && span.end == 1);
+    CHECK(Regex_isFullMatch(re, "a"));
+    CHECK(!Regex_isFullMatch(re, ""));
+    Regex_free(re);
+}
+
+static void testStrictSyntax(void) {
+    const char *patterns[] = {"a+?", "a++", "a**", "a{2}{3}", "a{2,3}?",
+                              "\\b", "\\B", "\\1", "\\q", "[\\b]"};
+    for (size_t i = 0; i < sizeof patterns / sizeof patterns[0]; i++) {
+        char path[256], captured[512];
+        int saved = captureStart(path, sizeof(path));
+        CHECK(saved >= 0);
+        Regex *re = Regex(patterns[i]);
+        CHECK(re == nullptr);
+        Regex_free(re);
+        if (saved >= 0) {
+            captureStop(saved, path, captured, sizeof(captured));
+            CHECK(strstr(captured, "[vex]") != nullptr);
+            CHECK(strstr(captured, "unsupported") != nullptr);
+            char *first = strchr(captured, '\n');
+            CHECK(first && first[1] == '\0'); // exactly one diagnostic
+        }
+    }
+    Regex *re = Regex("\\+\\?\\\\");
+    CHECK(re != nullptr);
+    CHECK(Regex_isFullMatch(re, "+?\\"));
+    Regex_free(re);
+    re = Regex("\\n\\x41");
+    CHECK(Regex_isFullMatch(re, "\nA"));
+    Regex_free(re);
+}
+
 int main(void) {
+    testFullAlternatives();
+    testStrictSyntax();
     testLiteralAndFind();
     testQuantifiers();
     testGroupsAndAlternation();
