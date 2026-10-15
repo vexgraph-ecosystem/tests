@@ -795,9 +795,12 @@ makes a refusal.
   the cap is refused from the header alone. A failed client never invents a later
   message.
 - A local refusal (an invalid outbound text payload) does not fail a healthy
-  transport. `wss://` is refused before a socket is opened until the TLS backend
-  lands. No live network, TLS, proxy or server concurrency is claimed; the peer
-  is a scripted loopback process, so this is not interop or production proof.
+  transport. `wss://` now routes over the TLS seam: an unreachable secure peer
+  fails as a TLS connect (naming TLS) rather than being rejected as a URL, and
+  the client pushes its poll budget into the session so a TLS read cannot outlive
+  the slice. No completed secure handshake is proved — that needs a trusted
+  endpoint. No live network, TLS handshake, proxy or server concurrency is
+  claimed; the peer is a scripted loopback process.
 
 ### WebSocket Seam Binding Law
 **Proves:** the R2 client really satisfies the R3 transport shape, and a host can
