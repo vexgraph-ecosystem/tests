@@ -244,6 +244,10 @@ static void testLiveRoundTrip(void) {
     printf("  handshake accepted\n");
     const char *probe = "vexgraph-websocket-smoke";
     CHECK(WebSocket_writeText(&client, probe, strlen(probe)));
+    // A second frame on the SAME connection: the first send must not have shut
+    // the write side, or every later send silently fails.
+    const char *second = "second-frame";
+    CHECK(WebSocket_writeText(&client, second, strlen(second)));
     // Not every live peer echoes: an echo server returns the probe, a real
     // gateway sends its own first frame (Discord's HELLO arrives unprompted and
     // needs no credentials). So this asserts that a TEXT frame arrives at all,
