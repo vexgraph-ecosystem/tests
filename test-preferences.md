@@ -1176,7 +1176,11 @@ Native database store (R3).
   rows after rejection. `DatabaseResult` owns the temporary pointer-list container
   but borrows row values; its owner proves freeing that container does not free a
   row. This is a cold linear scan, not numeric coercion, projection, ordering,
-  range query or index proof. The same owner proves copied persisted catalog
+  or index proof. `Database_queryInt32Range` separately proves inclusive signed
+  bounds, `INT32_MIN`/`INT32_MAX`, empty and reversed ranges, wrong-width and
+  out-of-span fields, and preserved Database state. It interprets a four-byte
+  span as native `int32_t`; it does not validate reflected type identity or use
+  an index. The same owner proves copied persisted catalog
   discovery by index, record metadata, out-of-range rejection and independence
   from Store-owned bytes. This does not reconstruct schemas or prove indexes.
 - **Database Page-Chain Bridge Law** — `tests/darkbase-engine/database/database_test.c`,
