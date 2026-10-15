@@ -1179,8 +1179,12 @@ Native database store (R3).
   or index proof. `Database_queryInt32Range` separately proves inclusive signed
   bounds, `INT32_MIN`/`INT32_MAX`, empty and reversed ranges, wrong-width and
   out-of-span fields, and preserved Database state. It interprets a four-byte
-  span as native `int32_t`; it does not validate reflected type identity or use
-  an index. The same owner proves copied persisted catalog
+  span as native `int32_t`; it does not validate reflected type identity. The
+  same owner proves the declared in-memory int32 index: `REFLECT_FIELD_INDEXED`
+  admission, identical matches on the indexed and scan paths, refresh after an
+  insert, and rejection of a null argument, unknown entity, unknown field and an
+  undeclared field without disturbing an existing index. The index is in-memory
+  only; no persisted page-level index, ordering or projection is proved. The same owner proves copied persisted catalog
   discovery by index, record metadata, out-of-range rejection and independence
   from Store-owned bytes. This does not reconstruct schemas or prove indexes.
 - **Database Page-Chain Bridge Law** — `tests/darkbase-engine/database/database_test.c`,
