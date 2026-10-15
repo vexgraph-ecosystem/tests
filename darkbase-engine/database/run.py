@@ -94,6 +94,7 @@ def main():
             "Wal_append: region exhausted, request 576 bytes (remaining 296)": 1,
             "Store exhausted: request 544 bytes, bound 2048 bytes": 1,
             "Database_saveStore: data-page write failed before publication": 1,
+            "Database_loadStore: registered schemas rejected snapshot": 1,
         })
         actual = Counter(line.split(": ", 1)[1] for line in result.stderr.splitlines())
         if actual != expected:

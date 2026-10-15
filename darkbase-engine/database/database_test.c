@@ -486,6 +486,17 @@ static void testPageStorePersistence(void) {
     schema = Struct("player");
     CHECK(store != nullptr && Store_isOpen(store));
     CHECK(db != nullptr && schema != nullptr);
+    Database *mismatch = Database();
+    Struct *wrongSchema = Struct("player");
+    CHECK(mismatch != nullptr && wrongSchema != nullptr);
+    if (mismatch != nullptr && wrongSchema != nullptr && store != nullptr) {
+        Struct_setSize(wrongSchema, (uint32_t) sizeof(Row) + 1u);
+        CHECK(Database_define(mismatch, wrongSchema) == 0);
+        CHECK(Database_loadStore(mismatch, store) == DATABASE_INVALID);
+        CHECK(Database_count(mismatch, "player") == 0u);
+    }
+    Database_free(mismatch);
+    Struct_free(wrongSchema);
     if (store != nullptr && db != nullptr && schema != nullptr) {
         Struct_setSize(schema, (uint32_t) sizeof(Row));
         CHECK(Database_define(db, schema) == 0);
