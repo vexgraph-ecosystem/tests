@@ -39,7 +39,7 @@
  *   - crashAtDatabaseRoot(context, phase) // child exits at root redo boundary
  *   - testPageStorePersistence() // catalog/row roundtrip, schema reject, refusal preservation
  *   - testPageStoreRecovery() // public Database recovery after child exit
- *   - testStructuredEqualityQuery() // raw equality and inclusive signed range cursors
+ *   - testStructuredEqualityQuery() // raw equality, signed range cursors and the declared int32 index
  *   - main(void) // all existing Database and persistence owners
  * CONTRACT: test-owned files are disposable; the recovery child is bounded by
  * the runner watchdog and exits without relying on normal process teardown.
@@ -672,6 +672,7 @@ static void testStructuredEqualityQuery(void) {
     Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
     Field_setOffset(healthField, (uint32_t) offsetof(Row, health));
     Field_setSize(healthField, (uint32_t) sizeof(((Row*) nullptr)->health));
+    Field_setFlags(healthField, REFLECT_FIELD_INDEXED); // the index declaration
     Field_setOffset(badField, (uint32_t) sizeof(Row) - 1u);
     Field_setSize(badField, 2u);
     CHECK(Struct_add(schema, idField) == 0u);
@@ -742,6 +743,46 @@ static void testStructuredEqualityQuery(void) {
     CHECK(Database_errorCode(db) == DATABASE_INVALID);
     CHECK(Database_queryInt32Range(db, "player", "bad", 0, 10) == nullptr);
     CHECK(Database_errorCode(db) == DATABASE_INVALID);
+
+    // --- In-memory int32 index: declared by the Field's REFLECT_FIELD_INDEXED
+    //     flag, refreshed after an insert, same matches as the scan path.
+    CHECK(!Database_indexed(db, "player", "health"));  // not built yet
+    CHECK(Database_indexBuild(db, "player", "health") == DATABASE_OK);
+    CHECK(Database_indexed(db, "player", "health"));
+    CHECK(!Database_indexed(db, "player", "id"));      // the flag is the declaration
+    CHECK(!Database_indexed(db, "player", "absent"));
+    range = Database_queryInt32Range(db, "player", "health", 13, 17);
+    CHECK(range != nullptr && DatabaseResult_count(range) == 2u);
+    if (range != nullptr) {
+        void *first = nullptr;
+        void *second = nullptr;
+        CHECK(DatabaseResult_next(range, &first) && ((Row*) first)->health == 13);
+        CHECK(DatabaseResult_next(range, &second) && ((Row*) second)->health == 17);
+        CHECK(!DatabaseResult_next(range, &first));
+        DatabaseResult_free(range);
+    }
+    range = Database_queryInt32Range(db, "player", "health", INT32_MIN, INT32_MAX);
+    CHECK(range != nullptr && DatabaseResult_count(range) == 6u);
+    DatabaseResult_free(range);
+    // An insert marks the records stale; the next query refreshes them.
+    Row extra = {15u, 14};
+    CHECK(Database_insertOwned(db, "player", &extra, sizeof(Row)) == 6);
+    range = Database_queryInt32Range(db, "player", "health", 13, 17);
+    CHECK(range != nullptr && DatabaseResult_count(range) == 3u);
+    if (range != nullptr) {
+        void *row = nullptr;
+        CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 13);
+        CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 14);
+        CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 17);
+        CHECK(!DatabaseResult_next(range, &row));
+        DatabaseResult_free(range);
+    }
+    // Rejections: null argument, unknown entity, unknown field, undeclared field.
+    CHECK(Database_indexBuild(db, nullptr, "health") == DATABASE_INVALID);
+    CHECK(Database_indexBuild(db, "ghost", "health") == DATABASE_ABSENT);
+    CHECK(Database_indexBuild(db, "player", "nope") == DATABASE_ABSENT);
+    CHECK(Database_indexBuild(db, "player", "id") == DATABASE_INVALID);
+    CHECK(Database_indexed(db, "player", "health"));   // a failed build changed nothing
 
     Database_free(db);
     Struct_free(schema);

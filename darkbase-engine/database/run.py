@@ -106,6 +106,10 @@ def main():
             "Database_queryEqual: null or empty argument": 1,
             "Database_queryInt32Range: invalid argument or range": 1,
             "Database_queryInt32Range: field is not a valid int32 span": 2,
+            "Database_indexBuild: null or empty argument": 1,
+            "Database_indexBuild: no such entity": 1,
+            "Database_indexBuild: invalid or unknown field": 1,
+            "Database_indexBuild: field is not a declared int32 index": 1,
             "Database_storeCatalogEntry: catalog index is absent": 1,
         })
         actual = Counter(line.split(": ", 1)[1] for line in result.stderr.splitlines())
