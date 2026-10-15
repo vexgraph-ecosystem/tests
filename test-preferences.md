@@ -741,7 +741,7 @@ Everything here is about **predictable calculation** and **pointers that lie**.
 **Proves:** a pointer is validated before it is used.
 - `Memory_*`, `BitPool_*`, `StringPool_*`, `SymbolTable_*`, `Cell_*`, `Shelf_*`: wrong pointer,
   misaligned/interior pointer, foreign-arena pointer, freed or stale pointer, forged type/project ID,
-  and sugar-tampered header (`ha[-4]`, `ha[-16]`).
+  and hash/id-tampered header (`ha[-24]`, `ha[-32]`).
 - Each rejection preserves unrelated state and does not free or modify another object.
 - Where the contract promises rejection of an unmapped address, prove it in an isolated child process
   with a bounded timeout.
