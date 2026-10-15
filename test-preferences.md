@@ -798,9 +798,30 @@ makes a refusal.
   transport. `wss://` now routes over the TLS seam: an unreachable secure peer
   fails as a TLS connect (naming TLS) rather than being rejected as a URL, and
   the client pushes its poll budget into the session so a TLS read cannot outlive
-  the slice. No completed secure handshake is proved — that needs a trusted
-  endpoint. No live network, TLS handshake, proxy or server concurrency is
-  claimed; the peer is a scripted loopback process.
+  the slice. A completed secure handshake IS proved, by the opt-in live smoke
+  below; it is never part of the shared offline suite. No live network, proxy or
+  server concurrency is claimed by the shared suite, whose peer is a scripted
+  loopback process.
+
+### WebSocket Live Smoke Law
+**Proves:** the client agrees with a real server, and an idle session is cheap.
+- `tests/vexspoke/net/websocket_smoke.c`, registered by
+  `python3 tests/vexspoke/net/ws_smoke_run.py`, always measures idle cost: a
+  forked loopback peer completes a handshake and then goes quiet while the client
+  polls, and the owner asserts the process's own user+sys time stays under a
+  tenth of the window (a spinning wait would spend the whole window) and that the
+  client still wakes on the one message the peer sends late.
+- With `WS_SMOKE_URL` set, the same owner round-trips against that endpoint. This
+  is the ONLY place a completed TLS handshake, a real `Sec-WebSocket-Accept`, and
+  a foreign server's framing are proved. It is opt-in because the shared suite
+  must not depend on the live internet (the Offline-Proof Law).
+- The known-good credential-free target is Discord's gateway, which sends HELLO
+  (`op 10`, with `heartbeat_interval`) unprompted the moment the socket opens:
+  `WS_SMOKE_URL='wss://gateway.discord.gg/?v=10&encoding=json'`. An executed run
+  decoded a 128-Byte HELLO. A skipped run proves the offline tier only, and an
+  unavailable endpoint is a skip, never a pass.
+- No Discord authentication, session, heartbeat, resume or REST call is
+  implied: the smoke reads one unprompted frame and closes.
 
 ### WebSocket Seam Binding Law
 **Proves:** the R2 client really satisfies the R3 transport shape, and a host can
