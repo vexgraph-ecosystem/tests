@@ -39,6 +39,7 @@
  *   - crashAtDatabaseRoot(context, phase) // child exits at root redo boundary
  *   - testPageStorePersistence() // catalog/row roundtrip, schema reject, refusal preservation
  *   - testPageStoreRecovery() // public Database recovery after child exit
+ *   - testStructuredEqualityQuery() // raw equality and inclusive signed range cursors
  *   - main(void) // all existing Database and persistence owners
  * CONTRACT: test-owned files are disposable; the recovery child is bounded by
  * the runner watchdog and exits without relying on normal process teardown.
@@ -653,27 +654,36 @@ static void testStructuredEqualityQuery(void) {
     Database *db = Database();
     Struct *schema = Struct("player");
     Field *idField = Field("id");
+    Field *healthField = Field("health");
     Field *badField = Field("bad");
-    CHECK(db != nullptr && schema != nullptr && idField != nullptr && badField != nullptr);
-    if (db == nullptr || schema == nullptr || idField == nullptr || badField == nullptr) {
+    CHECK(db != nullptr && schema != nullptr && idField != nullptr &&
+          healthField != nullptr && badField != nullptr);
+    if (db == nullptr || schema == nullptr || idField == nullptr ||
+        healthField == nullptr || badField == nullptr) {
         Database_free(db);
         Struct_free(schema);
         Field_free(idField);
+        Field_free(healthField);
         Field_free(badField);
         return;
     }
     Struct_setSize(schema, (uint32_t) sizeof(Row));
     Field_setOffset(idField, (uint32_t) offsetof(Row, id));
     Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+    Field_setOffset(healthField, (uint32_t) offsetof(Row, health));
+    Field_setSize(healthField, (uint32_t) sizeof(((Row*) nullptr)->health));
     Field_setOffset(badField, (uint32_t) sizeof(Row) - 1u);
     Field_setSize(badField, 2u);
     CHECK(Struct_add(schema, idField) == 0u);
-    CHECK(Struct_add(schema, badField) == 1u);
+    CHECK(Struct_add(schema, healthField) == 1u);
+    CHECK(Struct_add(schema, badField) == 2u);
     Field_free(idField);
+    Field_free(healthField);
     Field_free(badField);
     CHECK(Database_define(db, schema) == 0);
-    Row source[4] = {{5u, 11}, {7u, 13}, {5u, 17}, {9u, 19}};
-    for (uint32_t i = 0u; i < 4u; i++)
+    Row source[6] = {{5u, 11}, {7u, 13}, {5u, 17}, {9u, 19},
+                     {11u, INT32_MIN}, {13u, INT32_MAX}};
+    for (uint32_t i = 0u; i < 6u; i++)
         CHECK(Database_insertOwned(db, "player", &source[i], sizeof(Row)) == (int32_t) i);
 
     uintptr_t wanted = 5u;
@@ -702,6 +712,35 @@ static void testStructuredEqualityQuery(void) {
     CHECK(Database_queryEqual(db, "ghost", "id", &wanted, sizeof(wanted)) == nullptr);
     CHECK(Database_errorCode(db) == DATABASE_ABSENT);
     CHECK(Database_queryEqual(db, "player", "id", nullptr, sizeof(wanted)) == nullptr);
+    CHECK(Database_errorCode(db) == DATABASE_INVALID);
+
+    DatabaseResult *range = Database_queryInt32Range(db, "player", "health", 13, 17);
+    CHECK(range != nullptr && DatabaseResult_count(range) == 2u);
+    if (range != nullptr) {
+        void *low = nullptr;
+        void *high = nullptr;
+        CHECK(DatabaseResult_next(range, &low) && ((Row*) low)->health == 13);
+        CHECK(DatabaseResult_next(range, &high) && ((Row*) high)->health == 17);
+        CHECK(!DatabaseResult_next(range, &low));
+        DatabaseResult_free(range);
+    }
+    range = Database_queryInt32Range(db, "player", "health", INT32_MIN, INT32_MAX);
+    CHECK(range != nullptr && DatabaseResult_count(range) == 6u);
+    DatabaseResult_free(range);
+    range = Database_queryInt32Range(db, "player", "health", INT32_MIN, INT32_MIN);
+    CHECK(range != nullptr && DatabaseResult_count(range) == 1u);
+    DatabaseResult_free(range);
+    range = Database_queryInt32Range(db, "player", "health", INT32_MAX, INT32_MAX);
+    CHECK(range != nullptr && DatabaseResult_count(range) == 1u);
+    DatabaseResult_free(range);
+    range = Database_queryInt32Range(db, "player", "health", 20, 30);
+    CHECK(range != nullptr && DatabaseResult_count(range) == 0u);
+    DatabaseResult_free(range);
+    CHECK(Database_queryInt32Range(db, "player", "health", 18, 17) == nullptr);
+    CHECK(Database_errorCode(db) == DATABASE_INVALID);
+    CHECK(Database_queryInt32Range(db, "player", "id", 0, 10) == nullptr);
+    CHECK(Database_errorCode(db) == DATABASE_INVALID);
+    CHECK(Database_queryInt32Range(db, "player", "bad", 0, 10) == nullptr);
     CHECK(Database_errorCode(db) == DATABASE_INVALID);
 
     Database_free(db);
