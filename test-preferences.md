@@ -837,6 +837,7 @@ bind them without either repository including the other.
 | Concurrent Substrate | `tests/vexspoke/atomic/atomic_contention_test.c` | `atomic/ring`, `atomic/spin`, `bit` |
 | WebSocket Protocol | `tests/vexspoke/net/websocket_test.c` through `python3 tests/vexspoke/net/run.py` | `WebSocket_open`/`_poll`/`_write*`; forked loopback peer |
 | WebSocket Seam Binding | `tests/api-haven/ws_source_binding_test.c` through `python3 tests/api-haven/ws_binding_run.py` | `VexWsSource_*` bound into `HavenWsSource`/`HavenWsFanout`; compile-time signature asserts |
+| Apple TLS Backend | `tests/vexspoke/net/tls_apple_test.c` through `python3 tests/vexspoke/net/tls_apple_run.py` | `Tls_connect`/`_send`/`_recv`/`_close` refusal paths; positive handshake unproved |
 | Hot-Path Guard | Future `tests/relational-engine/nio/hot_path_guard_test.c` | hot getters, `;;HOTCODE` sites; unproved until registered execution |
 
 ---
