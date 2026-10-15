@@ -40,6 +40,7 @@
  *   - testPageStorePersistence() // catalog/row roundtrip, schema reject, refusal preservation
  *   - testPageStoreRecovery() // public Database recovery after child exit
  *   - testStructuredEqualityQuery() // raw equality, signed range cursors and the declared int32 index
+ *   - testPersistedIndex() // persisted index roundtrip and same-stride schema drift
  *   - main(void) // all existing Database and persistence owners
  * CONTRACT: test-owned files are disposable; the recovery child is bounded by
  * the runner watchdog and exits without relying on normal process teardown.
@@ -788,6 +789,134 @@ static void testStructuredEqualityQuery(void) {
     Struct_free(schema);
 }
 
+/** Verifies the declared int32 index survives a save/reopen through the Store. */
+static void testPersistedIndex(void) {
+    printf("[10] persisted int32 index roundtrip and schema drift\n");
+    const char *tmp = getenv("TMPDIR");
+    if (tmp == nullptr)
+        tmp = "/tmp/";
+    char path[256];
+    snprintf(path, sizeof(path), "%sdarkbase_index_XXXXXX", tmp);
+    int fd = mkstemp(path);
+    CHECK(fd >= 0);
+    if (fd < 0)
+        return;
+    close(fd);
+    remove(path);
+
+    // --- Write an index into the image.
+    Store *store = Store(path, 1024u * 1024u, 512u, 2048u);
+    Database *db = Database();
+    Struct *schema = Struct("scores");
+    CHECK(store != nullptr && Store_isOpen(store));
+    CHECK(db != nullptr && schema != nullptr);
+    if (store != nullptr && db != nullptr && schema != nullptr) {
+        Struct_setSize(schema, (uint32_t) sizeof(Row));
+        Field *idField = Field("id");
+        Field *healthField = Field("health");
+        CHECK(idField != nullptr && healthField != nullptr);
+        if (idField != nullptr && healthField != nullptr) {
+            Field_setOffset(idField, (uint32_t) offsetof(Row, id));
+            Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+            Field_setOffset(healthField, (uint32_t) offsetof(Row, health));
+            Field_setSize(healthField, (uint32_t) sizeof(((Row*) nullptr)->health));
+            Field_setFlags(healthField, REFLECT_FIELD_INDEXED);
+            CHECK(Struct_add(schema, idField) == 0u);
+            CHECK(Struct_add(schema, healthField) == 1u);
+        }
+        if (idField != nullptr)
+            Field_free(idField);
+        if (healthField != nullptr)
+            Field_free(healthField);
+        CHECK(Database_define(db, schema) == 0);
+        Row source[4] = {{1u, 40}, {2u, 10}, {3u, 30}, {4u, 20}};
+        for (uint32_t i = 0u; i < 4u; i++)
+            CHECK(Database_insertOwned(db, "scores", &source[i], sizeof(Row)) == (int32_t) i);
+        CHECK(Database_indexBuild(db, "scores", "health") == DATABASE_OK);
+        CHECK(Database_saveStore(db, store) == DATABASE_OK);
+    }
+    Database_free(db);
+    Struct_free(schema);
+    Store_free(store);
+
+    // --- Reopen: the image must carry the definition and its records.
+    store = Store(path); // reopen: geometry comes from the verified bootstrap
+    db = Database();
+    schema = Struct("scores");
+    CHECK(store != nullptr && Store_isOpen(store));
+    CHECK(db != nullptr && schema != nullptr);
+    if (store != nullptr && db != nullptr && schema != nullptr) {
+        Struct_setSize(schema, (uint32_t) sizeof(Row));
+        Field *idField = Field("id");
+        Field *healthField = Field("health");
+        CHECK(idField != nullptr && healthField != nullptr);
+        if (idField != nullptr && healthField != nullptr) {
+            Field_setOffset(idField, (uint32_t) offsetof(Row, id));
+            Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+            Field_setOffset(healthField, (uint32_t) offsetof(Row, health));
+            Field_setSize(healthField, (uint32_t) sizeof(((Row*) nullptr)->health));
+            Field_setFlags(healthField, REFLECT_FIELD_INDEXED);
+            CHECK(Struct_add(schema, idField) == 0u);
+            CHECK(Struct_add(schema, healthField) == 1u);
+        }
+        if (idField != nullptr)
+            Field_free(idField);
+        if (healthField != nullptr)
+            Field_free(healthField);
+        CHECK(Database_define(db, schema) == 0);
+        CHECK(Database_loadStore(db, store) == DATABASE_OK);
+        CHECK(Database_count(db, "scores") == 4u);
+        CHECK(Database_indexed(db, "scores", "health")); // the image declared it
+        DatabaseResult *range = Database_queryInt32Range(db, "scores", "health", 20, 40);
+        CHECK(range != nullptr && DatabaseResult_count(range) == 3u);
+        if (range != nullptr) {
+            void *row = nullptr;
+            CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 20);
+            CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 30);
+            CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 40);
+            CHECK(!DatabaseResult_next(range, &row));
+            DatabaseResult_free(range);
+        }
+    }
+    Database_free(db);
+    Struct_free(schema);
+    Store_free(store);
+
+    // --- Schema drift at the same stride must reject: this is what proves the
+    //     loader reads and checks the persisted records rather than rebuilding.
+    store = Store(path); // reopen: geometry comes from the verified bootstrap
+    db = Database();
+    schema = Struct("scores");
+    CHECK(store != nullptr && Store_isOpen(store));
+    CHECK(db != nullptr && schema != nullptr);
+    if (store != nullptr && db != nullptr && schema != nullptr) {
+        Struct_setSize(schema, (uint32_t) sizeof(Row));
+        Field *idField = Field("id");
+        Field *movedField = Field("health");
+        CHECK(idField != nullptr && movedField != nullptr);
+        if (idField != nullptr && movedField != nullptr) {
+            Field_setOffset(idField, (uint32_t) offsetof(Row, id));
+            Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+            Field_setOffset(movedField, (uint32_t) offsetof(Row, id)); // moved
+            Field_setSize(movedField, (uint32_t) sizeof(int32_t));
+            Field_setFlags(movedField, REFLECT_FIELD_INDEXED);
+            CHECK(Struct_add(schema, idField) == 0u);
+            CHECK(Struct_add(schema, movedField) == 1u);
+        }
+        if (idField != nullptr)
+            Field_free(idField);
+        if (movedField != nullptr)
+            Field_free(movedField);
+        CHECK(Database_define(db, schema) == 0);
+        CHECK(Database_loadStore(db, store) == DATABASE_CORRUPT);
+        CHECK(Database_count(db, "scores") == 0u); // refusal published nothing
+    }
+    Database_free(db);
+    Struct_free(schema);
+    Store_free(store);
+    remove(path);
+}
+
 int main(void) {
     printf("=== Database Test Suite ===\n\n");
 
@@ -801,6 +930,7 @@ int main(void) {
     testPageStorePersistence();
     testPageStoreRecovery();
     testStructuredEqualityQuery();
+    testPersistedIndex();
 
     printf("\n%d checks, %d failed\n", g_checks, g_fail);
     if (g_fail == 0)

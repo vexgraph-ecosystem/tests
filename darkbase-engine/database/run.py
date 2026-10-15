@@ -99,7 +99,7 @@ def main():
             "Wal_append: region exhausted, request 576 bytes (remaining 296)": 1,
             "Store exhausted: request 544 bytes, bound 2048 bytes": 1,
             "Database_saveStore: data-page write failed before publication": 1,
-            "Database_loadStore: registered schemas rejected snapshot": 1,
+            "Database_loadStore: registered schemas rejected snapshot": 2,
             "Database_queryEqual: field span or value size is invalid": 2,
             "Database_queryEqual: no such field": 1,
             "Database_queryEqual: no such entity": 1,
