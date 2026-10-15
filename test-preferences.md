@@ -786,9 +786,14 @@ makes a refusal.
   three continuation frames reassemble into one message, and a peer close reports
   its code and reason.
 - It proves fail-closed hostility: a masked server frame, a control frame past
-  125 Bytes, a continuation with no start frame, a 64-bit length with its high
-  bit set, invalid UTF-8 in a text message, and a frame past the message cap each
-  move the client to FAILED, and a failed client never invents a later message.
+  125 Bytes, a continuation with no start frame, an unmasked 64-bit length with
+  its high bit set, invalid UTF-8 in a text message, and a frame whose announced
+  length is twice the cap each move the client to FAILED — and each case asserts
+  the refusal text of its own guard, so one guard answering for another's frame
+  fails the case. The length case is unmasked on purpose, so the mask rule cannot
+  stand in for the length rule, and the oversize case sends no payload, proving
+  the cap is refused from the header alone. A failed client never invents a later
+  message.
 - A local refusal (an invalid outbound text payload) does not fail a healthy
   transport. `wss://` is refused before a socket is opened until the TLS backend
   lands. No live network, TLS, proxy or server concurrency is claimed; the peer
