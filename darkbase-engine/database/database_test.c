@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include "oop/type.h"
 #include "database/database.h"
@@ -31,13 +32,32 @@
  *
  * STRUCT FIELDS: none — procedural test harness.
  *
+ * PRIVATE HELPER RECORD:
+ *   DatabaseCrashProbe { uint32_t commits; } // completed redo-marker callbacks
+ *
  * FUNCTION REGISTRY:
- *   - main(void)
+ *   - crashAtDatabaseRoot(context, phase) // child exits at root redo boundary
+ *   - testPageStorePersistence() // catalog/row roundtrip, schema reject, refusal preservation
+ *   - testPageStoreRecovery() // public Database recovery after child exit
+ *   - main(void) // all existing Database and persistence owners
+ * CONTRACT: test-owned files are disposable; the recovery child is bounded by
+ * the runner watchdog and exits without relying on normal process teardown.
  * ============================================================================
  */
 
 static int g_fail = 0;
 static int g_checks = 0;
+
+typedef struct DatabaseCrashProbe {
+    uint32_t commits;
+} DatabaseCrashProbe;
+
+/** Terminates after the root redo marker is durable but before page apply. */
+static void crashAtDatabaseRoot(void *context, unsigned phase) {
+    DatabaseCrashProbe *probe = (DatabaseCrashProbe*) context;
+    if (phase == STORE_AFTER_LOG_SYNC && ++(*probe).commits == 3u)
+        _exit(77);
+}
 
 #define CHECK(cond)                                                       \
     do {                                                                  \
@@ -517,6 +537,68 @@ static void testPageStorePersistence(void) {
     remove(path);
 }
 
+/** Proves the public Database image is recovered from a torn root-page commit. */
+static void testPageStoreRecovery(void) {
+    printf("[8] page-store database root recovery after process exit\n");
+    const char *tmp = getenv("TMPDIR");
+    if (tmp == nullptr)
+        tmp = "/tmp/";
+    char path[256];
+    snprintf(path, sizeof(path), "%sdarkbase_recovery_XXXXXX", tmp);
+    int fd = mkstemp(path);
+    CHECK(fd >= 0);
+    if (fd < 0)
+        return;
+    close(fd);
+    remove(path);
+
+    pid_t child = fork();
+    CHECK(child >= 0);
+    if (child == 0) {
+        Store *childStore = Store(path, 1024u * 1024u, 512u, 128u * 1024u);
+        Database *childDb = Database();
+        Struct *childSchema = Struct("player");
+        if (childStore == nullptr || childDb == nullptr || childSchema == nullptr)
+            _exit(80);
+        Struct_setSize(childSchema, (uint32_t) sizeof(Row));
+        if (Database_define(childDb, childSchema) != 0)
+            _exit(81);
+        Row source = {91u, 101};
+        if (Database_insertOwned(childDb, "player", &source, sizeof(source)) != 0)
+            _exit(82);
+        DatabaseCrashProbe probe = {0u};
+        Store_setCommitObserver(childStore, crashAtDatabaseRoot, &probe);
+        if (Database_saveStore(childDb, childStore) != DATABASE_OK)
+            _exit(83);
+        _exit(84);
+    }
+    if (child < 0) {
+        remove(path);
+        return;
+    }
+    int childStatus = 0;
+    CHECK(waitpid(child, &childStatus, 0) == child);
+    CHECK(WIFEXITED(childStatus) && WEXITSTATUS(childStatus) == 77);
+
+    Store *store = Store(path);
+    Database *db = Database();
+    Struct *schema = Struct("player");
+    CHECK(store != nullptr && Store_isOpen(store));
+    CHECK(db != nullptr && schema != nullptr);
+    if (store != nullptr && db != nullptr && schema != nullptr) {
+        Struct_setSize(schema, (uint32_t) sizeof(Row));
+        CHECK(Database_define(db, schema) == 0);
+        CHECK(Database_loadStore(db, store) == DATABASE_OK);
+        CHECK(Database_count(db, "player") == 1u);
+        Row *row = (Row*) Database_row(db, "player", 0u);
+        CHECK(row != nullptr && row->id == 91u && row->health == 101);
+    }
+    Database_free(db);
+    Struct_free(schema);
+    Store_free(store);
+    remove(path);
+}
+
 int main(void) {
     printf("=== Database Test Suite ===\n\n");
 
@@ -528,6 +610,7 @@ int main(void) {
     testPersistence();
     testSafeSave();
     testPageStorePersistence();
+    testPageStoreRecovery();
 
     printf("\n%d checks, %d failed\n", g_checks, g_fail);
     if (g_fail == 0)
