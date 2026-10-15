@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #define SIZE PAGE_SIZE_MIN          /* 512: plenty, and fast */
 static uint8_t storage[SIZE];
@@ -19,7 +20,141 @@ static uint32_t rawU32(size_t offset) {
            ((uint32_t) storage[offset + 2] << 16) | ((uint32_t) storage[offset + 3] << 24);
 }
 
+/* Each rejected admission preserves every cached field and every supplied byte.
+ * Capture the cold diagnostic as well as its return; normal admission is quiet.
+ * External serialization is the contract; racing writes and dead buffers are not. */
+static void checkAdmission(Page *page, PageCode expected, const char *message) {
+    Page before;
+    uint8_t bytesBefore[SIZE];
+    if (page != nullptr) {
+        memcpy(&before, page, sizeof before);
+        if ((*page).bytes != nullptr)
+            memcpy(bytesBefore, (*page).bytes, sizeof bytesBefore);
+    }
+    FILE *capture = tmpfile();
+    assert(capture != nullptr);
+    assert(fflush(stderr) == 0);
+    int saved = dup(STDERR_FILENO);
+    assert(saved >= 0 && dup2(fileno(capture), STDERR_FILENO) >= 0);
+    assert(Page_verify(page) == expected);
+    assert(Page_load(page) == expected);
+    assert(fflush(stderr) == 0);
+    assert(dup2(saved, STDERR_FILENO) >= 0 && close(saved) == 0);
+    assert(fseek(capture, 0, SEEK_SET) == 0);
+    char output[1024];
+    size_t length = fread(output, 1u, sizeof output - 1u, capture);
+    output[length] = '\0';
+    assert(!ferror(capture));
+    assert(fclose(capture) == 0);
+    if (expected == PAGE_OK)
+        assert(length == 0u);
+    else {
+        unsigned lines = 0u;
+        for (size_t i = 0u; i < length; ++i)
+            if (output[i] == '\n')
+                ++lines;
+        assert(lines == 2u && strstr(output, "[vex] ") != nullptr);
+        assert(strstr(output, message) != nullptr);
+        if (page != nullptr)
+            assert(memcmp(page, &before, sizeof before) == 0);
+    }
+    if (page != nullptr && (*page).bytes != nullptr)
+        assert(memcmp((*page).bytes, bytesBefore, sizeof bytesBefore) == 0);
+}
+
+static void restoredAdmission(void) {
+    Page *writer = Page_2(storage, SIZE);
+    assert(writer != nullptr);
+    uint8_t payload[SIZE - PAGE_HEADER_BYTES];
+    memset(payload, 0xA5, sizeof payload);
+    const uint32_t lengths[] = {0u, 1u, 13u, sizeof payload};
+    for (uint32_t kind = PAGE_KIND_FREE; kind <= PAGE_KIND_CATALOG; ++kind) {
+        for (size_t i = 0u; i < sizeof lengths / sizeof lengths[0]; ++i) {
+            assert(Page_format(writer, 91u, kind) == PAGE_OK);
+            assert(Page_append(writer, payload, lengths[i]) == PAGE_OK);
+            assert(Page_seal(writer) == PAGE_OK);
+            uint8_t original[SIZE];
+            memcpy(original, storage, sizeof original);
+            Page *reader = Page_2(storage, SIZE);
+            assert(reader != nullptr && memcmp(original, storage, SIZE) == 0);
+            assert(Page_used(reader) == 0u && !Page_isSealed(reader));
+            checkAdmission(reader, PAGE_OK, nullptr);
+            /* Verify must be independent of even an absurd stale cached used. */
+            (*reader).used = UINT32_MAX;
+            Page snapshot;
+            memcpy(&snapshot, reader, sizeof snapshot);
+            assert(Page_verify(reader) == PAGE_OK);
+            assert(memcmp(reader, &snapshot, sizeof snapshot) == 0);
+            checkAdmission(reader, PAGE_OK, nullptr);
+            assert(Page_id(reader) == 91u && Page_kind(reader) == kind);
+            assert(Page_used(reader) == lengths[i] && Page_code(reader) == PAGE_OK);
+            assert(Page_isSealed(reader) && !Page_isDirty(reader));
+            assert(memcmp(Page_payloadOf(reader), payload, lengths[i]) == 0);
+            char text[256];
+            bool truncated = true;
+            assert(Page_toStringStruct(reader, text, sizeof text, &truncated));
+            assert(!truncated && strstr(text, "id=91") != nullptr);
+            assert(strstr(text, "sealed=1, dirty=0") != nullptr);
+            assert(strstr(text, "lastCode=ok") != nullptr && strstr(text, "bytes=") != nullptr);
+            /* Repeated load is idempotent; its admission does not permit edits. */
+            checkAdmission(reader, PAGE_OK, nullptr);
+            Page_free(reader);
+        }
+    }
+
+    /* Keep stale yet real cached metadata while replacing its borrowed bytes. */
+    Page *reader = Page_2(storage, SIZE);
+    assert(reader != nullptr);
+    assert(Page_format(reader, 3u, PAGE_KIND_BRANCH) == PAGE_OK);
+    assert(Page_append(reader, payload, 1u) == PAGE_OK);
+    assert(Page_append(reader, nullptr, 1u) == PAGE_INVALID);
+    assert(Page_format(writer, 91u, PAGE_KIND_LEAF) == PAGE_OK);
+    assert(Page_append(writer, payload, 13u) == PAGE_OK);
+    assert(Page_seal(writer) == PAGE_OK);
+    uint8_t valid[SIZE];
+    memcpy(valid, storage, sizeof valid);
+    const struct { size_t offset; PageCode code; const char *message; } cases[] = {
+        {0u, PAGE_INVALID, "magic"},
+        {4u, PAGE_BAD_SEAL, "seal"},
+        {8u, PAGE_INVALID, "kind"},
+        {16u, PAGE_INVALID, "size"},
+        {20u, PAGE_INVALID, "reserved"},
+        {24u, PAGE_INVALID, "reserved"},
+        {PAGE_SEAL_OFFSET, PAGE_BAD_SEAL, "seal"},
+        {PAGE_HEADER_BYTES, PAGE_BAD_SEAL, "seal"},
+    };
+    for (size_t i = 0u; i < sizeof cases / sizeof cases[0]; ++i) {
+        storage[cases[i].offset] ^= 0x5Au;
+        checkAdmission(reader, cases[i].code, cases[i].message);
+        memcpy(storage, valid, sizeof valid);
+    }
+    /* Exact capacity plus one and integer maximum must reject before CRC reads. */
+    uint32_t invalidUsed[] = {SIZE - PAGE_HEADER_BYTES + 1u, UINT32_MAX};
+    for (size_t i = 0u; i < sizeof invalidUsed / sizeof invalidUsed[0]; ++i) {
+        memcpy(storage + 12u, &invalidUsed[i], sizeof invalidUsed[i]);
+        checkAdmission(reader, PAGE_INVALID, "length");
+        memcpy(storage, valid, sizeof valid);
+    }
+    uint32_t sizes[] = {0u, PAGE_HEADER_BYTES - 1u, SIZE - 1u, PAGE_SIZE_MAX + 1u};
+    for (size_t i = 0u; i < sizeof sizes / sizeof sizes[0]; ++i) {
+        (*reader).size = sizes[i];
+        checkAdmission(reader, PAGE_INVALID, "storage");
+    }
+    (*reader).size = SIZE;
+    checkAdmission(reader, PAGE_OK, nullptr);
+    assert(Page_id(reader) == 91u && Page_used(reader) == 13u);
+    assert(Page_kind(reader) == PAGE_KIND_LEAF && !Page_isDirty(reader));
+    Page_free(reader);
+    Page_free(writer);
+    checkAdmission(nullptr, PAGE_INVALID, "storage");
+    Page *bare = Page_0();
+    assert(bare != nullptr);
+    checkAdmission(bare, PAGE_INVALID, "storage");
+    Page_free(bare);
+}
+
 int main(void) {
+    restoredAdmission();
     /* Legal page sizes are powers of two inside the advertised range. */
     assert(Page_sizeValid(PAGE_SIZE_MIN) && Page_sizeValid(PAGE_SIZE_DEFAULT));
     assert(Page_sizeValid(1024u) && Page_sizeValid(PAGE_SIZE_MAX));
@@ -95,7 +230,7 @@ int main(void) {
     assert(Page_kind(page) == PAGE_KIND_BRANCH);
     assert(Page_used(page) == 0u && !Page_isSealed(page));
     /* An unsealed page must NOT verify: that is what makes "seal before durable" real. */
-    assert(Page_verify(page) == PAGE_BAD_SEAL);
+    checkAdmission(page, PAGE_BAD_SEAL, "seal");
 
     /* ------------------------------------------------------------------ *
      * The corruption matrix. Every sealed field is covered, so a misplaced
@@ -109,7 +244,6 @@ int main(void) {
     struct { const char *what; size_t offset; } cases[] = {
         { "a flipped payload byte", PAGE_HEADER_BYTES + 3u },
         { "the page id",            4u },
-        { "the page kind",          8u },
         { "the used length",        12u },
     };
     for (size_t i = 0; i < sizeof cases / sizeof cases[0]; ++i) {
@@ -142,7 +276,7 @@ int main(void) {
     assert(Page_verify(page) == PAGE_OK);
 
     /* Verify never crashes on arbitrary bytes: an all-zero buffer is simply refused. */
-    uint8_t zeros[64];
+    uint8_t zeros[SIZE];
     memset(zeros, 0, sizeof zeros);
     Page *foreign = Page_2(zeros, SIZE);
     assert(foreign != nullptr);
@@ -167,7 +301,7 @@ int main(void) {
     assert(Page_codeName(Page_code(page)) != nullptr);
 
     /* Projections are bounded and report truncation rather than cutting silently. */
-    char text[128];
+    char text[256];
     bool truncated = true;
     assert(Page_toString(page, text, sizeof text, &truncated));
     assert(!truncated && strstr(text, "Page(id=") != nullptr);

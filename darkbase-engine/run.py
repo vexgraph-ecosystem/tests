@@ -23,7 +23,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 B = ROOT / "tools" / "b"
-OWNERS = ["database", "database_result", "crc32"]
+OWNERS = ["database", "database_result", "crc32", "page_test", "wal_test", "store_test", "store_adversarial_test"]
 
 
 def execute(argv, timeout=900):
@@ -45,7 +45,8 @@ def main():
             continue
         out = result.stdout + result.stderr
         m = re.search(r"(\d+) passed, (\d+) failed, (\d+) timed out, (\d+) skipped", out)
-        if result.returncode != 0 or m is None or int(m.group(2)) != 0 or int(m.group(3)) != 0:
+        if (result.returncode != 0 or m is None or int(m.group(1)) == 0 or
+                int(m.group(2)) != 0 or int(m.group(3)) != 0 or int(m.group(4)) != 0):
             print(f"FAIL {owner}")
             print(out[-2000:])
             failures += 1
