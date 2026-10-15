@@ -1176,7 +1176,9 @@ Native database store (R3).
   rows after rejection. `DatabaseResult` owns the temporary pointer-list container
   but borrows row values; its owner proves freeing that container does not free a
   row. This is a cold linear scan, not numeric coercion, projection, ordering,
-  range query, persistent catalog lookup or index proof.
+  range query or index proof. The same owner proves copied persisted catalog
+  discovery by index, record metadata, out-of-range rejection and independence
+  from Store-owned bytes. This does not reconstruct schemas or prove indexes.
 - **Database Page-Chain Bridge Law** — `tests/darkbase-engine/database/database_test.c`,
   registered by `python3 tests/darkbase-engine/database/run.py`, proves a reflected
   schema and owned rows save through the page Store, close/reopen, and load into a
