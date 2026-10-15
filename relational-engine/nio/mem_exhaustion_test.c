@@ -17,8 +17,11 @@
 #include <string.h>
 
 // Physical slab geometry is a white-box exhaustion oracle, not a workload cap.
+// SMALL_PAYLOAD fills one 64-byte slot exactly (header + payload), so the slab
+// class, its capacity and the bump stride stay a pure function of the header.
 enum { MIB = 1024 * 1024, SLAB_BYTES = 30 * MIB, BUMP_BYTES = 4096,
-       SMALL_PAYLOAD = 48, SMALL_SLOTS = 32768, SPILL_SLOTS = BUMP_BYTES / 64,
+       SMALL_PAYLOAD = 64 - MEMORY_HEADER_SIZE, SMALL_SLOTS = 32768,
+       SPILL_SLOTS = BUMP_BYTES / 64,
        MODEL_SLOTS = 64, MODEL_STEPS = 10000, WORKERS = 4, WORKER_STEPS = 4000 };
 static const uint64_t TYPE_A = UINT64_C(0x1200000000000041);
 static const uint64_t TYPE_B = UINT64_C(0x1300000000000041);
@@ -141,7 +144,7 @@ static void boundaries(void) {
     p = MemoryArena_alloc(a, TYPE_A, BUMP_BYTES + 1);
     assert(p == nullptr); // Too large for either slab or this bump region.
     MemoryArena_destroy(a);
-    a = MemoryArena_create(SLAB_BYTES + BUMP_BYTES + 16);
+    a = MemoryArena_create(SLAB_BYTES + BUMP_BYTES + MEMORY_HEADER_SIZE);
     assert(a);
     p = MemoryArena_alloc(a, TYPE_A, BUMP_BYTES);
     assert(p && Memory_length(p) == BUMP_BYTES);
@@ -165,7 +168,12 @@ static void boundaries(void) {
 
 /** Exhaust every physical size class independently, then free/reuse its last slot. */
 static void allClasses(void) {
-    const size_t payloads[] = {48, 112, 240, 496, 1008, 2032, 4080};
+    // Each payload fills its own 16/128/... slot exactly, so header growth
+    // shifts the whole table rather than the class each payload lands in.
+    const size_t payloads[] = {64 - MEMORY_HEADER_SIZE, 128 - MEMORY_HEADER_SIZE,
+                               256 - MEMORY_HEADER_SIZE, 512 - MEMORY_HEADER_SIZE,
+                               1024 - MEMORY_HEADER_SIZE, 2048 - MEMORY_HEADER_SIZE,
+                               4096 - MEMORY_HEADER_SIZE};
     const size_t capacities[] = {32768, 32768, 16384, 8192, 4096, 2048, 2048};
     MemoryArena *a = MemoryArena_create(SLAB_BYTES); // Deliberately zero bump space.
     assert(a);
@@ -215,7 +223,7 @@ static void hostile(void) {
     }
     MemoryHeader *header = (MemoryHeader*) (p - MEMORY_HEADER_SIZE);
     MemoryHeader saved = *header;
-    (*header).sugar ^= 2u;
+    (*header).hash ^= 2u;
     assert(Memory_type(p) == 0 && Memory_length(p) == 0);
     assert(MemoryArena_realloc(a, p, 32) == nullptr);
     Memory_free(p);
