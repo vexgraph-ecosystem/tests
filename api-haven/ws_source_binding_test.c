@@ -74,6 +74,18 @@ static bool peerFrame(int fd, uint8_t opcode, const char *text) {
     return peerWrite(fd, header, 2u) && peerWrite(fd, text, length);
 }
 
+/** Read exactly length Bytes with the peer's bounded timeout. */
+static bool peerReadExact(int peer, uint8_t *dest, size_t length) {
+    size_t got = 0u;
+    while (got < length) {
+        ssize_t n = recv(peer, dest + got, length - got, 0);
+        if (n <= 0)
+            return false;
+        got += (size_t) n;
+    }
+    return true;
+}
+
 /**
  * The scripted peer: accept, answer the handshake, send two text frames, then
  * require one masked TEXT frame back. Its exit status is the assertion.
@@ -157,24 +169,31 @@ static int peerRun(int readyWriteFd) {
     if (!peerFrame(peer, WEBSOCKET_TEXT, "two"))
         return 102;
 
-    // The host's send must arrive as one masked TEXT frame.
-    uint8_t inbound[64];
-    ssize_t got = recv(peer, inbound, sizeof(inbound), 0);
-    if (got < 6)
+    // The host's send must arrive as one masked TEXT frame. Read it exactly: the
+    // client writes its header and its masked payload separately, so a single
+    // recv can see only the header and make this owner flap.
+    uint8_t head[2];
+    if (!peerReadExact(peer, head, sizeof(head)))
         return 103;
-    if ((inbound[0] & 0x0Fu) != WEBSOCKET_TEXT)
+    if ((head[0] & 0x0Fu) != WEBSOCKET_TEXT)
         return 104;
-    if ((inbound[1] & 0x80u) == 0u)
+    if ((head[1] & 0x80u) == 0u)
         return 105; // a client frame must be masked
-    uint8_t mask[4];
-    memcpy(mask, inbound + 2u, sizeof(mask));
-    size_t payloadLength = (size_t) (inbound[1] & 0x7Fu);
-    char decoded[32];
-    for (size_t i = 0u; i < payloadLength && i + 1u < sizeof(decoded); i++)
-        decoded[i] = (char) (inbound[6u + i] ^ mask[i & 3u]);
-    decoded[payloadLength < sizeof(decoded) ? payloadLength : sizeof(decoded) - 1u] = '\0';
-    if (payloadLength != 4u || strncmp(decoded, "pong", 4u) != 0)
+    size_t payloadLength = (size_t) (head[1] & 0x7Fu);
+    if (payloadLength > 16u)
         return 106;
+    uint8_t mask[4];
+    if (!peerReadExact(peer, mask, sizeof(mask)))
+        return 107;
+    uint8_t body[16];
+    if (payloadLength > 0u && !peerReadExact(peer, body, payloadLength))
+        return 108;
+    char decoded[17];
+    for (size_t i = 0u; i < payloadLength; i++)
+        decoded[i] = (char) (body[i] ^ mask[i & 3u]);
+    decoded[payloadLength] = '\0';
+    if (payloadLength != 4u || strncmp(decoded, "pong", 4u) != 0)
+        return 109;
     close(peer);
     close(listener);
     return 0;

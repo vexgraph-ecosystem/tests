@@ -528,17 +528,57 @@ static void testHandshakeRefusals(void) {
     }
 }
 
+/** Bind an ephemeral port, then release it so nothing is listening there. */
+static int closedPort(void) {
+    int fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (fd < 0)
+        return -1;
+    struct sockaddr_in address;
+    memset(&address, 0, sizeof(address));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    address.sin_port = 0;
+    if (bind(fd, (struct sockaddr*) &address, sizeof(address)) != 0) {
+        close(fd);
+        return -1;
+    }
+    socklen_t length = (socklen_t) sizeof(address);
+    if (getsockname(fd, (struct sockaddr*) &address, &length) != 0) {
+        close(fd);
+        return -1;
+    }
+    int port = ntohs(address.sin_port);
+    close(fd);
+    return port;
+}
+
 /** Unsupported URLs are refused before any socket is opened. */
 static void testUrlRefusals(void) {
     printf("[7] unsupported and malformed URLs\n");
     WebSocket client = WebSocket();
     WebSocketConfig config = { .timeoutMs = 250u, .maxMessageBytes = WS_TEST_MESSAGE_CAP };
-    CHECK(!WebSocket_open(&client, "wss://example.com/live", config)); // no TLS yet
-    CHECK(WebSocket_state(&client) != WEBSOCKET_OPEN);
     CHECK(!WebSocket_open(&client, "http://example.com/live", config));
+    CHECK(WebSocket_state(&client) != WEBSOCKET_OPEN);
+    CHECK(!WebSocket_open(&client, "ftp://example.com/live", config));
     CHECK(!WebSocket_open(&client, "ws://", config));
     CHECK(!WebSocket_open(nullptr, "ws://127.0.0.1:1/", config));
     CHECK(!WebSocket_open(&client, nullptr, config));
+    // A ws:// URL that cannot be reached fails as a CONNECT, not as a URL.
+    CHECK(!WebSocket_open(&client, "ws://127.0.0.1:1/live", config));
+    CHECK(strstr(WebSocket_lastError(&client), "connect failed") != nullptr);
+
+    // wss:// is a supported scheme now: it takes the TLS path, so an
+    // unreachable peer fails there rather than being rejected as a URL. That
+    // the error names TLS is the observable proof the routing happened.
+    int closed = closedPort();
+    CHECK(closed > 0);
+    if (closed > 0) {
+        char secure[128];
+        snprintf(secure, sizeof(secure), "wss://127.0.0.1:%d/live", closed);
+        CHECK(!WebSocket_open(&client, secure, config));
+        CHECK(strstr(WebSocket_lastError(&client), "TLS connect failed") != nullptr);
+        CHECK(WebSocket_state(&client) != WEBSOCKET_OPEN);
+    }
     // Null-safety on every getter and projection of the empty instance.
     WebSocket empty = WebSocket();
     CHECK(WebSocket_state(nullptr) == WEBSOCKET_CLOSED);

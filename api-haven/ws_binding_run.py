@@ -24,6 +24,7 @@ SOURCES = [
     (API / "src/api/haven_ws_fanout.c", API),
     (CPU / "src/net/vex_ws_source.c", CPU),
     (CPU / "src/net/websocket.c", CPU),
+    (CPU / "src/net/tls_apple.m", CPU),
     (CPU / "src/net/url.c", CPU),
     (CPU / "src/security/sha1.c", CPU),
     (CPU / "src/security/secure_random.c", CPU),
@@ -47,7 +48,8 @@ def main():
                          "-I" + str(ENGINE / "src"), "-I" + str(API / "src"),
                          "-I" + str(ROOT / "tests")]
                 obj = build / f"{mode}-{index}.o"
-                subprocess.run(["clang", *flags, "-c", str(source), "-o", str(obj)],
+                arc = ["-fobjc-arc"] if source.suffix == ".m" else []
+                subprocess.run(["clang", *flags, *arc, "-c", str(source), "-o", str(obj)],
                                check=True, timeout=120)
                 objects.append(str(obj))
             link_flags = ["-std=gnu23", "-Wall", "-Wextra", "-Werror", "-O2", "-UNDEBUG",
@@ -55,7 +57,8 @@ def main():
                           "-I" + str(API / "src"), "-I" + str(CPU / "src"),
                           "-I" + str(ENGINE / "src"), "-I" + str(ROOT / "tests")]
             binary = build / f"{mode}-ws_binding"
-            subprocess.run(["clang", *link_flags, str(TEST), *objects, "-o", str(binary)],
+            subprocess.run(["clang", *link_flags, str(TEST), *objects, "-framework",
+                            "Foundation", "-framework", "Network", "-o", str(binary)],
                            check=True, timeout=120)
             result = subprocess.run([str(binary)], timeout=120, capture_output=True, text=True)
             if result.stdout:

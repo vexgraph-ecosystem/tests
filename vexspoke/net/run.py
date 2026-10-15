@@ -24,6 +24,7 @@ TEST = HERE / "websocket_test.c"
 SOURCES = [
     ENGINE / "src/nio/mem.c",
     CPU / "src/net/websocket.c",
+    CPU / "src/net/tls_apple.m",
     CPU / "src/net/url.c",
     CPU / "src/security/sha1.c",
     CPU / "src/security/secure_random.c",
@@ -44,12 +45,14 @@ def main():
                      "-I" + str(ROOT / "tests")]
             objects = []
             for index, source in enumerate(SOURCES):
+                arc = ["-fobjc-arc"] if source.suffix == ".m" else []
                 obj = build / f"{mode}-{index}.o"
-                subprocess.run(["clang", *flags, "-c", str(source), "-o", str(obj)],
+                subprocess.run(["clang", *flags, *arc, "-c", str(source), "-o", str(obj)],
                                check=True, timeout=120)
                 objects.append(str(obj))
             binary = build / f"{mode}-websocket_test"
-            subprocess.run(["clang", *flags, str(TEST), *objects, "-o", str(binary)],
+            subprocess.run(["clang", *flags, str(TEST), *objects, "-framework", "Foundation",
+                            "-framework", "Network", "-o", str(binary)],
                            check=True, timeout=120)
             result = subprocess.run([str(binary)], timeout=120, capture_output=True, text=True)
             if result.stdout:
