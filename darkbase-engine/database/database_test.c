@@ -486,6 +486,14 @@ static void testPageStorePersistence(void) {
         return;
     }
     Struct_setSize(schema, (uint32_t) sizeof(Row));
+    Field *idField = Field("id");
+    CHECK(idField != nullptr);
+    if (idField != nullptr) {
+        Field_setOffset(idField, (uint32_t) offsetof(Row, id));
+        Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+        CHECK(Struct_add(schema, idField) == 0u);
+        Field_free(idField);
+    }
     CHECK(Database_define(db, schema) == 0);
     Row source[3] = {{41u, 51}, {42u, 52}, {43u, 53}};
     for (uint32_t i = 0u; i < 3u; i++)
@@ -531,6 +539,14 @@ static void testPageStorePersistence(void) {
     Struct_free(wrongSchema);
     if (store != nullptr && db != nullptr && schema != nullptr) {
         Struct_setSize(schema, (uint32_t) sizeof(Row));
+        idField = Field("id");
+        CHECK(idField != nullptr);
+        if (idField != nullptr) {
+            Field_setOffset(idField, (uint32_t) offsetof(Row, id));
+            Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+            CHECK(Struct_add(schema, idField) == 0u);
+            Field_free(idField);
+        }
         CHECK(Database_define(db, schema) == 0);
         CHECK(Database_loadStore(db, store) == DATABASE_OK);
         CHECK(Database_count(db, "player") == 3u);
@@ -539,6 +555,14 @@ static void testPageStorePersistence(void) {
             CHECK(row != nullptr && row->id == source[i].id &&
                   row->health == source[i].health); // rejected replacement preserved old root
         }
+        uintptr_t wanted = 42u;
+        DatabaseResult *query = Database_queryEqual(db, "player", "id",
+                                                     &wanted, sizeof(wanted));
+        CHECK(query != nullptr && DatabaseResult_count(query) == 1u);
+        void *queriedRow = nullptr;
+        CHECK(query != nullptr && DatabaseResult_next(query, &queriedRow));
+        CHECK(queriedRow != nullptr && ((Row*) queriedRow)->id == wanted);
+        DatabaseResult_free(query);
         Database_free(db);
         Struct_free(schema);
     } else {
@@ -611,6 +635,67 @@ static void testPageStoreRecovery(void) {
     remove(path);
 }
 
+/** Verifies structured equality uses reflected byte spans and returns matching rows. */
+static void testStructuredEqualityQuery(void) {
+    printf("[9] reflected raw-byte equality query and cursor\n");
+    Database *db = Database();
+    Struct *schema = Struct("player");
+    Field *idField = Field("id");
+    Field *badField = Field("bad");
+    CHECK(db != nullptr && schema != nullptr && idField != nullptr && badField != nullptr);
+    if (db == nullptr || schema == nullptr || idField == nullptr || badField == nullptr) {
+        Database_free(db);
+        Struct_free(schema);
+        Field_free(idField);
+        Field_free(badField);
+        return;
+    }
+    Struct_setSize(schema, (uint32_t) sizeof(Row));
+    Field_setOffset(idField, (uint32_t) offsetof(Row, id));
+    Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+    Field_setOffset(badField, (uint32_t) sizeof(Row) - 1u);
+    Field_setSize(badField, 2u);
+    CHECK(Struct_add(schema, idField) == 0u);
+    CHECK(Struct_add(schema, badField) == 1u);
+    Field_free(idField);
+    Field_free(badField);
+    CHECK(Database_define(db, schema) == 0);
+    Row source[4] = {{5u, 11}, {7u, 13}, {5u, 17}, {9u, 19}};
+    for (uint32_t i = 0u; i < 4u; i++)
+        CHECK(Database_insertOwned(db, "player", &source[i], sizeof(Row)) == (int32_t) i);
+
+    uintptr_t wanted = 5u;
+    DatabaseResult *matches = Database_queryEqual(db, "player", "id",
+                                                   &wanted, sizeof(wanted));
+    CHECK(matches != nullptr && DatabaseResult_count(matches) == 2u);
+    if (matches != nullptr) {
+        void *first = nullptr;
+        void *second = nullptr;
+        CHECK(DatabaseResult_next(matches, &first));
+        CHECK(DatabaseResult_next(matches, &second));
+        CHECK(((Row*) first)->health == 11 && ((Row*) second)->health == 17);
+        CHECK(DatabaseResult_next(matches, &first) == false);
+        DatabaseResult_free(matches);
+    }
+    uintptr_t absent = 101u;
+    matches = Database_queryEqual(db, "player", "id", &absent, sizeof(absent));
+    CHECK(matches != nullptr && DatabaseResult_count(matches) == 0u);
+    DatabaseResult_free(matches);
+    CHECK(Database_queryEqual(db, "player", "id", &wanted, sizeof(uint16_t)) == nullptr);
+    CHECK(Database_errorCode(db) == DATABASE_INVALID);
+    CHECK(Database_queryEqual(db, "player", "bad", &wanted, sizeof(uint32_t)) == nullptr);
+    CHECK(Database_errorCode(db) == DATABASE_INVALID);
+    CHECK(Database_queryEqual(db, "player", "missing", &wanted, sizeof(wanted)) == nullptr);
+    CHECK(Database_errorCode(db) == DATABASE_ABSENT);
+    CHECK(Database_queryEqual(db, "ghost", "id", &wanted, sizeof(wanted)) == nullptr);
+    CHECK(Database_errorCode(db) == DATABASE_ABSENT);
+    CHECK(Database_queryEqual(db, "player", "id", nullptr, sizeof(wanted)) == nullptr);
+    CHECK(Database_errorCode(db) == DATABASE_INVALID);
+
+    Database_free(db);
+    Struct_free(schema);
+}
+
 int main(void) {
     printf("=== Database Test Suite ===\n\n");
 
@@ -623,6 +708,7 @@ int main(void) {
     testSafeSave();
     testPageStorePersistence();
     testPageStoreRecovery();
+    testStructuredEqualityQuery();
 
     printf("\n%d checks, %d failed\n", g_checks, g_fail);
     if (g_fail == 0)

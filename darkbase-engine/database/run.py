@@ -18,11 +18,12 @@ DB = ROOT / "suite/ecosystem/darkbase-engine"
 CPU = ROOT / "suite/ecosystem/vexspoke"
 ENGINE = ROOT / "suite/ecosystem/relational-engine"
 TEST = ROOT / "tests/darkbase-engine/database/database_test.c"
+RESULT_TEST = ROOT / "tests/darkbase-engine/database/database_result_test.c"
 
 
-def run(argv, *, cwd=ROOT, env=None, capture=False, timeout=120):
+def run(argv, *, cwd=ROOT, env=None, capture=False, timeout=120, check=True):
     return subprocess.run([str(value) for value in argv], cwd=cwd, env=env,
-                          check=True, capture_output=capture, text=capture,
+                          check=check, capture_output=capture, text=capture,
                           timeout=timeout)
 
 
@@ -77,9 +78,13 @@ def main():
              "-I" + str(CPU / "src"), "-I" + str(ENGINE / "src"),
              "-I" + str(ENGINE / "rust/include"), "-I" + str(ROOT / "tests"),
              TEST, *objects, archive, "-o", binary])
-        result = run([binary], capture=True, timeout=60)
+        result = run([binary], capture=True, timeout=60, check=False)
         if result.stdout:
             print(result.stdout, end="")
+        if result.returncode != 0:
+            if result.stderr:
+                print(result.stderr, end="", file=__import__("sys").stderr)
+            raise AssertionError(f"Database owner failed with exit {result.returncode}")
         expected = Counter({
             "Database_define: duplicate entity": 1,
             "Database_insert: no such entity": 1,
@@ -95,12 +100,35 @@ def main():
             "Store exhausted: request 544 bytes, bound 2048 bytes": 1,
             "Database_saveStore: data-page write failed before publication": 1,
             "Database_loadStore: registered schemas rejected snapshot": 1,
+            "Database_queryEqual: field span or value size is invalid": 2,
+            "Database_queryEqual: no such field": 1,
+            "Database_queryEqual: no such entity": 1,
+            "Database_queryEqual: null or empty argument": 1,
         })
         actual = Counter(line.split(": ", 1)[1] for line in result.stderr.splitlines())
         if actual != expected:
             raise AssertionError(f"Database diagnostic mismatch: {actual - expected}; "
                                  f"missing {expected - actual}")
-        print("PASS: strict optimized C ASan/UBSan Database owner including page-store reopen")
+        result_binary = build / "database_result_test"
+        run(["clang", *flags, "-I" + str(DB / "src"),
+             "-I" + str(CPU / "src"), "-I" + str(ENGINE / "src"),
+             "-I" + str(ENGINE / "rust/include"), "-I" + str(ROOT / "tests"),
+             RESULT_TEST, *objects, archive, "-o", result_binary])
+        cursor = run([result_binary], capture=True, timeout=60, check=False)
+        if cursor.stdout:
+            print(cursor.stdout, end="")
+        if cursor.returncode != 0:
+            raise AssertionError(f"DatabaseResult owner failed with exit {cursor.returncode}")
+        cursor_expected = Counter({
+            "DatabaseResult_2: null row source": 1,
+            "Database_select: no such entity": 1,
+        })
+        cursor_actual = Counter(line.split(": ", 1)[1]
+                                for line in cursor.stderr.splitlines())
+        if cursor_actual != cursor_expected:
+            raise AssertionError(f"DatabaseResult diagnostic mismatch: "
+                f"{cursor_actual - cursor_expected}; missing {cursor_expected - cursor_actual}")
+        print("PASS: strict optimized C ASan/UBSan Database and DatabaseResult owners")
 
 
 if __name__ == "__main__":

@@ -30,6 +30,7 @@
  *
  * FUNCTION REGISTRY:
  *   - main(void)
+ *   - testOwnedPointerList() // owns pointer-list container, borrows row values
  * ============================================================================
  */
 
@@ -133,9 +134,37 @@ static void testWalk(void) {
     Struct_free(player);
 }
 
+/** Verifies an owned result list is released without taking row-value ownership. */
+static void testOwnedPointerList(void) {
+    printf("[3] owned match-list container, borrowed row values\n");
+    ChunkedList *rows = ChunkedList_3(ID_DB_DATABASE_ROW,
+        (uint32_t) sizeof(void*), 256u);
+    Row2 row = {77u};
+    CHECK(rows != nullptr);
+    if (rows == nullptr)
+        return;
+    uint8_t *slot = ChunkedList_addSlot(rows);
+    CHECK(slot != nullptr);
+    if (slot == nullptr) {
+        ChunkedList_free(rows);
+        return;
+    }
+    *((void**) slot) = &row;
+    DatabaseResult *result = DatabaseResult_2(rows, true);
+    CHECK(result != nullptr);
+    if (result != nullptr) {
+        void *found = nullptr;
+        CHECK(DatabaseResult_next(result, &found) && found == &row);
+        DatabaseResult_free(result);
+        CHECK(row.v == 77u); // freeing result only releases its pointer-list container
+    } else {
+        ChunkedList_free(rows);
+    }
+}
+
 /** Verifies cursor string projections and bounded-buffer behavior. */
 static void testStrings(void) {
-    printf("[3] string projections\n");
+    printf("[4] string projections\n");
 
     DatabaseResult *r = DatabaseResult();
     CHECK(r != nullptr);
@@ -161,6 +190,7 @@ int main(void) {
 
     testEmptyCursor();
     testWalk();
+    testOwnedPointerList();
     testStrings();
 
     printf("\n%d checks, %d failed\n", g_checks, g_fail);
