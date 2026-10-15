@@ -1170,6 +1170,13 @@ Grammar and LSP driver (R3).
 
 ## darkbase Test Laws
 Native database store (R3).
+- **Structured Equality Query Law** — `tests/darkbase-engine/database/database_test.c`
+  proves exact-byte matching across zero/one/many rows, reflected field-span and
+  value-length admission, absent entity/field, null value and preserved database
+  rows after rejection. `DatabaseResult` owns the temporary pointer-list container
+  but borrows row values; its owner proves freeing that container does not free a
+  row. This is a cold linear scan, not numeric coercion, projection, ordering,
+  range query, persistent catalog lookup or index proof.
 - **Database Page-Chain Bridge Law** — `tests/darkbase-engine/database/database_test.c`,
   registered by `python3 tests/darkbase-engine/database/run.py`, proves a reflected
   schema and owned rows save through the page Store, close/reopen, and load into a
