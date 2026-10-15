@@ -1175,6 +1175,8 @@ Native database store (R3).
   schema and owned rows save through the page Store, close/reopen, and load into a
   separately registered Database. It also exhausts a deliberately small journal
   on replacement and proves the previously published root and rows survive reopen.
+  A child exits after the Database root's redo marker sync; reopen replays that
+  commit and the public Database loader recovers the row.
   C owners run strict optimized C23 with ASan/UBSan; the linked Rust archive is not
   sanitizer-instrumented. This whole-image adapter retains old data pages/WAL and
   is not multi-page transactions, schema migration, incremental row addressing,
