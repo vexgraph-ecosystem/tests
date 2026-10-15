@@ -537,6 +537,8 @@ static void testPageStorePersistence(void) {
     }
     Database_free(mismatch);
     Struct_free(wrongSchema);
+    DatabaseCatalogEntry retainedEntry;
+    memset(&retainedEntry, 0, sizeof(retainedEntry));
     if (store != nullptr && db != nullptr && schema != nullptr) {
         Struct_setSize(schema, (uint32_t) sizeof(Row));
         idField = Field("id");
@@ -550,6 +552,13 @@ static void testPageStorePersistence(void) {
         CHECK(Database_define(db, schema) == 0);
         CHECK(Database_loadStore(db, store) == DATABASE_OK);
         CHECK(Database_count(db, "player") == 3u);
+        DatabaseCatalogEntry catalogEntry = Database_storeCatalogEntry(store, 0u);
+        retainedEntry = catalogEntry;
+        CHECK(catalogEntry.code == DATABASE_OK && catalogEntry.found);
+        CHECK(strcmp(catalogEntry.name, "player") == 0 &&
+              catalogEntry.rowStride == sizeof(Row) && catalogEntry.rowCount == 3u);
+        DatabaseCatalogEntry absentEntry = Database_storeCatalogEntry(store, 1u);
+        CHECK(absentEntry.code == DATABASE_ABSENT && !absentEntry.found);
         for (uint32_t i = 0u; i < 3u; i++) {
             Row *row = (Row*) Database_row(db, "player", i);
             CHECK(row != nullptr && row->id == source[i].id &&
@@ -570,6 +579,9 @@ static void testPageStorePersistence(void) {
         Struct_free(schema);
     }
     Store_free(store);
+    CHECK(retainedEntry.code == DATABASE_OK && retainedEntry.found &&
+          strcmp(retainedEntry.name, "player") == 0 &&
+          retainedEntry.rowStride == sizeof(Row) && retainedEntry.rowCount == 3u);
     remove(path);
 }
 
