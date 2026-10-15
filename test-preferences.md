@@ -1170,6 +1170,15 @@ Grammar and LSP driver (R3).
 
 ## darkbase Test Laws
 Native database store (R3).
+- **Database Page-Chain Bridge Law** — `tests/darkbase-engine/database/database_test.c`,
+  registered by `python3 tests/darkbase-engine/database/run.py`, proves a reflected
+  schema and owned rows save through the page Store, close/reopen, and load into a
+  separately registered Database. It also exhausts a deliberately small journal
+  on replacement and proves the previously published root and rows survive reopen.
+  C owners run strict optimized C23 with ASan/UBSan; the linked Rust archive is not
+  sanitizer-instrumented. This whole-image adapter retains old data pages/WAL and
+  is not multi-page transactions, schema migration, incremental row addressing,
+  checkpoint/recycling, or the blocked workspace graph's full integration proof.
 - **Row Borrow and Owned Copy Law** — `tests/darkbase-engine/database/database_test.c`
   proves exact-stride copy-in, caller-buffer independence, per-entity mode
   exclusion, loaded-row extension and rejection preservation. Schemas and borrowed
