@@ -14,6 +14,7 @@
 #include "oop/type.h"
 #include "reflection/field.h"
 #include "reflection/struct.h"
+#include "store/store.h"
 #include "test_support.h"
 
 ;;OVERVIEW
@@ -437,6 +438,74 @@ static void testSafeSave(void) {
     Struct_free(se);
 }
 
+/** Verifies reflection rows publish through Store and load after a real reopen. */
+static void testPageStorePersistence(void) {
+    printf("[7] page-store database persistence and reopen\n");
+    const char *tmp = getenv("TMPDIR");
+    if (tmp == nullptr)
+        tmp = "/tmp/";
+    char path[256];
+    snprintf(path, sizeof(path), "%sdarkbase_pages_XXXXXX", tmp);
+    int fd = mkstemp(path);
+    CHECK(fd >= 0);
+    if (fd < 0)
+        return;
+    close(fd);
+    remove(path);
+
+    Store *store = Store(path, 1024u * 1024u, 512u, 2048u);
+    Database *db = Database();
+    Struct *schema = Struct("player");
+    CHECK(store != nullptr && Store_isOpen(store));
+    CHECK(db != nullptr && schema != nullptr);
+    if (store == nullptr || db == nullptr || schema == nullptr) {
+        Store_free(store);
+        Database_free(db);
+        Struct_free(schema);
+        remove(path);
+        return;
+    }
+    Struct_setSize(schema, (uint32_t) sizeof(Row));
+    CHECK(Database_define(db, schema) == 0);
+    Row source[3] = {{41u, 51}, {42u, 52}, {43u, 53}};
+    for (uint32_t i = 0u; i < 3u; i++)
+        CHECK(Database_insertOwned(db, "player", &source[i], sizeof(Row)) == (int32_t) i);
+    CHECK(Database_saveStore(db, store) == DATABASE_OK);
+    CHECK(Store_pageCount(store) >= 2u);
+    Row *changed = (Row*) Database_row(db, "player", 0u);
+    CHECK(changed != nullptr);
+    if (changed != nullptr)
+        changed->health = 999;
+    CHECK(Database_saveStore(db, store) == DATABASE_IO); // bounded journal rejects
+    Database_free(db);
+    Struct_free(schema);
+    Store_free(store);
+
+    store = Store(path);
+    db = Database();
+    schema = Struct("player");
+    CHECK(store != nullptr && Store_isOpen(store));
+    CHECK(db != nullptr && schema != nullptr);
+    if (store != nullptr && db != nullptr && schema != nullptr) {
+        Struct_setSize(schema, (uint32_t) sizeof(Row));
+        CHECK(Database_define(db, schema) == 0);
+        CHECK(Database_loadStore(db, store) == DATABASE_OK);
+        CHECK(Database_count(db, "player") == 3u);
+        for (uint32_t i = 0u; i < 3u; i++) {
+            Row *row = (Row*) Database_row(db, "player", i);
+            CHECK(row != nullptr && row->id == source[i].id &&
+                  row->health == source[i].health); // rejected replacement preserved old root
+        }
+        Database_free(db);
+        Struct_free(schema);
+    } else {
+        Database_free(db);
+        Struct_free(schema);
+    }
+    Store_free(store);
+    remove(path);
+}
+
 int main(void) {
     printf("=== Database Test Suite ===\n\n");
 
@@ -447,6 +516,7 @@ int main(void) {
     testDiagnostics();
     testPersistence();
     testSafeSave();
+    testPageStorePersistence();
 
     printf("\n%d checks, %d failed\n", g_checks, g_fail);
     if (g_fail == 0)
