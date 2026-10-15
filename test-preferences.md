@@ -799,6 +799,27 @@ makes a refusal.
   lands. No live network, TLS, proxy or server concurrency is claimed; the peer
   is a scripted loopback process, so this is not interop or production proof.
 
+### WebSocket Seam Binding Law
+**Proves:** the R2 client really satisfies the R3 transport shape, and a host can
+bind them without either repository including the other.
+- `tests/api-haven/ws_source_binding_test.c`, registered by
+  `python3 tests/api-haven/ws_binding_run.py`, is the host that can see both
+  headers: it assigns `VexWsSource_connect`/`_poll`/`_send`/`_close` into a
+  `HavenWsSource` table and `_Static_assert`s each signature, so a shape that
+  drifts fails to compile. Each source is compiled with its own repository's
+  `src` first, as the One Type Registry Law requires.
+- It proves the chain against a forked loopback peer: attach the handle to
+  `HavenWsFanout`, one message per `pollStep` in order with nothing dropped
+  between steps, the seam's `send` arriving as a masked TEXT frame (decoded by
+  the peer, never by the library), and `close`/`detach` releasing the slot.
+- `poll` delivering one message per call is the lossless contract, not a
+  limitation: Bytes it does not hand over stay in the socket, so polling slower
+  than the peer sends cannot drop a message. A null handle, an unconfigured
+  handle and a locally rejected payload are each refused without disturbing a
+  healthy transport.
+- No live network, TLS, proxy or remote service is claimed, and the peer is
+  scripted, so this is not interop or Discord-gateway proof.
+
 ### Seams to Prove
 
 | Law | Target test | Seam |
@@ -808,9 +829,14 @@ makes a refusal.
 | Pointer Legitimacy | `tests/relational-engine/nio/mem_test.c` plus Vexspoke bit/variable owners | Engine memory ABI and retained CPU object seams |
 | Failure Observability | `tests/vexspoke/relational/failure_observability_test.c` | cold rejections |
 | Failure Observability | `tests/vexspoke/exception/try_value_test.c` | `TryValue`/`TryPtr` value-or-error pair |
+| Diagnostic Ownership | `tests/vexspoke/exception/exception_test.c` | `Exception(...)` formatting, setters, and owned-string release |
+| Audio Configuration Construction | `tests/vexspoke/audio/audio_hal_test.c` | `AudioHalConfig(...)` defaults, callback binding, and setter validation |
+| Function Call Contract | `tests/vexspoke/c23/fn_test.c` | `Function(...)` arities, callback/context setters, binding, and null-safe execution |
 | Overflow Guard | `tests/relational-engine/nio/mem_test.c` plus Vexspoke URL/radix owners | Migrated Transient_alloc and retained CPU arithmetic |
 | Lifetime and Arena | `tests/relational-engine/nio/mem_test.c`, `transient_lifetime_test.c` | Engine MemoryArena/Transient ABI |
 | Concurrent Substrate | `tests/vexspoke/atomic/atomic_contention_test.c` | `atomic/ring`, `atomic/spin`, `bit` |
+| WebSocket Protocol | `tests/vexspoke/net/websocket_test.c` through `python3 tests/vexspoke/net/run.py` | `WebSocket_open`/`_poll`/`_write*`; forked loopback peer |
+| WebSocket Seam Binding | `tests/api-haven/ws_source_binding_test.c` through `python3 tests/api-haven/ws_binding_run.py` | `VexWsSource_*` bound into `HavenWsSource`/`HavenWsFanout`; compile-time signature asserts |
 | Hot-Path Guard | Future `tests/relational-engine/nio/hot_path_guard_test.c` | hot getters, `;;HOTCODE` sites; unproved until registered execution |
 
 ---
