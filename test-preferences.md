@@ -771,6 +771,29 @@ Everything here is about **predictable calculation** and **pointers that lie**.
 - `atomic/ring` MPMC, `atomic/spin` ticket locks, and `bit` ABA tags under contention.
 - Every test has an external bounded watchdog; run under the thread sanitizer.
 
+### WebSocket Protocol Law
+**Proves:** the RFC 6455 client speaks the protocol, and refuses what the RFC
+makes a refusal.
+- `tests/vexspoke/net/websocket_test.c`, registered by
+  `python3 tests/vexspoke/net/run.py`, forks a raw loopback peer that speaks
+  Bytes, never the library, so the client is never validated against itself. It
+  proves the handshake request shape (path, `Upgrade`, `Connection`,
+  `Sec-WebSocket-Version: 13`, a 16-Byte key) and verification of
+  `Sec-WebSocket-Accept` against base64(SHA1(key || GUID)), with a bad accept
+  hash, a non-101 status and a missing `Upgrade` each refused.
+- It proves the frame codec: a client frame is masked, an answered ping is a
+  masked pong, text and binary messages decode with embedded NUL Bytes intact,
+  three continuation frames reassemble into one message, and a peer close reports
+  its code and reason.
+- It proves fail-closed hostility: a masked server frame, a control frame past
+  125 Bytes, a continuation with no start frame, a 64-bit length with its high
+  bit set, invalid UTF-8 in a text message, and a frame past the message cap each
+  move the client to FAILED, and a failed client never invents a later message.
+- A local refusal (an invalid outbound text payload) does not fail a healthy
+  transport. `wss://` is refused before a socket is opened until the TLS backend
+  lands. No live network, TLS, proxy or server concurrency is claimed; the peer
+  is a scripted loopback process, so this is not interop or production proof.
+
 ### Seams to Prove
 
 | Law | Target test | Seam |
