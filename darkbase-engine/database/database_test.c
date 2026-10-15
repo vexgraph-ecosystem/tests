@@ -512,8 +512,20 @@ static void testPageStorePersistence(void) {
     if (mismatch != nullptr && wrongSchema != nullptr && store != nullptr) {
         Struct_setSize(wrongSchema, (uint32_t) sizeof(Row) + 1u);
         CHECK(Database_define(mismatch, wrongSchema) == 0);
+        uint8_t priorBytes[sizeof(Row) + 1u] = {0u};
+        Row priorRow = {71u, 81};
+        memcpy(priorBytes, &priorRow, sizeof(priorRow));
+        priorBytes[sizeof(Row)] = 0x5Au;
+        CHECK(Database_insertOwned(mismatch, "player", priorBytes,
+                                   sizeof(priorBytes)) == 0);
         CHECK(Database_loadStore(mismatch, store) == DATABASE_INVALID);
-        CHECK(Database_count(mismatch, "player") == 0u);
+        CHECK(Database_count(mismatch, "player") == 1u);
+        Row *preserved = (Row*) Database_row(mismatch, "player", 0u);
+        CHECK(preserved != nullptr && preserved->id == priorRow.id &&
+              preserved->health == priorRow.health);
+        uint8_t *preservedBytes = (uint8_t*) preserved;
+        CHECK(preservedBytes != nullptr &&
+              preservedBytes[sizeof(Row)] == 0x5Au);
     }
     Database_free(mismatch);
     Struct_free(wrongSchema);
