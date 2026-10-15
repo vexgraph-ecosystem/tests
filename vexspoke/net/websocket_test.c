@@ -4,7 +4,10 @@
 // with client masking, ping/pong, continuation reassembly, close, UTF-8
 // validation, and the hostile cases the RFC makes refusals (masked server
 // frame, oversize control frame, overlong 64-bit length, stray continuation,
-// message past the cap). No live network, no TLS, no wss://, no proxy.
+// invalid UTF-8, message past the cap). Each hostile case asserts the refusal
+// text of ITS OWN guard, so one guard firing for another's frame fails the
+// case; the 64-bit-length frame is deliberately unmasked so the mask rule
+// cannot mask the length rule. No live network, no TLS, no wss://, no proxy.
 #include "net/websocket.h"
 
 #include "lang/str.h"
@@ -303,7 +306,9 @@ static int peerRun(Scenario scenario, int readyWriteFd) {
                 return 13;
             break;
         case SCENARIO_LENGTH_HIGH_BIT: {
-            uint8_t header[10] = { 0x81u, 0xFFu, 0x80u, 0u, 0u, 0u, 0u, 0u, 0u, 0u };
+            // Deliberately UNMASKED: this case isolates the 64-bit length rule,
+            // so the mask guard must not swallow the refusal first.
+            uint8_t header[10] = { 0x81u, 0x7Fu, 0x80u, 0u, 0u, 0u, 0u, 0u, 0u, 0u };
             if (!peerWrite(peer, header, sizeof(header)))
                 return 13;
             break;
@@ -315,12 +320,11 @@ static int peerRun(Scenario scenario, int readyWriteFd) {
             break;
         }
         case SCENARIO_OVERSIZE: {
-            uint8_t small[8] = { 0u };
-            // Announce 64 KiB without sending it: a length past the cap must be
-            // refused from the header alone, never by reading the payload.
-            uint8_t header[10] = { 0x82u, 127u, 0u, 0u, 0u, 0u, 0u, 0u, 0x10u, 0u };
-            if (!peerWrite(peer, header, sizeof(header)) ||
-                !peerWrite(peer, small, sizeof(small)))
+            // Announce 8192 Bytes — twice the client's 4096 cap — and send none
+            // of it: the length must be refused from the header alone, so the
+            // client never blocks waiting for a payload it will not read.
+            uint8_t header[10] = { 0x82u, 127u, 0u, 0u, 0u, 0u, 0u, 0x20u, 0u };
+            if (!peerWrite(peer, header, sizeof(header)))
                 return 13;
             break;
         }
@@ -551,16 +555,22 @@ static void testUrlRefusals(void) {
     CHECK(WebSocket_framesOut(&empty) == 0u);
 }
 
-/** Protocol violations must fail closed, not desynchronize. */
+/** Protocol violations must fail closed with their OWN refusal, not any error. */
 static void testHostileFrames(void) {
-    printf("[8] hostile frames fail closed\n");
-    struct { Scenario scenario; const char *label; } cases[] = {
-        { SCENARIO_MASKED_FRAME, "masked server frame" },
-        { SCENARIO_CONTROL_TOO_LONG, "oversize control frame" },
-        { SCENARIO_STRAY_CONTINUATION, "stray continuation" },
-        { SCENARIO_LENGTH_HIGH_BIT, "64-bit length high bit" },
-        { SCENARIO_BAD_UTF8, "invalid UTF-8 text" },
-        { SCENARIO_OVERSIZE, "frame past the message cap" },
+    printf("[8] hostile frames fail closed on their own guard\n");
+    struct { Scenario scenario; const char *label; const char *expect; } cases[] = {
+        { SCENARIO_MASKED_FRAME, "masked server frame",
+          "server frames must not be masked" },
+        { SCENARIO_CONTROL_TOO_LONG, "oversize control frame",
+          "control frames must be final and within 125 Bytes" },
+        { SCENARIO_STRAY_CONTINUATION, "stray continuation",
+          "continuation frame without a start frame" },
+        { SCENARIO_LENGTH_HIGH_BIT, "unmasked 64-bit length high bit",
+          "64-bit frame length must clear its high bit" },
+        { SCENARIO_BAD_UTF8, "invalid UTF-8 text",
+          "text message is not valid UTF-8" },
+        { SCENARIO_OVERSIZE, "frame past the message cap",
+          "frame length exceeds the configured cap" },
     };
     for (size_t i = 0u; i < sizeof(cases) / sizeof(cases[0]); i++) {
         char url[128];
@@ -572,8 +582,12 @@ static void testHostileFrames(void) {
         WebSocket client = WebSocket();
         CHECK(openClient(&client, url));
         WebSocketMessage message = WebSocket_poll(&client, 500u);
+        if (message.kind != WS_MESSAGE_ERROR ||
+            strstr(message.error, cases[i].expect) == nullptr)
+            printf("  case %s: kind=%d error=\"%s\"\n", cases[i].label,
+                   (int) message.kind, message.error);
         CHECK(message.kind == WS_MESSAGE_ERROR);
-        CHECK(message.error[0] != '\0');
+        CHECK(strstr(message.error, cases[i].expect) != nullptr); // the right guard
         CHECK(WebSocket_state(&client) == WEBSOCKET_FAILED);
         // A failed client stays failed: no later poll may invent a message.
         CHECK(WebSocket_poll(&client, 10u).kind == WS_MESSAGE_ERROR);
