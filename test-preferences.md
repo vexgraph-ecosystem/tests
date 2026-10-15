@@ -1183,8 +1183,11 @@ Native database store (R3).
   same owner proves the declared in-memory int32 index: `REFLECT_FIELD_INDEXED`
   admission, identical matches on the indexed and scan paths, refresh after an
   insert, and rejection of a null argument, unknown entity, unknown field and an
-  undeclared field without disturbing an existing index. The index is in-memory
-  only; no persisted page-level index, ordering or projection is proved. The same owner proves copied persisted catalog
+  undeclared field without disturbing an existing index. The same owner proves
+  the persisted form: a save carries the index, the reopen adopts it, and a
+  same-stride schema whose indexed field moved is refused instead of silently
+  rebuilt. Only a whole-image index is proved; no page-level incremental index,
+  ordering or projection. The same owner proves copied persisted catalog
   discovery by index, record metadata, out-of-range rejection and independence
   from Store-owned bytes. This does not reconstruct schemas or prove indexes.
 - **Database Page-Chain Bridge Law** — `tests/darkbase-engine/database/database_test.c`,
