@@ -9,6 +9,8 @@
 #include <unistd.h>
 
 #include "net/net.h"
+#include "net/download.h"
+#include "spoke/bespoke.h"
 
 static int g_failures = 0;
 
@@ -37,7 +39,21 @@ static void handler(const HttpExchange *ex, int fd, void *ud) {
     }
 }
 
-int main(void) {
+int main(int argc, char **argv) {
+    DownloadOptions downloadOptions = DownloadOptions();
+    CHECK(downloadOptions.timeout_seconds == 30u);
+    CHECK(downloadOptions.follow_redirects);
+    CHECK(downloadOptions.silent);
+    CHECK(strcmp(downloadOptions.user_agent, "vexgraph/1.0 (Homebrew/Tooling Client)") == 0);
+    DownloadOptions_setSilent(&downloadOptions, false);
+    CHECK(!downloadOptions.silent);
+    Bespoke *bridge = Bespoke();
+    CHECK(bridge != nullptr);
+    CHECK(bridge && (*bridge).graphicsState == BESPOKE_ABSENT);
+
+    if (argc == 2 && strcmp(argv[1], "--constructors-only") == 0)
+        return g_failures == 0 ? 0 : 1;
+
     // --- URL/auth layer ---
     char buf[1024];
     CHECK(NetUrl_build(nullptr, "anti.dev", 0, nullptr, buf, sizeof(buf)) > 0);

@@ -15,6 +15,7 @@
 #include <math.h>
 
 #include "lang/vec2.h"
+#include "lang/vec2/vec2d.h"
 #include "nio/mem.h"
 
 static int g_failures = 0;
@@ -31,12 +32,12 @@ static int g_failures = 0;
 
 // Checks zero/value constructors, directional aliases, and free behavior.
 static void test_construction(void) {
-    Vec2 *z = Vec2_0();
+    Vec2 *z = Vec2();
     CHECK(z != nullptr);
     CHECK(Vec2_getX(z) == 0.0f && Vec2_getY(z) == 0.0f);
     Vec2_free(z);
 
-    Vec2 *v = Vec2_2(3.0f, -4.0f);
+    Vec2 *v = Vec2(3.0f, -4.0f);
     CHECK(v != nullptr);
     CHECK(Vec2_getRight(v) == 3.0f);
     CHECK(Vec2_getUp(v) == -4.0f);
@@ -44,6 +45,13 @@ static void test_construction(void) {
     CHECK(Vec2_getDown(v) == 4.0f);
     Vec2_free(v);
     Vec2_free(nullptr);
+
+    Vec2d *wide = Vec2d();
+    CHECK(wide != nullptr && (*wide).horizontal == 0.0 && (*wide).vertical == 0.0);
+    Vec2d_free(wide);
+    wide = Vec2d(1.25, -2.5);
+    CHECK(wide != nullptr && (*wide).horizontal == 1.25 && (*wide).vertical == -2.5);
+    Vec2d_free(wide);
 }
 
 // Checks setters, coordinate aliases, frame mapping, and copy behavior.

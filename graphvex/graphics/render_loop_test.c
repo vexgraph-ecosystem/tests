@@ -31,7 +31,7 @@ static bool present(void *window, double dt, void *ud) {
 
 // Verifies render-loop callbacks, demand scheduling, and stop behavior.
 int main(void) {
-    RenderLoop *loop = RenderLoop_0();
+    RenderLoop *loop = RenderLoop();
     CHECK(loop != nullptr);
     CHECK(RenderLoop_findClient(loop, &g_window) == nullptr);
 

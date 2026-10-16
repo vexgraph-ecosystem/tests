@@ -83,10 +83,10 @@ int main(void) {
         pixel(shot, 32, 8, COLOR_BLACK); pixel(shot, 32, 56, COLOR_BLACK);
     }
     ScrollPanel_scrollBy(scroll, 1000, 1000);
-    float x, y; ScrollPanel_getOffset(scroll, &x, &y);
+    float x = ScrollPanel_getOffsetX(scroll), y = ScrollPanel_getOffsetY(scroll);
     CHECK(x == 0 && y == 64);
     ScrollPanel_setContentSize(scroll, 64, 32);
-    ScrollPanel_getOffset(scroll, &x, &y); CHECK(x == 0 && y == 0);
+    x = ScrollPanel_getOffsetX(scroll); y = ScrollPanel_getOffsetY(scroll); CHECK(x == 0 && y == 0);
     pixel(Frame_capture(frame), 32, 24, colors[0]);
     Image *cpu = rasterCapture(Frame_element(frame), 96, 64);
     pixel(cpu, 32, 24, colors[0]); pixel(cpu, 32, 56, COLOR_BLACK); Image_destroy(cpu);

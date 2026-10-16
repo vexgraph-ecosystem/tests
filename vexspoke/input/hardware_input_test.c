@@ -31,8 +31,7 @@ static void test_piano_keys(void) {
     PianoKey_noteName(60, name, sizeof(name));
     assert(strcmp(name, "C4") == 0);
 
-    PianoState state;
-    PianoState_init(&state);
+    PianoState state = PianoState();
     assert(!PianoState_isNoteOn(&state, 60));
 
     PianoKeyEvent evt;
@@ -53,16 +52,13 @@ static void test_piano_keys(void) {
 
 // Checks turntable event processing and crossfader curve endpoints.
 static void test_turntable(void) {
-    TurntableState tt;
-    TurntableState_init(&tt, 0);
+    TurntableState tt = TurntableState(0u);
     assert(tt.deckIndex == 0);
     assert(!tt.platterTouched);
 
-    TurntableEvent evt;
-    memset(&evt, 0, sizeof(evt));
-    evt.deckIndex = 0;
-    evt.platterTouched = true;
-    evt.angularDeltaRad = 0.5f;
+    TurntableEvent evt = TurntableEvent(0u, true, 0.5f);
+    TurntableEvent_setPlatterTouched(&evt, true);
+    TurntableEvent_setAngularDelta(&evt, 0.5f);
 
     TurntableState_processEvent(&tt, evt);
     assert(tt.platterTouched == true);
@@ -70,20 +66,26 @@ static void test_turntable(void) {
     TurntableState_tick(&tt, 0.016f);
 
     // Crossfader calculation: linear, sharp cut, smooth dip
-    float left = 0.0f, right = 0.0f;
-    Turntable_calculateCrossfade(0.0f, CROSSFADER_LINEAR, &left, &right);
-    assert(fabsf(left - 0.5f) < 0.001f);
-    assert(fabsf(right - 0.5f) < 0.001f);
+    TurntableCrossfade volumes = Turntable_calculateCrossfade(0.0f, CROSSFADER_LINEAR);
+    assert(fabsf(volumes.left - 0.5f) < 0.001f);
+    assert(fabsf(volumes.right - 0.5f) < 0.001f);
 
-    Turntable_calculateCrossfade(-1.0f, CROSSFADER_LINEAR, &left, &right);
-    assert(fabsf(left - 1.0f) < 0.001f);
-    assert(fabsf(right - 0.0f) < 0.001f);
+    volumes = Turntable_calculateCrossfade(-1.0f, CROSSFADER_LINEAR);
+    assert(fabsf(volumes.left - 1.0f) < 0.001f);
+    assert(fabsf(volumes.right - 0.0f) < 0.001f);
+
+    volumes = Turntable_calculateCrossfade(0.0f, CROSSFADER_SHARP_CUT);
+    assert(volumes.left == 1.0f && volumes.right == 1.0f);
+    volumes = Turntable_calculateCrossfade(1.0f, CROSSFADER_SHARP_CUT);
+    assert(volumes.left == 0.0f && volumes.right == 1.0f);
+    volumes = Turntable_calculateCrossfade(0.0f, CROSSFADER_SMOOTH_DIP);
+    assert(fabsf(volumes.left - 0.7071067f) < 0.001f);
+    assert(fabsf(volumes.right - 0.7071067f) < 0.001f);
 }
 
 // Checks gesture magnification and rotation accumulation.
 static void test_gesture(void) {
-    GestureState state;
-    GestureState_init(&state);
+    GestureState state = GestureState();
     assert(fabsf(state.currentScale - 1.0f) < 0.001f);
 
     GestureEvent evt;
@@ -101,27 +103,30 @@ static void test_gesture(void) {
 
 // Checks button state and circular deadzone filtering.
 static void test_gamepad(void) {
-    GamepadState pad;
-    GamepadState_init(&pad);
+    GamepadState pad = GamepadState();
     assert(pad.buttons == 0);
 
-    pad.buttons |= GAMEPAD_BUTTON_A;
+    GamepadState_setButtons(&pad, GAMEPAD_BUTTON_A);
     assert(GamepadState_isDown(&pad, GAMEPAD_BUTTON_A));
     assert(!GamepadState_isDown(&pad, GAMEPAD_BUTTON_B));
 
     // Circular deadzone test
     Vec2 raw;
-    raw.x = 0.05f;
-    raw.y = 0.05f;
-    Vec2 filtered;
-    Gamepad_applyCircularDeadzone(raw, GAMEPAD_DEFAULT_DEADZONE, &filtered);
+    Vec2_set(&raw, 0.05f, 0.05f);
+    Vec2 filtered = Gamepad_applyCircularDeadzone(raw, GAMEPAD_DEFAULT_DEADZONE);
     assert(filtered.x == 0.0f);
     assert(filtered.y == 0.0f);
 
-    raw.x = 0.8f;
-    raw.y = 0.0f;
-    Gamepad_applyCircularDeadzone(raw, GAMEPAD_DEFAULT_DEADZONE, &filtered);
-    assert(filtered.x > 0.0f);
+    Vec2_set(&raw, 0.8f, 0.0f);
+    filtered = Gamepad_applyCircularDeadzone(raw, GAMEPAD_DEFAULT_DEADZONE);
+    assert(fabsf(filtered.x - (0.8f - GAMEPAD_DEFAULT_DEADZONE) /
+                 (1.0f - GAMEPAD_DEFAULT_DEADZONE)) < 0.001f);
+
+    filtered = Gamepad_applyCircularDeadzone(raw, 0.0f);
+    assert(fabsf(filtered.x - 0.8f) < 0.001f && filtered.y == 0.0f);
+    Vec2_set(&raw, 2.0f, 0.0f);
+    filtered = Gamepad_applyCircularDeadzone(raw, GAMEPAD_DEFAULT_DEADZONE);
+    assert(fabsf(filtered.x - 1.0f) < 0.001f);
 }
 
 // Checks tagged hardware-event constructors preserve device and payload data.
@@ -137,8 +142,7 @@ static void test_hardware_event(void) {
     assert(he1.deviceId == 1);
     assert(he1.data.piano.note == 72);
 
-    GamepadState pad;
-    GamepadState_init(&pad);
+    GamepadState pad = GamepadState();
     HardwareEvent he2 = HardwareEvent_makeGamepad(2, pad);
     assert(he2.type == HW_EVENT_GAMEPAD);
     assert(he2.deviceId == 2);

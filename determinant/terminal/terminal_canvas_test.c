@@ -69,11 +69,14 @@ int main(void) {
     assert(TerminalCanvas_fgAt(&cs, 0, 0) == TERMINAL_RGB(10, 20, 30));
 
     // Row projection + truncation.
-    char row[32];
-    bool cut = true;
-    assert(TerminalCanvas_copyRow(&c, 2, row, sizeof row, &cut) && !cut && row[5] == '-');
-    char tiny[4];
-    assert(!TerminalCanvas_copyRow(&c, 2, tiny, sizeof tiny, &cut) && cut);
+    TerminalCanvasTextRow row = TerminalCanvas_copyRow(&c, 2);
+    assert(!row.truncated && row.data[5] == '-');
+    static uint32_t wideRowCells[1100];
+    TerminalCanvas wideRowCanvas = TerminalCanvas(wideRowCells, nullptr, 1100u, 1u);
+    TerminalCanvas_fill(&wideRowCanvas, 'x', TerminalPen());
+    TerminalCanvasTextRow boundedRow = TerminalCanvas_copyRow(&wideRowCanvas, 0u);
+    assert(boundedRow.truncated && boundedRow.bytes == sizeof boundedRow.data - 1u &&
+           boundedRow.data[boundedRow.bytes] == '\0');
 
     // Null / invalid safety.
     assert(!TerminalCanvas_isValid(nullptr));
@@ -85,16 +88,18 @@ int main(void) {
     TerminalCanvas zero = TerminalCanvas_0();
     TerminalCanvas rejected = TerminalCanvas(cells, styles, 0, 4);
     assert(!TerminalCanvas_isValid(&zero) && !TerminalCanvas_isValid(&rejected));
-    REJECT(TerminalCanvas_copyRow(&c, 0, nullptr, 4, &cut), "destination");
-    assert(cut);
+    assert(TerminalCanvas_copyRow(nullptr, 0).bytes == 0);
 
     // UTF-8: decode, wide-glyph continuation, malformed input, re-encode.
-    uint32_t cp = 0;
-    assert(TerminalCanvas_utf8Decode("A", 1, &cp) == 1 && cp == 'A');
-    assert(TerminalCanvas_utf8Decode("\xC3\xA9", 2, &cp) == 2 && cp == 0xE9u);        // é
-    assert(TerminalCanvas_utf8Decode("\xE6\xBC\xA2", 3, &cp) == 3 && cp == 0x6F22u);  // 漢 (wide)
-    assert(TerminalCanvas_utf8Decode("\xFF", 1, &cp) == 0);                           // malformed
-    assert(TerminalCanvas_utf8Decode("", 0, &cp) == 0 && TerminalCanvas_utf8Decode("A", 1, nullptr) == 0);
+    TerminalCanvasDecodedScalar decoded = TerminalCanvas_utf8Decode("A", 1);
+    assert(decoded.bytes == 1 && decoded.codepoint == 'A');
+    decoded = TerminalCanvas_utf8Decode("\xC3\xA9", 2);
+    assert(decoded.bytes == 2 && decoded.codepoint == 0xE9u);        // é
+    decoded = TerminalCanvas_utf8Decode("\xE6\xBC\xA2", 3);
+    assert(decoded.bytes == 3 && decoded.codepoint == 0x6F22u);  // 漢 (wide)
+    decoded = TerminalCanvas_utf8Decode("\xFF", 1);
+    assert(decoded.bytes == 0);                           // malformed
+    assert(TerminalCanvas_utf8Decode("", 0).bytes == 0);
 
     TerminalCanvas utf = TerminalCanvas(cells, styles, W, H);
     TerminalCanvas_fill(&utf, ' ', TerminalPen());
@@ -105,10 +110,10 @@ int main(void) {
     assert(TerminalCanvas_glyphAt(&utf, 3, 0) == 0xE9u && TerminalCanvas_glyphAt(&utf, 4, 0) == '!');
     TerminalCanvas_text(&utf, 0, 1, "\xFF", 1, TerminalPen());           // malformed -> '?'
     assert(TerminalCanvas_glyphAt(&utf, 0, 1) == '?');
-    char utfRow[32];
-    assert(TerminalCanvas_copyRow(&utf, 0, utfRow, sizeof utfRow, &cut) && !cut);
-    assert(strncmp(utfRow, "\xE6\xBC\xA2  \xC3\xA9!", 8) == 0);         // re-encoded, continuation as space
+    TerminalCanvasTextRow utfRow = TerminalCanvas_copyRow(&utf, 0);
+    assert(!utfRow.truncated);
+    assert(strncmp(utfRow.data, "\xE6\xBC\xA2  \xC3\xA9!", 8) == 0); // re-encoded, continuation as space
 
-    PROJECT(TerminalCanvas, &c);
+    TERMINAL_PROJECT(TerminalCanvas, &c);
     return 0;
 }

@@ -78,7 +78,7 @@ src/thread/thread.c Thread_free
 src/thread/thread.c Thread_freeAll
 src/thread/thread.c Thread_freeAllSystem
 src/thread/thread.c Thread_isRunning
-src/thread/thread.c Thread_new
+src/thread/thread.c Thread_5
 src/thread/thread.c Thread_purpose
 src/thread/thread.c Thread_queue
 src/thread/thread.c Thread_run

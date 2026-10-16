@@ -6,8 +6,8 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
-LANGUAGE = ROOT / "drivers/language"
-VEXSPOKE = ROOT / "host-behavior/vexspoke/src"
+LANGUAGE = ROOT / "suite/ecosystem/language"
+VEXSPOKE = ROOT / "suite/ecosystem/vexspoke/src"
 CASES = (
     ("document/source_range", ("document/source_range.c",)),
     ("token/token", ("token/token.c", "document/source_range.c")),
@@ -31,7 +31,7 @@ def main():
                 test = ROOT / "tests/language" / f"{unit}_test.c"
                 binary = output / f"{configuration}_{unit.replace('/', '_')}"
                 command = [
-                    "clang", "-std=gnu23", "-Wall", "-Wextra", "-Werror", *flags,
+                    "clang", "-std=c23", "-Wall", "-Wextra", "-Werror", *flags,
                     f"-I{LANGUAGE}", f"-I{VEXSPOKE}", str(test),
                     *(str(LANGUAGE / source) for source in sources), "-o", str(binary),
                 ]

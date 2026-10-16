@@ -47,4 +47,14 @@ static void endDiagnostics(size_t expected, const char *fragment) {
     REJECT(Class##_toString(self, text, 1, &cut), "truncated"); assert(cut); \
     REJECT(Class##_toStringStruct(self, nullptr, 0, &cut), "destination"); assert(cut); \
 } while (0)
+#define TERMINAL_PROJECT(Class, self) do { \
+    beginDiagnostics(); \
+    TerminalProjection projection = Class##_toString(self); \
+    assert(projection.length > 0 && !projection.truncated); \
+    TerminalProjection structured = Class##_toStringStruct(self); \
+    assert(structured.length > 0 && !structured.truncated); \
+    TerminalProjection nullProjection = Class##_toString(nullptr); \
+    assert(strcmp(nullProjection.text, "nullptr") == 0 && !nullProjection.truncated); \
+    endDiagnostics(0, nullptr); \
+} while (0)
 #endif

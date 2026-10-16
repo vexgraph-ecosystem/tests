@@ -57,19 +57,18 @@ static void testLifecycle(void) {
     CHECK(VariableMiniMap_count(&map) == 0u);
     CHECK(VariableMiniMap_isEmpty(&map) == true);
 
-    uintptr_t out = 7u;
-    CHECK(VariableMiniMap_get(&map, "x", &out) == false && out == 0u);
+    CHECK(VariableMiniMap_get(&map, "x") == 0u);
     CHECK(VariableMiniMap_contains(&map, "x") == false);
     CHECK(VariableMiniMap_add(&map, "x", 1u) == true);
     CHECK(VariableMiniMap_count(&map) == 1u);
     CHECK(VariableMiniMap_isEmpty(&map) == false);
-    CHECK(VariableMiniMap_get(&map, "X", &out) == true && out == 1u);
+    CHECK(VariableMiniMap_get(&map, "X") == 1u);
 
     CHECK(VariableMiniMap_init(nullptr) == false);
     CHECK(VariableMiniMap_count(nullptr) == 0u);
     CHECK(VariableMiniMap_isEmpty(nullptr) == true);
     CHECK(VariableMiniMap_add(nullptr, "x", 1u) == false);
-    CHECK(VariableMiniMap_get(nullptr, "x", &out) == false);
+    CHECK(VariableMiniMap_get(nullptr, "x") == 0u);
     CHECK(VariableMiniMap_contains(nullptr, "x") == false);
 
     VariableMiniMap_shutdown(&map);
@@ -95,20 +94,18 @@ static void testBucketsAndFold(void) {
     CHECK(VariableMiniMap_count(&map) == 39u);
     for (size_t i = 0u; i < n; i++) {
         char name[4] = { firsts[i], '1', '\0' };
-        uintptr_t out = 0u;
-        CHECK(VariableMiniMap_get(&map, name, &out) == true && out == 0x100u + (uintptr_t) i);
+        CHECK(VariableMiniMap_get(&map, name) == 0x100u + (uintptr_t) i);
     }
 
     // Folding + dotted names.
     CHECK(VariableMiniMap_add(&map, "Character.Position.X", 0xAAu) == true);
-    uintptr_t out = 0u;
-    CHECK(VariableMiniMap_get(&map, "character.position.x", &out) == true && out == 0xAAu);
+    CHECK(VariableMiniMap_get(&map, "character.position.x") == 0xAAu);
 
     // Upsert: same folded key updates, never duplicates.
     uint32_t before = VariableMiniMap_count(&map);
     CHECK(VariableMiniMap_add(&map, "character.position.x", 0xBBu) == true);
     CHECK(VariableMiniMap_count(&map) == before);
-    CHECK(VariableMiniMap_get(&map, "CHARACTER.POSITION.X", &out) == true && out == 0xBBu);
+    CHECK(VariableMiniMap_get(&map, "CHARACTER.POSITION.X") == 0xBBu);
 
     VariableMiniMap_shutdown(&map);
 }

@@ -167,31 +167,22 @@ static void test_pointer_accessors(SymbolTable *v) {
     CHECK(!SymbolTable_compareAndSetPointer(v, -1, 0u, 1u));
 }
 
-// Checks name copy length, exact/short destination sizes, and invalid output/id cases.
+// Checks direct name return and invalid-id handling.
 static void test_get_name(SymbolTable *v) {
     int32_t id = SymbolTable_instant(v, "gn_name", ID_INT, 1u);
     CHECK(id >= 0);
 
-    char buf[24];
-    int len = SymbolTable_getName(v, id, buf, sizeof(buf));
-    CHECK(len == (int) strlen("gn_name"));
-    CHECK(strcmp(buf, "gn_name") == 0);
-
-    // Exactly len+1 fits; one byte short fails.
-    char exact[8];
-    CHECK(SymbolTable_getName(v, id, exact, 8) == 7);
-    char shortbuf[7];
-    CHECK(SymbolTable_getName(v, id, shortbuf, 7) == -1);
-
-    CHECK(SymbolTable_getName(v, id, nullptr, 24) == -1);
-    CHECK(SymbolTable_getName(v, -1, buf, sizeof(buf)) == -1);
-    CHECK(SymbolTable_getName(v, 99999, buf, sizeof(buf)) == -1);
+    CHECK(strcmp(SymbolTable_getName(v, id), "gn_name") == 0);
+    CHECK(SymbolTable_getName(v, -1) == nullptr);
+    CHECK(SymbolTable_getName(v, 99999) == nullptr);
 }
 
 // Exercises null arguments and zero-initialized inactive tables across the public surface.
 static void test_null_and_inactive(void) {
     // nullptr everywhere.
-    CHECK(!SymbolTable_init(nullptr));
+    SymbolTable constructed = SymbolTable();
+    CHECK(constructed.active);
+    SymbolTable_shutdown(&constructed);
     SymbolTable_shutdown(nullptr);
     CHECK(SymbolTable_instant(nullptr, "x", ID_INT, 1u) == -1);
     CHECK(SymbolTable_getId(nullptr, "x") == -1);
@@ -201,7 +192,7 @@ static void test_null_and_inactive(void) {
     SymbolTable_setPointer(nullptr, 0, 1u);
     CHECK(!SymbolTable_compareAndSetPointer(nullptr, 0, 0u, 1u));
     CHECK(SymbolTable_getClassId(nullptr, 0) == 0u);
-    CHECK(SymbolTable_getName(nullptr, 0, nullptr, 0) == -1);
+    CHECK(SymbolTable_getName(nullptr, 0) == nullptr);
     CHECK(SymbolTable_getActiveCount(nullptr) == 0);
 
     // A zero-initialized (inactive) table is equally safe.
@@ -245,8 +236,8 @@ static void test_observability(SymbolTable *v) {
 
 // Checks active-entry removal and safe repeated shutdown on an initialized table.
 static void test_shutdown(void) {
-    SymbolTable v;
-    CHECK(SymbolTable_init(&v));
+    SymbolTable v = SymbolTable();
+    CHECK(v.active);
     CHECK(SymbolTable_instant(&v, "sd_x", ID_INT, 1u) >= 0);
     CHECK(SymbolTable_getActiveCount(&v) == 1);
 
@@ -261,8 +252,8 @@ static void test_shutdown(void) {
 int main(void) {
     CHECK(Memory_init(0));
 
-    SymbolTable v;
-    CHECK(SymbolTable_init(&v));
+    SymbolTable v = SymbolTable();
+    CHECK(v.active);
 
     test_instant_and_lookup(&v);
     test_name_policy(&v);

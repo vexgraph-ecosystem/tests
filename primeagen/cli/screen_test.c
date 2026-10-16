@@ -64,7 +64,8 @@ int main(void) {
     // --- HOME: stacked menu boxes, the app's banner box beside them ---
     TerminalImage banner = TerminalImage(pixels, 2, 1);
     TerminalImage_setInvert(&banner, true);          // white paper -> blank
-    TerminalImage_setColorRamp(&banner, TerminalImage_rampPurple(nullptr), 8);
+    TerminalImageColorRamp purple = TerminalImage_rampPurple();
+    TerminalImage_setColorRamp(&banner, purple.data, purple.count);
     static const char *menu[] = { "People", "Servers", "Settings" };
     PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, &banner);
     // The frame draws its OWN box with real corners (never '+').
@@ -173,8 +174,8 @@ int main(void) {
     PrimeagenScreen_setBanner(pixels, 2, 1);
     const TerminalImage *stored = PrimeagenScreen_banner();
     assert(stored != nullptr && !TerminalImage_inverted(stored));
-    size_t rampCount = 0;
-    assert(TerminalImage_getColorRamp(stored, &rampCount) != nullptr && rampCount > 0);
+    TerminalImageColorRamp ramp = TerminalImage_getColorRamp(stored);
+    assert(ramp.data != nullptr && ramp.count > 0);
     assert(TerminalImage_getNoise(stored) != nullptr);
     assert(TerminalImage_getNoiseDensity(stored) > 0);
     PrimeagenScreen_renderHome(&screen, "Primeagen", menu, 3, 0, stored);

@@ -27,7 +27,7 @@ int main(void) {
     assert(strcmp(h, "84983e441c3bd26ebaae4aa1f95129e5e54670f1") == 0);
 
     // Streaming in pieces must equal the one-shot form.
-    CryptoSha1 ctx;
+    CryptoSha1 ctx = CryptoSha1();
     Crypto_sha1Init(&ctx);
     for (size_t i = 0; i < strlen(m); ++i)
         Crypto_sha1Update(&ctx, m + i, 1);

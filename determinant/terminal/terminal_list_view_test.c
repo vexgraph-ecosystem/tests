@@ -12,6 +12,8 @@ int main(void) {
     TerminalCanvas_fill(&canvas, ' ', TerminalPen());
 
     TerminalListView view = TerminalListView(labels, 4);
+    TerminalListViewLabels viewLabels = TerminalListView_getLabels(&view);
+    assert(viewLabels.data == labels && viewLabels.count == 4u);
     assert(strcmp(TerminalListView_getMarker(&view), "> ") == 0);
     assert(TerminalListView_getSelection(&view) == 0 && TerminalListView_getScroll(&view) == 0);
 
@@ -38,12 +40,13 @@ int main(void) {
     TerminalListView_render(&view, &canvas);
     assert(TerminalCanvas_fgAt(&canvas, 2, 0) == TERMINAL_RGB(2, 2, 2));
     assert(TerminalCanvas_styleAt(&canvas, 2, 0) == 0);   // styles plane absent here
-    TerminalPen n = TerminalPen_0(), s = TerminalPen_0();
-    TerminalListView_getPens(&view, &n, &s);
-    assert(n.fg == TERMINAL_RGB(1, 1, 1) && s.fg == TERMINAL_RGB(2, 2, 2));
+    TerminalListViewPens pens = TerminalListView_getPens(&view);
+    assert(pens.normal.fg == TERMINAL_RGB(1, 1, 1) && pens.selected.fg == TERMINAL_RGB(2, 2, 2));
 
     // Empty / overflow / null safety.
     TerminalListView empty = TerminalListView_0();
+    viewLabels = TerminalListView_getLabels(nullptr);
+    assert(viewLabels.data == nullptr && viewLabels.count == 0u);
     TerminalListView_render(&empty, &canvas);
     assert(!TerminalListView_move(&empty, 1, 3));
     TerminalListView_render(nullptr, &canvas);
@@ -53,6 +56,6 @@ int main(void) {
     REJECT(TerminalListView_setLabels(&view, nullptr, 3), "null list");
     REJECT(TerminalListView_setSelection(nullptr, 1), "null");
 
-    PROJECT(TerminalListView, &view);
+    TERMINAL_PROJECT(TerminalListView, &view);
     return 0;
 }

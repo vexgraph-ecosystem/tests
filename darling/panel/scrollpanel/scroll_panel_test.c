@@ -41,15 +41,11 @@ int main(void) {
 
     // the offset clamps at both ends
     ScrollPanel_setOffset(sp, 0, 900);
-    float ox, oy;
-    ScrollPanel_getOffset(sp, &ox, &oy);
-    CHECK(near(oy, 850.0f));
+    CHECK(near(ScrollPanel_getOffsetY(sp), 850.0f));
     ScrollPanel_scrollBy(sp, 0, -1000);
-    ScrollPanel_getOffset(sp, &ox, &oy);
-    CHECK(near(oy, 0.0f));
+    CHECK(near(ScrollPanel_getOffsetY(sp), 0.0f));
     ScrollPanel_scrollBy(sp, 0, 120);
-    ScrollPanel_getOffset(sp, &ox, &oy);
-    CHECK(near(oy, 120.0f));
+    CHECK(near(ScrollPanel_getOffsetY(sp), 120.0f));
 
     // the offset IS the content placement: resolve shows it scrolled up
     Rect r = Element_resolve(doc, (Rect){0, 0, 200, 150});
@@ -57,11 +53,9 @@ int main(void) {
 
     // shrinking the content re-clamps the offset (never marooned)
     ScrollPanel_setContentSize(sp, 200, 160);
-    ScrollPanel_getOffset(sp, &ox, &oy);
-    CHECK(near(oy, 10.0f));                          // 160 - 150
+    CHECK(near(ScrollPanel_getOffsetY(sp), 10.0f));   // 160 - 150
     ScrollPanel_setContentSize(sp, 200, 100);
-    ScrollPanel_getOffset(sp, &ox, &oy);
-    CHECK(near(oy, 0.0f));                           // no scroll range -> home
+    CHECK(near(ScrollPanel_getOffsetY(sp), 0.0f));   // no scroll range -> home
 
     // it paints: the viewport clips, then the content
     DisplayList *dl = DisplayList_0();

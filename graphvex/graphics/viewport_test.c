@@ -18,7 +18,7 @@ static int g_fail = 0;
 
 // Checks viewport mapping, clipping, and boundary coordinate behavior.
 int main(void) {
-    Viewport v = Viewport_0();
+    Viewport v = Viewport();
     CHECK(Viewport_isEmpty(&v));          // 0x0
 
     Viewport_resize(&v, 1800, 1200, 2.0f);   // retina: 2x
@@ -36,16 +36,14 @@ int main(void) {
     CHECK(r.x == 200.0f && r.y == 120.0f && r.w == 100.0f && r.h == 60.0f);
 
     // native px -> points
-    float px, py;
-    Viewport_toPoints(&v, 200, 120, &px, &py);
-    CHECK(px == 100.0f && py == 60.0f);
-    Viewport_toPoints(&v, -4, -8, &px, &py);   // negatives are exact too
-    CHECK(px == -2.0f && py == -4.0f);
+    ViewportPoint point = Viewport_toPoints(&v, 200, 120);
+    CHECK(point.x == 100.0f && point.y == 60.0f);
+    point = Viewport_toPoints(&v, -4, -8);   // negatives are exact too
+    CHECK(point.x == -2.0f && point.y == -4.0f);
 
     // logical size (what the UI lays out in)
-    float lw, lh;
-    Viewport_logicalSize(&v, &lw, &lh);
-    CHECK(lw == 900.0f && lh == 600.0f);
+    ViewportSize logical = Viewport_logicalSize(&v);
+    CHECK(logical.width == 900.0f && logical.height == 600.0f);
 
     // a 0 backing scale is coerced to 1 (never a divide-by-zero)
     Viewport_resize(&v, 100, 100, 0.0f);
@@ -55,8 +53,8 @@ int main(void) {
     // null-safe reads
     CHECK(Viewport_isEmpty(nullptr));
     CHECK(Viewport_x(nullptr, 5.0f) == 5.0f);
-    Viewport_toPoints(nullptr, 10, 20, &px, &py);   // must not crash
-    CHECK(px == 10.0f && py == 20.0f);
+    point = Viewport_toPoints(nullptr, 10, 20);   // must not crash
+    CHECK(point.x == 10.0f && point.y == 20.0f);
 
     printf("viewport_test: ALL PASS\n");
     return g_fail == 0 ? 0 : 1;

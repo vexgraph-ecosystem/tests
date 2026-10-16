@@ -34,27 +34,31 @@ static int g_failures = 0;
 /** Checks ring initialization and rejects invalid dimensions or empty/full operations. */
 static void test_init_and_bounds(void) {
     RingBuffer r;
-    CHECK(!RingBuffer_init(nullptr, 4, 4));
-    CHECK(!RingBuffer_init(&r, 0, 4));          // zero element size refused
+    RingBuffer invalid = RingBuffer();
+    CHECK(invalid.slots == nullptr);
+    RingBuffer invalidDimensions = RingBuffer(0u, 4u);
+    CHECK(invalidDimensions.slots == nullptr);
+    r = RingBuffer(0u, 4u);
+    CHECK(r.slots == nullptr); // zero element size refused
 
-    CHECK(RingBuffer_init(&r, sizeof(int), 3)); // rounds 3 -> 4
+    r = RingBuffer(sizeof(int), 3); CHECK(r.slots != nullptr);
     CHECK(r.capacity == 4);
     CHECK(r.mask == 3);
     CHECK(r.elem_size == sizeof(int));
     RingBuffer_shutdown(&r);
 
-    CHECK(RingBuffer_init(&r, sizeof(int), 5)); // rounds 5 -> 8
+    r = RingBuffer(sizeof(int), 5); CHECK(r.slots != nullptr);
     CHECK(r.capacity == 8);
     CHECK(r.mask == 7);
 
     // Exact powers of two do not grow.
     RingBuffer_shutdown(&r);
-    CHECK(RingBuffer_init(&r, sizeof(int), 2));
+    r = RingBuffer(sizeof(int), 2); CHECK(r.slots != nullptr);
     CHECK(r.capacity == 2);
     RingBuffer_shutdown(&r);
 
     // Requesting zero rounds up to the minimum ring of one slot.
-    CHECK(RingBuffer_init(&r, sizeof(int), 0));
+    r = RingBuffer(sizeof(int), 0); CHECK(r.slots != nullptr);
     CHECK(r.capacity == 1);
     CHECK(r.mask == 0);
     int one = 7;
@@ -68,14 +72,14 @@ static void test_init_and_bounds(void) {
 
     // Double shutdown is safe; re-init after shutdown is safe.
     RingBuffer_shutdown(&r);
-    CHECK(RingBuffer_init(&r, sizeof(int), 4));
+    r = RingBuffer(sizeof(int), 4); CHECK(r.slots != nullptr);
     RingBuffer_shutdown(&r);
 }
 
 /** Verifies FIFO order, full-capacity refusal, and slot reuse after popping. */
 static void test_fifo_and_full(void) {
     RingBuffer r;
-    CHECK(RingBuffer_init(&r, sizeof(int), 4));
+    r = RingBuffer(sizeof(int), 4); CHECK(r.slots != nullptr);
 
     int out = -1;
     CHECK(!RingBuffer_pop(&r, &out));           // empty pop refused
@@ -111,7 +115,7 @@ static void test_fifo_and_full(void) {
 /** Exercises repeated index wraparound while preserving element order. */
 static void test_wraparound(void) {
     RingBuffer r;
-    CHECK(RingBuffer_init(&r, sizeof(int), 4));
+    r = RingBuffer(sizeof(int), 4); CHECK(r.slots != nullptr);
 
     // Push 2 / pop 2 repeatedly: the masked slot index wraps many times.
     int expect = 0;
@@ -141,7 +145,7 @@ typedef struct Big {
 /** Confirms the ring copies complete elements larger than a machine word. */
 static void test_wide_elements(void) {
     RingBuffer r;
-    CHECK(RingBuffer_init(&r, sizeof(Big), 2));
+    r = RingBuffer(sizeof(Big), 2); CHECK(r.slots != nullptr);
     for (int i = 0; i < 2; i++) {
         Big b = { .a = (uint64_t) i * 11, .b = (uint64_t) i * 22, .tag = "abc" };
         CHECK(RingBuffer_push(&r, &b));
@@ -207,7 +211,7 @@ static void *ring_consumer(void *arg) {
 
 /** Checks concurrent producers and consumers deliver every submitted value exactly once. */
 static void test_mpmc_exactly_once(void) {
-    CHECK(RingBuffer_init(&g_ring, sizeof(int), 64));
+    g_ring = RingBuffer(sizeof(int), 64u); CHECK(g_ring.slots != nullptr);
     for (int i = 0; i < RING_TOTAL; i++)
         atomic_store(&g_seen[i], 0);
     atomic_store(&g_consumed, 0);

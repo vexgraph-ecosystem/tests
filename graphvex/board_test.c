@@ -26,7 +26,7 @@ static void step2(Board *board, void *ud) { (void)board; (void)ud; g_steps[g_ste
 
 // Verifies board composition, mutation, and lifecycle behavior.
 int main(void) {
-    Board *b = Board_2(8, 8);
+    Board *b = Board(8, 8);
     CHECK(b != nullptr);
     CHECK(Board_isValid(b));
     CHECK(Board_width(b) == 8 && Board_height(b) == 8);
@@ -52,7 +52,7 @@ int main(void) {
     CHECK(Board_resize(b, 4, 4));
 
     // default board is 1x1
-    Board *d = Board_0();
+    Board *d = Board();
     CHECK(Board_width(d) == 1 && Board_height(d) == 1);
     Board_destroy(d);
 

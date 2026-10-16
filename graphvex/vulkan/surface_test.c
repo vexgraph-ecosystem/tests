@@ -37,7 +37,7 @@ static void countReval(Board *board, void *ud) { (void)board; (*(int *)ud)++; }
 
 // Exercises surface lifecycle, presentation admission, and board revalidation.
 int main(void) {
-    Surface *s = Surface_2((void *)0xCAFE, 100, 50);
+    Surface *s = Surface((void *)0xCAFE, 100, 50);
     CHECK(s != NULL);
     CHECK(Surface_isValid(s));
     CHECK(Surface_width(s) == 100 && Surface_height(s) == 50);
@@ -77,7 +77,7 @@ int main(void) {
     // revalidation cascade: Surface_revalidate runs each attached board's steps,
     // then presents the finished image
     Surface_onPresent(s, recordPresent, &hits);   // reinstall a passing blit
-    Board *bd = Board_2(100, 50);
+    Board *bd = Board(100, 50);
     int stepRuns = 0;
     Board_addRevalidator(bd, countReval, &stepRuns);
     Surface_addBoard(s, bd);
@@ -98,7 +98,7 @@ int main(void) {
     Surface_revalidate(NULL);          // must not crash
 
     // a null native handle is a valid offscreen surface
-    Surface *off = Surface_0();
+    Surface *off = Surface();
     CHECK(Surface_isValid(off));
     CHECK(Surface_handle(off) == NULL);
     CHECK(!Surface_present(off));       // still false without a host seam

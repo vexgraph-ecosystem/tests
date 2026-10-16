@@ -33,9 +33,9 @@ static int g_failures = 0;
 
 // Checks circle-array constructors, initial state, and invalid construction inputs.
 static void test_construction(void) {
-    CHECK(CircleArray_create(-1, ID_INT) == nullptr);   // negative radius refused
+    CHECK(CircleArray(-1, ID_INT) == nullptr);   // negative radius refused
 
-    CircleArray *r0 = CircleArray_create(0, ID_INT);
+    CircleArray *r0 = CircleArray(0, ID_INT);
     CHECK(r0 != nullptr);
     CHECK(CircleArray_radius(r0) == 0);
     CHECK(CircleArray_diameter(r0) == 1);
@@ -44,7 +44,7 @@ static void test_construction(void) {
 
     const int expected[] = { 1, 5, 13, 29, 49 };
     for (int32_t r = 0; r <= 4; r++) {
-        CircleArray *a = CircleArray_create(r, ID_INT);
+        CircleArray *a = CircleArray(r, ID_INT);
         CHECK(a != nullptr);
         CHECK(CircleArray_radius(a) == r);
         CHECK(CircleArray_diameter(a) == 2 * r + 1);
@@ -53,7 +53,7 @@ static void test_construction(void) {
     }
 
     // Explicit stride construction is honored.
-    CircleArray *s = CircleArray_createWithStride(2, ID_INT, 8);
+    CircleArray *s = CircleArray(2, ID_INT, 8);
     CHECK(s != nullptr);
     CHECK(CircleArray_validCellCount(s) == 13);
     CircleArray_free(s);
@@ -63,7 +63,7 @@ static void test_construction(void) {
 
 // Verifies circle dimensions and computed storage geometry.
 static void test_geometry(void) {
-    CircleArray *a = CircleArray_create(3, ID_INT);
+    CircleArray *a = CircleArray(3, ID_INT);
     CHECK(a != nullptr);
 
     // Distance squared around the center.
@@ -91,38 +91,38 @@ static void test_geometry(void) {
 
 // Checks indexed writes and reads across the circular array's logical bounds.
 static void test_access_round_trip(void) {
-    CircleArray *a = CircleArray_create(2, ID_INT);
+    CircleArray *a = CircleArray(2, ID_INT);
     CHECK(a != nullptr);
 
     // Offset write / grid read must agree.
     int v = 1234;
     CHECK(CircleArray_setOffset(a, 0, 0, &v));
     int got = 0;
-    CHECK(CircleArray_getGrid(a, 2, 2, &got));          // center grid == radius
+    CHECK(CircleArray_getGrid(&got, a, 2, 2));          // center grid == radius
     CHECK(got == 1234);
 
     CHECK(CircleArray_setOffset(a, 2, 0, &(int){ 7 }));
-    CHECK(CircleArray_getOffset(a, 2, 0, &got));
+    CHECK(CircleArray_getOffset(&got, a, 2, 0));
     CHECK(got == 7);
     CHECK(CircleArray_setGrid(a, 2, 1, &(int){ 9 }));
-    CHECK(CircleArray_getOffset(a, 0, -1, &got));
+    CHECK(CircleArray_getOffset(&got, a, 0, -1));
     CHECK(got == 9);
 
     // Initial cells are zeroed.
-    CHECK(CircleArray_getOffset(a, 1, 1, &got));        // 2 > 4? no: 1+1=2<=4 valid
+    CHECK(CircleArray_getOffset(&got, a, 1, 1));        // 2 > 4? no: 1+1=2<=4 valid
     CHECK(got == 0);
 
     // Out-of-disk and out-of-bounds writes are refused and leave neighbors.
     CHECK(!CircleArray_setOffset(a, 2, 2, &(int){ 99 }));
     CHECK(!CircleArray_setGrid(a, 5, 5, &(int){ 99 }));
-    CHECK(!CircleArray_getOffset(a, 2, 2, &got));
-    CHECK(!CircleArray_getGrid(a, 5, 5, &got));
-    CHECK(CircleArray_getOffset(a, 0, 0, &got));
+    CHECK(!CircleArray_getOffset(&got, a, 2, 2));
+    CHECK(!CircleArray_getGrid(&got, a, 5, 5));
+    CHECK(CircleArray_getOffset(&got, a, 0, 0));
     CHECK(got == 1234);                                 // untouched
 
     // nullptr src / dest are refused.
     CHECK(!CircleArray_setOffset(a, 0, 0, nullptr));
-    CHECK(!CircleArray_getOffset(a, 0, 0, nullptr));
+    CHECK(!CircleArray_getOffset(nullptr, a, 0, 0));
 
     // Slot accessors.
     CHECK(CircleArray_slotOffset(a, 0, 0) != nullptr);
@@ -165,7 +165,7 @@ static void walkCell(int32_t gridX, int32_t gridY, int32_t dx, int32_t dy,
 
 // Confirms iteration visits each occupied circle-array element exactly once.
 static void test_for_each(void) {
-    CircleArray *a = CircleArray_create(3, ID_INT);
+    CircleArray *a = CircleArray(3, ID_INT);
     CHECK(a != nullptr);
 
     // Fill every valid cell with its linear (1 + dx + dy) to make the walk sum

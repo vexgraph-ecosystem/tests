@@ -106,7 +106,7 @@ static void test_timer_tick(void) {
 // Confirms a paused Clock freezes scaled timer duration while real nanos still advance.
 // Confirms a paused Clock suppresses virtual accumulation while measuring real elapsed time.
 static void test_timer_with_paused_clock(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     Clock_setPaused(&c, true);
 
     NanoTimer t;
@@ -128,7 +128,7 @@ static void test_timer_with_paused_clock(void) {
 // Checks timer deltas reflect a non-unit Clock time scale within scheduling tolerance.
 // Checks timer delta scaling against the measured real-time interval.
 static void test_timer_scale(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     Clock_setTimeScale(&c, 2.0);
 
     NanoTimer t;

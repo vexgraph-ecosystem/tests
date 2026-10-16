@@ -37,9 +37,8 @@ int main(void) {
     assert(TerminalButton_setLabel(&b, "Yes"));
     assert(strcmp(TerminalButton_getLabel(&b), "Yes") == 0);
     assert(TerminalButton_setPosition(&b, 5, 0));
-    size_t x, y;
-    TerminalButton_getPosition(&b, &x, &y);
-    assert(x == 5 && y == 0);
+    TerminalButtonPosition position = TerminalButton_getPosition(&b);
+    assert(position.x == 5 && position.y == 0);
     assert(TerminalButton_render(&b, &terminal)); // exact right edge
     endDiagnostics(0, nullptr);
     REJECT(TerminalButton_setLabel(&b, "bad\n"), "label");
@@ -53,9 +52,9 @@ int main(void) {
     REJECT(TerminalButton_render(nullptr, &terminal), "null");
     assert(TerminalButton_getLabel(nullptr) == nullptr && !TerminalButton_isFocused(nullptr));
     assert(!TerminalButton_isEnabled(nullptr));
-    TerminalButton_getPosition(nullptr, &x, &y);
-    assert(x == 0 && y == 0);
-    PROJECT(TerminalButton, &b);
+    position = TerminalButton_getPosition(nullptr);
+    assert(position.x == 0 && position.y == 0);
+    TERMINAL_PROJECT(TerminalButton, &b);
     assert(Terminal_free(&terminal));
     return 0;
 }

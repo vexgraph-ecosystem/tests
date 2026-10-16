@@ -62,12 +62,7 @@ static void on_done(void *ctx) {
 // Builds a callback/context pair used to exercise job recognition and submission.
 // Builds a tagged job wired to the test's run and completion counters.
 static ComputeJob make_job(void) {
-    ComputeJob j;
-    j.tag = COMPUTE_JOB_TAG;
-    j.run = on_run;
-    j.ctx = nullptr;
-    j.onDone = on_done;
-    return j;
+    return ComputeJob(on_run, nullptr, on_done);
 }
 
 // Checks job-tag recognition, callback order/counts, and invalid packet rejection.

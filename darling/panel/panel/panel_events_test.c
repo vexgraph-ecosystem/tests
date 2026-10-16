@@ -76,8 +76,7 @@ int main(void) {
     Event wheel = { .kind = EV_SCROLL, .x = 20, .y = 20, .dx = 0, .dy = 120 };
     CHECK(Element_dispatchEvent(ScrollPanel_graphics(sp), &wheel));
 
-    float ox, oy;
-    ScrollPanel_getOffset(sp, &ox, &oy);
+    float oy = ScrollPanel_getOffsetY(sp);
     CHECK(near(oy, 120.0f));    // the wheel really scrolled the viewport
 
     ScrollPanel_destroy(sp);

@@ -5,8 +5,8 @@
 //     point, merge unions two boxes, from_points copies;
 //   - BvhAabb_intersect_ray: hit with a positive near t, a ray starting inside
 //     reports t_min, a miss returns false, and the t_min/t_max window clips;
-//   - BvhTree_init refuses nullptr, accepts 0 primitives, and build refuses
-//     nullptr / a null tree;
+//   - BvhTree constructors reject overflowing counts, and build refuses
+//     mismatched counts, null primitives and a null tree;
 //   - build over a trail of boxes reports the nearest hit's primitive id;
 //   - a ray that misses everything returns hit=false and a false result;
 //   - all-identical centroids still build (degenerate leaf) and are hittable;
@@ -106,16 +106,19 @@ static void test_ray_aabb(void) {
 
 /** Exercises BVH creation, build, query, and destruction across ordinary inputs. */
 static void test_tree_lifecycle(void) {
-    CHECK(!BvhTree_init(4, nullptr));
-    BvhTree t;
-    CHECK(BvhTree_init(0, &t));
-    CHECK(t.node_count == 0);
+    BvhTree t = BvhTree();
+    CHECK(t.nodes == nullptr);
+    CHECK(t.node_count == 0u);
+    BvhTree tooLarge = BvhTree(UINT32_MAX);
+    CHECK(tooLarge.nodes == nullptr);
     BvhTree_destroy(&t);
     BvhTree_destroy(nullptr);
 
     CHECK(!BvhTree_build(nullptr, 1, &t));
     BvhPrimitive p = prim(0, 0, 0, 0, 1);
     CHECK(!BvhTree_build(&p, 1, nullptr));
+    CHECK(!BvhTree_build(&p, 1u, &t));
+    CHECK(t.primitive_count == 0u);
     CHECK(BvhTree_build(&p, 0, &t));            // empty build succeeds
     CHECK(t.node_count == 0);
     BvhTree_destroy(&t);
@@ -128,7 +131,8 @@ static void test_ray_tree(void) {
     for (uint32_t i = 0; i < N; i++)
         prims[i] = prim(i, (float) i * 2.0f, 0.0f, 0.0f, 0.5f);   // boxes at x=0,2,4,...
 
-    BvhTree tree;
+    BvhTree tree = BvhTree(N);
+    CHECK(tree.nodes != nullptr);
     CHECK(BvhTree_build(prims, N, &tree));
     CHECK(tree.node_count > 0);
 
@@ -168,7 +172,8 @@ static void test_degenerate(void) {
     for (uint32_t i = 0; i < N; i++)
         prims[i] = prim(i + 1, 3.0f, 3.0f, 3.0f, 0.5f);
 
-    BvhTree tree;
+    BvhTree tree = BvhTree(N);
+    CHECK(tree.nodes != nullptr);
     CHECK(BvhTree_build(prims, N, &tree));
     CHECK(tree.node_count == 1);                  // one degenerate leaf
 
@@ -181,8 +186,9 @@ static void test_degenerate(void) {
 
     // A single-primitive tree.
     BvhPrimitive one = prim(77, 0, 0, 0, 1);
-    BvhTree t1;
-    CHECK(BvhTree_build(&one, 1, &t1));
+    BvhTree t1 = BvhTree(1u);
+    CHECK(t1.nodes != nullptr);
+    CHECK(BvhTree_build(&one, 1u, &t1));
     BvhRay r1 = { { -5, 0, 0 }, { 1, 0, 0 }, 0.0f, 100.0f };
     CHECK(BvhTree_intersect_ray(&t1, &r1, &hit));
     CHECK(hit.primitive_id == 77);

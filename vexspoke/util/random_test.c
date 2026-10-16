@@ -44,9 +44,15 @@ static bool sameStream(uint64_t seed, RandomEngine engine) {
 // Verifies seeded random engines are reproducible and exercise their range contracts.
 // Verifies seed selection, reproducible streams, bounded draws, and weighted sampling.
 int main(void) {
+    // The zero-argument chooser creates an independently owned casual stream.
+    Random *defaultStream = Random();
+    CHECK(defaultStream != nullptr);
+    (void) Random_nextLong(defaultStream);
+    Random_free(defaultStream);
+
     // Auto-selected engine: same seed -> same engine and same stream.
-    Random *p = Random_1(1234u);
-    Random *q = Random_1(1234u);
+    Random *p = Random(1234u);
+    Random *q = Random(1234u);
     CHECK(p && q);
     CHECK(Random_engine(p) == Random_engine(q));
     for (int i = 0; i < 32; i++)
@@ -55,7 +61,11 @@ int main(void) {
     Random_free(q);
 
     // Engine selection is a pure function of the seed.
-    CHECK(Random_engine(Random_1(42u)) == Random_engine(Random_1(42u)));
+    Random *sameEngineA = Random(42u);
+    Random *sameEngineB = Random(42u);
+    CHECK(Random_engine(sameEngineA) == Random_engine(sameEngineB));
+    Random_free(sameEngineA);
+    Random_free(sameEngineB);
 
     // Each engine is reproducible from its own seed.
     CHECK(sameStream(1234u, RANDOM_ENGINE_MURMUR));
@@ -99,7 +109,7 @@ int main(void) {
     }
 
     // Weighted sampling wrappers (engine-independent).
-    Random *w = Random_1(99u);
+    Random *w = Random(99u);
     CHECK(Random_getWeight(w, 10u, 10u));
     CHECK(!Random_getWeight(w, 0u, 10u));
 

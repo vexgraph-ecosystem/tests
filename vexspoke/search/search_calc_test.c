@@ -7,7 +7,6 @@
 #include "search/calc.h"
 #include "search/find.h"
 #include "search/spotlight.h"
-#include "algo/draft_sort.h"
 #include "math/strict_math.h"
 
 static int g_failures = 0;
@@ -17,7 +16,7 @@ static int g_failures = 0;
     else { printf("[search_calc_test] FAIL %s\n", name); g_failures++; } \
 } while (0)
 
-// Checks calculator parsing, search modes/ranking, expression detection, and draft sort helpers.
+// Checks calculator parsing, search modes/ranking, and expression detection.
 int main(void) {
     printf("=== Running String Calc & Search Subsystem Test Suite ===\n");
 
@@ -78,18 +77,6 @@ int main(void) {
     double spotlightCalc = 0.0;
     CHECK("spotlight evaluates calculation query",
           Spotlight_tryCalculate("sin(rad(90)) * atan(34) * pi", &spotlightCalc) && fabs(spotlightCalc - expectedUser) < 1e-6);
-
-    // 4. Draft Algorithms (Partition, Quicksort, Morton 3D)
-    int32_t pArr[] = {9, 2, 8, 1, 5, 3};
-    size_t split = DraftSort_partitionInt32(pArr, 6, 5);
-    CHECK("partition partitioned around 5", split > 0 && split < 6);
-
-    uint64_t qArr[] = {50, 10, 40, 20, 30};
-    DraftSort_quicksortUint64(qArr, 5);
-    CHECK("quicksort sorted 64-bit keys", qArr[0] == 10 && qArr[1] == 20 && qArr[4] == 50);
-
-    uint64_t m = DraftSort_morton3D(1, 2, 4);
-    CHECK("morton 3D code calculated", m > 0);
 
     printf("\n=== String Calc & Search Subsystem Test Summary: %d failures ===\n", g_failures);
     return g_failures > 0 ? 1 : 0;

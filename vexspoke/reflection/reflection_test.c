@@ -106,14 +106,11 @@ static void testNames(void) {
     Method *m = Method("Update.Physics");
     CHECK(m != nullptr);
     if (m) {
-        char out[REFLECT_METHOD_NAME_BYTES];
-        CHECK(Method_getName(m, out, sizeof(out)) == 14 && strcmp(out, "update.physics") == 0);
+        CHECK(strcmp(Method_getName(m), "update.physics") == 0);
         CHECK(Method_setName(m, "step") == true);
-        Method_getName(m, out, sizeof(out));
-        CHECK(strcmp(out, "step") == 0);
+        CHECK(strcmp(Method_getName(m), "step") == 0);
         CHECK(Method_setName(m, "bad name") == false); // space rejected
-        Method_getName(m, out, sizeof(out));
-        CHECK(strcmp(out, "step") == 0);
+        CHECK(strcmp(Method_getName(m), "step") == 0);
         Method_free(m);
     }
     CHECK(Method("a..b") == nullptr);
@@ -137,9 +134,7 @@ static void testFieldEmbedsVariable(void) {
     CHECK((uintptr_t) inner == (uintptr_t) f);
     CHECK(Variable_read(inner, &holder) == (void*) (uintptr_t) 0u);
 
-    char name[REFLECT_FIELD_NAME_BYTES];
-    Field_getName(f, name, sizeof(name));
-    CHECK(strcmp(name, "position.x") == 0);
+    CHECK(strcmp(Field_getName(f), "position.x") == 0);
     CHECK(Field_getRead(f) == holderGet);
     CHECK(Field_getSet(f) == holderSet);
     CHECK(Field_getTarget(f) == &holder);
@@ -221,9 +216,7 @@ static void testStruct(void) {
     // Rows are stable + readable.
     Field *row = Struct_get(s, 37u);
     CHECK(row != nullptr);
-    char name[REFLECT_FIELD_NAME_BYTES];
-    Field_getName(row, name, sizeof(name));
-    CHECK(strcmp(name, "position.x") == 0);
+    CHECK(strcmp(Field_getName(row), "position.x") == 0);
     CHECK(Struct_get(s, 100u) == nullptr);
 
     // Stable across growth: row 0's address never moves.
@@ -271,16 +264,13 @@ static void testClass(void) {
     CHECK(Class_getMethod(c, 100u) == nullptr);
 
     Method *got = Class_getMethod(c, 1u);
-    char name[REFLECT_METHOD_NAME_BYTES];
-    Method_getName(got, name, sizeof(name));
-    CHECK(strcmp(name, "render") == 0);
+    CHECK(strcmp(Method_getName(got), "render") == 0);
     CHECK(Method_call(got, (void*) (uintptr_t) 3u) == (void*) (uintptr_t) 6u);
 
     // The layout's fields are reachable through the class.
     Struct *viaClass = Class_getLayout(c);
     Field *fieldRow = Struct_get(viaClass, 0u);
-    Field_getName(fieldRow, name, sizeof(name));
-    CHECK(strcmp(name, "position.x") == 0);
+    CHECK(strcmp(Field_getName(fieldRow), "position.x") == 0);
 
     Class_free(c);
     Field_free(fx);
@@ -315,7 +305,7 @@ static void testStringsAndNull(void) {
     // Null-safety across the hierarchy.
     CHECK(Class_kind(nullptr) == 0u && Class_check(nullptr, TYPE_REFLECT_CLASS) == false);
     CHECK(Struct_count(nullptr) == 0u && Struct_get(nullptr, 0u) == nullptr);
-    CHECK(Field_getName(nullptr, buf, sizeof(buf)) == -1);
+    CHECK(Field_getName(nullptr) == nullptr);
     CHECK(Variable_getTarget(nullptr) == nullptr && Variable_read(nullptr, nullptr) == nullptr);
     CHECK(Method_call(nullptr, nullptr) == nullptr);
     Struct_free(nullptr);

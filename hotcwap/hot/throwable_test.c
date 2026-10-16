@@ -91,8 +91,8 @@ int main(void) {
     char largeMsg[5000];
     memset(largeMsg, 'A', sizeof(largeMsg) - 1);
     largeMsg[sizeof(largeMsg) - 1] = '\0';
-    Exception bigEx;
-    Exception_init(&bigEx, EXCEPTION_RUNTIME, "BigTest", __FILE__, __LINE__, "%s", largeMsg);
+    Exception bigEx = Exception(EXCEPTION_RUNTIME, "BigTest", __FILE__, __LINE__,
+                                "%s", largeMsg);
     CHECK(bigEx.message != nullptr && strlen(bigEx.message) == sizeof(largeMsg) - 1, "Dynamic Exception message scaled to 5000 Bytes without truncation");
     Exception_free(&bigEx);
 
@@ -101,9 +101,8 @@ int main(void) {
     // graphics_exception module died with the old API; the language returns
     // bools (the Cold-Strict, Hot-Minimal Validation Law) and the category
     // records the failure family.
-    Exception gfxEx;
-    Exception_init(&gfxEx, EXCEPTION_GRAPHICS, "Pipeline::create", __FILE__, __LINE__,
-                   "Failed to compile pipeline shader");
+    Exception gfxEx = Exception(EXCEPTION_GRAPHICS, "Pipeline::create", __FILE__,
+                                __LINE__, "Failed to compile pipeline shader");
     CHECK(gfxEx.category == EXCEPTION_GRAPHICS, "Graphics-category Exception records the failure family");
     CHECK(gfxEx.message != nullptr && strstr(gfxEx.message, "pipeline") != nullptr, "Exception message formatted");
     Exception_free(&gfxEx);

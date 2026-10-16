@@ -62,15 +62,13 @@ static void testLifecycle(void) {
     CHECK(VariableHashMap_isEmpty(&map) == true);
     CHECK(VariableHashMap_contains(&map, "anything") == false);
 
-    uintptr_t out = 123u;
-    CHECK(VariableHashMap_get(&map, "anything", &out) == false);
-    CHECK(out == 0u);
+    CHECK(VariableHashMap_get(&map, "anything") == 0u);
 
     CHECK(VariableHashMap_init(nullptr) == false);
     CHECK(VariableHashMap_count(nullptr) == 0u);
     CHECK(VariableHashMap_isEmpty(nullptr) == true);
     CHECK(VariableHashMap_contains(nullptr, "x") == false);
-    CHECK(VariableHashMap_get(nullptr, "x", &out) == false);
+    CHECK(VariableHashMap_get(nullptr, "x") == 0u);
     CHECK(VariableHashMap_add(nullptr, "x", 1u) == false);
     VariableHashMap_shutdown(nullptr);
 
@@ -90,17 +88,16 @@ static void testFoldAndBucket(void) {
     CHECK(VariableHashMap_add(&map, "helloWorld", 0xAAu) == true);
     CHECK(VariableHashMap_count(&map) == 1u);
 
-    uintptr_t out = 0u;
-    CHECK(VariableHashMap_get(&map, "helloworld", &out) == true && out == 0xAAu);
-    CHECK(VariableHashMap_get(&map, "HELLOWORLD", &out) == true && out == 0xAAu);
-    CHECK(VariableHashMap_get(&map, "helloWorld", &out) == true && out == 0xAAu);
+    CHECK(VariableHashMap_get(&map, "helloworld") == 0xAAu);
+    CHECK(VariableHashMap_get(&map, "HELLOWORLD") == 0xAAu);
+    CHECK(VariableHashMap_get(&map, "helloWorld") == 0xAAu);
     CHECK(VariableHashMap_contains(&map, "HelloWorld") == true);
 
     // Upsert: the same folded key updates, never duplicates.
     CHECK(VariableHashMap_add(&map, "HEALTH", 1u) == true);
     CHECK(VariableHashMap_add(&map, "health", 2u) == true);
     CHECK(VariableHashMap_count(&map) == 2u);
-    CHECK(VariableHashMap_get(&map, "health", &out) == true && out == 2u);
+    CHECK(VariableHashMap_get(&map, "health") == 2u);
 
     VariableHashMap_shutdown(&map);
 }
@@ -124,8 +121,7 @@ static void testAllBuckets(void) {
 
     for (size_t i = 0; i < n; i++) {
         char name[4] = { firsts[i], '1', '\0' };
-        uintptr_t out = 0u;
-        CHECK(VariableHashMap_get(&map, name, &out) == true && out == 0x100u + (uintptr_t) i);
+        CHECK(VariableHashMap_get(&map, name) == 0x100u + (uintptr_t) i);
     }
 
     VariableHashMap_shutdown(&map);
@@ -149,8 +145,7 @@ static void testRejection(void) {
     CHECK(VariableHashMap_add(&map, "23charsokabcdefghijklmn", 1u) == true);    // 23 chars
     CHECK(VariableHashMap_count(&map) == 2u);
 
-    uintptr_t out = 0u;
-    CHECK(VariableHashMap_get(&map, "CHARACTER.POSITION.X", &out) == true && out == 1u);
+    CHECK(VariableHashMap_get(&map, "CHARACTER.POSITION.X") == 1u);
 
     VariableHashMap_shutdown(&map);
 }
@@ -195,9 +190,8 @@ static void testCollisionChain(void) {
         CHECK(VariableHashMap_add(&map, b, 0x222u) == true);
         CHECK(VariableHashMap_count(&map) == 2u);
 
-        uintptr_t out = 0u;
-        CHECK(VariableHashMap_get(&map, a, &out) == true && out == 0x111u);
-        CHECK(VariableHashMap_get(&map, b, &out) == true && out == 0x222u);
+        CHECK(VariableHashMap_get(&map, a) == 0x111u);
+        CHECK(VariableHashMap_get(&map, b) == 0x222u);
         VariableHashMap_shutdown(&map);
     }
 }
@@ -224,8 +218,7 @@ static void testVolume(void) {
     for (uint32_t i = 0u; i < total; i++) {
         char name[16];
         snprintf(name, sizeof(name), "var%u", i);
-        uintptr_t out = 0u;
-        if (VariableHashMap_get(&map, name, &out) != true || out != 0x5000u + i) {
+        if (VariableHashMap_get(&map, name) != 0x5000u + i) {
             ok = false;
             break;
         }
@@ -272,8 +265,7 @@ static void testArity(void) {
     if (map) {
         CHECK((*map).active == true);
         CHECK(VariableHashMap_add(map, "score", 0x42u) == true);
-        uintptr_t out = 0u;
-        CHECK(VariableHashMap_get(map, "score", &out) == true && out == 0x42u);
+        CHECK(VariableHashMap_get(map, "score") == 0x42u);
         VariableHashMap_free(map);
     }
     VariableHashMap_free(nullptr);

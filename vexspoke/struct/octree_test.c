@@ -33,18 +33,17 @@ static int g_failures = 0;
 
 /** Builds a cube-shaped axis-aligned box from its minimum and side length. */
 static OctreeAABB box(float a, float b) {
-    OctreeAABB r = { a, a, a, b, b, b };
-    return r;
+    return OctreeAABB(a, a, a, b, b, b);
 }
 
 /** Verifies inclusive point containment and sphere intersection at box boundaries. */
 static void test_aabb_helpers(void) {
     OctreeAABB b = box(0.0f, 10.0f);
-    CHECK(OctreeAABB_containsPoint(b, (OctreePoint) { 0, 0, 0 }));       // min inclusive
-    CHECK(OctreeAABB_containsPoint(b, (OctreePoint) { 10, 10, 10 }));    // max inclusive
-    CHECK(OctreeAABB_containsPoint(b, (OctreePoint) { 5, 5, 5 }));
-    CHECK(!OctreeAABB_containsPoint(b, (OctreePoint) { -0.01f, 5, 5 }));
-    CHECK(!OctreeAABB_containsPoint(b, (OctreePoint) { 10.01f, 5, 5 }));
+    CHECK(OctreeAABB_containsPoint(b, OctreePoint(0, 0, 0)));       // min inclusive
+    CHECK(OctreeAABB_containsPoint(b, OctreePoint(10, 10, 10)));    // max inclusive
+    CHECK(OctreeAABB_containsPoint(b, OctreePoint(5, 5, 5)));
+    CHECK(!OctreeAABB_containsPoint(b, OctreePoint(-0.01f, 5, 5)));
+    CHECK(!OctreeAABB_containsPoint(b, OctreePoint(10.01f, 5, 5)));
 
     CHECK(OctreeAABB_intersects(b, box(10.0f, 20.0f)));                  // touching
     CHECK(OctreeAABB_intersects(box(10.0f, 20.0f), b));                  // symmetric
@@ -52,40 +51,40 @@ static void test_aabb_helpers(void) {
     CHECK(!OctreeAABB_intersects(b, box(10.5f, 20.0f)));                 // separated
     CHECK(OctreeAABB_intersects(b, b));                                  // self
 
-    CHECK(OctreeAABB_intersectsSphere(b, (OctreePoint) { 5, 5, 5 }, 0.0f));   // inside
-    CHECK(OctreeAABB_intersectsSphere(b, (OctreePoint) { -1, 5, 5 }, 1.0f));  // touches face
-    CHECK(!OctreeAABB_intersectsSphere(b, (OctreePoint) { -2, 5, 5 }, 1.0f)); // just away
-    CHECK(OctreeAABB_intersectsSphere(b, (OctreePoint) { 20, 5, 5 }, 15.0f)); // reaches in
+    CHECK(OctreeAABB_intersectsSphere(b, OctreePoint(5, 5, 5), 0.0f));   // inside
+    CHECK(OctreeAABB_intersectsSphere(b, OctreePoint(-1, 5, 5), 1.0f));  // touches face
+    CHECK(!OctreeAABB_intersectsSphere(b, OctreePoint(-2, 5, 5), 1.0f)); // just away
+    CHECK(OctreeAABB_intersectsSphere(b, OctreePoint(20, 5, 5), 15.0f)); // reaches in
 }
 
 /** Checks null trees and output buffers are safely refused by the public query operations. */
 static void test_null_safety(void) {
     uint64_t out;
-    CHECK(!Octree_insert(nullptr, (OctreePoint) { 0, 0, 0 }, 1));
+    CHECK(!Octree_insert(nullptr, OctreePoint(0, 0, 0), 1));
     CHECK(Octree_count(nullptr) == 0);
     CHECK(Octree_queryRange(nullptr, box(0, 1), &out, 1) == 0);
-    CHECK(Octree_querySphere(nullptr, (OctreePoint) { 0, 0, 0 }, 1.0f, &out, 1) == 0);
+    CHECK(Octree_querySphere(nullptr, OctreePoint(0, 0, 0), 1.0f, &out, 1) == 0);
     Octree_clear(nullptr);
     Octree_free(nullptr);
 }
 
 /** Exercises insertion limits and sphere queries over points in and outside the tree. */
 static void test_bounds_and_queries(void) {
-    Octree *t = Octree_create(box(-10.0f, 10.0f), 4, 2);
+    Octree *t = Octree(box(-10.0f, 10.0f), 4, 2);
     CHECK(t != nullptr);
     // The Exhaustion Loudness Law accessor: a fresh owner has no refusals.
     CHECK(Octree_exhaustionCount(t) == 0);
     CHECK(Octree_count(t) == 0);
 
     // Outside the root AABB: refused, not counted.
-    CHECK(!Octree_insert(t, (OctreePoint) { 20, 0, 0 }, 1));
-    CHECK(!Octree_insert(t, (OctreePoint) { -20, 0, 0 }, 1));
+    CHECK(!Octree_insert(t, OctreePoint(20, 0, 0), 1));
+    CHECK(!Octree_insert(t, OctreePoint(-20, 0, 0), 1));
     CHECK(Octree_count(t) == 0);
 
     // Boundary-inclusive insert succeeds.
-    CHECK(Octree_insert(t, (OctreePoint) { 10, 10, 10 }, 100));
-    CHECK(Octree_insert(t, (OctreePoint) { -10, -10, -10 }, 101));
-    CHECK(Octree_insert(t, (OctreePoint) { 0, 0, 0 }, 102));
+    CHECK(Octree_insert(t, OctreePoint(10, 10, 10), 100));
+    CHECK(Octree_insert(t, OctreePoint(-10, -10, -10), 101));
+    CHECK(Octree_insert(t, OctreePoint(0, 0, 0), 102));
     CHECK(Octree_count(t) == 3);
 
     uint64_t out[8];
@@ -103,23 +102,23 @@ static void test_bounds_and_queries(void) {
 
     // Empty / inverted / disjoint range.
     CHECK(Octree_queryRange(t, box(100.0f, 200.0f), out, 8) == 0);
-    OctreeAABB inverted = { 5, 5, 5, -5, -5, -5 };
+    OctreeAABB inverted = OctreeAABB(5, 5, 5, -5, -5, -5);
     CHECK(Octree_queryRange(t, inverted, out, 8) == 0);
 
     // Sphere queries.
-    n = Octree_querySphere(t, (OctreePoint) { 0, 0, 0 }, 0.0f, out, 8);
+    n = Octree_querySphere(t, OctreePoint(0, 0, 0), 0.0f, out, 8);
     CHECK(n == 1 && out[0] == 102);
-    n = Octree_querySphere(t, (OctreePoint) { 10, 10, 10 }, 0.5f, out, 8);
+    n = Octree_querySphere(t, OctreePoint(10, 10, 10), 0.5f, out, 8);
     CHECK(n == 1 && out[0] == 100);
-    n = Octree_querySphere(t, (OctreePoint) { 0, 0, 0 }, 100.0f, out, 8);
+    n = Octree_querySphere(t, OctreePoint(0, 0, 0), 100.0f, out, 8);
     CHECK(n == 3);
-    CHECK(Octree_querySphere(t, (OctreePoint) { 50, 50, 50 }, 1.0f, out, 8) == 0);
+    CHECK(Octree_querySphere(t, OctreePoint(50, 50, 50), 1.0f, out, 8) == 0);
 
     // Null output / zero cap.
     CHECK(Octree_queryRange(t, box(-10, 10), nullptr, 8) == 0);
     CHECK(Octree_queryRange(t, box(-10, 10), out, 0) == 0);
-    CHECK(Octree_querySphere(t, (OctreePoint) { 0, 0, 0 }, 1.0f, nullptr, 8) == 0);
-    CHECK(Octree_querySphere(t, (OctreePoint) { 0, 0, 0 }, 1.0f, out, 0) == 0);
+    CHECK(Octree_querySphere(t, OctreePoint(0, 0, 0), 1.0f, nullptr, 8) == 0);
+    CHECK(Octree_querySphere(t, OctreePoint(0, 0, 0), 1.0f, out, 0) == 0);
 
     Octree_free(t);
 }
@@ -129,7 +128,7 @@ static void test_bounds_and_queries(void) {
 
 /** Tests bulk tree construction and query behavior over a collection of points. */
 static void test_bulk(void) {
-    Octree *t = Octree_create(box(0.0f, 100.0f), 8, 2);   // tiny nodes force subdivision
+    Octree *t = Octree(box(0.0f, 100.0f), 8, 2);   // tiny nodes force subdivision
     CHECK(t != nullptr);
 
     OctreePoint pts[OCT_POINTS];
@@ -138,9 +137,9 @@ static void test_bulk(void) {
     for (int i = 0; i < 10; i++)
         for (int j = 0; j < 10; j++)
             for (int l = 0; l < 5; l++) {
-                OctreePoint p = { (float) i * 10.0f + 0.5f,
-                                  (float) j * 10.0f + 0.5f,
-                                  (float) l * 20.0f + 0.5f };
+                OctreePoint p = OctreePoint((float) i * 10.0f + 0.5f,
+                                            (float) j * 10.0f + 0.5f,
+                                            (float) l * 20.0f + 0.5f);
                 CHECK(Octree_insert(t, p, (uint64_t) (k + 1)));
                 pts[k] = p;
                 k++;
@@ -160,7 +159,7 @@ static void test_bulk(void) {
         CHECK(seen[i] == 1);
 
     // A sub-box query returns exactly the points inside it.
-    OctreeAABB sub = { 20.5f, 30.5f, 40.5f, 30.5f, 40.5f, 60.5f };
+    OctreeAABB sub = OctreeAABB(20.5f, 30.5f, 40.5f, 30.5f, 40.5f, 60.5f);
     n = Octree_queryRange(t, sub, out, OCT_POINTS);
     size_t expected = 0;
     for (int i = 0; i < OCT_POINTS; i++)
@@ -169,7 +168,7 @@ static void test_bulk(void) {
     CHECK(n == expected);
 
     // Sphere query agrees with a brute-force count.
-    OctreePoint c = { 55.0f, 55.0f, 45.0f };
+    OctreePoint c = OctreePoint(55.0f, 55.0f, 45.0f);
     float rad = 12.0f;
     n = Octree_querySphere(t, c, rad, out, OCT_POINTS);
     size_t brute = 0;
@@ -184,7 +183,7 @@ static void test_bulk(void) {
     Octree_clear(t);
     CHECK(Octree_count(t) == 0);
     CHECK(Octree_queryRange(t, box(0.0f, 100.0f), out, OCT_POINTS) == 0);
-    CHECK(Octree_insert(t, (OctreePoint) { 1, 1, 1 }, 7));
+    CHECK(Octree_insert(t, OctreePoint(1, 1, 1), 7));
     CHECK(Octree_count(t) == 1);
 
     Octree_free(t);

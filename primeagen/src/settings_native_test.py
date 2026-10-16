@@ -6,10 +6,10 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
-APP = ROOT / "personal/primeagen"
-VEX = ROOT / "host-behavior/vexspoke/src"
-HOT = ROOT / "host-behavior/hotcwap"
-RE = ROOT / "host-behavior/relational-engine"
+APP = ROOT / "suite/personal/primeagen"
+VEX = ROOT / "suite/ecosystem/vexspoke/src"
+HOT = ROOT / "suite/ecosystem/hotcwap"
+RE = ROOT / "suite/ecosystem/relational-engine"
 
 
 class SettingsNativeTest(unittest.TestCase):

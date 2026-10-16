@@ -95,7 +95,7 @@ int main(void) {
     assert(Terminal_clear(&t));
     assert(!Terminal_clear(nullptr) && !Terminal_present(nullptr));
     endDiagnostics(0, nullptr);
-    PROJECT(Terminal, &t);
+    TERMINAL_PROJECT(Terminal, &t);
     assert(Terminal_getWidth(nullptr) == 0 && Terminal_getHeight(nullptr) == 0);
     assert(Terminal_getCapacity(nullptr) == 0 && Terminal_getGeneration(nullptr) == 0);
     assert(Terminal_getOutput(nullptr) == nullptr && Terminal_getHostContext(nullptr) == nullptr);

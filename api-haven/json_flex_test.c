@@ -17,21 +17,18 @@ int main(void) {
     CHECK(Json_has(&doc, root, "a"));
     CHECK(!Json_has(&doc, root, "zzz"));
     JsonRef c = Json_path(&doc, root, "a.b[0].c");
-    char buf[16];
-    CHECK(Json_getString(&doc, c, buf, sizeof(buf)));
-    CHECK(strcmp(buf, "hi") == 0);
+    JsonStringView value = Json_getString(&doc, c);
+    CHECK(value.data && value.length == 2u && memcmp(value.data, "hi", value.length) == 0);
     CHECK(Json_getNumber(&doc, Json_path(&doc, root, "a.b[1]"), -1.0) == 42.0);
     CHECK(Json_getBool(&doc, Json_path(&doc, root, "t"), false) == true);
     CHECK(Json_getBool(&doc, Json_path(&doc, root, "missing"), true) == true);
     CHECK(Json_path(&doc, root, "a.nope") < 0);
     CHECK(Json_path(&doc, root, "a.b[9]") < 0);
-    char tiny[2];
-    CHECK(!Json_getString(&doc, c, tiny, sizeof(tiny)));
+    CHECK(Json_getString(&doc, Json_path(&doc, root, "t")).data == nullptr);
 
     // --- builder: {"method":"harness_run","params":{"engine":"codex","timeout":250},"tags":["a","b"],"live":true,"drop":null} ---
     char out[256];
-    JsonWriter w;
-    JsonWriter_init(&w, out, sizeof(out));
+    JsonWriter w = JsonWriter(out, sizeof(out));
     CHECK(Json_beginObject(&w));
     CHECK(Json_addKey(&w, "method"));
     CHECK(Json_stringVal(&w, "harness_run"));
@@ -58,8 +55,7 @@ int main(void) {
 
     // --- overflow flips ok, round-trips back through the parser ---
     char small[16];
-    JsonWriter w2;
-    JsonWriter_init(&w2, small, sizeof(small));
+    JsonWriter w2 = JsonWriter(small, sizeof(small));
     CHECK(Json_beginObject(&w2));
     CHECK(!Json_addKey(&w2, "way-too-long-key-name"));
     CHECK(!JsonWriter_ok(&w2));
@@ -67,8 +63,8 @@ int main(void) {
     char s2[64];
     JsonDoc d2;
     CHECK(Json_parse(&d2, n2, 32, s2, sizeof(s2), out));
-    CHECK(Json_getString(&d2, Json_path(&d2, Json_root(&d2), "params.engine"), buf, sizeof(buf)));
-    CHECK(strcmp(buf, "codex") == 0);
+    JsonStringView engine = Json_getString(&d2, Json_path(&d2, Json_root(&d2), "params.engine"));
+    CHECK(engine.data && engine.length == 5u && memcmp(engine.data, "codex", engine.length) == 0);
 
     if (sFail == 0) {
         printf("json_flex_test: ALL CHECKS PASSED\n");

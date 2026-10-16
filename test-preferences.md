@@ -2,7 +2,7 @@
 
 This is the ecosystem's proof lawbook. It defines the evidence required before a production file,
 class, component, or subsystem is called tested across the R1–R6 ecosystem. It governs **proof and
-readiness only**; universal architecture is governed by the real workspace `../gist/PREFERENCES.md`
+readiness only**; universal architecture is governed by the real workspace `../PREFERENCES.md`
 (the Living Documentation Law). When a test law is cited, cite its **Title** — never a position,
 never a number (the Law Identity Doctrine).
 
@@ -17,8 +17,8 @@ never a number (the Law Identity Doctrine).
    **mapped but unwired** → **failing** → **passing with stated gaps** → **battle tested**.
 5. **Never promote a whole layer from partial file results.** A subsystem is battle tested only when
    every applicable law here has executed evidence.
-6. **Read and maintain `gist/test-checklist.md` for every executable test**, per the
-   Timestamped Test Checklist Law in workspace `../gist/PREFERENCES.md`. The ledger admits only
+6. **Read and maintain `../metadata/gists/test-checklist.md` for every executable test**, per the
+   Timestamped Test Checklist Law in workspace `../PREFERENCES.md`. The ledger admits only
    compilable/runnable test units, runner scripts and the shared harness — not markdown,
    documentation, configuration or production source. Record actual
    Unix timestamps, subject hashes, command/scope, result, and description after
@@ -442,7 +442,7 @@ not an impressive operation counter.
   an exemption. Force controlled exhaustion in test-owned resources, not host-wide
   RAM/disk depletion. Observe any fallback and prove its lifetime/reclamation.
 - **Assert the refusal is LOUD, not merely returned.** The Exhaustion Loudness Law
-  in workspace `../gist/PREFERENCES.md` is the production contract this proves: reach the
+  in workspace `../PREFERENCES.md` is the production contract this proves: reach the
   boundary and assert the owner's *queryable refusal count* (e.g.
   `MemoryArena_exhaustionCount`) increments per rejected request, that the epoch's
   single `THROW` diagnostic names the owner, the request size and the bound, and
@@ -1107,7 +1107,7 @@ compared, like a device tested in a lab and again in the field.
 **Proves:** containers live and scroll where users put them.
 - Containers are mounted inside a scrollable `ScrollPanel`; scrolling, clipping, and paint-skip are
   asserted.
-- Nested `ScrollPanel` chaining consumes what fits and bubbles the remainder (dest-last semantics);
+- Nested `ScrollPanel` chaining consumes what fits and bubbles the remainder; getters return scalar values without output buffers.
   overscroll, spring, and momentum behave per mode.
 
 ### Variation Matrix Law
@@ -1298,7 +1298,7 @@ Native database store (R3).
   database and WAL owners cover stored-format call sites.
 - **Persistence Durability Law** — WAL replay, torn-write injection, and backup/restore with a real
   change between them (Failure Atomicity and Recovery Law).
-- **Cursor Boundary Law** — zero-copy result overrun, null bitmask, and dest-last lifetime.
+- **Cursor Boundary Law** — zero-copy result overrun, null bitmask, and borrowed-output lifetime.
 - **URI Safety Law** — malformed `DbUri` input and credential redaction.
 
 ## sesh Test Laws
@@ -1392,6 +1392,6 @@ toolkit. Part I laws apply to each extracted and new file independently.
   Primeagen integration retain explicit proof gaps until their owners execute.
 
 *This lawbook governs proof and readiness. Universal architecture is governed by
-the real workspace `../gist/PREFERENCES.md`, published at
+the real workspace `../PREFERENCES.md`, published at
 https://gist.github.com/vex-graph/4132a6c45cb6d3797c3e8eff2e94035a.
 Cite every law by its Title.*

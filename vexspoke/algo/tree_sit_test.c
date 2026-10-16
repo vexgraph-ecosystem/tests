@@ -71,9 +71,12 @@ static void build(TreeSitTree *tree) {
 
 /** Verifies TreeSit initialization and teardown on a minimally populated tree. */
 static void test_lifecycle(void) {
-    CHECK(!TreeSitTree_init(16, nullptr));
-    TreeSitTree t;
-    CHECK(TreeSitTree_init(0, &t));                 // clamped to 16
+    TreeSitTree defaultTree = TreeSitTree();
+    CHECK(defaultTree.nodes != nullptr);
+    CHECK(defaultTree.node_capacity == 16u);
+    TreeSitTree_destroy(&defaultTree);
+    TreeSitTree t = TreeSitTree(0u);                // clamped to 16
+    CHECK(t.nodes != nullptr);
     CHECK(t.node_capacity == 16);
     CHECK(t.node_count == 0);
     CHECK(t.root == -1);
@@ -83,7 +86,7 @@ static void test_lifecycle(void) {
     TreeSitTree_destroy(nullptr);                   // safe
 
     // Grow past the initial capacity.
-    CHECK(TreeSitTree_init(16, &t));
+    t = TreeSitTree(16u); CHECK(t.nodes != nullptr);
     for (int i = 0; i < 100; i++)
         CHECK(TreeSitTree_add_node(i == 0 ? -1 : (i - 1), 7, "n", span(0, 1), &t) == i);
     CHECK(t.node_count == 100);
@@ -95,7 +98,7 @@ static void test_lifecycle(void) {
 /** Checks parent/child and sibling links remain consistent as nodes are connected. */
 static void test_linking(void) {
     TreeSitTree t;
-    CHECK(TreeSitTree_init(16, &t));
+    t = TreeSitTree(16u); CHECK(t.nodes != nullptr);
     build(&t);
 
     TreeSitNode *root = &t.nodes[0];
@@ -142,7 +145,7 @@ static void test_linking(void) {
 /** Exercises the supported traversal orders and validates recorded node visits. */
 static void test_walks(void) {
     TreeSitTree t;
-    CHECK(TreeSitTree_init(16, &t));
+    t = TreeSitTree(16u); CHECK(t.nodes != nullptr);
     build(&t);
 
     Trace pre = { 0 };
@@ -175,7 +178,7 @@ static void test_walks(void) {
     CHECK(!TreeSitTree_walk_postorder(&t, nullptr, &pre));
 
     TreeSitTree empty;
-    CHECK(TreeSitTree_init(16, &empty));
+    empty = TreeSitTree(16u); CHECK(empty.nodes != nullptr);
     Trace e = { 0 };
     CHECK(!TreeSitTree_walk_preorder(&empty, record, &e));   // no root
     CHECK(!TreeSitTree_walk_postorder(&empty, record, &e));
@@ -187,7 +190,7 @@ static void test_walks(void) {
 /** Verifies span lookup and subtree counting against the deterministic fixture. */
 static void test_find_and_count(void) {
     TreeSitTree t;
-    CHECK(TreeSitTree_init(16, &t));
+    t = TreeSitTree(16u); CHECK(t.nodes != nullptr);
     build(&t);
 
     CHECK(TreeSitTree_find_by_byte(&t, 7) == 4);    // finest span 5..10

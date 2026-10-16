@@ -5,18 +5,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "algo/radix_sort.h"
+#include "algo/sort.h"
 #include "algo/dijkstra.h"
 #include "algo/kd_tree.h"
 #include "algo/bvh.h"
 #include "algo/tree_sit.h"
+#include "lang/point/point.h"
+#include "lang/rect/rectangle.h"
+#include "nio/mem.h"
 
 static void test_radix_sort(void) {
     uint32_t a32[256];
     for (int i = 0; i < 256; i++) {
         a32[i] = (uint32_t) ((255 - i) * 179424673u + 37u);
     }
-    RadixSort_u32(a32, 256);
+    assert(Sort_radixSortUint32(a32, 256u));
     for (int i = 0; i < 255; i++) {
         assert(a32[i] <= a32[i + 1]);
     }
@@ -25,7 +28,7 @@ static void test_radix_sort(void) {
     for (int i = 0; i < 256; i++) {
         a64[i] = ((uint64_t) (255 - i) << 32) | (uint64_t) ((i * 31337) ^ 0xDEADBEEFULL);
     }
-    RadixSort_u64(a64, 256);
+    assert(Sort_radixSortUint64(a64, 256u));
     for (int i = 0; i < 255; i++) {
         assert(a64[i] <= a64[i + 1]);
     }
@@ -36,7 +39,7 @@ static void test_radix_sort(void) {
         keys[i] = (uint64_t) (63 - i);
         values[i] = (void*) (uintptr_t) (i * 10);
     }
-    RadixSort_pairsU64(keys, values, 64);
+    assert(Sort_radixSortPairsUint64(keys, values, 64u));
     for (int i = 0; i < 63; i++) {
         assert(keys[i] <= keys[i + 1]);
         assert((uintptr_t) values[i] == (uintptr_t) ((63 - keys[i]) * 10));
@@ -44,7 +47,7 @@ static void test_radix_sort(void) {
 }
 
 static void test_dijkstra(void) {
-    DijkstraGraph *g = Dijkstra_create(6);
+    DijkstraGraph *g = Dijkstra(6);
     assert(g != nullptr);
 
     Dijkstra_addEdge(g, 0, 1, 7.0f);
@@ -69,6 +72,22 @@ static void test_dijkstra(void) {
     assert(path[2] == 5);
 
     Dijkstra_free(g);
+}
+
+static void test_geometry_constructors(void) {
+    Point *origin = Point();
+    assert(origin != nullptr && (*origin).x == 0 && (*origin).y == 0);
+    Point_free(origin);
+    Point *pixel = Point(320, 240);
+    assert(pixel != nullptr && (*pixel).x == 320 && (*pixel).y == 240);
+    Point_free(pixel);
+
+    Rectangle *empty = Rectangle();
+    assert(empty != nullptr && (*empty).width == 0.0f && (*empty).height == 0.0f);
+    Rectangle_free(empty);
+    Rectangle *bounds = Rectangle(10.0f, 20.0f, 640.0f, 480.0f);
+    assert(bounds != nullptr && (*bounds).x == 10.0f && (*bounds).width == 640.0f);
+    Rectangle_free(bounds);
 }
 
 static void test_kd_tree(void) {
@@ -116,8 +135,9 @@ static void test_bvh(void) {
     prims[2].bounds = BvhAabb_from_points((float[3]){-11.0f, -11.0f, 4.0f}, (float[3]){-9.0f, -9.0f, 6.0f});
     prims[2].centroid[0] = -10.0f; prims[2].centroid[1] = -10.0f; prims[2].centroid[2] = 5.0f;
 
-    BvhTree tree;
-    assert(BvhTree_build(prims, 3, &tree));
+    BvhTree tree = BvhTree(3u);
+    assert(tree.nodes != nullptr);
+    assert(BvhTree_build(prims, 3u, &tree));
 
     // Ray pointing along Z axis towards (0, 0, 5)
     BvhRay ray;
@@ -148,8 +168,8 @@ static bool tree_sit_counter(const TreeSitTree *tree, int32_t node_idx, int dept
 }
 
 static void test_tree_sit(void) {
-    TreeSitTree tree;
-    assert(TreeSitTree_init(16, &tree));
+    TreeSitTree tree = TreeSitTree(16u);
+    assert(tree.nodes != nullptr);
 
     TreeSitSpan root_span = {0, 100, 1, 0, 10, 0};
     int32_t root = TreeSitTree_add_node(-1, 1, "module", root_span, &tree);
@@ -184,11 +204,14 @@ static void test_tree_sit(void) {
 
 int main(void) {
     printf("[Algo Suite Test] Starting test suite...\n");
+    assert(Memory_init(0u));
     test_radix_sort();
     test_dijkstra();
+    test_geometry_constructors();
     test_kd_tree();
     test_bvh();
     test_tree_sit();
+    Memory_freeAll();
     printf("[Algo Suite Test] ALL TESTS PASSED\n");
     return 0;
 }

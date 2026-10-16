@@ -27,7 +27,7 @@ static int g_failures = 0;
 // Compares all decoded UTC fields and the epoch round trip against a fixed case.
 static void expect(int64_t ms, int32_t y, int32_t mo, int32_t d,
                    int32_t h, int32_t mi, int32_t s, int32_t milli, int32_t dow) {
-    DateTime dt;
+    DateTime dt = DateTime();
     setEpochMillis(&dt, ms);
     CHECK(DateTime_epochMillis(&dt) == ms);
     CHECK(DateTime_year(&dt) == y);
@@ -73,7 +73,7 @@ static void test_negative_epoch(void) {
 // Checks DateTime_set snapshots a plausible current wall-clock date.
 // Verifies DateTime_set replaces an old value with plausible current fields.
 static void test_set_snapshot(void) {
-    DateTime dt;
+    DateTime dt = DateTime();
     setEpochMillis(&dt, 0);
     DateTime_set(&dt);
     CHECK(DateTime_year(&dt) >= 2024);

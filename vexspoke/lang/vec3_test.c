@@ -17,6 +17,9 @@
 #include <math.h>
 
 #include "lang/vec3.h"
+#include "lang/vec3/vec3d.h"
+#include "lang/vec3/vec3_int_float.h"
+#include "lang/vec3/vec3_long_double.h"
 #include "nio/mem.h"
 
 static int g_failures = 0;
@@ -33,27 +36,53 @@ static int g_failures = 0;
 
 // Checks constructor arities, frame validation, and free behavior.
 static void test_construction(void) {
-    Vec3 *z = Vec3_0();
+    Vec3 *z = Vec3();
     CHECK(z != nullptr);
     CHECK(Vec3_getX(z) == 0.0f && Vec3_getY(z) == 0.0f && Vec3_getZ(z) == 0.0f);
     CHECK(Vec3_getFrame(z) == COORD_FRAME_DEFAULT);
     Vec3_free(z);
 
-    Vec3 *v = Vec3_3(1.0f, 2.0f, 3.0f);
+    Vec3 *v = Vec3(1.0f, 2.0f, 3.0f);
     CHECK(v != nullptr);
     CHECK(Vec3_getRight(v) == 1.0f && Vec3_getUp(v) == 2.0f && Vec3_getFront(v) == 3.0f);
     CHECK(Vec3_getFrame(v) == COORD_FRAME_DEFAULT);
 
-    Vec3 *f = Vec3_4(4.0f, 5.0f, 6.0f, COORD_FRAME_Z_UP_RIGHT);
+    Vec3 *f = Vec3(4.0f, 5.0f, 6.0f, COORD_FRAME_Z_UP_RIGHT);
     CHECK(Vec3_getFrame(f) == COORD_FRAME_Z_UP_RIGHT);
     // Invalid frame is rejected at construction and replaced by the default.
-    Vec3 *bad = Vec3_4(1.0f, 1.0f, 1.0f, (CoordFrame) 999);
+    Vec3 *bad = Vec3(1.0f, 1.0f, 1.0f, (CoordFrame) 999);
     CHECK(Vec3_getFrame(bad) == COORD_FRAME_DEFAULT);
 
     Vec3_free(v);
     Vec3_free(f);
     Vec3_free(bad);
     Vec3_free(nullptr);
+
+    Vec3d *wide = Vec3d();
+    CHECK(wide != nullptr && (*wide).horizontal == 0.0 && (*wide).frame == COORD_FRAME_DEFAULT);
+    Vec3d_free(wide);
+    wide = Vec3d(1.25, -2.5, 3.75);
+    CHECK(wide != nullptr && (*wide).depth == 3.75);
+    Vec3d_free(wide);
+    wide = Vec3d(1.25, -2.5, 3.75, COORD_FRAME_Z_UP_RIGHT);
+    CHECK(wide != nullptr && (*wide).frame == COORD_FRAME_Z_UP_RIGHT);
+    Vec3d_free(wide);
+
+    Vec3IntFloat *sectorFloat = Vec3IntFloat();
+    CHECK(sectorFloat != nullptr && (*sectorFloat).horizontal.sector == 0);
+    Vec3IntFloat_free(sectorFloat);
+    sectorFloat = Vec3IntFloat(1, 0.25f, 2, 0.5f, 3, 0.75f, COORD_FRAME_DEFAULT);
+    CHECK(sectorFloat != nullptr && (*sectorFloat).depth.sector == 3 &&
+          (*sectorFloat).depth.local == 0.75f);
+    Vec3IntFloat_free(sectorFloat);
+
+    Vec3LongDouble *sectorDouble = Vec3LongDouble();
+    CHECK(sectorDouble != nullptr && (*sectorDouble).horizontal.sector == 0);
+    Vec3LongDouble_free(sectorDouble);
+    sectorDouble = Vec3LongDouble(1, 0.25, 2, 0.5, 3, 0.75, COORD_FRAME_DEFAULT);
+    CHECK(sectorDouble != nullptr && (*sectorDouble).depth.sector == 3 &&
+          (*sectorDouble).depth.local == 0.75);
+    Vec3LongDouble_free(sectorDouble);
 }
 
 // Checks directional aliases, frame-aware accessors, and frame-preserving copy.

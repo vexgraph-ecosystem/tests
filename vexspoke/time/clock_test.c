@@ -55,7 +55,7 @@ static bool accrue_at_least(Clock *c, uint64_t target) {
 // Checks a newly created clock's scale, pause flag, and virtual-time origin.
 // Checks the clock's initial scale, pause state, and virtual-time origin.
 static void test_create(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     CHECK(Clock_timeScale(&c) == 1.0);
     CHECK(!Clock_isPaused(&c));
     CHECK(Clock_virtualTimeMillis(&c) == 0);
@@ -65,7 +65,7 @@ static void test_create(void) {
 // Verifies time-scale and pause setters through their corresponding getters.
 // Verifies time-scale and pause setters through their matching getters.
 static void test_settings(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     Clock_setTimeScale(&c, 2.5);
     CHECK(Clock_timeScale(&c) == 2.5);
     Clock_setPaused(&c, true);
@@ -78,7 +78,7 @@ static void test_settings(void) {
 // Confirms virtual time accrues monotonically across successive ticks.
 // Confirms ticking accrues cumulative monotonic time.
 static void test_accrual(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     CHECK(accrue_at_least(&c, 1));
     uint64_t afterFirst = Clock_virtualTimeMillis(&c);
     CHECK(afterFirst >= 1);
@@ -92,7 +92,7 @@ static void test_accrual(void) {
 // Ensures pause freezes virtual time without accumulating a resume backlog.
 // Ensures paused ticks freeze virtual time and resume without backlog.
 static void test_pause_freezes_virtual(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     CHECK(accrue_at_least(&c, 1));
     uint64_t v = Clock_virtualTimeMillis(&c);
 
@@ -115,7 +115,7 @@ static void test_pause_freezes_virtual(void) {
 // Checks zero time scale freezes virtual time while the clock remains active.
 // Checks a zero scale freezes virtual time without setting the paused flag.
 static void test_zero_scale(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     Clock_setTimeScale(&c, 0.0);
     for (int i = 0; i < 10; i++) {
         Clock_tick(&c);
@@ -128,7 +128,7 @@ static void test_zero_scale(void) {
 // Verifies reset clears virtual time and reanchors the clock.
 // Verifies reset clears accumulated virtual time and re-anchors the clock.
 static void test_reset(void) {
-    Clock c = Clock_create();
+    Clock c = Clock();
     CHECK(accrue_at_least(&c, 1));
     CHECK(Clock_virtualTimeMillis(&c) >= 1);
     Clock_reset(&c);

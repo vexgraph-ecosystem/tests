@@ -49,9 +49,7 @@ int main(void) {
         memset(&slot, 0, sizeof(slot));
         CHECK("init ok", VariableSlot_init(&slot, "Health", 0xABCDu) == true);
         CHECK("pointer bound", VariableSlot_getPointer(&slot) == 0xABCDu);
-        char out[VARIABLE_SLOT_NAME_BYTES];
-        CHECK("name folded to lowercase", VariableSlot_getName(&slot, out, sizeof(out)) == 6 &&
-                                          strcmp(out, "health") == 0);
+        CHECK("name folded to lowercase", strcmp(VariableSlot_getName(&slot), "health") == 0);
         CHECK("not empty", VariableSlot_isEmpty(&slot) == false);
         CHECK("nameEquals case-insensitive", VariableSlot_nameEquals(&slot, "HEALTH") == true);
         CHECK("nameEquals differs", VariableSlot_nameEquals(&slot, "health_ui") == false);
@@ -61,9 +59,7 @@ int main(void) {
     {
         VariableSlot slot;
         CHECK("camel fold ok", VariableSlot_init(&slot, "helloWorld", 0) == true);
-        char out[VARIABLE_SLOT_NAME_BYTES];
-        VariableSlot_getName(&slot, out, sizeof(out));
-        CHECK("camel folded", strcmp(out, "helloworld") == 0);
+        CHECK("camel folded", strcmp(VariableSlot_getName(&slot), "helloworld") == 0);
     }
 
     // section 4 Name grammar — segments split by '.', empty segments rejected.
@@ -88,9 +84,7 @@ int main(void) {
     {
         VariableSlot dotted;
         VariableSlot_init(&dotted, "Character.Position.X", 0);
-        char dname[VARIABLE_SLOT_NAME_BYTES];
-        VariableSlot_getName(&dotted, dname, sizeof(dname));
-        CHECK("dotted folded", strcmp(dname, "character.position.x") == 0);
+        CHECK("dotted folded", strcmp(VariableSlot_getName(&dotted), "character.position.x") == 0);
         CHECK("dotted nameEquals", VariableSlot_nameEquals(&dotted, "CHARACTER.position.x") == true);
     }
 
@@ -99,35 +93,22 @@ int main(void) {
         VariableSlot slot;
         VariableSlot_init(&slot, "first", 1);
         CHECK("setName bad rejected", VariableSlot_setName(&slot, "bad name") == false);
-        char out[VARIABLE_SLOT_NAME_BYTES];
-        VariableSlot_getName(&slot, out, sizeof(out));
-        CHECK("old name survives bad set", strcmp(out, "first") == 0);
+        CHECK("old name survives bad set", strcmp(VariableSlot_getName(&slot), "first") == 0);
         CHECK("setName ok", VariableSlot_setName(&slot, "Second") == true);
-        VariableSlot_getName(&slot, out, sizeof(out));
-        CHECK("name replaced + folded", strcmp(out, "second") == 0);
+        CHECK("name replaced + folded", strcmp(VariableSlot_getName(&slot), "second") == 0);
         VariableSlot_setPointer(&slot, 0x99u);
         CHECK("pointer replaced", VariableSlot_getPointer(&slot) == 0x99u);
     }
 
     // section 6 Null safety (the Symmetric Getter/Setter Completeness Law).
     {
-        char out[VARIABLE_SLOT_NAME_BYTES];
-        CHECK("null getName", VariableSlot_getName(nullptr, out, sizeof(out)) == -1);
+        CHECK("null getName", VariableSlot_getName(nullptr) == nullptr);
         CHECK("null getPointer", VariableSlot_getPointer(nullptr) == 0u);
         CHECK("null isEmpty", VariableSlot_isEmpty(nullptr) == true);
         CHECK("null nameEquals", VariableSlot_nameEquals(nullptr, "x") == false);
         VariableSlot_setName(nullptr, "x");
         VariableSlot_setPointer(nullptr, 1);
         CHECK("null setters no-op", true);
-    }
-
-    // section 7 Short buffer — getName refuses rather than truncating silently.
-    {
-        VariableSlot slot;
-        VariableSlot_init(&slot, "health", 0);
-        char tiny[4];
-        CHECK("short buffer refused", VariableSlot_getName(&slot, tiny, sizeof(tiny)) == -1);
-        CHECK("null out refused", VariableSlot_getName(&slot, nullptr, 8) == -1);
     }
 
     // section 8 Arity constructors — arena-allocated slots.

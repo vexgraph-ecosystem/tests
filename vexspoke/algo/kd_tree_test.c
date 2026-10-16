@@ -31,8 +31,7 @@ static int g_failures = 0;
     } while (0)
 
 static KdPoint mk(float x, float y, float z, uint64_t payload) {
-    KdPoint p = { { x, y, z }, payload };
-    return p;
+    return KdPoint(x, y, z, payload);
 }
 
 static float dist_sq(const float a[3], const float b[3]) {
@@ -48,7 +47,7 @@ static void test_build_and_null(void) {
 
     KdTree *t = KdTree_build(&p, 1);
     CHECK(t != nullptr);
-    KdPoint out;
+    KdPoint out = KdPoint();
     float d = -1.0f;
     float q[3] = { 1, 2, 3 };
     CHECK(KdTree_nearest(t, q, &out, &d));

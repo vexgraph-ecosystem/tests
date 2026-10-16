@@ -19,7 +19,7 @@ static int g_fail = 0;
 
 // Checks property-pool allocation, reuse, and bounds-safe access.
 int main(void) {
-    PropertyPool *pool = PropertyPool_0();
+    PropertyPool *pool = PropertyPool();
     CHECK(pool != nullptr);
     CHECK(PropertyPool_live(pool) == 0);
 

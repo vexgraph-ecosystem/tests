@@ -91,21 +91,21 @@ class ChecklistTest(unittest.TestCase):
         self.assertNotIn("b/b.json", groups["b"])
         self.assertNotIn("b/util_test.c", groups["workspace"])
 
-    def test_tier_repositories_and_gist_only_report(self):
+    def test_tier_repositories_and_metadata_gist_report(self):
         with (self.root / ".gitignore").open("a") as ignore:
-            ignore.write("gist/\nhost-behavior/\ndrivers/\ninterfaces/\ninteractables/\nsuperapp/\n")
+            ignore.write("metadata/\nhost-behavior/\ndrivers/\ninterfaces/\ninteractables/\nsuperapp/\n")
         for tier in ("host-behavior", "drivers", "interfaces", "interactables", "superapp"):
             relative = f"{tier}/fixture"
             repo = self.root / relative
             subprocess.run(["git", "init", "-q", str(repo)], check=True)
             (repo / "unit_test.c").write_text("int main(void){return 0;}\n")
-        self.assertEqual(CHECKLIST.REPORT.as_posix(), "gist/test-checklist.md")
+        self.assertEqual(CHECKLIST.REPORT.as_posix(), "metadata/gists/test-checklist.md")
         self.assertEqual(self.run_cli(["sync"]), 0)
         groups = CHECKLIST.inventory(self.root)
         for tier in ("host-behavior", "drivers", "interfaces", "interactables", "superapp"):
             relative = f"{tier}/fixture"
             self.assertEqual(groups[relative], [f"{relative}/unit_test.c"])
-        self.assertTrue((self.root / "gist/test-checklist.md").is_file())
+        self.assertTrue((self.root / "metadata/gists/test-checklist.md").is_file())
         self.assertFalse((self.root / "tests/test-checklist.md").exists())
         self.assertEqual(self.run_cli(["check"]), 0)
 
@@ -166,7 +166,7 @@ class ChecklistTest(unittest.TestCase):
 
     def test_authorship_is_removed_on_migration(self):
         report = self.root / CHECKLIST.REPORT
-        report.parent.mkdir(exist_ok=True)
+        report.parent.mkdir(parents=True, exist_ok=True)
         report.write_text("| Filename | Tested? | Time | Hash | Evidence | Written by | Result |\n"
                           "| `tests/subject_test.py` | ❌ | — | — | No evidence | private-name (agent ses_private) | untested |\n")
         self.run_cli(["sync"])

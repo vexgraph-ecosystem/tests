@@ -25,7 +25,7 @@ static int g_failures = 0;
 
 // Parses a pattern with a fresh parser and reports the root and status.
 static uint32_t parse(const char *pattern, bool ignoreCase, RegexParser *parser) {
-    RegexParser_init(parser, pattern, strlen(pattern), ignoreCase);
+    *parser = RegexParser(pattern, strlen(pattern), ignoreCase);
     return RegexParser_parse(parser);
 }
 
@@ -175,7 +175,7 @@ static void testCeilings(void) {
     deep[d++] = 'a';
     for (int i = 0; i < 200; i++) deep[d++] = ')';
     deep[d] = '\0';
-    RegexParser_init(&parser, deep, d, false);
+    parser = RegexParser(deep, d, false);
     CHECK(RegexParser_parse(&parser) == REGEX_NODE_NONE);
     CHECK(RegexParser_error(&parser) && strstr(RegexParser_error(&parser), "nesting") != nullptr);
     RegexParser_free(&parser);
@@ -183,7 +183,7 @@ static void testCeilings(void) {
     static char flat[9001];
     for (size_t i = 0; i < 9000; i++) flat[i] = 'a';
     flat[9000] = '\0';
-    RegexParser_init(&parser, flat, 9000, false);
+    parser = RegexParser(flat, 9000u, false);
     CHECK(RegexParser_parse(&parser) == REGEX_NODE_NONE);
     CHECK(RegexParser_error(&parser) && strstr(RegexParser_error(&parser), "node ceiling") != nullptr);
     RegexParser_free(&parser);
@@ -197,7 +197,7 @@ static void testCeilings(void) {
         classes[c++] = ']';
     }
     classes[c] = '\0';
-    RegexParser_init(&parser, classes, c, false);
+    parser = RegexParser(classes, c, false);
     CHECK(RegexParser_parse(&parser) != REGEX_NODE_NONE);
     uint32_t count = 0;
     RegexCharClass *released = RegexParser_releaseClasses(&parser, &count);

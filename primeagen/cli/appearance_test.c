@@ -21,17 +21,16 @@ int main(void) {
     assert(strcmp(PrimeagenAppearance_name(), "ascii-striped") == 0);
     const TerminalAppearance *look = PrimeagenAppearance_current();
     assert(look != nullptr);
-    TerminalRule rule = TerminalRule_0();
-    TerminalAppearance_getRule(look, &rule);
+    TerminalRule rule = TerminalAppearance_getRule(look);
     assert(rule.horizontal == '-' && rule.vertical == '|' && rule.stripe == '.');
 
     // Adopt a named preset, and an unknown name falls back to the default.
     PrimeagenAppearance_use("unicode-emdash");
     assert(strcmp(PrimeagenAppearance_name(), "unicode-emdash") == 0);
-    TerminalAppearance_getRule(PrimeagenAppearance_current(), &rule);
+    rule = TerminalAppearance_getRule(PrimeagenAppearance_current());
     assert(rule.horizontal == 0x2014u /* — */);
     PrimeagenAppearance_use("no-such-look");
-    TerminalAppearance_getRule(PrimeagenAppearance_current(), &rule);
+    rule = TerminalAppearance_getRule(PrimeagenAppearance_current());
     assert(rule.stripe == '.');            // default
     PrimeagenAppearance_use(nullptr);
     PrimeagenAppearance_use("ascii-solid");

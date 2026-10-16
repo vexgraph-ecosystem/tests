@@ -3,7 +3,9 @@
 
 int main(void) {
     Reference unresolved = Reference();
+    Reference zero = Reference_zero();
     assert(!Reference_isResolved(&unresolved));
+    assert(!Reference_isResolved(&zero));
     SourceRange range = SourceRange(4, 11, 15);
     Reference reference = Reference(8, range, REFERENCE_ROLE_WRITE, true);
     assert(Reference_getTargetSymbolId(&reference) == 8);

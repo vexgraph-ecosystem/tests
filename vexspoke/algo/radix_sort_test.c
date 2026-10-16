@@ -1,14 +1,15 @@
-// tests/vexspoke/algo/radix_sort_test.c — owner test for algo/radix_sort.
+// tests/vexspoke/algo/radix_sort_test.c — owner tests for Sort radix methods.
 //
 // LSD radix sort is verified against a qsort ORACLE over deterministic
 // pseudo-random arrays, plus the boundary rows:
-//   - nullptr / count 0 / count 1 are safe no-ops;
+//   - count 0 / count 1 are successful no-ops; nullptr with count > 1 is
+//     rejected without touching input;
 //   - value boundaries: 0, 1, UINT32_MAX/UINT64_MAX, and values that differ
 //     only in the top byte (all 4/8 passes must run);
 //   - duplicates are preserved as a multiset, and the result is fully ordered;
 //   - keys and values in pairsU64 stay paired through the sort, with stable
 //     ordering for equal keys (LSD radix is stable);
-//   - nullptr keys or values in pairsU64 is a safe no-op.
+//   - nullptr keys or values in pairsU64 is rejected without touching keys.
 
 #include <stddef.h>
 #include <stdint.h>
@@ -16,7 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "algo/radix_sort.h"
+#include "algo/sort.h"
 #include "nio/mem.h"
 
 static int g_failures = 0;
@@ -59,37 +60,37 @@ static int cmp_u64(const void *a, const void *b) {
 
 /** Checks empty, singleton, and already ordered input cases. */
 static void test_trivial(void) {
-    RadixSort_u32(nullptr, 16);                          // safe
-    RadixSort_u64(nullptr, 16);
-    RadixSort_pairsU64(nullptr, nullptr, 16);
+    CHECK(!Sort_radixSortUint32(nullptr, 16u));
+    CHECK(!Sort_radixSortUint64(nullptr, 16u));
+    CHECK(!Sort_radixSortPairsUint64(nullptr, nullptr, 16u));
 
     uint32_t one[1] = { 7 };
-    RadixSort_u32(one, 1);
+    CHECK(Sort_radixSortUint32(one, 1u));
     CHECK(one[0] == 7);
-    RadixSort_u32(one, 0);                               // count 0 no-op
+    CHECK(Sort_radixSortUint32(one, 0u));
     CHECK(one[0] == 7);
 
     uint64_t big[1] = { 0x123456789abcdefull };
-    RadixSort_u64(big, 1);
+    CHECK(Sort_radixSortUint64(big, 1u));
     CHECK(big[0] == 0x123456789abcdefull);
 
     uint64_t keys[1] = { 5 };
     void *vals[1] = { (void*) (uintptr_t) 9 };
-    RadixSort_pairsU64(keys, vals, 1);
+    CHECK(Sort_radixSortPairsUint64(keys, vals, 1u));
     CHECK(keys[0] == 5 && (uintptr_t) vals[0] == 9);
 
     // pairsU64 with a null side is a no-op, not a crash.
     uint64_t k2[2] = { 2, 1 };
-    RadixSort_pairsU64(k2, nullptr, 2);
+    CHECK(!Sort_radixSortPairsUint64(k2, nullptr, 2u));
     CHECK(k2[0] == 2 && k2[1] == 1);
-    RadixSort_pairsU64(nullptr, vals, 2);
+    CHECK(!Sort_radixSortPairsUint64(nullptr, vals, 2u));
 }
 
 /** Exercises unsigned value extremes and duplicate values for radix sorting. */
 static void test_value_boundaries(void) {
     uint32_t a[] = { UINT32_MAX, 0, 1, 0x01000000u, 0x00FFFFFFu, 0, UINT32_MAX };
     size_t n = sizeof(a) / sizeof(a[0]);
-    RadixSort_u32(a, n);
+    CHECK(Sort_radixSortUint32(a, n));
     CHECK(sorted_u32(a, n));
     CHECK(a[0] == 0 && a[1] == 0);
     CHECK(a[n - 1] == UINT32_MAX && a[n - 2] == UINT32_MAX);
@@ -97,7 +98,7 @@ static void test_value_boundaries(void) {
 
     uint64_t b[] = { UINT64_MAX, 0, 1, 0x0100000000000000ull, 0x00FFFFFFFFFFFFFFull };
     size_t m = sizeof(b) / sizeof(b[0]);
-    RadixSort_u64(b, m);
+    CHECK(Sort_radixSortUint64(b, m));
     CHECK(sorted_u64(b, m));
     CHECK(b[0] == 0 && b[1] == 1);
     CHECK(b[m - 1] == UINT64_MAX);
@@ -113,7 +114,7 @@ static void test_oracle_random(void) {
         a[i] = (uint32_t) (seed >> 32);
         ref[i] = a[i];
     }
-    RadixSort_u32(a, N);
+    CHECK(Sort_radixSortUint32(a, N));
     qsort(ref, N, sizeof(uint32_t), cmp_u32);
     CHECK(sorted_u32(a, N));
     CHECK(memcmp(a, ref, sizeof(a)) == 0);
@@ -129,7 +130,7 @@ static void test_oracle_random_u64(void) {
         a[i] = seed ^ (seed << 17);
         ref[i] = a[i];
     }
-    RadixSort_u64(a, N);
+    CHECK(Sort_radixSortUint64(a, N));
     qsort(ref, N, sizeof(uint64_t), cmp_u64);
     CHECK(sorted_u64(a, N));
     CHECK(memcmp(a, ref, sizeof(a)) == 0);
@@ -145,7 +146,7 @@ static void test_pairs(void) {
     for (int i = 0; i < 8; i++)
         vals[i] = (void*) tags[i];
 
-    RadixSort_pairsU64(keys, vals, 8);
+    CHECK(Sort_radixSortPairsUint64(keys, vals, 8u));
     CHECK(sorted_u64(keys, 8));
 
     // Reconstruct the (key, tag) multiset and check stability per key.
@@ -157,7 +158,7 @@ static void test_pairs(void) {
     }
 }
 
-/** Runs the RadixSort owner scenarios and reports aggregate assertion status. */
+/** Runs the Sort radix owner scenarios and reports aggregate assertion status. */
 int main(void) {
     CHECK(Memory_init(0));
 
@@ -166,11 +167,12 @@ int main(void) {
     test_oracle_random();
     test_oracle_random_u64();
     test_pairs();
+    Memory_freeAll();
 
     if (g_failures == 0) {
-        printf("radix_sort_test: all assertions held\n");
+        printf("sort_radix_test: all assertions held\n");
         return 0;
     }
-    printf("radix_sort_test: %d FAILURES\n", g_failures);
+    printf("sort_radix_test: %d FAILURES\n", g_failures);
     return 1;
 }

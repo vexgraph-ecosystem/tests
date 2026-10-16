@@ -35,7 +35,6 @@ src/input/turntable.c
 src/io/clipboard_stub.c
 src/io/hot_file.c
 src/io/process_spawn.c
-src/io/ws_client.c
 src/lang/point/point.c
 src/lang/rect/rectangle.c
 src/lang/str.c

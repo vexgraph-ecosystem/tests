@@ -33,8 +33,8 @@ static int g_failures = 0;
 
 /** Checks graph creation, invalid endpoints, bidirectional-edge rejection, and null-safe cleanup. */
 static void test_construction(void) {
-    CHECK(Dijkstra_create(0) == nullptr);
-    DijkstraGraph *g = Dijkstra_create(4);
+    CHECK(Dijkstra(0) == nullptr);
+    DijkstraGraph *g = Dijkstra(4);
     CHECK(g != nullptr);
 
     CHECK(!Dijkstra_addEdge(g, 4, 0, 1.0f));        // from out of range
@@ -48,7 +48,7 @@ static void test_construction(void) {
 
 /** Verifies shortest-path choice, directed traversal, trivial paths, and unchanged distance on absence. */
 static void test_known_path(void) {
-    DijkstraGraph *g = Dijkstra_create(4);          // 0,1,2,3
+    DijkstraGraph *g = Dijkstra(4);                 // 0,1,2,3
     CHECK(g != nullptr);
     CHECK(Dijkstra_addBiEdge(g, 0, 1, 1.0f));
     CHECK(Dijkstra_addBiEdge(g, 1, 2, 2.0f));
@@ -86,7 +86,7 @@ static void test_known_path(void) {
 
 /** Exercises bounded path output and the solver's documented null and range refusals. */
 static void test_truncation_and_nulls(void) {
-    DijkstraGraph *g = Dijkstra_create(3);
+    DijkstraGraph *g = Dijkstra(3);
     CHECK(g != nullptr);
     CHECK(Dijkstra_addEdge(g, 0, 1, 1.0f));
     CHECK(Dijkstra_addEdge(g, 1, 2, 1.0f));
@@ -114,7 +114,7 @@ static void test_truncation_and_nulls(void) {
 
 /** Adds enough outgoing edges to grow adjacency storage and checks the resulting shortest path. */
 static void test_edge_growth(void) {
-    DijkstraGraph *g = Dijkstra_create(32);
+    DijkstraGraph *g = Dijkstra(32);
     CHECK(g != nullptr);
     // Node 0 gets 20 outgoing edges, forcing the initial capacity 4 to double
     // several times.
@@ -135,7 +135,7 @@ static void test_edge_growth(void) {
 /** Verifies exact path and distance on a long directed chain, including reverse unreachability. */
 static void test_chain(void) {
     enum { N = 128 };
-    DijkstraGraph *g = Dijkstra_create(N);
+    DijkstraGraph *g = Dijkstra(N);
     CHECK(g != nullptr);
     for (uint32_t i = 0; i + 1 < N; i++)
         CHECK(Dijkstra_addEdge(g, i, i + 1, 0.5f));

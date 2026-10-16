@@ -22,8 +22,7 @@ static int g_failures = 0;
 
 // Checks the empty list, index assignment, and the zeroed node payload.
 static void testAdd(void) {
-    RegexNodeList list;
-    RegexNodeList_init(&list);
+    RegexNodeList list = RegexNodeList();
     CHECK(list.count == 0);
     CHECK(list.nodes == nullptr);
 
@@ -51,8 +50,7 @@ static void testAdd(void) {
 
 // Checks growth past the seed capacity keeps indices stable, and range checks.
 static void testGrowth(void) {
-    RegexNodeList list;
-    RegexNodeList_init(&list);
+    RegexNodeList list = RegexNodeList();
 
     // Past the 64-node seed capacity so the block is reallocated at least twice.
     enum { TOTAL = 300 };
@@ -82,8 +80,7 @@ static void testGrowth(void) {
 
 // Checks that free releases and re-zeroes the list, and is null-safe.
 static void testFreeAndReuse(void) {
-    RegexNodeList list;
-    RegexNodeList_init(&list);
+    RegexNodeList list = RegexNodeList();
     CHECK(RegexNodeList_add(&list, REGEX_NODE_ANY) == 0);
     RegexNodeList_free(&list);
     CHECK(list.nodes == nullptr);

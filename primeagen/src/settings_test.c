@@ -38,7 +38,7 @@ int main(void) {
     }
     setenv("VEX_MANIFEST", base, 1);  // must precede the first resolvePath
 
-    Settings settings = Settings_0();
+    Settings settings = Settings();
     CHECK(strcmp(Settings_getProvider(&settings), "") == 0);
     CHECK(strcmp(Settings_getModel(&settings), "") == 0);
     CHECK(!Settings_isOwo(&settings));
@@ -58,7 +58,7 @@ int main(void) {
 
     CHECK(Settings_save(&settings, path));
 
-    Settings loaded = Settings_0();
+    Settings loaded = Settings();
     CHECK(Settings_load(&loaded, path));
     CHECK(strcmp(Settings_getProvider(&loaded), "openai") == 0);
     CHECK(strcmp(Settings_getModel(&loaded), "gpt-x") == 0);
@@ -67,13 +67,13 @@ int main(void) {
     CHECK(strcmp(Settings_getAppearance(&loaded), "unicode-emdash") == 0);
 
     // Missing file: defaults kept, still true.
-    Settings absent = Settings_0();
+    Settings absent = Settings();
     Settings_setProvider(&absent, "keep");
     CHECK(Settings_load(&absent, "/tmp/primeagen-settings-absent/file"));
     CHECK(strcmp(Settings_getProvider(&absent), "keep") == 0);
 
     // Malformed / unknown key: false, nothing applied.
-    Settings reject = Settings_0();
+    Settings reject = Settings();
     Settings_setProvider(&reject, "keep");
     writeFile(path, "provider=openai\nbogus=1\n");
     CHECK(!Settings_load(&reject, path));
@@ -85,7 +85,7 @@ int main(void) {
     char big[200];
     memset(big, 'a', sizeof big - 1);
     big[sizeof big - 1] = '\0';
-    Settings bounded = Settings_0();
+    Settings bounded = Settings();
     CHECK(!Settings_setModel(&bounded, big));
     CHECK(strcmp(Settings_getModel(&bounded), "") == 0);
 

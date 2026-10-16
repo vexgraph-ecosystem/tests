@@ -31,9 +31,9 @@ static int g_failures = 0;
 
 // Checks sphere-array constructors, initial state, and rejected dimensions.
 static void test_construction(void) {
-    CHECK(SphereArray_create(-1, ID_INT) == nullptr);
+    CHECK(SphereArray(-1, ID_INT) == nullptr);
 
-    SphereArray *r0 = SphereArray_create(0, ID_INT);
+    SphereArray *r0 = SphereArray(0, ID_INT);
     CHECK(r0 != nullptr);
     CHECK(SphereArray_radius(r0) == 0);
     CHECK(SphereArray_diameter(r0) == 1);
@@ -42,7 +42,7 @@ static void test_construction(void) {
 
     const int expected[] = { 1, 7, 33 };
     for (int32_t r = 0; r <= 2; r++) {
-        SphereArray *a = SphereArray_create(r, ID_INT);
+        SphereArray *a = SphereArray(r, ID_INT);
         CHECK(a != nullptr);
         CHECK(SphereArray_radius(a) == r);
         CHECK(SphereArray_diameter(a) == 2 * r + 1);
@@ -50,7 +50,7 @@ static void test_construction(void) {
         SphereArray_free(a);
     }
 
-    SphereArray *s = SphereArray_createWithStride(1, ID_INT, 8);
+    SphereArray *s = SphereArray(1, ID_INT, 8);
     CHECK(s != nullptr);
     CHECK(SphereArray_validVoxelCount(s) == 7);
     SphereArray_free(s);
@@ -60,7 +60,7 @@ static void test_construction(void) {
 
 // Verifies sphere dimensions and computed voxel-storage geometry.
 static void test_geometry(void) {
-    SphereArray *a = SphereArray_create(2, ID_INT);
+    SphereArray *a = SphereArray(2, ID_INT);
     CHECK(a != nullptr);
 
     CHECK(SphereArray_distanceSquaredOffset(0, 0, 0) == 0);
@@ -88,33 +88,33 @@ static void test_geometry(void) {
 
 // Checks voxel writes and reads at valid coordinates and boundary locations.
 static void test_access_round_trip(void) {
-    SphereArray *a = SphereArray_create(2, ID_INT);
+    SphereArray *a = SphereArray(2, ID_INT);
     CHECK(a != nullptr);
 
     int v = 4321;
     CHECK(SphereArray_setOffset(a, 0, 0, 0, &v));
     int got = 0;
-    CHECK(SphereArray_getGrid(a, 2, 2, 2, &got));
+    CHECK(SphereArray_getGrid(&got, a, 2, 2, 2));
     CHECK(got == 4321);
 
     CHECK(SphereArray_setOffset(a, 2, 0, 0, &(int){ 11 }));
-    CHECK(SphereArray_getOffset(a, 2, 0, 0, &got));
+    CHECK(SphereArray_getOffset(&got, a, 2, 0, 0));
     CHECK(got == 11);
     CHECK(SphereArray_setGrid(a, 2, 1, 2, &(int){ 22 }));
-    CHECK(SphereArray_getOffset(a, 0, -1, 0, &got));
+    CHECK(SphereArray_getOffset(&got, a, 0, -1, 0));
     CHECK(got == 22);
 
-    CHECK(SphereArray_getOffset(a, 0, 0, 0, &got));
+    CHECK(SphereArray_getOffset(&got, a, 0, 0, 0));
     CHECK(got == 4321);                                  // untouched
 
     // Refusals.
     CHECK(!SphereArray_setOffset(a, 2, 2, 0, &(int){ 99 }));
-    CHECK(!SphereArray_getOffset(a, 2, 2, 0, &got));
+    CHECK(!SphereArray_getOffset(&got, a, 2, 2, 0));
     CHECK(!SphereArray_setGrid(a, 9, 9, 9, &(int){ 99 }));
-    CHECK(!SphereArray_getGrid(a, 9, 9, 9, &got));
+    CHECK(!SphereArray_getGrid(&got, a, 9, 9, 9));
     CHECK(!SphereArray_setOffset(a, 0, 0, 0, nullptr));
-    CHECK(!SphereArray_getOffset(a, 0, 0, 0, nullptr));
-    CHECK(SphereArray_getOffset(a, 0, 0, 0, &got));
+    CHECK(!SphereArray_getOffset(nullptr, a, 0, 0, 0));
+    CHECK(SphereArray_getOffset(&got, a, 0, 0, 0));
     CHECK(got == 4321);
 
     CHECK(SphereArray_slotOffset(a, 0, 0, 0) != nullptr);
@@ -158,7 +158,7 @@ static void walkVoxel(int32_t gx, int32_t gy, int32_t gz,
 
 // Confirms iteration visits the expected sphere-array voxels.
 static void test_for_each(void) {
-    SphereArray *a = SphereArray_create(2, ID_INT);
+    SphereArray *a = SphereArray(2, ID_INT);
     CHECK(a != nullptr);
 
     int fill = 1;

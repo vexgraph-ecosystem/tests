@@ -39,12 +39,12 @@ static uint32_t addPair(RegexNodeList *nodes, uint8_t kind, uint32_t a, uint32_t
 // Checks the outer frame and a single literal.
 static void testFrame(void) {
     RegexNodeList nodes;
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     uint32_t character = addNode(&nodes, REGEX_NODE_CHAR);
     (*RegexNodeList_get(&nodes, character)).byte = (uint8_t) 'a';
 
     RegexProgram program;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(RegexProgram_count(&program) == 0);
     CHECK(RegexProgram_build(&program, &nodes, character));
     CHECK(RegexProgram_count(&program) == 4);
@@ -66,7 +66,7 @@ static void testFrame(void) {
 // Checks that concatenation emits left operand first.
 static void testConcat(void) {
     RegexNodeList nodes;
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     uint32_t a = addNode(&nodes, REGEX_NODE_CHAR);
     (*RegexNodeList_get(&nodes, a)).byte = (uint8_t) 'a';
     uint32_t b = addNode(&nodes, REGEX_NODE_CHAR);
@@ -74,7 +74,7 @@ static void testConcat(void) {
     uint32_t cat = addPair(&nodes, REGEX_NODE_CONCAT, a, b);
 
     RegexProgram program;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(RegexProgram_build(&program, &nodes, cat));
     CHECK(RegexProgram_count(&program) == 5);
     const RegexInst *one = RegexProgram_at(&program, 1);
@@ -89,7 +89,7 @@ static void testConcat(void) {
 // Checks the alternation SPLIT/JUMP wiring and its patch targets.
 static void testAlternation(void) {
     RegexNodeList nodes;
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     uint32_t a = addNode(&nodes, REGEX_NODE_CHAR);
     (*RegexNodeList_get(&nodes, a)).byte = (uint8_t) 'a';
     uint32_t b = addNode(&nodes, REGEX_NODE_CHAR);
@@ -97,7 +97,7 @@ static void testAlternation(void) {
     uint32_t alt = addPair(&nodes, REGEX_NODE_ALT, a, b);
 
     RegexProgram program;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(RegexProgram_build(&program, &nodes, alt));
     CHECK(RegexProgram_count(&program) == 7);
 
@@ -119,14 +119,14 @@ static void testQuantifiers(void) {
     RegexNodeList nodes;
 
     // a* -> SAVE0, SPLIT(1->2, else 4), CHAR, JUMP->1, SAVE1, MATCH
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     uint32_t a = addNode(&nodes, REGEX_NODE_CHAR);
     (*RegexNodeList_get(&nodes, a)).byte = (uint8_t) 'a';
     uint32_t star = addNode(&nodes, REGEX_NODE_STAR);
     (*RegexNodeList_get(&nodes, star)).a = a;
 
     RegexProgram program;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(RegexProgram_build(&program, &nodes, star));
     CHECK(RegexProgram_count(&program) == 6);
     const RegexInst *split = RegexProgram_at(&program, 1);
@@ -137,12 +137,12 @@ static void testQuantifiers(void) {
     RegexNodeList_free(&nodes);
 
     // a+ -> SAVE0, CHAR, SPLIT(->body, else), SAVE1, MATCH
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     a = addNode(&nodes, REGEX_NODE_CHAR);
     (*RegexNodeList_get(&nodes, a)).byte = (uint8_t) 'a';
     uint32_t plus = addNode(&nodes, REGEX_NODE_PLUS);
     (*RegexNodeList_get(&nodes, plus)).a = a;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(RegexProgram_build(&program, &nodes, plus));
     CHECK(RegexProgram_count(&program) == 5);
     const RegexInst *plusSplit = RegexProgram_at(&program, 2);
@@ -153,12 +153,12 @@ static void testQuantifiers(void) {
     RegexNodeList_free(&nodes);
 
     // a? -> SAVE0, SPLIT(body, else), CHAR, SAVE1, MATCH
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     a = addNode(&nodes, REGEX_NODE_CHAR);
     (*RegexNodeList_get(&nodes, a)).byte = (uint8_t) 'a';
     uint32_t quest = addNode(&nodes, REGEX_NODE_QUEST);
     (*RegexNodeList_get(&nodes, quest)).a = a;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(RegexProgram_build(&program, &nodes, quest));
     CHECK(RegexProgram_count(&program) == 5);
     const RegexInst *questSplit = RegexProgram_at(&program, 1);
@@ -171,7 +171,7 @@ static void testQuantifiers(void) {
 // Checks capture SAVE slots and repetition expansion.
 static void testGroupAndRepeat(void) {
     RegexNodeList nodes;
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     uint32_t a = addNode(&nodes, REGEX_NODE_CHAR);
     (*RegexNodeList_get(&nodes, a)).byte = (uint8_t) 'a';
     uint32_t group = addNode(&nodes, REGEX_NODE_GROUP);
@@ -180,7 +180,7 @@ static void testGroupAndRepeat(void) {
     (*groupNode).group = 1;
 
     RegexProgram program;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(RegexProgram_build(&program, &nodes, group));
     // SAVE0, SAVE2, CHAR, SAVE3, SAVE1, MATCH
     CHECK(RegexProgram_count(&program) == 6);
@@ -192,7 +192,7 @@ static void testGroupAndRepeat(void) {
     RegexNodeList_free(&nodes);
 
     // a{2,3} -> two mandatory copies then one optional copy (three CHARs).
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     a = addNode(&nodes, REGEX_NODE_CHAR);
     (*RegexNodeList_get(&nodes, a)).byte = (uint8_t) 'a';
     uint32_t repeat = addNode(&nodes, REGEX_NODE_REPEAT);
@@ -200,7 +200,7 @@ static void testGroupAndRepeat(void) {
     (*repeatNode).a = a;
     (*repeatNode).repMin = 2;
     (*repeatNode).repMax = 3;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(RegexProgram_build(&program, &nodes, repeat));
     // SAVE0, CHAR, CHAR, SPLIT, CHAR, SAVE1, MATCH
     CHECK(RegexProgram_count(&program) == 7);
@@ -215,7 +215,7 @@ static void testGroupAndRepeat(void) {
     RegexNodeList_free(&nodes);
 
     // {2,} -> two mandatory copies then a star of the body.
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     a = addNode(&nodes, REGEX_NODE_CHAR);
     (*RegexNodeList_get(&nodes, a)).byte = (uint8_t) 'a';
     repeat = addNode(&nodes, REGEX_NODE_REPEAT);
@@ -223,7 +223,7 @@ static void testGroupAndRepeat(void) {
     (*repeatNode).a = a;
     (*repeatNode).repMin = 2;
     (*repeatNode).repMax = REGEX_REP_INF;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(RegexProgram_build(&program, &nodes, repeat));
     // SAVE0, CHAR, CHAR, SPLIT, CHAR, JUMP, SAVE1, MATCH
     CHECK(RegexProgram_count(&program) == 8);
@@ -236,11 +236,11 @@ static void testGroupAndRepeat(void) {
 // Checks refusal paths: a bad root and the instruction ceiling.
 static void testRefusal(void) {
     RegexNodeList nodes;
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     uint32_t character = addNode(&nodes, REGEX_NODE_CHAR);
 
     RegexProgram program;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     // An out-of-range root is not emittable.
     CHECK(!RegexProgram_build(&program, &nodes, 999));
     RegexProgram_free(&program);
@@ -248,7 +248,7 @@ static void testRefusal(void) {
     // A repetition bound far past the instruction ceiling refuses cleanly. The
     // parser caps {m,n} at 1000; the program ceiling is the second line of
     // defence, so it is driven directly here.
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     character = addNode(&nodes, REGEX_NODE_CHAR);
     (*RegexNodeList_get(&nodes, character)).byte = (uint8_t) 'a';
     uint32_t repeat = addNode(&nodes, REGEX_NODE_REPEAT);
@@ -256,15 +256,15 @@ static void testRefusal(void) {
     (*repeatNode).a = character;
     (*repeatNode).repMin = 0;
     (*repeatNode).repMax = REGEX_MAX_PROGRAM + 100u;
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(!RegexProgram_build(&program, &nodes, repeat));
     RegexProgram_free(&program);
     CHECK(program.insts == nullptr && program.count == 0);
 
     // The unit is reusable after a refusal.
-    RegexNodeList_init(&nodes);
+    nodes = RegexNodeList();
     character = addNode(&nodes, REGEX_NODE_CHAR);
-    RegexProgram_init(&program);
+    program = RegexProgram();
     CHECK(RegexProgram_build(&program, &nodes, character));
     CHECK(RegexProgram_count(&program) == 4);
     RegexProgram_free(&program);

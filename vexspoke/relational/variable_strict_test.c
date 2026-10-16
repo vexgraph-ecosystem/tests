@@ -7,6 +7,7 @@
 
 #include "relational/symbol_table.h"
 #include "relational/relational.h"
+#include "nio/mem.h"
 
 ;;OVERVIEW
 /**
@@ -37,8 +38,9 @@ static int g_failures = 0;
 // Exercises strict SymbolTable rejection, class filtering, rename, and relational rebinding flows.
 int main(void) {
     printf("=== Running SymbolTable Strict Test Suite ===\n");
-    SymbolTable scope;
-    CHECK("init", SymbolTable_init(&scope) == true);
+    if (!Memory_init(0u)) return 1;
+    SymbolTable scope = SymbolTable();
+    CHECK("constructor", scope.active);
 
     // section 1 Strict constructor: dup fails WITHOUT update.
     int32_t a = SymbolTable_instant(&scope, "hp", 1, (uintptr_t) 0x100);
@@ -61,8 +63,7 @@ int main(void) {
     CHECK("dotted instant", f >= 0);
     CHECK("dotted find", SymbolTable_getId(&scope, "character.position.x") == f);
     CHECK("case folds", SymbolTable_getId(&scope, "Character.Position.X") == f);
-    char buf[24];
-    CHECK("getName dotted", SymbolTable_getName(&scope, f, buf, sizeof(buf)) == 20 && strcmp(buf, "character.position.x") == 0);
+    CHECK("getName dotted", strcmp(SymbolTable_getName(&scope, f), "character.position.x") == 0);
 
     // section 4 Class filter (+ truncation total).
     SymbolTable_instant(&scope, "mp", 1, (uintptr_t) 0x400);

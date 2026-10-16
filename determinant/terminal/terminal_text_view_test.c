@@ -11,6 +11,8 @@ int main(void) {
     TerminalCanvas_fill(&canvas, ' ', TerminalPen());
 
     TerminalTextView view = TerminalTextView(lines, 5);
+    TerminalTextViewLines viewLines = TerminalTextView_getLines(&view);
+    assert(viewLines.data == lines && viewLines.count == 5u);
     assert(TerminalTextView_isTail(&view));
     assert(TerminalTextView_getScroll(&view) == 0);
 
@@ -44,9 +46,11 @@ int main(void) {
     TerminalTextView_render(nullptr, &canvas);
     TerminalTextView_render(&view, nullptr);
     assert(TerminalTextView_getScroll(nullptr) == 0 && !TerminalTextView_isTail(nullptr));
+    viewLines = TerminalTextView_getLines(nullptr);
+    assert(viewLines.data == nullptr && viewLines.count == 0u);
     REJECT(TerminalTextView_setLines(&view, nullptr, 2), "null list");
     REJECT(TerminalTextView_setScroll(nullptr, 1), "null");
 
-    PROJECT(TerminalTextView, &view);
+    TERMINAL_PROJECT(TerminalTextView, &view);
     return 0;
 }

@@ -72,8 +72,8 @@ class RunCurrentTest(unittest.TestCase):
         self.assertEqual(self.invoke(source).returncode, 0)
 
     def test_generic_b_does_not_own_ecosystem_graph(self):
-        self.assertFalse((ROOT / "personal/b/workspace.c").exists())
-        launcher = (ROOT / "personal/b/b").read_text()
+        self.assertFalse((ROOT / "suite/personal/b/workspace.c").exists())
+        launcher = (ROOT / "suite/personal/b/b").read_text()
         self.assertNotIn("workspace-cli", launcher)
         self.assertNotIn("ecosystem/", launcher)
         project = (ROOT / "tools/b").read_text()
@@ -87,15 +87,15 @@ class RunCurrentTest(unittest.TestCase):
         tools = workspace / "tools"
         tools.mkdir(parents=True)
         shutil.copy2(ROOT / "tools/run-current", tools / "run-current")
-        generic = workspace / "personal/b"
+        generic = workspace / "suite/personal/b"
         generic.mkdir(parents=True)
         for launcher, label in ((tools / "b", "graph"), (generic / "b", "generic")):
             launcher.write_text(f'#!/bin/sh\nprintf "{label}\\n"\nprintf "%s\\n" "$@"\n')
             launcher.chmod(0o755)
         for relative, route in (("tests/ui/gallery.c", "graph"),
-                                 ("interactables/demo/main.c", "graph"),
-                                ("superapp/demo/main.c", "graph"),
-                                 ("personal/demo/main.c", "generic")):
+                                 ("suite/projects/drawling/main.c", "graph"),
+                                 ("suite/projects/anti/main.c", "graph"),
+                                 ("suite/personal/demo/main.c", "generic")):
             source = workspace / relative
             source.parent.mkdir(parents=True)
             source.write_text("unused fixture\n")

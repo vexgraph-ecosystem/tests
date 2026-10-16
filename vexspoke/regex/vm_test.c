@@ -29,8 +29,7 @@ static int g_failures = 0;
 // driven by an honest instruction stream rather than a hand-written one.
 static bool compile(const char *pattern, bool ignoreCase, RegexProgram *program,
                     RegexCharClass **classes, uint32_t *classCount, uint32_t *groupCount) {
-    RegexParser parser;
-    RegexParser_init(&parser, pattern, strlen(pattern), ignoreCase);
+    RegexParser parser = RegexParser(pattern, strlen(pattern), ignoreCase);
     uint32_t root = RegexParser_parse(&parser);
     bool ok = root != REGEX_NODE_NONE && RegexParser_ok(&parser);
     if (ok) {
@@ -48,8 +47,7 @@ static bool compile(const char *pattern, bool ignoreCase, RegexProgram *program,
 // always consistent.
 static bool search(const char *pattern, const char *subject, bool anchored,
                    RegexOptions options, RegexSpan *outWhole) {
-    RegexProgram program;
-    RegexProgram_init(&program);
+    RegexProgram program = RegexProgram();
     RegexCharClass *classes = nullptr;
     uint32_t classCount = 0;
     uint32_t groupCount = 0;
@@ -57,8 +55,8 @@ static bool search(const char *pattern, const char *subject, bool anchored,
         RegexProgram_free(&program);
         return false;
     }
-    RegexVm vm;
-    bool ok = RegexVm_init(&vm, &program, groupCount);
+    RegexVm vm = RegexVm(&program, groupCount);
+    bool ok = vm.best != nullptr;
     CHECK(ok);
     bool hit = false;
     if (ok) {
@@ -75,10 +73,7 @@ static bool search(const char *pattern, const char *subject, bool anchored,
 
 // A neutral options value (case sensitive, dot excludes newline, single line).
 static RegexOptions plain(void) {
-    RegexOptions options;
-    options.ignoreCase = false;
-    options.dotall = false;
-    options.multiline = false;
+    RegexOptions options = RegexOptions(false, false, false);
     return options;
 }
 
@@ -126,16 +121,15 @@ static void testOptions(void) {
 
 // Checks capture spans: the whole match plus each group.
 static void testCaptures(void) {
-    RegexProgram program;
-    RegexProgram_init(&program);
+    RegexProgram program = RegexProgram();
     RegexCharClass *classes = nullptr;
     uint32_t classCount = 0;
     uint32_t groupCount = 0;
     CHECK(compile("(a)(b)", false, &program, &classes, &classCount, &groupCount));
     CHECK(groupCount == 2);
 
-    RegexVm vm;
-    CHECK(RegexVm_init(&vm, &program, groupCount));
+    RegexVm vm = RegexVm(&program, groupCount);
+    CHECK(vm.best != nullptr);
     CHECK(RegexVm_run(&vm, classes, "ab", 2, false, plain()));
     RegexSpan whole = RegexVm_span(&vm, 0);
     RegexSpan first = RegexVm_span(&vm, 1);
@@ -152,10 +146,11 @@ static void testCaptures(void) {
         Memory_free(classes);
 
     // An unmatched optional group reports no participation.
-    RegexProgram_init(&program);
+    program = RegexProgram();
     classes = nullptr;
     CHECK(compile("(a)?b", false, &program, &classes, &classCount, &groupCount));
-    CHECK(RegexVm_init(&vm, &program, groupCount));
+    vm = RegexVm(&program, groupCount);
+    CHECK(vm.best != nullptr);
     CHECK(RegexVm_run(&vm, classes, "b", 1, false, plain()));
     CHECK(!RegexSpan_isSet(RegexVm_span(&vm, 1)));
     RegexVm_free(&vm);
@@ -188,15 +183,14 @@ static void testBoundedProgress(void) {
 
 // Checks the init/free lifecycle across repeated runs and a null-safe free.
 static void testLifecycle(void) {
-    RegexProgram program;
-    RegexProgram_init(&program);
+    RegexProgram program = RegexProgram();
     RegexCharClass *classes = nullptr;
     uint32_t classCount = 0;
     uint32_t groupCount = 0;
     CHECK(compile("ab", false, &program, &classes, &classCount, &groupCount));
 
-    RegexVm vm;
-    CHECK(RegexVm_init(&vm, &program, groupCount));
+    RegexVm vm = RegexVm(&program, groupCount);
+    CHECK(vm.best != nullptr);
     for (int i = 0; i < 4; i++) {
         CHECK(RegexVm_run(&vm, classes, "zab", 3, false, plain()));
         CHECK(RegexVm_span(&vm, 0).start == 1);
@@ -214,13 +208,12 @@ static void testLifecycle(void) {
 static void testFullAdmission(void) {
     const char *patterns[] = {"a|ab", "|ab", "(a|ab)", "a?|ab", "a*|ab"};
     for (size_t i = 0; i < sizeof patterns / sizeof patterns[0]; i++) {
-        RegexProgram program;
-        RegexProgram_init(&program);
+        RegexProgram program = RegexProgram();
         RegexCharClass *classes = nullptr;
         uint32_t classCount = 0, groupCount = 0;
         CHECK(compile(patterns[i], false, &program, &classes, &classCount, &groupCount));
-        RegexVm vm;
-        CHECK(RegexVm_init(&vm, &program, groupCount));
+        RegexVm vm = RegexVm(&program, groupCount);
+        CHECK(vm.best != nullptr);
         CHECK(RegexVm_runFull(&vm, classes, "ab", 2, plain()));
         RegexSpan span = RegexVm_span(&vm, 0);
         CHECK(span.start == 0 && span.end == 2);

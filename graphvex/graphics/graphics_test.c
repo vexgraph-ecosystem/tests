@@ -68,7 +68,7 @@ static void test_alpha_blend(void) {
 
 // Checks display-list recording, clipping, and invalid geometry handling.
 static void test_display_list_and_clip(void) {
-    DisplayList *dl = DisplayList_0();
+    DisplayList *dl = DisplayList();
     CHECK(dl != nullptr);
     CHECK(DisplayList_count(dl) == 0);
     DisplayList_rect(dl, (Rect){0, 0, 8, 8}, &(Brush){COLOR_WHITE, 0, 0, 0, 0});
@@ -87,7 +87,7 @@ static void test_display_list_and_clip(void) {
     DisplayList_free(dl);
 
     // empty rects and null lists are no-ops
-    DisplayList *d2 = DisplayList_0();
+    DisplayList *d2 = DisplayList();
     DisplayList_rect(d2, (Rect){0, 0, 0, 5}, &(Brush){COLOR_WHITE, 0, 0, 0, 0});
     CHECK(DisplayList_count(d2) == 0);
     DisplayList_free(d2);

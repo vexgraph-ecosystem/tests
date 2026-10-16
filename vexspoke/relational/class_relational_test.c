@@ -7,16 +7,17 @@
 #include "relational/relational.h"
 #include "primitive/string.h"
 #include "nio/mem.h"
+#include "nio/mem.h"
 
 static int g_failures = 0;
 #define CHECK(cond) do{ if(!(cond)){ printf("FAIL %s:%d %s\n",__FILE__,__LINE__,#cond); g_failures++; } }while(0)
 
 // Exercises relational name/value/function lookup, ranked scopes, and rename behavior.
 static void testRelationalSpotlight(void){
-    SymbolTable global;
-    SymbolTable local;
-    CHECK(SymbolTable_init(&global));
-    CHECK(SymbolTable_init(&local));
+    SymbolTable global = SymbolTable();
+    SymbolTable local = SymbolTable();
+    CHECK(global.active);
+    CHECK(local.active);
     // user vars — health family
     Relational_setString(&global, "health", "100");
     Relational_setString(&global, "health_ui", "panel");
@@ -29,9 +30,7 @@ static void testRelationalSpotlight(void){
     size_t n = Relational_search(&global, "health", out, 10);
     CHECK(n==3); // health, health_ui, health_progress_bar (ranked exact > prefix > substring)
     // verify first is exact "health"
-    char name[32];
-    SymbolTable_getName(&global, out[0], name, sizeof(name));
-    CHECK(strcmp(name, "health")==0);
+    CHECK(strcmp(SymbolTable_getName(&global, out[0]), "health")==0);
 
     // prefix vs substring
     n = Relational_search(&global, "health_", out, 10);
@@ -66,6 +65,7 @@ static void testRelationalSpotlight(void){
 
 // Runs the relational spotlight scenario and returns its accumulated result.
 int main(void){
+    if (!Memory_init(0u)) return 1;
     testRelationalSpotlight();
     if(g_failures==0) printf("class_relational_test: all checks passed\n");
     else printf("class_relational_test: %d FAILURES\n", g_failures);

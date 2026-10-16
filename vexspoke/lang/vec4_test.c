@@ -14,6 +14,7 @@
 #include <math.h>
 
 #include "lang/vec4.h"
+#include "lang/vec4/vec4d.h"
 #include "nio/mem.h"
 
 static int g_failures = 0;
@@ -30,17 +31,24 @@ static int g_failures = 0;
 
 // Checks zero/value constructors and null-safe freeing.
 static void test_construction(void) {
-    Vec4 *z = Vec4_0();
+    Vec4 *z = Vec4();
     CHECK(z != nullptr);
     CHECK(Vec4_getX(z) == 0.0f && Vec4_getY(z) == 0.0f && Vec4_getZ(z) == 0.0f && Vec4_getW(z) == 0.0f);
     Vec4_free(z);
 
-    Vec4 *v = Vec4_4(1.0f, 2.0f, 3.0f, 4.0f);
+    Vec4 *v = Vec4(1.0f, 2.0f, 3.0f, 4.0f);
     CHECK(v != nullptr);
     CHECK(Vec4_getRight(v) == 1.0f && Vec4_getUp(v) == 2.0f &&
           Vec4_getFront(v) == 3.0f && Vec4_getW(v) == 4.0f);
     Vec4_free(v);
     Vec4_free(nullptr);
+
+    Vec4d *wide = Vec4d();
+    CHECK(wide != nullptr && (*wide).w == 0.0);
+    Vec4d_free(wide);
+    wide = Vec4d(1.25, -2.5, 3.75, 4.5);
+    CHECK(wide != nullptr && (*wide).horizontal == 1.25 && (*wide).w == 4.5);
+    Vec4d_free(wide);
 }
 
 // Checks directional aliases, frame mapping, setters, and copy behavior.

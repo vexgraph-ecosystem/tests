@@ -46,7 +46,7 @@ class BackendContractTest(unittest.TestCase):
             symbols = run("nm", "-gU", archive).splitlines()
             matches = [line for line in symbols if line.split()[-1:] == ["_Memory_alloc"]]
             self.assertEqual(len(matches), int(present), archive)
-        for name in ("mem_test", "cache_test", "process_spawn_test", "ws_client_test"):
+        for name in ("mem_test", "cache_test", "process_spawn_test", "frame_inbox_test"):
             self.assertIn("tests/relational-engine/", owners[name]["sources"][0])
             run("./tools/b", "test", name)
         header = run("clang", "-std=gnu23", "-E", "-H", "-I" + str(VEX / "src"),

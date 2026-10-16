@@ -21,15 +21,17 @@ static int g_failures = 0;
 
 // Exercises BitPool admission, allocation, recycling, validation, and shutdown.
 int main(void) {
-    // Bad arguments are refused.
-    BitPool bad;
-    CHECK(!BitPool_init(nullptr, 8, 4));
-    CHECK(!BitPool_init(&bad, 0, 4));
-    CHECK(!BitPool_init(&bad, 8, 0));
+    // Empty and invalid constructor choices leave no backing arena.
+    BitPool empty = BitPool();
+    CHECK(empty.arena == nullptr);
+    BitPool bad = BitPool(0u, 4u);
+    CHECK(bad.arena == nullptr);
+    bad = BitPool(8u, 0u);
+    CHECK(bad.arena == nullptr);
 
     // Carve a 4-slot pool of 8-byte payloads.
-    BitPool pool;
-    CHECK(BitPool_init(&pool, 8, 4));
+    BitPool pool = BitPool(8u, 4u);
+    CHECK(pool.arena != nullptr);
 
     void *slots[4];
     for (int i = 0; i < 4; i++) {

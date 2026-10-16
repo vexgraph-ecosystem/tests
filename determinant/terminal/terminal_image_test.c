@@ -45,10 +45,10 @@ int main(void) {
         255, 255, 255, 255,   0, 0, 0, 255,
     };
     TerminalImage box = TerminalImage(checker, 2, 2);
-    uint8_t r = 0, g = 0, b = 0, a = 0;
-    assert(TerminalImage_sampleCell(&box, 0, 0, 1, 1, &r, &g, &b, &a));
-    assert(r == 127 && g == 127 && b == 127 && a == 255);
-    assert(TerminalImage_sampleCell(&box, 5, 0, 1, 1, &r, &g, &b, &a) == false);
+    TerminalImageSample sample = TerminalImage_sampleCell(&box, 0, 0, 1, 1);
+    assert(sample.valid && sample.red == 127 && sample.green == 127 &&
+           sample.blue == 127 && sample.alpha == 255);
+    assert(!TerminalImage_sampleCell(&box, 5, 0, 1, 1).valid);
 
     // renderFit covers a whole region deterministically.
     uint32_t big[6 * 2];
@@ -164,18 +164,18 @@ int main(void) {
     static uint32_t pc[2];
     static uint32_t pfg[2];
     TerminalCanvas paletteCanvas = TerminalCanvas(pc, nullptr, pfg, nullptr, 2, 1);
-    size_t rampCount = 0;
-    const uint32_t *purple = TerminalImage_rampPurple(&rampCount);
-    assert(purple != nullptr && rampCount >= 4);
-    assert(TerminalImage_setColorRamp(&img, purple, rampCount));
-    assert(TerminalImage_getColorRamp(&img, &rampCount) == purple && rampCount >= 4);
+    TerminalImageColorRamp purple = TerminalImage_rampPurple();
+    assert(purple.data != nullptr && purple.count >= 4);
+    assert(TerminalImage_setColorRamp(&img, purple.data, purple.count));
+    TerminalImageColorRamp imageRamp = TerminalImage_getColorRamp(&img);
+    assert(imageRamp.data == purple.data && imageRamp.count >= 4);
     // The palette's darkest entry is ~30% of full range (0x4C ≈ 255 * 0.3) and
     // nothing is darker, so the ramp spans ~30% up to near-white.
     size_t darkest = 255;
-    for (size_t i = 0; i < rampCount; ++i) {
-        uint8_t r = TERMINAL_COLOR_RED(purple[i]);
-        uint8_t g = TERMINAL_COLOR_GREEN(purple[i]);
-        uint8_t b = TERMINAL_COLOR_BLUE(purple[i]);
+    for (size_t i = 0; i < purple.count; ++i) {
+        uint8_t r = TERMINAL_COLOR_RED(purple.data[i]);
+        uint8_t g = TERMINAL_COLOR_GREEN(purple.data[i]);
+        uint8_t b = TERMINAL_COLOR_BLUE(purple.data[i]);
         assert(r >= 0x4C && g >= 0x4C && b >= 0x4C);
         uint8_t low = r < g ? (r < b ? r : b) : (g < b ? g : b);
         if (low < darkest)
@@ -184,15 +184,15 @@ int main(void) {
     assert(darkest >= 0x4C && darkest <= 0x60);
     TerminalImage_setJitter(&img, 0, 0);
     TerminalImage_render(&img, &paletteCanvas, 0, 0);
-    assert(TerminalCanvas_fgAt(&paletteCanvas, 0, 0) == purple[0]);                 // black -> the ramp's low end
-    assert(TerminalCanvas_fgAt(&paletteCanvas, 1, 0) == purple[rampCount - 1]);     // white -> the high end
+    assert(TerminalCanvas_fgAt(&paletteCanvas, 0, 0) == purple.data[0]);                 // black -> the ramp's low end
+    assert(TerminalCanvas_fgAt(&paletteCanvas, 1, 0) == purple.data[purple.count - 1]);   // white -> the high end
     TerminalImage_setJitter(&img, 60, 7);
     assert(TerminalImage_getJitter(&img) == 60 && TerminalImage_getJitterSeed(&img) == 7);
     TerminalImage_render(&img, &paletteCanvas, 0, 0);
     uint32_t scattered = TerminalCanvas_fgAt(&paletteCanvas, 0, 0);
     // The jitter only LIGHTENS, so a light ramp never dips dark on some cells.
-    assert(TERMINAL_COLOR_RED(scattered) >= TERMINAL_COLOR_RED(purple[0]));
-    assert(TERMINAL_COLOR_BLUE(scattered) >= TERMINAL_COLOR_BLUE(purple[0]));
+    assert(TERMINAL_COLOR_RED(scattered) >= TERMINAL_COLOR_RED(purple.data[0]));
+    assert(TERMINAL_COLOR_BLUE(scattered) >= TERMINAL_COLOR_BLUE(purple.data[0]));
     TerminalImage_render(&img, &paletteCanvas, 0, 0);
     assert(TerminalCanvas_fgAt(&paletteCanvas, 0, 0) == scattered);                 // deterministic for a seed
 
@@ -206,18 +206,18 @@ int main(void) {
             ink[i * 4 + 0] = 0; ink[i * 4 + 1] = 0; ink[i * 4 + 2] = 0; ink[i * 4 + 3] = 255;
         }
         TerminalImage flat = TerminalImage(ink, 64, 1);
-        assert(TerminalImage_setColorRamp(&flat, purple, rampCount));
+        assert(TerminalImage_setColorRamp(&flat, purple.data, purple.count));
         TerminalCanvas wide = TerminalCanvas(wideCells, nullptr, wideFg, nullptr, 64, 1);
-        TerminalImage_setPaletteScatter(&flat, (uint8_t) rampCount);
-        assert(TerminalImage_getPaletteScatter(&flat) == rampCount);
+        TerminalImage_setPaletteScatter(&flat, (uint8_t) purple.count);
+        assert(TerminalImage_getPaletteScatter(&flat) == purple.count);
         TerminalImage_render(&flat, &wide, 0, 0);
         uint32_t firstColour = TerminalCanvas_fgAt(&wide, 0, 0);
         int distinct = 0;
         for (size_t x = 0; x < 64; ++x) {
             uint32_t colour = TerminalCanvas_fgAt(&wide, x, 0);
             int inRamp = 0;
-            for (size_t i = 0; i < rampCount; ++i)
-                if (colour == purple[i])
+            for (size_t i = 0; i < purple.count; ++i)
+                if (colour == purple.data[i])
                     inRamp = 1;
             assert(inRamp);
             if (colour != firstColour)
@@ -233,7 +233,8 @@ int main(void) {
     }
     TerminalImage_setJitter(&img, 0, 0);
     assert(TerminalImage_setColorRamp(&img, nullptr, 0));
-    assert(TerminalImage_getColorRamp(&img, &rampCount) == nullptr && rampCount == 0);
+    imageRamp = TerminalImage_getColorRamp(&img);
+    assert(imageRamp.data == nullptr && imageRamp.count == 0);
     TerminalImage_render(&img, &paletteCanvas, 0, 0);
     assert(TerminalCanvas_fgAt(&paletteCanvas, 1, 0) == TERMINAL_RGB(255, 255, 255));
     REJECT(TerminalImage_setColorRamp(&img, nullptr, 4), "color ramp");
@@ -256,13 +257,11 @@ int main(void) {
     TerminalImage_renderFit(&img, nullptr);
     REJECT(TerminalImage_setPixels(&zero, nullptr, 2, 2), "extent");
     REJECT(TerminalImage_setRamp(&zero, ""), "empty");
-    char text[64]; bool cut = true; size_t before = 0;
-    (void) before;
-    REJECT(TerminalImage_toString(&zero, text, 1, &cut), "truncated");
-    assert(cut);
+    TerminalProjection emptyImageProjection = TerminalImage_toString(&zero);
+    assert(emptyImageProjection.length > 0 && !emptyImageProjection.truncated);
     TerminalImage rejected = TerminalImage(nullptr, 2, 2);
     assert(!TerminalImage_isValid(&rejected));
 
-    PROJECT(TerminalImage, &img);
+    TERMINAL_PROJECT(TerminalImage, &img);
     return 0;
 }

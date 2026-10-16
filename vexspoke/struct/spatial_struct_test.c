@@ -47,8 +47,8 @@ static void countVoxelsCb(int32_t gx, int32_t gy, int32_t gz, int32_t dx, int32_
 static void test_circle_array(void) {
     printf("\n--- Testing CircleArray (Pythagorean 2D Matrix) ---\n");
     int32_t r = 3;
-    CircleArray *ca = CircleArray_createWithStride(r, ID_BYTE, sizeof(CellPayload));
-    TEST_ASSERT(ca != nullptr, "CircleArray_createWithStride succeeds");
+    CircleArray *ca = CircleArray(r, ID_BYTE, sizeof(CellPayload));
+    TEST_ASSERT(ca != nullptr, "CircleArray stride constructor succeeds");
     TEST_ASSERT(CircleArray_radius(ca) == 3, "radius is 3");
     TEST_ASSERT(CircleArray_diameter(ca) == 7, "diameter is 7 (2*3 + 1)");
 
@@ -81,13 +81,13 @@ static void test_circle_array(void) {
     TEST_ASSERT(CircleArray_setOffset(ca, 2, 2, &writeVal), "write to valid offset (2, 2) succeeds");
 
     CellPayload readVal = { 0, 0.0f };
-    TEST_ASSERT(CircleArray_getOffset(ca, 2, 2, &readVal), "read from valid offset (2, 2) succeeds");
+    TEST_ASSERT(CircleArray_getOffset(&readVal, ca, 2, 2), "read from valid offset (2, 2) succeeds");
     TEST_ASSERT(readVal.val == 42 && readVal.weight == 3.1415f, "read payload matches written payload");
 
     // Write to outside cell fails
     CellPayload outsideVal = { 99, 1.0f };
     TEST_ASSERT(!CircleArray_setOffset(ca, 3, 3, &outsideVal), "write to outside cell (3, 3) rejected");
-    TEST_ASSERT(!CircleArray_getOffset(ca, 3, 3, &readVal), "read from outside cell (3, 3) rejected");
+    TEST_ASSERT(!CircleArray_getOffset(&readVal, ca, 3, 3), "read from outside cell (3, 3) rejected");
 
     CircleArray_free(ca);
 }
@@ -97,8 +97,8 @@ static void test_circle_array(void) {
 static void test_sphere_array(void) {
     printf("\n--- Testing SphereArray (Pythagorean 3D Voxel Matrix) ---\n");
     int32_t r = 2;
-    SphereArray *sa = SphereArray_createWithStride(r, ID_BYTE, sizeof(CellPayload));
-    TEST_ASSERT(sa != nullptr, "SphereArray_createWithStride succeeds");
+    SphereArray *sa = SphereArray(r, ID_BYTE, sizeof(CellPayload));
+    TEST_ASSERT(sa != nullptr, "SphereArray stride constructor succeeds");
     TEST_ASSERT(SphereArray_radius(sa) == 2, "radius is 2");
     TEST_ASSERT(SphereArray_diameter(sa) == 5, "diameter is 5 (2*2 + 1)");
 
@@ -120,7 +120,7 @@ static void test_sphere_array(void) {
     CellPayload vWrite = { 101, 2.718f };
     TEST_ASSERT(SphereArray_setOffset(sa, 1, 1, 1, &vWrite), "write to valid voxel (1, 1, 1) succeeds");
     CellPayload vRead = { 0, 0.0f };
-    TEST_ASSERT(SphereArray_getOffset(sa, 1, 1, 1, &vRead), "read from valid voxel (1, 1, 1) succeeds");
+    TEST_ASSERT(SphereArray_getOffset(&vRead, sa, 1, 1, 1), "read from valid voxel (1, 1, 1) succeeds");
     TEST_ASSERT(vRead.val == 101 && vRead.weight == 2.718f, "read voxel payload matches");
 
     TEST_ASSERT(!SphereArray_setOffset(sa, 2, 2, 2, &vWrite), "write to outside voxel (2, 2, 2) rejected");
@@ -133,8 +133,8 @@ static void test_sphere_array(void) {
 static void test_octree(void) {
     printf("\n--- Testing Octree (3D Spatial Partitioning) ---\n");
     OctreeAABB bounds = { -100.0f, -100.0f, -100.0f, 100.0f, 100.0f, 100.0f };
-    Octree *oct = Octree_create(bounds, 4, 2); // capacity 2 items before subdividing
-    TEST_ASSERT(oct != nullptr, "Octree_create succeeds");
+    Octree *oct = Octree(bounds, 4, 2); // capacity 2 items before subdividing
+    TEST_ASSERT(oct != nullptr, "Octree constructor succeeds");
 
     // Insert 4 items
     TEST_ASSERT(Octree_insert(oct, (OctreePoint){ 10.0f, 10.0f, 10.0f }, 1001), "insert item 1");

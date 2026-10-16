@@ -12,18 +12,15 @@ int main(void) {
 
     TerminalFrame frame = TerminalFrame(10, 10);
     assert(TerminalFrame_getBackground(&frame) == nullptr);
-    size_t hdr = 0, ftr = 0;
-    TerminalFrame_getBands(&frame, &hdr, &ftr);
-    assert(hdr == TERMINAL_FRAME_HEADER_ROWS_DEFAULT && ftr == 0);
+    TerminalFramePair bands = TerminalFrame_getBands(&frame);
+    assert(bands.first == TERMINAL_FRAME_HEADER_ROWS_DEFAULT && bands.second == 0);
     assert(TerminalFrame_setBands(&frame, 2, 3));
 
     TerminalCanvas root = TerminalCanvas(cells, styles, fg, bg, W, H);
     TerminalCanvas_fill(&root, ' ', TerminalPen());
 
-    size_t l = 0, r = 0;
-    bool rails = false;
-    TerminalFrame_getLayout(&frame, &root, &l, &r, &rails);
-    assert(rails && l == 10 && r == 10);
+    TerminalFrameLayout layout = TerminalFrame_getLayout(&frame, &root);
+    assert(layout.rails && layout.left == 10 && layout.right == 10);
 
     TerminalCanvas header = TerminalFrame_header(&frame, &root);
     TerminalCanvas left = TerminalFrame_left(&frame, &root);
@@ -51,8 +48,7 @@ int main(void) {
     // A striped connector run, and a custom glyph set.
     TerminalRule striped = TerminalRule('-', '|', '.', 4);
     assert(TerminalFrame_setRule(&frame, striped));
-    TerminalRule got = TerminalRule_0();
-    TerminalFrame_getRule(&frame, &got);
+    TerminalRule got = TerminalFrame_getRule(&frame);
     assert(got.stripe == '.' && got.stripeEvery == 4);
     TerminalFrame_drawRules(&frame, &root, TerminalPen_1(TERMINAL_STYLE_DIM));
     assert(TerminalCanvas_glyphAt(&root, 3, 1) == '.');        // every 4th cell is the stripe
@@ -61,8 +57,8 @@ int main(void) {
     // A very narrow root collapses the rails so the centre stays usable.
     static uint32_t narrow[6 * 6];
     TerminalCanvas small = TerminalCanvas(narrow, nullptr, 6, 6);
-    TerminalFrame_getLayout(&frame, &small, &l, &r, &rails);
-    assert(!rails && l == 0 && r == 0);
+    layout = TerminalFrame_getLayout(&frame, &small);
+    assert(!layout.rails && layout.left == 0 && layout.right == 0);
     TerminalCanvas centerSmall = TerminalFrame_center(&frame, &small);
     TerminalCanvas leftSmall = TerminalFrame_left(&frame, &small);
     assert(TerminalCanvas_isValid(&centerSmall) && !TerminalCanvas_isValid(&leftSmall));
@@ -84,7 +80,7 @@ int main(void) {
     TerminalFrame_drawRules(nullptr, &root, TerminalPen());
     REJECT(TerminalFrame_setRails(nullptr, 1, 1), "null self");
     REJECT(TerminalFrame_setRule(nullptr, TerminalRule_0()), "null self");
-    TerminalFrame_getRule(nullptr, &got);
+    got = TerminalFrame_getRule(nullptr);
     TerminalRule_draw(nullptr, &root, 0, TerminalPen());
     TerminalRule_draw(&striped, nullptr, 0, TerminalPen());
 
@@ -154,9 +150,9 @@ int main(void) {
         TerminalRule_drawCut(&boxed, nullptr, 0, 1, TerminalPen());
         TerminalRule_drawCut(nullptr, &line, 0, 1, TerminalPen());
     }
-    TerminalFrame_getRails(nullptr, nullptr, nullptr);
-    TerminalFrame_getBands(nullptr, nullptr, nullptr);
+    (void) TerminalFrame_getRails(nullptr);
+    (void) TerminalFrame_getBands(nullptr);
 
-    PROJECT(TerminalFrame, &frame);
+    TERMINAL_PROJECT(TerminalFrame, &frame);
     return 0;
 }
