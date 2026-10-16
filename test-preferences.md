@@ -1266,7 +1266,11 @@ Native database store (R3).
   the persisted form: a save carries the index, the reopen adopts it, and a
   same-stride schema whose indexed field moved is refused instead of silently
   rebuilt. Only a whole-image index is proved; no page-level incremental index,
-  ordering or projection. The same owner proves copied persisted catalog
+  ordering or full projection. The same owner proves named field resolution:
+  `Database_fieldSpan` returns a copied `{code, offset, size}` for a folded field
+  name, reads a row's Bytes through that span, and refuses a null, unknown or
+  out-of-row span explicitly instead of returning one a reader could not safely
+  use. The same owner proves copied persisted catalog
   discovery by index, record metadata, out-of-range rejection and independence
   from Store-owned bytes. This does not reconstruct schemas or prove indexes.
 - **Database Page-Chain Bridge Law** — `tests/darkbase-engine/database/database_test.c`,
