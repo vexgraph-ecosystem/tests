@@ -55,7 +55,9 @@ def main():
             raise AssertionError(f"WebSocket smoke failed (exit {result.returncode})")
         print("PASS: WebSocket smoke (idle cost"
               + (", live round-trip" if os.environ.get("WS_SMOKE_URL") else
-                 "; live round-trip skipped, WS_SMOKE_URL unset") + ")")
+                 "; live round-trip skipped, WS_SMOKE_URL unset")
+              + (", discord gateway" if os.environ.get("WS_SMOKE_DISCORD") else
+                 "; discord gateway skipped, WS_SMOKE_DISCORD unset") + ")")
 
 
 if __name__ == "__main__":

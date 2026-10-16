@@ -271,11 +271,81 @@ static void testLiveRoundTrip(void) {
     WebSocket_close(&client);
 }
 
+/**
+ * Opt-in live tier against Discord's gateway, which answers BEFORE it
+ * authenticates: HELLO arrives unprompted, a heartbeat is acked, and an
+ * intentionally invalid IDENTIFY is refused. No token is used, stored or needed,
+ * so this proves the SEND path, the heartbeat bookkeeping and a real close
+ * against a production server. JSON is only searched, never parsed — reading
+ * Discord's payloads is the gateway client's job, not the transport's.
+ */
+static void testDiscordGateway(void) {
+    if (getenv("WS_SMOKE_DISCORD") == nullptr) {
+        printf("[3] discord gateway: SKIP (set WS_SMOKE_DISCORD=1 to run it)\n");
+        return;
+    }
+    printf("[3] discord gateway, no token\n");
+    WebSocket client = WebSocket();
+    WebSocketConfig config = { .timeoutMs = 10000u, .maxMessageBytes = 1u << 20 };
+    if (!WebSocket_open(&client, "wss://gateway.discord.gg/?v=10&encoding=json", config)) {
+        printf("  open failed: %s\n", WebSocket_lastError(&client));
+        g_failures++;
+        g_checks++;
+        return;
+    }
+    printf("  handshake accepted\n");
+
+    WebSocketMessage hello = WebSocket_poll(&client, 5000u);
+    CHECK(hello.kind == WS_MESSAGE_TEXT);
+    bool isHello = hello.kind == WS_MESSAGE_TEXT &&
+        memmem(hello.payload, hello.length, "\"op\":10", 7u) != nullptr;
+    bool hasInterval = hello.kind == WS_MESSAGE_TEXT &&
+        memmem(hello.payload, hello.length, "\"heartbeat_interval\"", 20u) != nullptr;
+    printf("  HELLO: %llu Bytes, op10=%s, heartbeat_interval=%s\n",
+           (unsigned long long) hello.length, isHello ? "yes" : "NO",
+           hasInterval ? "present" : "MISSING");
+    CHECK(isHello);
+    CHECK(hasInterval);
+
+    // A heartbeat before identification must be acknowledged. Discord's docs:
+    // heartbeats come first, IDENTIFY after, and `d` is null until a sequence
+    // number has been seen.
+    const char *beat = "{\"op\":1,\"d\":null}";
+    CHECK(WebSocket_writeText(&client, beat, strlen(beat)));
+    WebSocketMessage ack = WebSocket_poll(&client, 5000u);
+    bool acked = ack.kind == WS_MESSAGE_TEXT &&
+        memmem(ack.payload, ack.length, "\"op\":11", 7u) != nullptr;
+    printf("  heartbeat: kind=%d%s\n", (int) ack.kind, acked ? ", op 11 ACK" : "");
+    CHECK(acked);
+
+    // A deliberately invalid IDENTIFY must be refused, loudly.
+    const char *identify =
+        "{\"op\":2,\"d\":{\"token\":\"vexgraph-smoke-invalid\",\"intents\":0,"
+        "\"properties\":{\"os\":\"macos\",\"browser\":\"vexgraph\","
+        "\"device\":\"vexgraph\"}}}";
+    CHECK(WebSocket_writeText(&client, identify, strlen(identify)));
+    WebSocketMessage refused = WebSocket_poll(&client, 8000u);
+    bool invalidSession = refused.kind == WS_MESSAGE_TEXT &&
+        memmem(refused.payload, refused.length, "\"op\":9", 6u) != nullptr;
+    bool closed = refused.kind == WS_MESSAGE_CLOSE;
+    printf("  invalid IDENTIFY: kind=%d closeCode=%u%s\n", (int) refused.kind,
+           (unsigned) refused.closeCode, invalidSession ? " (op 9 invalid session)" : "");
+    CHECK(closed || invalidSession);
+    if (closed)
+        printf("  refused with close code %u: \"%s\"\n",
+               (unsigned) WebSocket_closeCode(&client), WebSocket_closeReason(&client));
+
+    // The exchange really moved frames: HELLO and the ACK at minimum.
+    CHECK(WebSocket_framesIn(&client) >= 2u);
+    WebSocket_close(&client);
+}
+
 int main(void) {
-    printf("=== WebSocket smoke: idle cost and live round-trip ===\n");
+    printf("=== WebSocket smoke: idle cost, live round-trip, discord gateway ===\n");
     signal(SIGPIPE, SIG_IGN);
     testIdleCost();
     testLiveRoundTrip();
+    testDiscordGateway();
     printf("%d checks, %d failed\n", g_checks, g_failures);
     if (g_failures == 0)
         printf("=== WebSocket smoke: ALL PASS ===\n");
