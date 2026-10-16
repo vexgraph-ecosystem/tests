@@ -110,6 +110,10 @@ def main():
             "Database_indexBuild: no such entity": 1,
             "Database_indexBuild: invalid or unknown field": 1,
             "Database_indexBuild: field is not a declared int32 index": 1,
+            "Database_fieldSpan: null argument": 3,
+            "Database_fieldSpan: no such entity": 1,
+            "Database_fieldSpan: field did not resolve": 1,
+            "Database_fieldSpan: field span leaves the row": 1,
             "Database_storeCatalogEntry: catalog index is absent": 1,
         })
         actual = Counter(line.split(": ", 1)[1] for line in result.stderr.splitlines())

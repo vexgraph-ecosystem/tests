@@ -785,6 +785,33 @@ static void testStructuredEqualityQuery(void) {
     CHECK(Database_indexBuild(db, "player", "id") == DATABASE_INVALID);
     CHECK(Database_indexed(db, "player", "health"));   // a failed build changed nothing
 
+    // --- Named field resolution: a consumer with no C struct asks where the
+    //     field's Bytes live, and reads them through the answer.
+    DatabaseFieldSpan span = Database_fieldSpan(db, "player", "health");
+    CHECK(span.code == DATABASE_OK);
+    CHECK(span.offset == (uint32_t) offsetof(Row, health));
+    CHECK(span.size == (uint32_t) sizeof(((Row*) nullptr)->health));
+    span = Database_fieldSpan(db, "PLAYER", "Health"); // folded: case is irrelevant
+    CHECK(span.code == DATABASE_OK && span.offset == (uint32_t) offsetof(Row, health));
+    span = Database_fieldSpan(db, "player", "id");
+    CHECK(span.code == DATABASE_OK);
+    void *freshRow = Database_row(db, "player", 0u);
+    CHECK(freshRow != nullptr);
+    if (freshRow != nullptr && span.code == DATABASE_OK) {
+        uint32_t id = 0u;
+        memcpy(&id, (const uint8_t*) freshRow + span.offset, sizeof(id));
+        CHECK(id == 5u); // the span is what makes a generic read possible
+    }
+    // A declared span that leaves the row is refused, never handed to a reader.
+    CHECK(Database_fieldSpan(db, "player", "bad").code == DATABASE_INVALID);
+    // Rejections, each explicit rather than a silent zero.
+    CHECK(Database_fieldSpan(db, nullptr, "id").code == DATABASE_INVALID);
+    CHECK(Database_fieldSpan(nullptr, "player", "id").code == DATABASE_INVALID);
+    CHECK(Database_fieldSpan(db, "player", nullptr).code == DATABASE_INVALID);
+    CHECK(Database_fieldSpan(db, "ghost", "id").code == DATABASE_ABSENT);
+    CHECK(Database_fieldSpan(db, "player", "nope").code == DATABASE_ABSENT);
+    CHECK(Database_indexed(db, "player", "health"));   // resolution disturbed no index
+
     Database_free(db);
     Struct_free(schema);
 }
