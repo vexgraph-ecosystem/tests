@@ -1,55 +1,22 @@
-// Owner: TerminalPanel — the layered panel. Slot ids and their staleness rule,
-// total ordered paint, the reserve flow, per-layer background/foreground/style,
-// visibility releasing a band, reentrant-paint refusal with a once-per-epoch
-// report, cold growth past the named default, the hit-test query, and the
-// projections.
+// Owner: TerminalPanel — the container. Layout flavours, child identity and
+// staleness, add/remove/detach ownership, FLEX reserve flow against semicolon's
+// measured IDE geometry, LAYERED stacking, total repaint with no dirty tracking,
+// pen inheritance, background fill, the cold hit-test queries, cold growth, the
+// reentrancy guard against a cyclic tree, and the projections.
 //
-// The grounding case is semicolon's IDE example (103x23, root pipes at 1/29/103),
-// resolved here as a real panel and then as a nested child panel for the centre's
-// tab strip / separator / editor — with the child resolving over the sub-canvas
-// its parent handed it, which is what makes nesting free of ownership.
+// The grounding case is semicolon's IDE example (103x23, root pipes at 1/29/103,
+// editor pipes at 1/29/36/103) expressed as a real child tree, with the centre as
+// a nested panel resolving over the sub-canvas its parent handed it.
 //
-// Scope note: this owner proves the panel's own contract. It does not prove
-// device output, allocation-failure injection (unreachable in-process), or a
-// real nested paint through a child panel's draw callback; those stay gaps.
+// Scope note: cycle safety is proved for PAINT only. An indirect cycle makes
+// teardown undefined, so the tree is acyclic by contract; a direct self-add is
+// refused outright. Layer-growth allocation failure is unreachable in-process.
 #include "terminal/terminal_panel.h"
+#include "terminal/terminal_text.h"
 #include "terminal/terminal_color.h"
 #include "determinant/support.h"
 
-enum { W = 24, H = 8, ORDER_MAX = 32 };
-
-typedef struct LayerProbe {
-    size_t tag;            // slot-order tag recorded in the shared order log
-    size_t calls;          // draw invocations
-    TerminalRect region;   // last region handed to the callback
-    TerminalPen pen;       // last pen handed to the callback
-} LayerProbe;
-
-static size_t gOrder[ORDER_MAX];
-static size_t gOrderCount;
-static TerminalPanel *gReenter;
-static size_t gReentrantPaints;
-
-static void probeDraw(void *context, TerminalCanvas *region, TerminalRect placement, TerminalPen pen) {
-    LayerProbe *probe = context;
-    ++(*probe).calls;
-    // The sub-canvas and the placement it was cut from must agree, always.
-    assert(TerminalCanvas_getWidth(region) == placement.width);
-    assert(TerminalCanvas_getHeight(region) == placement.height);
-    (*probe).region = placement;
-    (*probe).pen = pen;
-    if (gOrderCount < ORDER_MAX)
-        gOrder[gOrderCount] = (*probe).tag;
-    ++gOrderCount;
-}
-
-static void reentrantDraw(void *context, TerminalCanvas *region, TerminalRect placement, TerminalPen pen) {
-    (void) context;
-    (void) placement;
-    ++gReentrantPaints;
-    TerminalPanel_paint(gReenter, region);   // must be refused as reentrant
-    TerminalCanvas_fill(region, 'x', pen);
-}
+enum { W = 24, H = 8 };
 
 static bool rectEqual(TerminalRect a, TerminalRect b) {
     return a.x == b.x && a.y == b.y && a.width == b.width && a.height == b.height;
@@ -68,35 +35,40 @@ int main(void) {
     // --- Constructor and null safety ---
     TerminalPanel *panel = TerminalPanel();
     assert(panel != nullptr);
-    assert(TerminalPanel_layerCount(panel) == 0 && TerminalPanel_capacity(panel) == 0);
+    assert(TerminalPanel_childCount(panel) == 0 && TerminalPanel_capacity(panel) == 0);
     assert(TerminalPanel_paintCount(panel) == 0 && TerminalPanel_exhaustionCount(panel) == 0);
     assert(!TerminalPanel_isPainting(panel));
+    assert(TerminalPanel_getLayout(panel) == TERMINAL_PANEL_FLEX);
+    assert(TerminalPanel_getStyle(panel) == TERMINAL_STYLE_NONE);
+    assert(TerminalPanel_getForegroundColor(panel) == TERMINAL_COLOR_DEFAULT);
+    assert(TerminalPanel_getBackgroundColor(panel) == TERMINAL_COLOR_DEFAULT);
+    assert(TerminalPanel_getImage(panel) == nullptr);
+    assert(TerminalPanel_getFit(panel) == TERMINAL_PANEL_IMAGE_STRETCH);
     TerminalPanel *zeroed = TerminalPanel_zero();
-    assert(zeroed != nullptr && TerminalPanel_layerCount(zeroed) == 0);
+    assert(zeroed != nullptr && TerminalPanel_childCount(zeroed) == 0);
     TerminalPanel_free(zeroed);
-    TerminalPanel_free(nullptr);              // harmless
-    TerminalPanel_clearExhaustion(nullptr);   // harmless
+    TerminalPanel_free(nullptr);
+    TerminalPanel_clearExhaustion(nullptr);
 
-    assert(TerminalPanel_layerCount(nullptr) == 0);
-    assert(TerminalPanel_capacity(nullptr) == 0);
-    assert(TerminalPanel_paintCount(nullptr) == 0);
-    assert(TerminalPanel_exhaustionCount(nullptr) == 0);
+    assert(TerminalPanel_childCount(nullptr) == 0 && TerminalPanel_capacity(nullptr) == 0);
+    assert(TerminalPanel_paintCount(nullptr) == 0 && TerminalPanel_exhaustionCount(nullptr) == 0);
     assert(!TerminalPanel_isPainting(nullptr));
-    assert(!TerminalPanel_isValid(nullptr, (TerminalLayerId) { 0, 1 }));
-    assert(!TerminalPanel_isLayerId((TerminalLayerId) { 0, 0 }));
-    assert(!TerminalPanel_isLayerId((TerminalLayerId) { 3, 0 }));
-    assert(TerminalPanel_isLayerId((TerminalLayerId) { 0, 1 }));
-    assert(TerminalPanel_getAnchor(nullptr, (TerminalLayerId) { 0, 1 }).kind == TERMINAL_ANCHOR_FILL);
-    assert(TerminalPanel_getBackgroundColor(nullptr, (TerminalLayerId) { 0, 1 }) == TERMINAL_COLOR_DEFAULT);
-    assert(TerminalPanel_getForegroundColor(nullptr, (TerminalLayerId) { 0, 1 }) == TERMINAL_COLOR_DEFAULT);
-    assert(TerminalPanel_getStyle(nullptr, (TerminalLayerId) { 0, 1 }) == TERMINAL_STYLE_NONE);
-    assert(!TerminalPanel_isVisible(nullptr, (TerminalLayerId) { 0, 1 }));
-    assert(TerminalPanel_getImage(nullptr, (TerminalLayerId) { 0, 1 }) == nullptr);
-    assert(TerminalPanel_getDraw(nullptr, (TerminalLayerId) { 0, 1 }) == nullptr);
-    assert(TerminalPanel_getContext(nullptr, (TerminalLayerId) { 0, 1 }) == nullptr);
-    assert(TerminalPanel_regionOf(nullptr, &canvas, (TerminalLayerId) { 0, 1 }).width == 0);
-    assert(TerminalPanel_regionOf(panel, nullptr, (TerminalLayerId) { 0, 1 }).width == 0);
-    // The hot entry guard is QUIET and counts nothing (the Hot-Path Minimal Guard Law).
+    assert(!TerminalPanel_isValid(nullptr, (TerminalChildId) { 0, 1 }));
+    assert(!TerminalPanel_isChildId((TerminalChildId) { 0, 0 }));
+    assert(!TerminalPanel_isChildId((TerminalChildId) { 4, 0 }));
+    assert(TerminalPanel_isChildId((TerminalChildId) { 0, 1 }));
+    assert(TerminalPanel_getLayout(nullptr) == TERMINAL_PANEL_FLEX);
+    assert(TerminalPanel_getStyle(nullptr) == TERMINAL_STYLE_NONE);
+    assert(TerminalPanel_getImage(nullptr) == nullptr);
+    assert(TerminalPanel_getPen(nullptr).style == TERMINAL_STYLE_NONE);
+    assert(TerminalPanel_getAnchor(nullptr, (TerminalChildId) { 0, 1 }).kind == TERMINAL_ANCHOR_FILL);
+    assert(TerminalPanel_childPanel(nullptr, (TerminalChildId) { 0, 1 }) == nullptr);
+    assert(TerminalPanel_childText(nullptr, (TerminalChildId) { 0, 1 }) == nullptr);
+    assert(TerminalPanel_detachPanel(nullptr, (TerminalChildId) { 0, 1 }) == nullptr);
+    assert(TerminalPanel_detachText(nullptr, (TerminalChildId) { 0, 1 }) == nullptr);
+    assert(TerminalPanel_childRegion(nullptr, &canvas, (TerminalChildId) { 0, 1 }).width == 0);
+    assert(!TerminalPanel_isChildId(TerminalPanel_childAt(nullptr, &canvas, 0, 0)));
+    // The hot entry guard is quiet and counts nothing.
     beginDiagnostics();
     TerminalPanel_paint(nullptr, &canvas);
     TerminalPanel_paint(panel, nullptr);
@@ -105,264 +77,223 @@ int main(void) {
     endDiagnostics(0, nullptr);
     assert(TerminalPanel_paintCount(panel) == 0);
 
-    // --- Slots: valid ids, fresh-layer defaults, out-of-range rejection ---
-    TerminalLayerId backdrop = TerminalPanel_add(panel, TerminalAnchor());
-    TerminalLayerId title = TerminalPanel_add(panel, TerminalAnchor(TERMINAL_ANCHOR_BAND_TOP, 1));
-    TerminalLayerId rail = TerminalPanel_add(panel, TerminalAnchor(TERMINAL_ANCHOR_BAND_LEFT, 8));
-    TerminalLayerId centre = TerminalPanel_add(panel, TerminalAnchor());
-    assert(TerminalPanel_isLayerId(backdrop) && TerminalPanel_isValid(panel, backdrop));
-    assert(TerminalPanel_isValid(panel, title) && TerminalPanel_isValid(panel, centre));
-    assert(TerminalPanel_layerCount(panel) == 4);
-    assert(TerminalPanel_capacity(panel) == TERMINAL_PANEL_LAYERS_DEFAULT);
-    assert(TerminalPanel_isVisible(panel, title));
-    assert(TerminalPanel_getAnchor(panel, title).kind == TERMINAL_ANCHOR_BAND_TOP);
-    assert(TerminalPanel_getAnchor(panel, title).extent == 1);
-    assert(TerminalPanel_getBackgroundColor(panel, title) == TERMINAL_COLOR_DEFAULT);
-    assert(TerminalPanel_getForegroundColor(panel, title) == TERMINAL_COLOR_DEFAULT);
-    assert(TerminalPanel_getStyle(panel, title) == TERMINAL_STYLE_NONE);
-    assert(TerminalPanel_getImage(panel, title) == nullptr);
-    assert(TerminalPanel_getFit(panel, title) == TERMINAL_LAYER_FIT_STRETCH);
-    assert(TerminalPanel_getDraw(panel, title) == nullptr);
-    assert(!TerminalPanel_isValid(panel, (TerminalLayerId) { 0, 0 }));      // zero id
-    assert(!TerminalPanel_isValid(panel, (TerminalLayerId) { 99, 1 }));     // out of range
-    assert(!TerminalPanel_isValid(panel, (TerminalLayerId) { 0, 2 }));      // wrong generation
-    REJECT(TerminalPanel_isLayerId(TerminalPanel_add(nullptr, TerminalAnchor())), "add");
-    REJECT(TerminalPanel_remove(nullptr, title), "remove");
+    // --- Layout: one field, two flavours, unknown rejected ---
+    assert(TerminalPanel_setLayout(panel, TERMINAL_PANEL_LAYERED));
+    assert(TerminalPanel_getLayout(panel) == TERMINAL_PANEL_LAYERED);
+    assert(TerminalPanel_setLayout(panel, TERMINAL_PANEL_FLEX));
+    REJECT(TerminalPanel_setLayout(panel, (TerminalPanelLayout) 9), "layout");
+    assert(TerminalPanel_getLayout(panel) == TERMINAL_PANEL_FLEX);   // preserved
+    REJECT(TerminalPanel_setLayout(nullptr, TERMINAL_PANEL_FLEX), "layout");
 
-    // --- Colours and style: round trip, and rejection preserves state ---
-    assert(TerminalPanel_setBackgroundColor(panel, rail, TERMINAL_RGB(0x22, 0x22, 0x22)));
-    assert(TerminalPanel_getBackgroundColor(panel, rail) == TERMINAL_RGB(0x22, 0x22, 0x22));
-    assert(TerminalPanel_setForegroundColor(panel, rail, TERMINAL_RGB(0xEE, 0xEE, 0xEE)));
-    assert(TerminalPanel_getForegroundColor(panel, rail) == TERMINAL_RGB(0xEE, 0xEE, 0xEE));
-    assert(TerminalPanel_setStyle(panel, rail, TERMINAL_STYLE_MUTED));
-    assert(TerminalPanel_getStyle(panel, rail) == TERMINAL_STYLE_MUTED);
-    REJECT(TerminalPanel_setBackgroundColor(panel, (TerminalLayerId) { 0, 0 }, 1u), "background");
-    REJECT(TerminalPanel_setForegroundColor(panel, (TerminalLayerId) { 5, 9 }, 1u), "foreground");
-    REJECT(TerminalPanel_setStyle(panel, (TerminalLayerId) { 5, 9 }, 1u), "style");
-    REJECT(TerminalPanel_setAnchor(panel, (TerminalLayerId) { 5, 9 }, TerminalAnchor()), "anchor");
-    REJECT(TerminalPanel_setVisible(panel, (TerminalLayerId) { 5, 9 }, false), "visible");
-    REJECT(TerminalPanel_setDraw(panel, (TerminalLayerId) { 5, 9 }, probeDraw, nullptr), "draw");
-    REJECT(TerminalPanel_setImage(panel, (TerminalLayerId) { 5, 9 }, nullptr, TERMINAL_LAYER_FIT_STRETCH), "image");
-    REJECT(TerminalPanel_setBackgroundColor(nullptr, rail, 1u), "background");
-    REJECT(TerminalPanel_setForegroundColor(nullptr, rail, 1u), "foreground");
-    REJECT(TerminalPanel_setStyle(nullptr, rail, 0u), "style");
-    REJECT(TerminalPanel_setAnchor(nullptr, rail, TerminalAnchor()), "anchor");
-    REJECT(TerminalPanel_setVisible(nullptr, rail, true), "visible");
-    REJECT(TerminalPanel_setDraw(nullptr, rail, probeDraw, nullptr), "draw");
-    REJECT(TerminalPanel_setImage(nullptr, rail, nullptr, TERMINAL_LAYER_FIT_STRETCH), "image");
-    assert(TerminalPanel_getBackgroundColor(panel, rail) == TERMINAL_RGB(0x22, 0x22, 0x22));
-    assert(TerminalPanel_getStyle(panel, rail) == TERMINAL_STYLE_MUTED);
+    // --- Children: identity, kind, ownership transfer, and the FLEX flow ---
+    TerminalText *title = TerminalText("title");
+    TerminalPanel *rail = TerminalPanel();
+    TerminalText *centre = TerminalText("centre");
+    TerminalChildId titleId = TerminalPanel_addText(panel, title, TerminalAnchor(TERMINAL_ANCHOR_BAND_TOP, 1));
+    TerminalChildId railId = TerminalPanel_addPanel(panel, rail, TerminalAnchor(TERMINAL_ANCHOR_BAND_LEFT, 8));
+    TerminalChildId centreId = TerminalPanel_addText(panel, centre, TerminalAnchor());
+    assert(TerminalPanel_isChildId(titleId) && TerminalPanel_isValid(panel, titleId));
+    assert(TerminalPanel_isValid(panel, railId) && TerminalPanel_isValid(panel, centreId));
+    assert(TerminalPanel_childCount(panel) == 3);
+    assert(TerminalPanel_capacity(panel) == TERMINAL_PANEL_CHILDREN_DEFAULT);
+    assert(TerminalPanel_childKind(panel, railId) == TERMINAL_COMPONENT_PANEL);
+    assert(TerminalPanel_childKind(panel, titleId) == TERMINAL_COMPONENT_TEXT);
+    assert(TerminalPanel_childPanel(panel, railId) == rail);
+    assert(TerminalPanel_childText(panel, titleId) == title);
+    assert(TerminalPanel_childPanel(panel, titleId) == nullptr);
+    assert(TerminalPanel_childText(panel, railId) == nullptr);
+    assert(TerminalPanel_getAnchor(panel, titleId).kind == TERMINAL_ANCHOR_BAND_TOP);
+    assert(TerminalPanel_getAnchor(panel, titleId).extent == 1);
+    assert(!TerminalPanel_isValid(panel, (TerminalChildId) { 0, 0 }));
+    assert(!TerminalPanel_isValid(panel, (TerminalChildId) { 99, 1 }));
+    assert(!TerminalPanel_isValid(panel, (TerminalChildId) { 0, 2 }));   // wrong generation
+    REJECT(TerminalPanel_isChildId(TerminalPanel_addText(panel, nullptr, TerminalAnchor())), "null child");
+    REJECT(TerminalPanel_isChildId(TerminalPanel_addPanel(panel, nullptr, TerminalAnchor())), "null child");
+    REJECT(TerminalPanel_isChildId(TerminalPanel_addPanel(panel, panel, TerminalAnchor())), "itself");
+    assert(TerminalPanel_childCount(panel) == 3);   // every rejection left the tree alone
 
-    // --- A bad fit is refused before the layer is touched ---
-    REJECT(TerminalPanel_setImage(panel, rail, nullptr, (TerminalLayerFit) 99), "fit");
-    assert(TerminalPanel_getFit(panel, rail) == TERMINAL_LAYER_FIT_STRETCH);
-    assert(TerminalPanel_setImage(panel, rail, nullptr, TERMINAL_LAYER_FIT_CONTAIN));
-    assert(TerminalPanel_getFit(panel, rail) == TERMINAL_LAYER_FIT_CONTAIN);
-    assert(TerminalPanel_setImage(panel, rail, nullptr, TERMINAL_LAYER_FIT_STRETCH));
-    assert(TerminalPanel_getImage(panel, rail) == nullptr);
+    // FLEX: the title takes row 0, the rail the next 8 columns, the centre the rest.
+    assert(rectEqual(TerminalPanel_childRegion(panel, &canvas, titleId), rectOf(0, 0, W, 1)));
+    assert(rectEqual(TerminalPanel_childRegion(panel, &canvas, railId), rectOf(0, 1, 8, H - 1)));
+    assert(rectEqual(TerminalPanel_childRegion(panel, &canvas, centreId), rectOf(8, 1, W - 8, H - 1)));
 
-    // --- Paint is TOTAL, ordered, and resolves the reserve flow ---
-    LayerProbe backdropProbe = { .tag = 0 };
-    LayerProbe titleProbe = { .tag = 1 };
-    LayerProbe railProbe = { .tag = 2 };
-    LayerProbe centreProbe = { .tag = 3 };
-    assert(TerminalPanel_setDraw(panel, backdrop, probeDraw, &backdropProbe));
-    assert(TerminalPanel_setDraw(panel, title, probeDraw, &titleProbe));
-    assert(TerminalPanel_setDraw(panel, rail, probeDraw, &railProbe));
-    assert(TerminalPanel_setDraw(panel, centre, probeDraw, &centreProbe));
-    assert(TerminalPanel_getDraw(panel, title) == probeDraw);
-    assert(TerminalPanel_getContext(panel, title) == &titleProbe);
+    // LAYERED: the cursor never shrinks, so every child resolves against the whole
+    // area — a FILL child covers it, a BAND child keeps its own slice OF it. This
+    // is where the two flavours visibly diverge.
+    assert(TerminalPanel_setLayout(panel, TERMINAL_PANEL_LAYERED));
+    assert(rectEqual(TerminalPanel_childRegion(panel, &canvas, titleId), rectOf(0, 0, W, 1)));
+    assert(rectEqual(TerminalPanel_childRegion(panel, &canvas, railId), rectOf(0, 0, 8, H)));
+    assert(rectEqual(TerminalPanel_childRegion(panel, &canvas, centreId), rectOf(0, 0, W, H)));
+    assert(TerminalPanel_setLayout(panel, TERMINAL_PANEL_FLEX));
 
-    gOrderCount = 0;
-    beginDiagnostics();
-    TerminalPanel_paint(panel, &canvas);
-    endDiagnostics(0, nullptr);                                // a clean paint is silent
-    assert(TerminalPanel_paintCount(panel) == 1);
-    assert(backdropProbe.calls == 1 && titleProbe.calls == 1);
-    assert(railProbe.calls == 1 && centreProbe.calls == 1);
-    assert(gOrderCount == 4);
-    assert(gOrder[0] == 0 && gOrder[1] == 1 && gOrder[2] == 2 && gOrder[3] == 3);   // slot order = z
+    // --- Cold hit-testing, top-most first ---
+    assert(TerminalChildId_equal(TerminalPanel_childAt(panel, &canvas, 0, 0), titleId));
+    assert(TerminalChildId_equal(TerminalPanel_childAt(panel, &canvas, 0, 4), railId));
+    assert(TerminalChildId_equal(TerminalPanel_childAt(panel, &canvas, 12, 4), centreId));
+    assert(!TerminalPanel_isChildId(TerminalPanel_childAt(panel, &canvas, 0, 20)));
+    assert(!TerminalPanel_isChildId(TerminalPanel_childAt(panel, &invalid, 0, 0)));
 
-    // FILL reserves nothing, so the backdrop spans the panel and the bands still flow.
-    assert(rectEqual(backdropProbe.region, rectOf(0, 0, W, H)));
-    assert(rectEqual(titleProbe.region, rectOf(0, 0, W, 1)));
-    assert(rectEqual(railProbe.region, rectOf(0, 1, 8, H - 1)));
-    assert(rectEqual(centreProbe.region, rectOf(8, 1, W - 8, H - 1)));
-    // The layer's pen reaches its painter.
-    assert(railProbe.pen.bg == TERMINAL_RGB(0x22, 0x22, 0x22));
-    assert(railProbe.pen.fg == TERMINAL_RGB(0xEE, 0xEE, 0xEE));
-    assert(railProbe.pen.style == TERMINAL_STYLE_MUTED);
-
-    // --- It paints EVERY single time: no dirty tracking, no skipping ---
-    gOrderCount = 0;
-    TerminalPanel_paint(panel, &canvas);
-    TerminalPanel_paint(panel, &canvas);
-    assert(TerminalPanel_paintCount(panel) == 3);
-    assert(titleProbe.calls == 3 && centreProbe.calls == 3 && railProbe.calls == 3);
-    assert(gOrderCount == 8);                            // 4 layers x 2 paints, nothing skipped
-    assert(gOrder[0] == 0 && gOrder[3] == 3 && gOrder[4] == 0 && gOrder[7] == 3);
-
-    // --- The layer background fills its resolved region ---
-    // The swatch is a BOTTOM band added AFTER the centre's FILL. FILL consumes
-    // nothing, so the cursor still carries the rail's reservation and the band
-    // spans only the unreserved remainder — cols 8..23 of the last row.
+    // --- Paint: total, ordered, and it really does repaint everything ---
+    TerminalPanel *stack = TerminalPanel();
+    assert(TerminalPanel_setLayout(stack, TERMINAL_PANEL_LAYERED));
+    TerminalChildId underId = TerminalPanel_addText(stack, TerminalText("under"), TerminalAnchor());
+    TerminalChildId overId = TerminalPanel_addText(stack, TerminalText("over!"), TerminalAnchor());
+    assert(TerminalChildId_equal(TerminalPanel_childAt(stack, &canvas, 0, 0), overId));
     TerminalCanvas_fill(&canvas, ' ', TerminalPen());
-    TerminalLayerId swatch = TerminalPanel_add(panel, TerminalAnchor(TERMINAL_ANCHOR_BAND_BOTTOM, 1));
-    assert(TerminalPanel_setBackgroundColor(panel, swatch, TERMINAL_RGB(1, 2, 3)));
-    TerminalPanel_paint(panel, &canvas);
-    assert(TerminalCanvas_bgAt(&canvas, 8, H - 1) == TERMINAL_RGB(1, 2, 3));
-    assert(TerminalCanvas_glyphAt(&canvas, 8, H - 1) == ' ');
-    assert(TerminalCanvas_bgAt(&canvas, 0, H - 1) == TERMINAL_RGB(0x22, 0x22, 0x22));   // the rail kept its column
-    assert(TerminalCanvas_bgAt(&canvas, 0, 0) == TERMINAL_COLOR_DEFAULT);               // the title band is unpainted
-
-    // --- Hidden layers neither draw nor reserve, so the flow closes up ---
-    assert(TerminalPanel_setVisible(panel, title, false));
-    assert(!TerminalPanel_isVisible(panel, title));
-    gOrderCount = 0;
-    titleProbe.calls = 0;
-    railProbe.calls = 0;
-    centreProbe.calls = 0;
-    TerminalPanel_paint(panel, &canvas);
-    assert(titleProbe.calls == 0);                       // no draw
-    assert(railProbe.calls == 1 && centreProbe.calls == 1);
-    assert(gOrderCount == 3);                            // backdrop, rail, centre (the swatch has no painter)
-    assert(rectEqual(railProbe.region, rectOf(0, 0, 8, H)));      // the band was released
-    assert(rectEqual(centreProbe.region, rectOf(8, 0, W - 8, H)));
-    assert(TerminalPanel_setVisible(panel, title, true));
-
-    // --- Cold hit-test query agrees with what paint resolved ---
-    assert(rectEqual(TerminalPanel_regionOf(panel, &canvas, backdrop), rectOf(0, 0, W, H)));
-    assert(rectEqual(TerminalPanel_regionOf(panel, &canvas, title), rectOf(0, 0, W, 1)));
-    assert(rectEqual(TerminalPanel_regionOf(panel, &canvas, rail), rectOf(0, 1, 8, H - 1)));
-    assert(rectEqual(TerminalPanel_regionOf(panel, &canvas, centre), rectOf(8, 1, W - 8, H - 1)));
-    TerminalRect unknown = TerminalPanel_regionOf(panel, &canvas, (TerminalLayerId) { 0, 0 });
-    assert(unknown.width == 0 && unknown.height == 0);
-
-    // --- Reentrant paint is refused, counted, and reported once per epoch ---
-    TerminalLayerId nested = TerminalPanel_add(panel, TerminalAnchor());
-    gReenter = panel;
-    gReentrantPaints = 0;
-    assert(TerminalPanel_setDraw(panel, nested, reentrantDraw, nullptr));
     beginDiagnostics();
-    TerminalPanel_paint(panel, &canvas);
-    endDiagnostics(1, "reentrant");
-    assert(gReentrantPaints == 1);
-    assert(TerminalPanel_exhaustionCount(panel) == 1);
-    assert(!TerminalPanel_isPainting(panel));
-    beginDiagnostics();
-    TerminalPanel_paint(panel, &canvas);                 // same epoch: no second line
+    TerminalPanel_paint(stack, &canvas);
     endDiagnostics(0, nullptr);
-    assert(TerminalPanel_exhaustionCount(panel) == 2);   // but both are counted
-    TerminalPanel_clearExhaustion(panel);
-    assert(TerminalPanel_exhaustionCount(panel) == 0);
-    beginDiagnostics();
-    TerminalPanel_paint(panel, &canvas);                 // a fresh epoch reports again
-    endDiagnostics(1, "reentrant");
-    assert(TerminalPanel_exhaustionCount(panel) == 1);
-    assert(TerminalPanel_setDraw(panel, nested, nullptr, nullptr));
-    assert(TerminalPanel_getDraw(panel, nested) == nullptr);
-    assert(TerminalPanel_getContext(panel, nested) == nullptr);
-    TerminalPanel_clearExhaustion(panel);
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == 'o');      // the later child is on top
+    assert(TerminalPanel_paintCount(stack) == 1);
+    // A stale glyph in the buffer is overwritten: there is no dirty tracking, so
+    // every paint rewrites every child.
+    TerminalCanvas_glyph(&canvas, 0, 0, 'Z', TerminalPen());
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == 'Z');
+    TerminalPanel_paint(stack, &canvas);
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == 'o');
+    assert(TerminalPanel_paintCount(stack) == 2);
+    assert(TerminalChildId_equal(TerminalPanel_childAt(stack, &canvas, 0, 0), overId));
 
-    // --- Removal, slot reuse, and the staleness rule ---
-    size_t liveBefore = TerminalPanel_layerCount(panel);
-    TerminalLayerId doomed = TerminalPanel_add(panel, TerminalAnchor());
-    assert(TerminalPanel_isValid(panel, doomed));
-    assert(TerminalPanel_layerCount(panel) == liveBefore + 1);
-    assert(TerminalPanel_remove(panel, doomed));
-    assert(TerminalPanel_layerCount(panel) == liveBefore);
-    assert(!TerminalPanel_isValid(panel, doomed));                 // retired
-    assert(!TerminalPanel_isVisible(panel, doomed));
-    assert(TerminalPanel_getDraw(panel, doomed) == nullptr);
-    assert(TerminalPanel_getImage(panel, doomed) == nullptr);
-    REJECT(TerminalPanel_remove(panel, doomed), "stale");
-    REJECT(TerminalPanel_setAnchor(panel, doomed, TerminalAnchor()), "stale");
-    TerminalLayerId reused = TerminalPanel_add(panel, TerminalAnchor());
+    // --- The panel's pen reaches its children; its background fills the area ---
+    TerminalPanel *styled = TerminalPanel();
+    assert(TerminalPanel_setBackgroundColor(styled, TERMINAL_RGB(0x10, 0x10, 0x10)));
+    assert(TerminalPanel_setForegroundColor(styled, TERMINAL_RGB(0xD0, 0xD0, 0xD0)));
+    assert(TerminalPanel_setStyle(styled, TERMINAL_STYLE_MUTED));
+    assert(TerminalPanel_getBackgroundColor(styled) == TERMINAL_RGB(0x10, 0x10, 0x10));
+    assert(TerminalPanel_getStyle(styled) == TERMINAL_STYLE_MUTED);
+    TerminalChildId inheritId = TerminalPanel_addText(styled, TerminalText("hi"), TerminalAnchor());
+    assert(TerminalPanel_isValid(styled, inheritId));
+    TerminalCanvas_fill(&canvas, ' ', TerminalPen());
+    TerminalPanel_paint(styled, &canvas);
+    assert(TerminalCanvas_bgAt(&canvas, 20, 5) == TERMINAL_RGB(0x10, 0x10, 0x10));   // background filled
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == 'h');
+    assert(TerminalCanvas_fgAt(&canvas, 0, 0) == TERMINAL_RGB(0xD0, 0xD0, 0xD0));    // inherited foreground
+    assert(TerminalCanvas_styleAt(&canvas, 0, 0) == TERMINAL_STYLE_MUTED);
+    TerminalPen panelPen = TerminalPanel_getPen(styled);
+    assert(panelPen.bg == TERMINAL_RGB(0x10, 0x10, 0x10) && panelPen.fg == TERMINAL_RGB(0xD0, 0xD0, 0xD0));
+    REJECT(TerminalPanel_setStyle(nullptr, 0), "style");
+    REJECT(TerminalPanel_setForegroundColor(nullptr, 0), "foreground");
+    REJECT(TerminalPanel_setBackgroundColor(nullptr, 0), "background");
+    REJECT(TerminalPanel_setPen(nullptr, TerminalPen()), "pen");
+    REJECT(TerminalPanel_setImage(styled, nullptr, (TerminalPanelImageFit) 9), "fit");
+    REJECT(TerminalPanel_setImage(nullptr, nullptr, TERMINAL_PANEL_IMAGE_STRETCH), "image");
+    assert(TerminalPanel_setImage(styled, nullptr, TERMINAL_PANEL_IMAGE_CONTAIN));
+    assert(TerminalPanel_getFit(styled) == TERMINAL_PANEL_IMAGE_CONTAIN);
+    assert(TerminalPanel_setImage(styled, nullptr, TERMINAL_PANEL_IMAGE_STRETCH));
+
+    // --- Removing frees the child; the slot is reused with a new generation ---
+    size_t before = TerminalPanel_childCount(panel);
+    assert(TerminalPanel_remove(panel, centreId));
+    assert(TerminalPanel_childCount(panel) == before - 1);
+    assert(!TerminalPanel_isValid(panel, centreId));
+    assert(TerminalPanel_childText(panel, centreId) == nullptr);
+    REJECT(TerminalPanel_remove(panel, centreId), "stale");
+    REJECT(TerminalPanel_setAnchor(panel, centreId, TerminalAnchor()), "stale");
+    TerminalChildId reused = TerminalPanel_addText(panel, TerminalText("again"), TerminalAnchor());
     assert(TerminalPanel_isValid(panel, reused));
-    assert(reused.index == doomed.index);                          // same slot...
-    assert(reused.generation != doomed.generation);                // ...new generation
-    assert(!TerminalPanel_isValid(panel, doomed));                 // the old id stays stale
-    assert(!TerminalLayerId_equal(doomed, reused));
-    assert(TerminalLayerId_equal(reused, reused));
-    assert(TerminalPanel_remove(panel, reused));
+    assert(reused.index == centreId.index && reused.generation != centreId.generation);
+    assert(!TerminalPanel_isValid(panel, centreId));
+    assert(!TerminalChildId_equal(centreId, reused));
+    assert(TerminalChildId_equal(reused, reused));
 
-    // --- Cold growth past the named default; every live layer survives ---
+    // --- Detach returns ownership for re-parenting, without freeing ---
+    TerminalText *moved = TerminalPanel_detachText(panel, reused);
+    assert(moved != nullptr);
+    assert(TerminalPanel_childText(panel, reused) == nullptr);
+    assert(!TerminalPanel_isValid(panel, reused));
+    TerminalChildId reparented = TerminalPanel_addText(stack, moved, TerminalAnchor(TERMINAL_ANCHOR_BAND_BOTTOM, 1));
+    assert(TerminalPanel_isChildId(reparented));
+    assert(TerminalPanel_childText(stack, reparented) == moved);
+    assert(TerminalPanel_detachPanel(panel, titleId) == nullptr);      // wrong kind
+    assert(TerminalPanel_detachText(panel, railId) == nullptr);        // wrong kind
+    TerminalText *orphan = TerminalText("orphan");
+    REJECT(TerminalPanel_isChildId(TerminalPanel_addText(nullptr, orphan, TerminalAnchor())), "add");
+    TerminalText_free(orphan);            // the refused add left it with the caller
+    (void) underId;
+
+    // --- Cold growth past the named default; every child survives ---
     TerminalPanel *grown = TerminalPanel();
-    assert(grown != nullptr && TerminalPanel_capacity(grown) == 0);
-    for (size_t i = 0; i < TERMINAL_PANEL_LAYERS_DEFAULT * 3; ++i) {
-        TerminalLayerId id = TerminalPanel_add(grown, TerminalAnchor());
-        assert(TerminalPanel_isLayerId(id));
-    }
-    assert(TerminalPanel_layerCount(grown) == TERMINAL_PANEL_LAYERS_DEFAULT * 3);
-    assert(TerminalPanel_capacity(grown) >= TERMINAL_PANEL_LAYERS_DEFAULT * 3);
+    for (size_t i = 0; i < TERMINAL_PANEL_CHILDREN_DEFAULT * 3; ++i)
+        assert(TerminalPanel_isChildId(TerminalPanel_addText(grown, TerminalText("x"), TerminalAnchor())));
+    assert(TerminalPanel_childCount(grown) == TERMINAL_PANEL_CHILDREN_DEFAULT * 3);
+    assert(TerminalPanel_capacity(grown) >= TERMINAL_PANEL_CHILDREN_DEFAULT * 3);
     assert(TerminalPanel_exhaustionCount(grown) == 0);
     beginDiagnostics();
     TerminalPanel_paint(grown, &canvas);
     endDiagnostics(0, nullptr);
     assert(TerminalPanel_paintCount(grown) == 1);
-    TerminalPanel_free(grown);
+    TerminalPanel_free(grown);            // frees every text child recursively
 
-    // --- A moving anchor re-flows the layers beneath it ---
-    TerminalPanel *mover = TerminalPanel();
-    TerminalLayerId band = TerminalPanel_add(mover, TerminalAnchor(TERMINAL_ANCHOR_BAND_TOP, 3));
-    TerminalLayerId rest = TerminalPanel_add(mover, TerminalAnchor());
-    assert(rectEqual(TerminalPanel_regionOf(mover, &canvas, band), rectOf(0, 0, W, 3)));
-    assert(rectEqual(TerminalPanel_regionOf(mover, &canvas, rest), rectOf(0, 3, W, H - 3)));
-    assert(TerminalPanel_setAnchor(mover, band, TerminalAnchor(TERMINAL_ANCHOR_BAND_BOTTOM, 2)));
-    assert(rectEqual(TerminalPanel_regionOf(mover, &canvas, band), rectOf(0, H - 2, W, 2)));
-    assert(rectEqual(TerminalPanel_regionOf(mover, &canvas, rest), rectOf(0, 0, W, H - 2)));
-    assert(TerminalPanel_setVisible(mover, band, false));
-    assert(rectEqual(TerminalPanel_regionOf(mover, &canvas, rest), rectOf(0, 0, W, H)));
-    assert(TerminalPanel_regionOf(mover, &canvas, band).width == 0);
-    TerminalPanel_free(mover);
+    // --- A cyclic tree is refused by paint; breaking it makes teardown defined ---
+    TerminalPanel *a = TerminalPanel();
+    TerminalPanel *b = TerminalPanel();
+    TerminalChildId bInA = TerminalPanel_addPanel(a, b, TerminalAnchor());
+    TerminalChildId aInB = TerminalPanel_addPanel(b, a, TerminalAnchor());
+    assert(TerminalPanel_isChildId(bInA) && TerminalPanel_isChildId(aInB));
+    beginDiagnostics();
+    TerminalPanel_paint(a, &canvas);      // a -> b -> a: the inner paint refuses
+    endDiagnostics(1, "reentrant");
+    assert(TerminalPanel_exhaustionCount(a) == 1);
+    assert(!TerminalPanel_isPainting(a) && !TerminalPanel_isPainting(b));
+    beginDiagnostics();
+    TerminalPanel_paint(a, &canvas);      // same epoch: counted, not re-reported
+    endDiagnostics(0, nullptr);
+    assert(TerminalPanel_exhaustionCount(a) == 2);
+    assert(TerminalPanel_detachPanel(b, aInB) == a);   // break the cycle
+    TerminalPanel_free(a);                             // frees b, which no longer points back
 
-    // --- GROUNDING: semicolon's IDE example as a real panel over 103x23 ---
+    // --- GROUNDING: semicolon's IDE example as a real child tree, 103x23 ---
     static uint32_t ideCells[103 * 23];
     static uint8_t ideStyles[103 * 23];
     TerminalCanvas ide = TerminalCanvas(ideCells, ideStyles, 103, 23);
-    TerminalPanel *idePanel = TerminalPanel();
-    TerminalLayerId ideTitle = TerminalPanel_add(idePanel, TerminalAnchor(TERMINAL_ANCHOR_BAND_TOP, 1));
-    TerminalLayerId ideStatus = TerminalPanel_add(idePanel, TerminalAnchor(TERMINAL_ANCHOR_BAND_BOTTOM, 1));
-    TerminalLayerId ideRail = TerminalPanel_add(idePanel, TerminalAnchor(TERMINAL_ANCHOR_BAND_LEFT, 29));
-    TerminalLayerId ideCentre = TerminalPanel_add(idePanel, TerminalAnchor());
-    assert(rectEqual(TerminalPanel_regionOf(idePanel, &ide, ideTitle), rectOf(0, 0, 103, 1)));
-    assert(rectEqual(TerminalPanel_regionOf(idePanel, &ide, ideStatus), rectOf(0, 22, 103, 1)));
-    assert(rectEqual(TerminalPanel_regionOf(idePanel, &ide, ideRail), rectOf(0, 1, 29, 21)));
-    assert(rectEqual(TerminalPanel_regionOf(idePanel, &ide, ideCentre), rectOf(29, 1, 74, 21)));
+    TerminalPanel *ideRoot = TerminalPanel();
+    TerminalChildId ideTitle = TerminalPanel_addText(ideRoot, TerminalText("vexgraph"),
+                                                    TerminalAnchor(TERMINAL_ANCHOR_BAND_TOP, 1));
+    TerminalChildId ideStatus = TerminalPanel_addText(ideRoot, TerminalText("[c23/java]"),
+                                                     TerminalAnchor(TERMINAL_ANCHOR_BAND_BOTTOM, 1));
+    TerminalPanel *ideCentre = TerminalPanel();
+    TerminalChildId ideCentreId = TerminalPanel_addPanel(ideRoot, ideCentre,
+                                                         TerminalAnchor(TERMINAL_ANCHOR_BAND_LEFT, 29));
+    assert(rectEqual(TerminalPanel_childRegion(ideRoot, &ide, ideTitle), rectOf(0, 0, 103, 1)));
+    assert(rectEqual(TerminalPanel_childRegion(ideRoot, &ide, ideStatus), rectOf(0, 22, 103, 1)));
+    assert(rectEqual(TerminalPanel_childRegion(ideRoot, &ide, ideCentreId), rectOf(0, 1, 29, 21)));
     beginDiagnostics();
-    TerminalPanel_paint(idePanel, &ide);
+    TerminalPanel_paint(ideRoot, &ide);
     endDiagnostics(0, nullptr);
+    assert(TerminalCanvas_glyphAt(&ide, 0, 0) == 'v');           // the title bar drew
+    assert(TerminalCanvas_glyphAt(&ide, 0, 22) == '[');          // the status bar drew
 
-    // The centre's own nested panel resolves over the sub-canvas its parent handed
-    // it — the whole nesting mechanism, with no ownership passing between them.
-    TerminalCanvas ideCentreRegion = TerminalCanvas_sub(&ide, 29, 1, 74, 21);
-    assert(TerminalCanvas_getWidth(&ideCentreRegion) == 74);
-    assert(TerminalCanvas_getHeight(&ideCentreRegion) == 21);
-    TerminalPanel *centrePanel = TerminalPanel();
-    TerminalLayerId ideTabs = TerminalPanel_add(centrePanel, TerminalAnchor(TERMINAL_ANCHOR_BAND_TOP, 1));
-    TerminalLayerId ideSep = TerminalPanel_add(centrePanel, TerminalAnchor(TERMINAL_ANCHOR_BAND_TOP, 1));
-    TerminalLayerId ideEditor = TerminalPanel_add(centrePanel, TerminalAnchor());
-    assert(rectEqual(TerminalPanel_regionOf(centrePanel, &ideCentreRegion, ideTabs), rectOf(0, 0, 74, 1)));
-    assert(rectEqual(TerminalPanel_regionOf(centrePanel, &ideCentreRegion, ideSep), rectOf(0, 1, 74, 1)));
-    assert(rectEqual(TerminalPanel_regionOf(centrePanel, &ideCentreRegion, ideEditor), rectOf(0, 2, 74, 19)));
+    // The rail's own children resolve over the sub-canvas their parent handed them.
+    TerminalRect railRegion = TerminalPanel_childRegion(ideRoot, &ide, ideCentreId);
+    TerminalCanvas railCanvas = TerminalCanvas_sub(&ide, railRegion.x, railRegion.y,
+                                                  railRegion.width, railRegion.height);
+    assert(TerminalCanvas_getWidth(&railCanvas) == 29 && TerminalCanvas_getHeight(&railCanvas) == 21);
+    TerminalChildId utils = TerminalPanel_addText(ideCentre, TerminalText("utils"),
+                                                 TerminalAnchor(TERMINAL_ANCHOR_BAND_TOP, 1));
+    TerminalChildId files = TerminalPanel_addText(ideCentre, TerminalText("files"), TerminalAnchor());
+    assert(rectEqual(TerminalPanel_childRegion(ideCentre, &railCanvas, utils), rectOf(0, 0, 29, 1)));
+    assert(rectEqual(TerminalPanel_childRegion(ideCentre, &railCanvas, files), rectOf(0, 1, 29, 20)));
+    // ...and the nested panel really paints through the chain, into the root's grid.
     beginDiagnostics();
-    TerminalPanel_paint(centrePanel, &ideCentreRegion);
+    TerminalPanel_paint(ideRoot, &ide);
     endDiagnostics(0, nullptr);
-    assert(TerminalPanel_paintCount(centrePanel) == 1);
-    TerminalPanel_free(centrePanel);
-    TerminalPanel_free(idePanel);
+    assert(TerminalCanvas_glyphAt(&ide, 0, 1) == 'u');     // utils, one row down
+    assert(TerminalCanvas_glyphAt(&ide, 0, 2) == 'f');     // files, below it
+    TerminalPanel_free(ideRoot);          // frees the nested centre panel too
 
     // --- Projections: value string and a struct dump mirroring STRUCT FIELDS ---
     TERMINAL_PROJECT(TerminalPanel, panel);
-    TerminalProjection value = TerminalPanel_toString(panel);
-    assert(strstr(value.text, "TerminalPanel{layers=") != nullptr);
     TerminalProjection structured = TerminalPanel_toStringStruct(panel);
+    assert(strstr(structured.text, "layout=") != nullptr);
+    assert(strstr(structured.text, "children=<owned>") != nullptr);
     assert(strstr(structured.text, "capacity=") != nullptr);
     assert(strstr(structured.text, "usedCount=") != nullptr);
-    assert(strstr(structured.text, "paintCount=") != nullptr);
     assert(strstr(structured.text, "refusalCount=") != nullptr);
     assert(strstr(structured.text, "painting=") != nullptr);
+    assert(strstr(TerminalPanel_toString(panel).text, "TerminalPanel{layout=") != nullptr);
 
     TerminalPanel_free(panel);
+    TerminalPanel_free(stack);
+    TerminalPanel_free(styled);
     return 0;
 }
