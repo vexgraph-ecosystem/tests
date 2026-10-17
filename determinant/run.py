@@ -19,9 +19,9 @@ import tempfile
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-APP = ROOT / "drivers/determinant/src"
-VEX = ROOT / "host-behavior/vexspoke/src"
-REL = ROOT / "host-behavior/relational-engine/src"
+APP = ROOT / "suite/ecosystem/determinant/src"
+VEX = ROOT / "suite/ecosystem/vexspoke/src"
+REL = ROOT / "suite/ecosystem/relational-engine/src"
 
 
 def execute(argv, timeout=60):
@@ -93,6 +93,8 @@ def main():
             ("CommandRegistry", "cli/commandregistry.h", "CommandRegistry(1)", "CommandRegistry_1"),
             ("Terminal", "terminal/terminal.h", "Terminal(1)", "Terminal_1"),
             ("TerminalButton", "terminal/terminal_button.h", "TerminalButton(1)", "TerminalButton_1"),
+            ("TerminalAnchor", "terminal/terminal_anchor.h", "TerminalAnchor(1, 2, 3, 4)", "TerminalAnchor_4"),
+            ("TerminalPanel", "terminal/terminal_panel.h", "TerminalPanel(1)", "TerminalPanel_1"),
         ):
             fixture = tmp / f"negative-{cls}.c"
             fixture.write_text(f'#include "{header}"\nint main(void) {{ (void){expression}; return 0; }}\n')
