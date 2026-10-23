@@ -99,9 +99,9 @@ def dump(width, height, root=None, semicolon_file=None, icons="plain"):
 def _own_the_terminal():
     """Make the pty the child's controlling terminal.
 
-    Without this the child is not the pty's foreground process group, so the line
-    discipline has nowhere to deliver SIGINT and Ctrl-C would appear to do nothing.
-    A real terminal does this for every program it launches.
+    Without this the child is not the pty's foreground process group, so job-control
+    signals and terminal reads do not behave like a real shell session. A real terminal
+    does this for every program it launches.
     """
     os.setsid()
     fcntl.ioctl(0, termios.TIOCSCTTY, 0)
@@ -203,9 +203,9 @@ class Pty:
     def finish(self):
         self.drain(0.2)
         if self.process.poll() is None:
-            # Ctrl-C is the only quit key; the pty's line discipline turns 0x03 into
-            # SIGINT for the foreground process group, which is what the shell
-            # handles. A letter key is deliberately not a quit shortcut.
+            # Ctrl-C is the only quit key. The editor runs raw(), so 0x03 reaches the
+            # event loop as byte 3 instead of becoming SIGINT; the shell handles it
+            # explicitly. A letter key is deliberately not a quit shortcut.
             self.send(b"\x03")
             self.drain(0.4)
         if self.process.poll() is None:
@@ -980,7 +980,7 @@ def main():
               f"the tab strip began at column {tab_start.group(1)!r}, expected 61 beside the moved seam")
 
     # 'q' IS NOT A QUIT KEY. A letter is input - 'q' is a legitimate thing to want to
-    # type - so the only exit is Ctrl-C, which the terminal delivers as SIGINT.
+    # type - so the only exit is Ctrl-C, which raw mode delivers as byte 3.
     shell.send(b"q")
     shell.drain(0.4)
     check(shell.process.poll() is None, "pressing q quit the shell; Ctrl-C is the only exit")
@@ -1196,6 +1196,27 @@ def main():
         editing.drain(1.2)
         check(edit_file.read_bytes() == "AB界one\r\nline2\n".encode("utf-8"),
               "a multibyte UTF-8 character did not survive editing and save")
+        # Ctrl-Z has to reach the editor as byte 26: under cbreak the line discipline
+        # would turn it into SIGTSTP and suspend the whole shell before ncurses saw it.
+        # Each state is autosaved, so the on-disk bytes are the oracle for the snapshot.
+        editing.send(b"\x1a")
+        editing.drain(1.2)
+        check(edit_file.read_bytes() == b"ABone\r\nline2\n",
+              "Ctrl-Z did not restore the pre-edit document exactly")
+        editing.send(b"\x19")
+        editing.drain(1.2)
+        check(edit_file.read_bytes() == "AB界one\r\nline2\n".encode("utf-8"),
+              "Ctrl-Y did not reapply the undone edit exactly")
+        editing.send(b"\x1a")
+        editing.drain(1.2)
+        editing.send(b"Z")                 # a fresh edit must discard the redo path
+        editing.drain(1.2)
+        check(edit_file.read_bytes() == b"ABZone\r\nline2\n",
+              "editing after undo did not commit the new state")
+        editing.send(b"\x19")              # nothing to redo; the document stays put
+        editing.drain(0.5)
+        check(edit_file.read_bytes() == b"ABZone\r\nline2\n",
+              "Ctrl-Y resurrected a redo that a new edit should have discarded")
         edit_exit, _ = editing.finish()
         check(edit_exit == 0, f"editing PTY exited {edit_exit}")
 

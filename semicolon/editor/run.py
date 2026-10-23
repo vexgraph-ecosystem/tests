@@ -11,6 +11,7 @@ import re
 import subprocess
 import tempfile
 import sys
+import time
 
 ROOT = Path(__file__).resolve().parents[3]
 APP = ROOT / "suite/projects/semicolon"
@@ -138,7 +139,6 @@ def main():
             # independently asserting the emitted regular-comment foreground.
             text = re.sub(rb"\x1b\[[0-9;]*m|\x1b\(B", b"", payload)
             assert b"\x1b[38;5;145m" in payload and b"//int value;" in text, payload
-            import time
             deadline = time.monotonic() + 5.0
             while (editable.read_text() != "/** doc */\n//int value;\n"
                    and time.monotonic() < deadline):
@@ -147,6 +147,47 @@ def main():
         finally:
             assert shell.finish()[0] == 0
         print("PASS scripted PTY C23 keyword/doc/regular-comment foreground and edit recoloring; exact autosaved bytes")
+
+        # The snapshot history owns and frees whole line arrays, so exercise the real
+        # shell under ASan/UBSan rather than trusting the strict build alone. A multibyte
+        # scalar is one transaction: undoing half of it would leave invalid UTF-8 and
+        # show the grouping bug the PTY owner caught.
+        sanitized = directory / "semicolon-asan"
+        run(["clang", *flags, "-fsanitize=address,undefined", "-fno-omit-frame-pointer",
+             *includes, str(APP / "src/main/tui-main.c"),
+             *(str(path) for path in build.sources(DETERMINANT, VEXSPOKE, ENGINE, LANGUAGE)),
+             curses, "-lm", "-o", str(sanitized)])
+        history = directory / "history.c"
+        history.write_bytes(b"int value;\n")
+        history_shell = helpers.Pty(
+            22, 112, argv=[str(sanitized), "--root", str(directory), "--file", str(history),
+                           "--icons", "plain"],
+            env={"TERM": "xterm-256color", "SEMICOLON_BG": "#202020",
+                 "ASAN_OPTIONS": "detect_leaks=0", "UBSAN_OPTIONS": "halt_on_error=1"})
+
+        def wait_bytes(expected, seconds=6.0):
+            deadline = time.monotonic() + seconds
+            while time.monotonic() < deadline:
+                if history.read_bytes() == expected:
+                    return True
+                history_shell.drain(0.1)
+            return False
+
+        try:
+            assert history_shell.wait_for(b"history.c"), "history file did not open"
+            history_shell.send(b"AB")
+            assert wait_bytes(b"ABint value;\n"), history.read_bytes()
+            history_shell.send("界".encode("utf-8"))
+            assert wait_bytes("AB界int value;\n".encode("utf-8")), history.read_bytes()
+            history_shell.send(b"\x1a")
+            assert wait_bytes(b"ABint value;\n"), history.read_bytes()
+            history_shell.send(b"\x19")
+            assert wait_bytes("AB界int value;\n".encode("utf-8")), history.read_bytes()
+        finally:
+            exit_code, captured = history_shell.finish()
+            assert exit_code == 0, (exit_code, captured[-2000:])
+            assert b"AddressSanitizer" not in captured and b"runtime error" not in captured, captured[-2000:]
+        print("PASS asan-ubsan TUI snapshot history: multibyte undo/redo, exact autosaved bytes")
 
 
 if __name__ == "__main__":
