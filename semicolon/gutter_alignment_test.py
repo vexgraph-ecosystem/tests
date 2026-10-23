@@ -57,7 +57,7 @@ def main():
                 # Keyword/identifier ink changes insert SGR between words. Wait
                 # for the complete identifier tail, then assert the full source
                 # after removing only styling, not text or cursor operations.
-                if not shell.wait_for(b"line_1;"):
+                if not shell.wait_for(b"line_1"):
                     raise AssertionError("the 999-line source did not render")
                 plain = re.sub(rb"\x1b\[[0-9;]*m|\x1b\(B", b"", bytes(shell.captured))
                 assert b"int line_1;" in plain, "the complete 999-line source was not painted"

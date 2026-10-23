@@ -61,10 +61,12 @@ static void testRows(void) {
     assert(SemicolonSyntax_getSpanCount(syntax) > 10u);
     assert(SemicolonSyntax_penAt(syntax, 0u, 0u).fg == 0x008000FFu);
     assert(SemicolonSyntax_penAt(syntax, 0u, 12u).fg == 0xA0F5A0FFu);
-    assert(SemicolonSyntax_penAt(syntax, 1u, 0u).fg == 0x60856BFFu);
+    assert(SemicolonSyntax_penAt(syntax, 1u, 0u).fg == 0x808080FFu);
     assert(SemicolonSyntax_penAt(syntax, 1u, 13u).fg == 0x008000FFu);
     assert(SemicolonSyntax_penAt(syntax, 1u, 20u).fg == 0xA0F5A0FFu);
     assert(SemicolonSyntax_penAt(syntax, 2u, 10u).fg == 0xA0F5A0FFu);
+    assert(SemicolonSyntax_penAt(syntax, 0u, 4u).fg == 0x9CDCFEFFu);
+    assert(SemicolonSyntax_penAt(syntax, 2u, 5u).fg == 0x9CDCFEFFu);
     first[0] = 'X';
     assert(SemicolonSyntax_penAt(syntax, 0u, 0u).fg == 0x008000FFu);
     assert(!SemicolonSyntax_setLines(syntax, nullptr, lengths, 3u));
@@ -107,6 +109,40 @@ static void testRows(void) {
     assert(SemicolonSyntax_penAt(syntax, SIZE_MAX, SIZE_MAX).fg == 0u);
     assert(SemicolonSyntax_getPen(syntax, (SyntaxRole) SIZE_MAX).fg == 0u);
     SemicolonSyntax_free(syntax);
+}
+
+static void testRolesAndComments(void) {
+    SemicolonSyntax *syntax = SemicolonSyntax();
+    assert(syntax != nullptr);
+    char first[] = "uint8_t Console_log(const char *message); THROW(\"x\");";
+    char second[] = "/** doc */ int x;";
+    char third[] = "/* regular */ int y;";
+    char fourth[] = "#include \"x.h\"";
+    char fifth[] = "#define VALUE 1";
+    const char *rows[] = {first, second, third, fourth, fifth};
+    size_t lengths[] = {strlen(rows[0]), strlen(rows[1]), strlen(rows[2]),
+                        strlen(rows[3]), strlen(rows[4])};
+    assert(SemicolonSyntax_setLines(syntax, rows, lengths, 5u));
+    size_t type = (size_t) (strstr(first, "uint8_t") - first);
+    size_t function = (size_t) (strstr(first, "Console_log") - first);
+    size_t variable = (size_t) (strstr(first, "message") - first);
+    size_t macro = (size_t) (strstr(first, "THROW") - first);
+    assert(SemicolonSyntax_penAt(syntax, 0u, type).fg == 0x4EC9B0FFu);
+    assert(SemicolonSyntax_penAt(syntax, 0u, function).fg == 0x4FC1FFFFu);
+    assert(SemicolonSyntax_penAt(syntax, 0u, variable).fg == 0x9CDCFEFFu);
+    TerminalPen macroPen = SemicolonSyntax_penAt(syntax, 0u, macro);
+    assert(macroPen.fg == 0xDCDCAAFFu);
+    assert((macroPen.style & TERMINAL_STYLE_BOLD) != 0u);
+    assert(SemicolonSyntax_penAt(syntax, 1u, 0u).fg == 0x6A9955FFu);
+    assert(SemicolonSyntax_penAt(syntax, 2u, 0u).fg == 0x808080FFu);
+    TerminalPen directive = SemicolonSyntax_penAt(syntax, 3u, 0u);
+    assert(directive.fg == 0xDCDCAAFFu);
+    assert((directive.style & TERMINAL_STYLE_BOLD) != 0u);
+    assert(SemicolonSyntax_penAt(syntax, 3u, 1u).fg == 0xDCDCAAFFu);
+    assert(SemicolonSyntax_penAt(syntax, 4u, 0u).fg == 0xDCDCAAFFu);
+    assert(SemicolonSyntax_penAt(syntax, 4u, 1u).fg == 0xDCDCAAFFu);
+    SemicolonSyntax_free(syntax);
+    assert(live == 0u);
 }
 
 static void testPressureAndFailure(void) {
@@ -160,6 +196,7 @@ static void testPressureAndFailure(void) {
 int main(void) {
     testRows();
     assert(live == 0u);
+    testRolesAndComments();
     testPressureAndFailure();
     assert(SemicolonSyntax_acceptsPath("main.c"));
     assert(SemicolonSyntax_acceptsPath("include/api.h"));

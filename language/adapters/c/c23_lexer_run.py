@@ -27,7 +27,19 @@ CASES = (
         "adapters/c/c23_lex_step.c", "syntax/role.c", "analysis/syntax_span.c",
         "document/source_range.c", "text/bounded_text.c",
     )),
+    ("c23_highlights", "adapters/c/c23_highlights_test.c", (
+        "adapters/c/c23_highlights.c", "adapters/c/c23_lexer.c",
+        "adapters/c/c23_lex_step.c", "syntax/role.c", "analysis/syntax_span.c",
+        "document/source_range.c", "text/bounded_text.c",
+    )),
 )
+
+EXPECTATIONS = {
+    "c23_lexer": (6, "c23_lexer.c", ("rejected source admission",
+                                     "rejected unsupported lexical profile")),
+    "c23_inlay_hints": (1, "c23_inlay_hints.c", ("rejected source admission",)),
+    "c23_highlights": (2, "c23_highlights.c", ("rejected source admission",)),
+}
 
 with tempfile.TemporaryDirectory(prefix="c23-lexer-test-") as temporary:
     for mode, flags in (("strict", ()), ("asan-ubsan", ("-fsanitize=address,undefined", "-fno-omit-frame-pointer"))):
@@ -47,15 +59,11 @@ with tempfile.TemporaryDirectory(prefix="c23-lexer-test-") as temporary:
             result = subprocess.run([str(binary)], capture_output=True, text=True)
             if result.returncode != 0:
                 raise RuntimeError(f"{mode} {name} failed: {result.stderr}")
-            expected = 6 if name == "c23_lexer" else (1 if name == "c23_inlay_hints" else 0)
-            diagnostic_source = "c23_inlay_hints.c" if name == "c23_inlay_hints" else "c23_lexer.c"
+            expected, diagnostic_source, expected_markers = EXPECTATIONS.get(
+                name, (0, "c23_lexer.c", ()))
             actual = result.stderr.count(f"[vex] {diagnostic_source}:")
             if actual != expected:
                 raise AssertionError(f"{mode} {name}: expected {expected} lexer diagnostics, got {actual}: {result.stderr!r}")
-            expected_markers = (
-                ("rejected source admission", "rejected unsupported lexical profile")
-                if name == "c23_lexer" else ("rejected source admission",)
-            )
             if expected and any(marker not in result.stderr for marker in expected_markers):
                 raise AssertionError(f"{mode} {name}: expected diagnostic messages missing: {result.stderr!r}")
             print(f"PASS {mode} {name}")
@@ -69,11 +77,15 @@ with tempfile.TemporaryDirectory(prefix="c23-lexer-test-") as temporary:
         ("inlay-hints-one-argument", "C23InlayHints(1u)"),
         ("inlay-hints-two-argument", 'C23InlayHints(1u, "x")'),
         ("inlay-hints-four-argument", 'C23InlayHints(1u, "x", 1u, 4u)'),
+        ("highlights-one-argument", "C23Highlights(1u)"),
+        ("highlights-two-argument", 'C23Highlights(1u, "x")'),
+        ("highlights-four-argument", 'C23Highlights(1u, "x", 1u, 4u)'),
     ):
         source = Path(temporary) / f"{label}.c"
         source.write_text(
             '#include "adapters/c/c23_lexer.h"\n'
             '#include "adapters/c/c23_inlay_hints.h"\n'
+            '#include "adapters/c/c23_highlights.h"\n'
             f'int main(void) {{ (void) {expression}; return 0; }}\n',
             encoding="utf-8",
         )

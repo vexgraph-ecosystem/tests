@@ -792,6 +792,10 @@ def main():
     # CONTAINS "lude <stdint.h>" from character 4, so searching for the shifted text
     # proves nothing - an earlier version of this test passed while the row had not
     # moved at all. The discriminating check is that the FULL row is gone.
+    def visible(payload):
+        text = re.sub(rb"\x1b\[[0-?]*[ -/]*[@-~]", b"", payload)
+        return re.sub(rb"\x1b\([A-Za-z0-9]", b"", text)
+
     def horizontal_shift(payload, label):
         before = len(shell.captured)
         shell.send(payload)
@@ -799,7 +803,9 @@ def main():
         # The presenter only sends CHANGED cells, so force a full repaint before
         # reading the result as text.
         shell.force_repaint()
-        check(b"#include <stdint.h>" not in shell.captured[before:],
+        # Per-token coloring inserts SGR runs inside the row, so compare visible
+        # text rather than raw bytes; otherwise the row can never read contiguously.
+        check(b"#include <stdint.h>" not in visible(shell.captured[before:]),
               f"{label} did not shift the row")
 
     # The arrow key is the point: nobody has a horizontal wheel, and Shift+wheel is
@@ -826,7 +832,7 @@ def main():
         shell.send(payload)
         shell.drain(0.35)
         shell.force_repaint()
-        check(b"#include <stdint.h>" in shell.captured[before:],
+        check(b"#include <stdint.h>" in visible(shell.captured[before:]),
               f"{label} did not pan back to column 0")
 
     shell.send(b"\x1b[<73;60;5M")              # option + wheel-down -> pan right

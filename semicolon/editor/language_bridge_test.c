@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     fileSyntaxRefresh(&file);
     assert(file.syntaxCurrent && !file.syntaxPending);
     assert(SemicolonSyntax_penAt(file.syntax, 0u, 0u).fg == 0x008000FFu);
-    assert(SemicolonSyntax_penAt(file.syntax, 2u, 0u).fg == 0x60856BFFu);
+    assert(SemicolonSyntax_penAt(file.syntax, 2u, 0u).fg == 0x808080FFu);
     Scene scene;
     gTerminalWidth = 112;
     sceneBuild(&scene, &file, 10u, 112, 12);
@@ -38,11 +38,11 @@ int main(int argc, char **argv) {
     paintEditorSyntax(&canvas, &file, &scene, 0u, 0u);
     assert(memcmp(glyphs, gCells, sizeof glyphs) == 0);
     assert(TerminalCanvas_fgAt(&canvas, codeLeft, y) == 0x008000FFu);
-    assert(TerminalCanvas_fgAt(&canvas, codeLeft, y + 2u) == 0x60856BFFu);
+    assert(TerminalCanvas_fgAt(&canvas, codeLeft, y + 2u) == 0x808080FFu);
     assert(TerminalCanvas_glyphAt(&canvas, codeLeft + 1u, y + 3u) == 0x754Cu);
     assert(TerminalCanvas_glyphAt(&canvas, codeLeft + 2u, y + 3u) == 0u);
     assert(TerminalCanvas_fgAt(&canvas, codeLeft + 2u, y + 3u) == 0xA0F5A0FFu);
-    assert(TerminalCanvas_fgAt(&canvas, codeLeft + 5u, y + 3u) == 0xF0F0F0FFu);
+    assert(TerminalCanvas_fgAt(&canvas, codeLeft + 5u, y + 3u) == 0x9CDCFEFFu);
     assert(TerminalCanvas_fgAt(&canvas, codeLeft + 3u, y + 4u) == 0x008000FFu);
     for (size_t x = 112u - TUI_HINT_CHIP_CELLS - TUI_RUN_CHIP_CELLS; x < 112u; ++x) {
         if (actionFg[x] != COL_TEXT) {
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
     TerminalPanel_paint(scene.root, &canvas);
     paintEditorSyntax(&canvas, &file, &scene, 2u, 2u);
     assert(file.syntax == retained && !file.syntaxPending);
-    assert(TerminalCanvas_fgAt(&canvas, codeLeft, y) == 0x60856BFFu);
+    assert(TerminalCanvas_fgAt(&canvas, codeLeft, y) == 0x808080FFu);
 
     // Removing the opening comment changes a later line's classification only
     // after cold refresh; the intervening stale analysis must never be painted.
@@ -76,13 +76,13 @@ int main(int argc, char **argv) {
     assert(file.syntaxPending && !file.syntaxCurrent);
     fileSyntaxRefresh(&file);
     assert(file.syntaxCurrent);
-    assert(SemicolonSyntax_penAt(file.syntax, 2u, 0u).fg == 0xF0F0F0FFu);
+    assert(SemicolonSyntax_penAt(file.syntax, 2u, 0u).fg == 0x9CDCFEFFu);
     // Insertion, split, backspace/join and direct line refresh invalidate the
     // same cache; they do not depend on timestamps or file-save state.
     assert(fileInsertBytes(&file, 1u, 0u, "/", 1u));
     assert(file.syntaxPending);
     fileSyntaxRefresh(&file);
-    assert(SemicolonSyntax_penAt(file.syntax, 2u, 0u).fg == 0x60856BFFu);
+    assert(SemicolonSyntax_penAt(file.syntax, 2u, 0u).fg == 0x808080FFu);
     assert(fileSplit(&file));
     assert(file.syntaxPending && !file.syntaxCurrent);
     fileSyntaxRefresh(&file);
