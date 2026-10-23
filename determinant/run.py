@@ -95,6 +95,8 @@ def main():
             ("TerminalButton", "terminal/terminal_button.h", "TerminalButton(1)", "TerminalButton_1"),
             ("TerminalAnchor", "terminal/terminal_anchor.h", "TerminalAnchor(1, 2, 3, 4)", "TerminalAnchor_4"),
             ("TerminalPanel", "terminal/terminal_panel.h", "TerminalPanel(1)", "TerminalPanel_1"),
+            ("TerminalScrollGlide", "terminal/terminal_scroll_glide.h", "TerminalScrollGlide(1)",
+             "TerminalScrollGlide_1"),
         ):
             fixture = tmp / f"negative-{cls}.c"
             fixture.write_text(f'#include "{header}"\nint main(void) {{ (void){expression}; return 0; }}\n')
