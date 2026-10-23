@@ -117,12 +117,13 @@ static void testRolesAndComments(void) {
     char first[] = "uint8_t Console_log(const char *message); THROW(\"x\");";
     char second[] = "/** doc */ int x;";
     char third[] = "/* regular */ int y;";
-    char fourth[] = "#include \"x.h\"";
+    char fourth[] = "#include <locale.h>";
     char fifth[] = "#define VALUE 1";
-    const char *rows[] = {first, second, third, fourth, fifth};
+    char sixth[] = "#include \"x.h\"";
+    const char *rows[] = {first, second, third, fourth, fifth, sixth};
     size_t lengths[] = {strlen(rows[0]), strlen(rows[1]), strlen(rows[2]),
-                        strlen(rows[3]), strlen(rows[4])};
-    assert(SemicolonSyntax_setLines(syntax, rows, lengths, 5u));
+                        strlen(rows[3]), strlen(rows[4]), strlen(rows[5])};
+    assert(SemicolonSyntax_setLines(syntax, rows, lengths, 6u));
     size_t type = (size_t) (strstr(first, "uint8_t") - first);
     size_t function = (size_t) (strstr(first, "Console_log") - first);
     size_t variable = (size_t) (strstr(first, "message") - first);
@@ -139,8 +140,15 @@ static void testRolesAndComments(void) {
     assert(directive.fg == 0xDCDCAAFFu);
     assert((directive.style & TERMINAL_STYLE_BOLD) != 0u);
     assert(SemicolonSyntax_penAt(syntax, 3u, 1u).fg == 0xDCDCAAFFu);
+    size_t header = (size_t) (strstr(fourth, "<locale.h>") - fourth);
+    assert(SemicolonSyntax_penAt(syntax, 3u, header).fg == 0xA0F5A0FFu);
+    assert(SemicolonSyntax_penAt(syntax, 3u, header + 1u).fg == 0xA0F5A0FFu);
+    assert(SemicolonSyntax_penAt(syntax, 3u, header + strlen("<locale.h>") - 1u).fg
+           == 0xA0F5A0FFu);
     assert(SemicolonSyntax_penAt(syntax, 4u, 0u).fg == 0xDCDCAAFFu);
     assert(SemicolonSyntax_penAt(syntax, 4u, 1u).fg == 0xDCDCAAFFu);
+    assert(SemicolonSyntax_penAt(syntax, 5u, 9u).fg == 0xA0F5A0FFu);
+    assert(SemicolonSyntax_penAt(syntax, 5u, 10u).fg == 0xA0F5A0FFu);
     SemicolonSyntax_free(syntax);
     assert(live == 0u);
 }

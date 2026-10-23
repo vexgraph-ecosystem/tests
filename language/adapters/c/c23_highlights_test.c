@@ -14,13 +14,15 @@ static SyntaxRole roleOf(C23Highlights *highlights, const char *source, const ch
 static void testClassification(void) {
     const char source[] =
         "#include <stdio.h>\n"
+        "#include \"annotation/debug.h\"\n"
         "#define STR(x) #x\n"
         "/** doc */\n"
         "int add(int left, int right); // regular\n"
         "typedef uint8_t Byte;\n"
         "THROW(\"boom\");\n"
         "Console_log(message);\n"
-        "value.field = 1;\n";
+        "value.field = 1;\n"
+        "int lower = left < right;\n";
     char original[sizeof source];
     memcpy(original, source, sizeof source);
     size_t length = sizeof source - 1u;
@@ -32,6 +34,14 @@ static void testClassification(void) {
     assert(roleOf(highlights, source, "include") == SYNTAX_ROLE_MACRO);
     assert(roleOf(highlights, source, "#define") == SYNTAX_ROLE_MACRO);
     assert(roleOf(highlights, source, "define") == SYNTAX_ROLE_MACRO);
+    assert(roleOf(highlights, source, "<stdio.h>") == SYNTAX_ROLE_STRING);
+    assert(roleOf(highlights, source, "stdio") == SYNTAX_ROLE_STRING);
+    assert(roleOf(highlights, source, "annotation/debug.h") == SYNTAX_ROLE_STRING);
+    const char *headerClose = strstr(source, "h>");
+    assert(headerClose != nullptr);
+    assert(C23Highlights_roleAt(highlights, (size_t) (headerClose - source))
+           == SYNTAX_ROLE_STRING);
+    assert(roleOf(highlights, source, "< right") == SYNTAX_ROLE_OPERATOR);
     const char *stringize = strstr(source, "#x");
     assert(stringize != nullptr);
     assert(C23Highlights_roleAt(highlights, (size_t) (stringize - source))

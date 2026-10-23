@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Mechanically review the workspace/Semicolon dogfooding claims.
+"""Check the workspace/Semicolon dogfooding wiring, not every README sentence.
 
-This checks documentation against current source wiring, not UI appearance,
-application integration, or the truth of every roadmap row.
+The prose is reviewed as prose. This only pins a few stable boundaries and the
+source/build paths the README claims, so a documentation edit does not need a
+new string assertion for every color or class.
 """
 from pathlib import Path
 import unittest
@@ -31,8 +32,6 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn("`b` is\nthe standalone **orchestration layer**, not an R tier", semicolon)
         self.assertIn("does not prove a windowed app's behavior", semicolon)
         self.assertIn("Language's C23 lexer", workspace)
-        self.assertIn("Language's conservative `C23Highlights` pass", semicolon)
-        self.assertIn("`#include` and `#define` share that macro pen", semicolon)
         self.assertIn("parameter inlays, diagnostics, completion", semicolon)
         self.assertIn("not exact truecolor", semicolon)
         self.assertGreater(workspace.index("## Scope and Limitations"),
