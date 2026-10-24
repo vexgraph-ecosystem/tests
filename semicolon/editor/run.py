@@ -32,7 +32,9 @@ def main():
     spec = importlib.util.spec_from_file_location("semicolon_build", APP / "build.py")
     build = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(build)
-    flags = ["-std=gnu23", "-Wall", "-Wextra", "-Werror", "-O2", "-UNDEBUG"]
+    compiler = os.environ.get("CC", "clang")
+    std_flag = build.c23_std_flag(compiler)
+    flags = [std_flag, "-Wall", "-Wextra", "-Werror", "-O2", "-UNDEBUG"]
     if sys.platform == "darwin":
         flags += ["-arch", "arm64", "-mcpu=apple-m1", "-mmacosx-version-min=14.0"]
     includes = [f"-I{path}" for path in (APP, APP / "src", DETERMINANT, VEXSPOKE, ENGINE, LANGUAGE)]
@@ -52,12 +54,12 @@ def main():
         for mode, sanitizer in (("strict", []), ("asan-ubsan", ["-fsanitize=address,undefined",
                                                                "-fno-omit-frame-pointer"])):
             obj = directory / f"{mode}.o"
-            run(["clang", *flags, *sanitizer, *includes,
+            run([compiler, *flags, *sanitizer, *includes,
                  "-Dmalloc=syntax_test_malloc", "-Dcalloc=syntax_test_calloc",
                  "-Drealloc=syntax_test_realloc", "-Dfree=syntax_test_free", "-c",
                  str(APP / "src/editor/semicolon_syntax.c"), "-o", str(obj)])
             binary = directory / mode
-            run(["clang", *flags, *sanitizer, *includes,
+            run([compiler, *flags, *sanitizer, *includes,
                  str(ROOT / "tests/semicolon/editor/semicolon_syntax_test.c"),
                  str(obj), *(str(path) for path in dependencies), "-o", str(binary)])
             result = run([str(binary)])
@@ -76,7 +78,7 @@ def main():
             print(f"PASS {mode} SemicolonSyntax: 2560 spans, staged failures, recovery, leak accounting")
             host = directory / f"{mode}-host"
             curses = "-lncurses" if sys.platform == "darwin" else "-lncursesw"
-            run(["clang", *flags, *sanitizer, *includes,
+            run([compiler, *flags, *sanitizer, *includes,
                  str(ROOT / "tests/semicolon/editor/language_bridge_test.c"),
                  *(str(path) for path in build.sources(DETERMINANT, VEXSPOKE, ENGINE, LANGUAGE)),
                  curses, "-lm", "-o", str(host)])
@@ -106,7 +108,7 @@ def main():
             else:
                 os.environ["SEMICOLON_LANGUAGE_SOURCE_DIR"] = previous
         negative = subprocess.run(
-            ["clang", *flags, *includes, "-x", "c", "-fsyntax-only", "-"],
+            [compiler, *flags, *includes, "-x", "c", "-fsyntax-only", "-"],
             input='#include "editor/semicolon_syntax.h"\nvoid f(void) { (void) SemicolonSyntax(1u); }\n',
             capture_output=True, text=True, timeout=30)
         assert negative.returncode != 0 and "too many arguments" in negative.stderr, negative.stderr
@@ -153,7 +155,7 @@ def main():
         # scalar is one transaction: undoing half of it would leave invalid UTF-8 and
         # show the grouping bug the PTY owner caught.
         sanitized = directory / "semicolon-asan"
-        run(["clang", *flags, "-fsanitize=address,undefined", "-fno-omit-frame-pointer",
+        run([compiler, *flags, "-fsanitize=address,undefined", "-fno-omit-frame-pointer",
              *includes, str(APP / "src/main/tui-main.c"),
              *(str(path) for path in build.sources(DETERMINANT, VEXSPOKE, ENGINE, LANGUAGE)),
              curses, "-lm", "-o", str(sanitized)])
