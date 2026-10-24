@@ -89,14 +89,14 @@ def main():
             print(f"PASS {mode} live editor code-path: ink/weight, wide cells, controls, caret, edits, scroll")
         # Real consumer build, not just a fixture that happens to include headers.
         output = directory / "semicolon"
-        build.build(output)
+        build.build(output, compiler=compiler)
         print("PASS strict Semicolon production link with real Language sources")
         original = output.read_bytes()
         previous = os.environ.get("SEMICOLON_LANGUAGE_SOURCE_DIR")
         try:
             os.environ["SEMICOLON_LANGUAGE_SOURCE_DIR"] = str(directory / "missing-language")
             try:
-                build.build(output)
+                build.build(output, compiler=compiler)
             except ValueError as error:
                 assert "c23_lexer" in str(error) or "role.h" in str(error), error
             else:
