@@ -114,11 +114,12 @@ class Pty:
         self.master, slave = pty.openpty()
         fcntl.ioctl(self.master, termios.TIOCSWINSZ, struct.pack("HHHH", rows, columns, 0, 0))
         pinned = {"SEMICOLON_STATE": STATE_DIR} if STATE_DIR else {}
+        locale_name = "en_US.UTF-8" if sys.platform == "darwin" else "C.UTF-8"
         self.process = subprocess.Popen(
             argv or [str(BINARY), "--file", str(PROJECT_FILE)],
             stdin=slave, stdout=slave, stderr=slave, close_fds=True, cwd=str(APP),
             preexec_fn=_own_the_terminal,
-            env={**os.environ, "SEMICOLON_ICONS": "plain", "LC_ALL": "C.UTF-8", "LC_CTYPE": "C.UTF-8",
+            env={**os.environ, "SEMICOLON_ICONS": "plain", "LC_ALL": locale_name, "LC_CTYPE": locale_name,
                  **pinned, **(env or {})})
         os.close(slave)
         self.captured = bytearray()
