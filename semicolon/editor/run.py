@@ -127,7 +127,7 @@ def main():
                                   "--icons", "plain"],
                             env={"TERM": "xterm-256color", "SEMICOLON_BG": "#202020"})
         try:
-            assert shell.wait_for(b"color.c"), "C23 file did not open"
+            assert shell.wait_for(b"color.c", seconds=10.0), "C23 file did not open"
             payload = shell.repaint()
             text = re.sub(rb"\x1b\[[0-9;]*m|\x1b\(B", b"", payload)
             assert b"\x1b[38;5;34m" in payload and b"int" in payload, payload
@@ -176,7 +176,7 @@ def main():
             return False
 
         try:
-            assert history_shell.wait_for(b"history.c"), "history file did not open"
+            assert history_shell.wait_for(b"history.c", seconds=10.0), "history file did not open"
             history_shell.send(b"AB")
             assert wait_bytes(b"ABint value;\n"), history.read_bytes()
             history_shell.send("界".encode("utf-8"))
