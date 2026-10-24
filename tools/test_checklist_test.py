@@ -189,7 +189,7 @@ class ChecklistTest(unittest.TestCase):
         with patch.dict("os.environ", {"AGENTS_NAME": "private-name", "OPENCODE_SESSION_ID": "ses_private"}):
             self.run_cli(["run", "--file", "tests/subject_test.py", "--description", "Contract lab check", "--",
                           sys.executable, "-c", "pass"])
-        text = (self.root / CHECKLIST.REPORT).read_text()
+        text = (self.root / CHECKLIST.REPORT).read_text(encoding="utf-8")
         self.assertIn("Contract lab check", text)
         self.assertNotIn("private-name", text)
         self.assertNotIn("ses_private", text)
