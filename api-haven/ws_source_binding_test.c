@@ -240,14 +240,14 @@ int main(void) {
     // One message per step, in order, with nothing dropped in between.
     CHECK(HavenWsFanout_pollStep(fanout, 500u) == 1u);
     const WebSocketMessage *first = VexWsSource_last(&handle);
-    CHECK(first != nullptr && first->kind == WS_MESSAGE_TEXT);
-    CHECK(first != nullptr && first->length == 3u);
-    CHECK(first != nullptr && memcmp(first->payload, "one", 3u) == 0);
+    CHECK(first != nullptr && (*first).kind == WS_MESSAGE_TEXT);
+    CHECK(first != nullptr && (*first).length == 3u);
+    CHECK(first != nullptr && memcmp((*first).payload, "one", 3u) == 0);
 
     CHECK(HavenWsFanout_pollStep(fanout, 500u) == 1u);
     const WebSocketMessage *second = VexWsSource_last(&handle);
-    CHECK(second != nullptr && second->kind == WS_MESSAGE_TEXT);
-    CHECK(second != nullptr && memcmp(second->payload, "two", 3u) == 0);
+    CHECK(second != nullptr && (*second).kind == WS_MESSAGE_TEXT);
+    CHECK(second != nullptr && memcmp((*second).payload, "two", 3u) == 0);
 
     // The seam's send reaches the peer as a masked TEXT frame.
     CHECK(kBinding.send(&handle, (const uint8_t*) "pong", 4u));

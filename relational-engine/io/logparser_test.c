@@ -67,12 +67,12 @@ static void collect(void *userdata, int kind, int64_t ts,
                     int64_t v0, int64_t v1, int64_t v2, int64_t v3, int64_t v4) {
     (void) v1; (void) v2; (void) v3; (void) v4;
     Collector *c = (Collector*) userdata;
-    if (c->count < 8) {
-        c->kinds[c->count] = kind;
-        c->ts[c->count] = ts;
-        c->v0[c->count] = v0;
+    if ((*c).count < 8) {
+        (*c).kinds[(*c).count] = kind;
+        (*c).ts[(*c).count] = ts;
+        (*c).v0[(*c).count] = v0;
     }
-    c->count++;
+    (*c).count++;
 }
 
 /* Verifies valid records, callback values, counts, and safe handling of a partial trailing record. */

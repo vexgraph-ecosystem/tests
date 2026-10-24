@@ -18,54 +18,54 @@ typedef struct State {
 static void startup(Application *app, void *userdata) {
     State *state = userdata;
     (void)app;
-    CHECK(!pthread_equal(state->owner, pthread_self()));
-    atomic_store(&state->returned, true);
+    CHECK(!pthread_equal((*state).owner, pthread_self()));
+    atomic_store(&(*state).returned, true);
     // Returning from startup MUST NOT close either window or stop the app.
 }
 
 // Drives owner-thread assertions for closed, hidden, and remaining windows.
 static void service(Application *app, void *userdata) {
     State *state = userdata;
-    CHECK(pthread_equal(state->owner, pthread_self()));
-    if (++state->polls > 1000) { failures++; Application_close(app); return; }
-    if (!atomic_load(&state->returned)) return;
-    if (state->stage == 0) {
+    CHECK(pthread_equal((*state).owner, pthread_self()));
+    if (++(*state).polls > 1000) { failures++; Application_close(app); return; }
+    if (!atomic_load(&(*state).returned)) return;
+    if ((*state).stage == 0) {
         CHECK(Application_isRunning(app));
         CHECK(!Application_begin(app)); // concurrent/reentrant starts refused
         CHECK(!Application_addStartEvent(app, startup, state));
         CHECK(!Application_isFinished(app));
-        Window_close(Frame_window(state->first));
-        Window_hide(Frame_window(state->second));
-        CHECK(!Window_shouldClose(Frame_window(state->second)));
+        Window_close(Frame_window((*state).first));
+        Window_hide(Frame_window((*state).second));
+        CHECK(!Window_shouldClose(Frame_window((*state).second)));
         CHECK(!Application_isFinished(app)); // hidden is STILL alive
-        state->stage++;
+        (*state).stage++;
     } else {
         CHECK(Application_isRunning(app)); // one CLOSED + one HIDDEN is not done
-        Window_close(Frame_window(state->second));
+        Window_close(Frame_window((*state).second));
         CHECK(Application_isFinished(app));
-        state->stage++;
+        (*state).stage++;
     }
 }
 
 // Requests idempotent application closure from the start worker.
 static void closeFromWorker(Application *app, void *userdata) {
     State *state = userdata;
-    CHECK(!pthread_equal(state->owner, pthread_self()));
+    CHECK(!pthread_equal((*state).owner, pthread_self()));
     Application_close(app); Application_close(app); // idempotent, owner closes natives
 }
 
 // Closes the app on its owner thread and marks the callback stage complete.
 static void closeOnOwner(Application *app, void *userdata) {
     State *state = userdata;
-    CHECK(pthread_equal(state->owner, pthread_self()));
+    CHECK(pthread_equal((*state).owner, pthread_self()));
     Application_close(app);
-    state->stage++;
+    (*state).stage++;
 }
 // Tests that an admitted owner callback completes before later calls are refused.
 static void invokeThenClose(Application *app, void *userdata) {
     State *state = userdata;
     CHECK(Application_invoke(app, closeOnOwner, state));
-    CHECK(state->stage == 1); // admitted callback completed despite close
+    CHECK((*state).stage == 1); // admitted callback completed despite close
     CHECK(!Application_invoke(app, closeOnOwner, state)); // no post-close admissions
 }
 

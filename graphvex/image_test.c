@@ -110,10 +110,10 @@ int main(void) {
     CHECK(Image_layer(img) == 0u);
     Image_setLayer(img, 3);
     CHECK(Image_layer(img) == 3u);
-    Image_setNative(img, (void *)0x1234);
-    CHECK(Image_native(img) == (void *)0x1234);
-    Image_setIOSurface(img, (void *)0x5678);
-    CHECK(Image_iosurface(img) == (void *)0x5678);
+    Image_setNative(img, (void*) 0x1234);
+    CHECK(Image_native(img) == (void*) 0x1234);
+    Image_setIOSurface(img, (void*) 0x5678);
+    CHECK(Image_iosurface(img) == (void*) 0x5678);
 
     Image_destroy(img);
     Image_destroy(nullptr);   // null-safe

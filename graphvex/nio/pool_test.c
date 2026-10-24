@@ -50,7 +50,7 @@ int main(void) {
     CHECK(Pool_live(p) == 9);
     void *reused = Pool_alloc(p);
     CHECK(reused == items[3]);
-    CHECK(((uint8_t *)reused)[0] == 0);
+    CHECK(((uint8_t*) reused)[0] == 0);
     CHECK(Pool_live(p) == 10);
 
     // a foreign pointer is not ours

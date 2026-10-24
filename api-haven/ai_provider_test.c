@@ -75,21 +75,21 @@ int main(int argc, const char **argv) {
 
     // --- directory shape ---------------------------------------------------
     AiProvider *dir = AiProvider_shared();
-    CHECK(dir != NULL);
+    CHECK(dir != nullptr);
     const uint32_t total = AiProvider_count(dir);
     printf("AiProvider_count = %u\n", total);
     CHECK(total >= 255 && total <= 280);
-    CHECK(AiProvider_at(dir, 0) != NULL);
-    CHECK(AiProvider_at(dir, total) == NULL);
-    CHECK(AiProvider_at(dir, total + 5) == NULL);
+    CHECK(AiProvider_at(dir, 0) != nullptr);
+    CHECK(AiProvider_at(dir, total) == nullptr);
+    CHECK(AiProvider_at(dir, total + 5) == nullptr);
 
     // --- verified rows ------------------------------------------------------
     const AiProviderSlot *openai = AiProvider_get(dir, "openai");
-    CHECK(openai != NULL);
+    CHECK(openai != nullptr);
     CHECK(openai && strcmp(AiProvider_getDisplayName(dir, openai), "OpenAI") == 0);
     CHECK(openai && AiProvider_getFamily(dir, openai) == AI_PROVIDER_FAMILY_OPENAI_COMPAT);
     CHECK(openai && AiProvider_getAuth(dir, openai) == AI_PROVIDER_AUTH_BEARER);
-    CHECK(openai && AiProvider_getBaseUrl(dir, openai) != NULL);
+    CHECK(openai && AiProvider_getBaseUrl(dir, openai) != nullptr);
     CHECK(openai && strcmp(AiProvider_resolveBaseUrl(dir, openai),
                            "https://api.openai.com/v1") == 0);
 
@@ -103,23 +103,23 @@ int main(int argc, const char **argv) {
 
     const AiProviderSlot *zhipu = AiProvider_get(dir, "zhipu-ai");
     CHECK(zhipu && AiProvider_getRegion(dir, zhipu) == AI_PROVIDER_REGION_CHINA);
-    CHECK(zhipu && AiProvider_getBaseUrl(dir, zhipu) != NULL);
+    CHECK(zhipu && AiProvider_getBaseUrl(dir, zhipu) != nullptr);
 
-    CHECK(AiProvider_get(dir, "custom-openai") != NULL);
-    CHECK(AiProvider_get(dir, "itera-compute") != NULL);
-    CHECK(AiProvider_get(dir, "lilac") != NULL);
-    CHECK(AiProvider_get(dir, "definitely-not-a-provider") == NULL);
+    CHECK(AiProvider_get(dir, "custom-openai") != nullptr);
+    CHECK(AiProvider_get(dir, "itera-compute") != nullptr);
+    CHECK(AiProvider_get(dir, "lilac") != nullptr);
+    CHECK(AiProvider_get(dir, "definitely-not-a-provider") == nullptr);
 
     // --- directory consistency (every row, generated-data invariants) --------
     const char *names[280];
     uint32_t nameCount = 0;
     for (uint32_t i = 0; i < total; i++) {
         const AiProviderSlot *row = AiProvider_at(dir, i);
-        CHECK(row != NULL);
+        CHECK(row != nullptr);
         CHECK(row && isSlugValid(AiProvider_getSlug(dir, row)));
         // slug uniqueness: get() must resolve every row back to itself
         CHECK(row && AiProvider_get(dir, AiProvider_getSlug(dir, row)) == row);
-        const char *rowName = row ? AiProvider_getDisplayName(dir, row) : NULL;
+        const char *rowName = row ? AiProvider_getDisplayName(dir, row) : nullptr;
         CHECK(rowName && (*rowName) != '\0');
         if (row && rowName) {
             int dup = 0;
@@ -141,25 +141,25 @@ int main(int argc, const char **argv) {
 
     // --- family-default resolution on NULL-base rows -----------------------
     const AiProviderSlot *meta = AiProvider_get(dir, "meta");
-    CHECK(meta && AiProvider_getBaseUrl(dir, meta) == NULL);
+    CHECK(meta && AiProvider_getBaseUrl(dir, meta) == nullptr);
     CHECK(meta && strcmp(AiProvider_resolveBaseUrl(dir, meta),
                          "https://openrouter.ai/api/v1") == 0);
 
     const AiProviderSlot *vertexAnthropic = AiProvider_get(dir, "vertex-anthropic");
-    CHECK(vertexAnthropic && AiProvider_getBaseUrl(dir, vertexAnthropic) == NULL);
+    CHECK(vertexAnthropic && AiProvider_getBaseUrl(dir, vertexAnthropic) == nullptr);
     CHECK(vertexAnthropic && strcmp(AiProvider_resolveBaseUrl(dir, vertexAnthropic),
                                     "https://api.anthropic.com/v1") == 0);
 
     // --- null-safety (Rule 24) ----------------------------------------------
-    CHECK(AiProvider_count(NULL) == 0);
-    CHECK(AiProvider_get(NULL, NULL) == NULL);
-    CHECK(AiProvider_get(dir, NULL) == NULL);
-    CHECK(AiProvider_at(NULL, 0) == NULL);
-    CHECK(AiProvider_getDisplayName(NULL, NULL) == NULL);
-    CHECK(AiProvider_getSlug(NULL, NULL) == NULL);
-    CHECK(AiProvider_getNote(NULL, NULL) == NULL);
-    CHECK(AiProvider_getFamily(NULL, NULL) == AI_PROVIDER_FAMILY_OPENAI_COMPAT);
-    CHECK(AiProvider_resolveBaseUrl(NULL, NULL) == NULL);
+    CHECK(AiProvider_count(nullptr) == 0);
+    CHECK(AiProvider_get(nullptr, nullptr) == nullptr);
+    CHECK(AiProvider_get(dir, nullptr) == nullptr);
+    CHECK(AiProvider_at(nullptr, 0) == nullptr);
+    CHECK(AiProvider_getDisplayName(nullptr, nullptr) == nullptr);
+    CHECK(AiProvider_getSlug(nullptr, nullptr) == nullptr);
+    CHECK(AiProvider_getNote(nullptr, nullptr) == nullptr);
+    CHECK(AiProvider_getFamily(nullptr, nullptr) == AI_PROVIDER_FAMILY_OPENAI_COMPAT);
+    CHECK(AiProvider_resolveBaseUrl(nullptr, nullptr) == nullptr);
 
     // --- AiChat: URL resolution + auth ---------------------------------------
     AiChat chat = AiChat("gpt-4o-mini", "sk-test");
@@ -194,7 +194,7 @@ int main(int argc, const char **argv) {
     JsonRef m0 = Json_at(&doc, msgs, 0);
     JsonRef c0 = Json_member(&doc, m0, "content");
     CHECK(c0 >= 0);
-    CHECK(c0 >= 0 && strcmp(Json_string(&doc, c0, NULL), "say \"hi\" \n to me") == 0);
+    CHECK(c0 >= 0 && strcmp(Json_string(&doc, c0, nullptr), "say \"hi\" \n to me") == 0);
     JsonRef m1 = Json_at(&doc, msgs, 1);
     JsonRef r1 = Json_member(&doc, m1, "role");
     uint32_t roleLen = 0;
@@ -214,22 +214,22 @@ int main(int argc, const char **argv) {
     CHECK(auth.kind == API_AUTH_NONE);
 
     // --- AiChat: guard paths (no network) ------------------------------------
-    CHECK(!AiChat_buildRequest(NULL, sMessages, 1,
+    CHECK(!AiChat_buildRequest(nullptr, sMessages, 1,
                                body, sizeof(body), url, sizeof(url), &auth));
-    CHECK(!AiChat_buildRequest(&bare, NULL, 1,
+    CHECK(!AiChat_buildRequest(&bare, nullptr, 1,
                                body, sizeof(body), url, sizeof(url), &auth));
     CHECK(!AiChat_buildRequest(&bare, sMessages, 0,
-                               NULL, 0, url, sizeof(url), &auth));
+                               nullptr, 0, url, sizeof(url), &auth));
     AiChat noModel = AiChat();
     CHECK(!AiChat_buildRequest(&noModel, sMessages, 1,
                                body, sizeof(body), url, sizeof(url), &auth));
     CHECK(!AiChat_complete(&bare, sMessages, 1,
-                           body, sizeof(body), NULL));
+                           body, sizeof(body), nullptr));
 
     // --- AiChat: getters/setters (Rule 24) -----------------------------------
     AiChat c = AiChat();
-    CHECK(AiChat_getModel(&c) == NULL);
-    CHECK(AiChat_getModel(NULL) == NULL);
+    CHECK(AiChat_getModel(&c) == nullptr);
+    CHECK(AiChat_getModel(nullptr) == nullptr);
     AiChat_setProvider(&c, dir);
     AiChat_setPeer(&c, zhipu);
     AiChat_setModel(&c, "glm-4.5");
@@ -243,7 +243,7 @@ int main(int argc, const char **argv) {
 
     // --- nous-research / Hermes support (chat-able through the directory) ----
     const AiProviderSlot *nous = AiProvider_get(dir, "nous-research");
-    CHECK(nous != NULL);
+    CHECK(nous != nullptr);
     CHECK(nous && strcmp(AiProvider_getDisplayName(dir, nous), "Nous Research") == 0);
     CHECK(nous && AiProvider_getFamily(dir, nous) == AI_PROVIDER_FAMILY_OPENAI_COMPAT);
     CHECK(nous && AiProvider_getAuth(dir, nous) == AI_PROVIDER_AUTH_BEARER);
@@ -256,7 +256,7 @@ int main(int argc, const char **argv) {
     CHECK(strcmp(url, "https://openrouter.ai/api/v1/chat/completions") == 0);
     CHECK(auth.kind == API_AUTH_BEARER);
     CHECK(strcmp(auth.credential, "nous-key") == 0);
-    CHECK(strstr(body, "hermes") != NULL);
+    CHECK(strstr(body, "hermes") != nullptr);
 
     if (sFailures == 0) {
         printf("ai_provider_test: ALL CHECKS PASSED (%u providers)\n", total);

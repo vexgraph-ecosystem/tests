@@ -52,11 +52,11 @@ int main(int argc, const char **argv) {
     // --- read-only defaults ----------------------------------------------------------
     DbSqliteFile bare = DbSqliteFile();
     CHECK(DbSqliteFile_isReadOnly(&bare));
-    CHECK(DbSqliteFile_getPath(&bare) == NULL);
+    CHECK(DbSqliteFile_getPath(&bare) == nullptr);
     CHECK(DbSqliteFile_getCaps(&bare) == 0);
     CHECK(DbSqliteFile_getMaxBytes(&bare) == 0);
-    CHECK(DbSqliteFile_getExecHandle(&bare) == NULL);
-    CHECK(DbSqliteFile_getExecTable(&bare) == NULL);
+    CHECK(DbSqliteFile_getExecHandle(&bare) == nullptr);
+    CHECK(DbSqliteFile_getExecTable(&bare) == nullptr);
 
     DbSqliteFile file = DbSqliteFile("/tmp/catalog.db");
     CHECK(DbSqliteFile_isReadOnly(&file));
@@ -67,13 +67,13 @@ int main(int argc, const char **argv) {
     char desc[256];
     DbSqliteFile_setMaxBytes(&file, 1048576);
     CHECK(DbSqliteFile_describe(&file, desc, sizeof(desc)));
-    CHECK(strstr(desc, "sqlite file: path=/tmp/catalog.db") != NULL);
-    CHECK(strstr(desc, "readOnly=1") != NULL);
-    CHECK(strstr(desc, "maxBytes=1048576") != NULL);
+    CHECK(strstr(desc, "sqlite file: path=/tmp/catalog.db") != nullptr);
+    CHECK(strstr(desc, "readOnly=1") != nullptr);
+    CHECK(strstr(desc, "maxBytes=1048576") != nullptr);
     CHECK(!DbSqliteFile_describe(&file, desc, 8)); // overflow
     CHECK(!DbSqliteFile_describe(&bare, desc, sizeof(desc))); // undescribed
-    CHECK(!DbSqliteFile_describe(NULL, desc, sizeof(desc)));
-    CHECK(!DbSqliteFile_describe(&file, NULL, sizeof(desc)));
+    CHECK(!DbSqliteFile_describe(nullptr, desc, sizeof(desc)));
+    CHECK(!DbSqliteFile_describe(&file, nullptr, sizeof(desc)));
     CHECK(!DbSqliteFile_describe(&file, desc, 0));
 
     // --- unbound exec drop-degrades -----------------------------------------------------------------
@@ -82,7 +82,7 @@ int main(int argc, const char **argv) {
 
     // --- bind + delegated exec ----------------------------------------------------------------------------
     int calls = 0;
-    CHECK(DbSqliteFile_getExecHandle(&file) == NULL);
+    CHECK(DbSqliteFile_getExecHandle(&file) == nullptr);
     CHECK(DbSqliteFile_bind(&file, &calls, &sFakeTable));
     CHECK(DbSqliteFile_getExecHandle(&file) == &calls);
     CHECK(DbSqliteFile_getExecTable(&file) == &sFakeTable);
@@ -93,21 +93,21 @@ int main(int argc, const char **argv) {
     int other = 0;
     CHECK(!DbSqliteFile_bind(&file, &other, &sFakeTable)); // unbind first
     DbSqliteFile_unbind(&file);
-    CHECK(DbSqliteFile_getExecHandle(&file) == NULL);
+    CHECK(DbSqliteFile_getExecHandle(&file) == nullptr);
     CHECK(!DbSqliteFile_exec(&file, "SELECT 1", out, sizeof(out)));
-    CHECK(!DbSqliteFile_bind(&file, NULL, &sFakeTable));
-    CHECK(!DbSqliteFile_bind(&file, &calls, NULL));
-    CHECK(!DbSqliteFile_bind(NULL, &calls, &sFakeTable));
-    static const DbSqliteExec nullTable = { NULL };
+    CHECK(!DbSqliteFile_bind(&file, nullptr, &sFakeTable));
+    CHECK(!DbSqliteFile_bind(&file, &calls, nullptr));
+    CHECK(!DbSqliteFile_bind(nullptr, &calls, &sFakeTable));
+    static const DbSqliteExec nullTable = { nullptr };
     CHECK(!DbSqliteFile_bind(&file, &calls, &nullTable)); // null fn refused
-    DbSqliteFile_unbind(NULL); // null-safe no-op
+    DbSqliteFile_unbind(nullptr); // null-safe no-op
 
     // --- exec guard matrix --------------------------------------------------------------------------------------
     CHECK(DbSqliteFile_bind(&file, &calls, &sFakeTable));
-    CHECK(!DbSqliteFile_exec(NULL, "SELECT 1", out, sizeof(out)));
-    CHECK(!DbSqliteFile_exec(&file, NULL, out, sizeof(out)));
+    CHECK(!DbSqliteFile_exec(nullptr, "SELECT 1", out, sizeof(out)));
+    CHECK(!DbSqliteFile_exec(&file, nullptr, out, sizeof(out)));
     CHECK(!DbSqliteFile_exec(&file, "", out, sizeof(out)));
-    CHECK(!DbSqliteFile_exec(&file, "SELECT 1", NULL, sizeof(out)));
+    CHECK(!DbSqliteFile_exec(&file, "SELECT 1", nullptr, sizeof(out)));
     CHECK(!DbSqliteFile_exec(&file, "SELECT 1", out, 0));
 
     // --- setters round-trip --------------------------------------------------------------------------------------
@@ -120,16 +120,16 @@ int main(int argc, const char **argv) {
     CHECK(DbSqliteFile_getCaps(&st) == DB_SQLITE_CAP_READ);
     CHECK(DbSqliteFile_getMaxBytes(&st) == 4096);
     CHECK(DbSqliteFile_isReadOnly(&st));
-    DbSqliteFile_setPath(NULL, "x");
-    DbSqliteFile_setCaps(NULL, 1);
-    DbSqliteFile_setMaxBytes(NULL, 1);
-    DbSqliteFile_setReadOnly(NULL, false);
-    CHECK(DbSqliteFile_getPath(NULL) == NULL);
-    CHECK(DbSqliteFile_getCaps(NULL) == 0);
-    CHECK(DbSqliteFile_getMaxBytes(NULL) == 0);
-    CHECK(!DbSqliteFile_isReadOnly(NULL));
-    CHECK(DbSqliteFile_getExecHandle(NULL) == NULL);
-    CHECK(DbSqliteFile_getExecTable(NULL) == NULL);
+    DbSqliteFile_setPath(nullptr, "x");
+    DbSqliteFile_setCaps(nullptr, 1);
+    DbSqliteFile_setMaxBytes(nullptr, 1);
+    DbSqliteFile_setReadOnly(nullptr, false);
+    CHECK(DbSqliteFile_getPath(nullptr) == nullptr);
+    CHECK(DbSqliteFile_getCaps(nullptr) == 0);
+    CHECK(DbSqliteFile_getMaxBytes(nullptr) == 0);
+    CHECK(!DbSqliteFile_isReadOnly(nullptr));
+    CHECK(DbSqliteFile_getExecHandle(nullptr) == nullptr);
+    CHECK(DbSqliteFile_getExecTable(nullptr) == nullptr);
 
     if (sFailures == 0) {
         printf("db_sqlite_file_test: ALL CHECKS PASSED\n");

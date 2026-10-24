@@ -16,7 +16,7 @@
 
 // Creates a test surface and asserts that its construction succeeds.
 static CompositorSurface *make(CompositorBounds b, const float rgba[4]) {
-    CompositorSurface *surface = NULL;
+    CompositorSurface *surface = nullptr;
     assert(CompositorSurface_create(b, &surface) == COMPOSITOR_OK);
     float *p = CompositorSurface_pixels(surface);
     for (size_t i = 0; i < (size_t) b.width * b.height; ++i)
@@ -47,24 +47,24 @@ static void surface_contract(void) {
     assert(!truncated && strstr(text, "1 x 1 at 1,2"));
     CompositorSurface_toStringStruct(zero, text, sizeof text, &truncated);
     assert(!truncated && strstr(text, "bounds=") && strstr(text, "pixels="));
-    CompositorSurface_toString(NULL, text, sizeof text, &truncated);
+    CompositorSurface_toString(nullptr, text, sizeof text, &truncated);
     assert(!truncated && !strcmp(text, "nullptr"));
-    CompositorSurface_toStringStruct(NULL, text, 1, &truncated);
+    CompositorSurface_toStringStruct(nullptr, text, 1, &truncated);
     assert(truncated && !text[0]);
     text[0] = 'x';
     CompositorSurface_toString(zero, text, 0, &truncated);
     assert(truncated && text[0] == 'x');
-    CompositorSurface_toStringStruct(zero, NULL, 10, &truncated);
+    CompositorSurface_toStringStruct(zero, nullptr, 10, &truncated);
     assert(truncated);
-    CompositorSurface_toString(zero, text, sizeof text, NULL);
+    CompositorSurface_toString(zero, text, sizeof text, nullptr);
     CompositorSurface_destroy(zero);
     assert(!CompositorSurface_1((CompositorBounds) {0, 0, 0, 1}));
-    assert(!CompositorSurface_pixels(NULL));
-    assert(!CompositorSurface_constPixels(NULL));
-    assert(!CompositorSurface_bounds(NULL).width);
-    assert(CompositorSurface_validate(NULL) == COMPOSITOR_INVALID);
-    CompositorSurface_destroy(NULL);
-    CompositorSurface *empty = NULL;
+    assert(!CompositorSurface_pixels(nullptr));
+    assert(!CompositorSurface_constPixels(nullptr));
+    assert(!CompositorSurface_bounds(nullptr).width);
+    assert(CompositorSurface_validate(nullptr) == COMPOSITOR_INVALID);
+    CompositorSurface_destroy(nullptr);
+    CompositorSurface *empty = nullptr;
     assert(CompositorSurface_create((CompositorBounds) {-9, 3, 0, 0}, &empty) == COMPOSITOR_OK);
     assert(CompositorSurface_validate(empty) == COMPOSITOR_OK);
     assert(!CompositorSurface_pixels(empty));
@@ -74,7 +74,7 @@ static void surface_contract(void) {
     assert(CompositorSurface_create((CompositorBounds) {INT32_MAX, 0, 1, 1}, &out) == COMPOSITOR_LIMIT);
     assert(CompositorSurface_create((CompositorBounds) {0, 0, UINT32_MAX, UINT32_MAX}, &out) == COMPOSITOR_LIMIT);
     assert(CompositorSurface_create((CompositorBounds) {0, 0, COMPOSITOR_MAX_PIXELS + 1, 1}, &out) == COMPOSITOR_LIMIT);
-    assert(CompositorSurface_create((CompositorBounds) {0, 0, 1, 1}, NULL) == COMPOSITOR_INVALID);
+    assert(CompositorSurface_create((CompositorBounds) {0, 0, 1, 1}, nullptr) == COMPOSITOR_INVALID);
     const float clear[4] = {0};
     CompositorSurface *one = make((CompositorBounds) {INT32_MIN, -1, 1, 1}, clear);
     float *p = CompositorSurface_pixels(one);
@@ -112,8 +112,8 @@ static void support_and_tokens(void) {
         assert(Compositor_filterBounds(b, bad + i, 1, &out) == expected);
         assert(!memcmp(&previous, &out, sizeof out));
     }
-    assert(Compositor_filterBounds(b, NULL, 1, &out) == COMPOSITOR_INVALID);
-    assert(Compositor_filterBounds(b, stack, 1, NULL) == COMPOSITOR_INVALID);
+    assert(Compositor_filterBounds(b, nullptr, 1, &out) == COMPOSITOR_INVALID);
+    assert(Compositor_filterBounds(b, stack, 1, nullptr) == COMPOSITOR_INVALID);
     assert(Compositor_filterBounds(b, stack, COMPOSITOR_MAX_FILTERS + 1, &out) == COMPOSITOR_LIMIT);
     assert(Compositor_filterBounds((CompositorBounds) {INT32_MIN, 0, 1, 1}, stack + 2, 1, &out) == COMPOSITOR_LIMIT);
     assert(Compositor_filterBounds((CompositorBounds) {INT32_MAX - 1, 0, 1, 1}, stack + 2, 1, &out) == COMPOSITOR_LIMIT);
@@ -137,13 +137,13 @@ static void isolation_and_over(void) {
     CompositorSurface *b = make((CompositorBounds) {-2, 4, 1, 1}, blue);
     const CompositorSurface *sources[] = {a, b};
     FilterToken gain = Filter_gain(2);
-    CompositorSurface *group = NULL;
+    CompositorSurface *group = nullptr;
     assert(Compositor_compose(sources, 2, &gain, 1, &group) == COMPOSITOR_OK);
     const float *p = CompositorSurface_constPixels(group);
     near(p[0], .5, 0); near(p[2], 1, 0); near(p[3], .75, 0);
     assert(CompositorSurface_bounds(group).x == -2);
     assert(CompositorSurface_constPixels(a)[0] == .5f);
-    CompositorSurface *blurredGroup = NULL;
+    CompositorSurface *blurredGroup = nullptr;
     FilterToken blur = Filter_scatterBlur(1);
     assert(Compositor_compose(sources, 2, &blur, 1, &blurredGroup) == COMPOSITOR_OK);
     /* Filter assembled alpha .75 exactly once: individually filtering the two
@@ -154,14 +154,14 @@ static void isolation_and_over(void) {
     CompositorSurface_destroy(blurredGroup);
     const CompositorSurface *nested[] = {group};
     FilterToken halve = Filter_gain(.5f);
-    CompositorSurface *result = NULL;
+    CompositorSurface *result = nullptr;
     assert(Compositor_compose(nested, 1, &halve, 1, &result) == COMPOSITOR_OK);
     near(CompositorSurface_constPixels(result)[0], .25, 0);
     near(CompositorSurface_constPixels(result)[2], .5, 0);
     CompositorSurface_destroy(group);
-    group = NULL;
+    group = nullptr;
     const CompositorSurface *reversed[] = {b, a};
-    assert(Compositor_compose(reversed, 2, NULL, 0, &group) == COMPOSITOR_OK);
+    assert(Compositor_compose(reversed, 2, nullptr, 0, &group) == COMPOSITOR_OK);
     near(CompositorSurface_constPixels(group)[0], .5, 0);
     near(CompositorSurface_constPixels(group)[2], .25, 0);
     const float clear[4] = {0};
@@ -170,24 +170,24 @@ static void isolation_and_over(void) {
     near(CompositorSurface_constPixels(dest)[0], 0, 0);
     near(CompositorSurface_constPixels(dest)[4], .25, 0);
     assert(Compositor_sourceOver(dest, dest) == COMPOSITOR_INVALID);
-    assert(Compositor_sourceOver(NULL, dest) == COMPOSITOR_INVALID);
-    assert(Compositor_sourceOver(dest, NULL) == COMPOSITOR_INVALID);
+    assert(Compositor_sourceOver(nullptr, dest) == COMPOSITOR_INVALID);
+    assert(Compositor_sourceOver(dest, nullptr) == COMPOSITOR_INVALID);
     CompositorSurface *unchanged = result;
-    assert(Compositor_compose(NULL, 1, NULL, 0, &unchanged) == COMPOSITOR_INVALID);
-    assert(Compositor_compose(sources, 2, NULL, 1, &unchanged) == COMPOSITOR_INVALID);
-    assert(Compositor_compose(sources, COMPOSITOR_MAX_SOURCES + 1, NULL, 0, &unchanged) == COMPOSITOR_LIMIT);
-    assert(Compositor_compose(sources, 2, NULL, 0, NULL) == COMPOSITOR_INVALID);
-    const CompositorSurface *nullSource[] = {NULL};
-    assert(Compositor_compose(nullSource, 1, NULL, 0, &unchanged) == COMPOSITOR_INVALID);
+    assert(Compositor_compose(nullptr, 1, nullptr, 0, &unchanged) == COMPOSITOR_INVALID);
+    assert(Compositor_compose(sources, 2, nullptr, 1, &unchanged) == COMPOSITOR_INVALID);
+    assert(Compositor_compose(sources, COMPOSITOR_MAX_SOURCES + 1, nullptr, 0, &unchanged) == COMPOSITOR_LIMIT);
+    assert(Compositor_compose(sources, 2, nullptr, 0, nullptr) == COMPOSITOR_INVALID);
+    const CompositorSurface *nullSource[] = {nullptr};
+    assert(Compositor_compose(nullSource, 1, nullptr, 0, &unchanged) == COMPOSITOR_INVALID);
     assert(unchanged == result);
-    CompositorSurface *empty = NULL;
-    assert(Compositor_compose(NULL, 0, NULL, 0, &empty) == COMPOSITOR_OK);
+    CompositorSurface *empty = nullptr;
+    assert(Compositor_compose(nullptr, 0, nullptr, 0, &empty) == COMPOSITOR_OK);
     assert(!CompositorSurface_bounds(empty).width);
     const CompositorSurface *many[COMPOSITOR_MAX_SOURCES];
     for (size_t i = 0; i < COMPOSITOR_MAX_SOURCES; ++i)
         many[i] = empty;
-    CompositorSurface *manyOut = NULL;
-    assert(Compositor_compose(many, COMPOSITOR_MAX_SOURCES, NULL, 0, &manyOut) == COMPOSITOR_OK);
+    CompositorSurface *manyOut = nullptr;
+    assert(Compositor_compose(many, COMPOSITOR_MAX_SOURCES, nullptr, 0, &manyOut) == COMPOSITOR_OK);
     CompositorSurface_destroy(manyOut);
     CompositorSurface_destroy(empty);
     CompositorSurface_destroy(dest);
@@ -203,8 +203,8 @@ static void union_and_limits(void) {
     CompositorSurface *a = make((CompositorBounds) {-2, -3, 1, 1}, red);
     CompositorSurface *b = make((CompositorBounds) {0, -2, 1, 1}, blue);
     const CompositorSurface *sources[] = {a, b};
-    CompositorSurface *out = NULL;
-    assert(Compositor_compose(sources, 2, NULL, 0, &out) == COMPOSITOR_OK);
+    CompositorSurface *out = nullptr;
+    assert(Compositor_compose(sources, 2, nullptr, 0, &out) == COMPOSITOR_OK);
     CompositorBounds bounds = CompositorSurface_bounds(out);
     assert(bounds.x == -2 && bounds.y == -3 && bounds.width == 3 && bounds.height == 2);
     const float *p = CompositorSurface_constPixels(out);
@@ -217,7 +217,7 @@ static void union_and_limits(void) {
     b = make((CompositorBounds) {INT32_MAX - 1, 0, 1, 1}, blue);
     sources[0] = a; sources[1] = b;
     out = a;
-    assert(Compositor_compose(sources, 2, NULL, 0, &out) == COMPOSITOR_LIMIT);
+    assert(Compositor_compose(sources, 2, nullptr, 0, &out) == COMPOSITOR_LIMIT);
     assert(out == a);
     CompositorSurface_destroy(a);
     CompositorSurface_destroy(b);
@@ -235,7 +235,7 @@ static void union_and_limits(void) {
 static void check_scatter(const CompositorSurface *src, uint32_t radius) {
     const CompositorSurface *sources[] = {src};
     FilterToken blur = Filter_scatterBlur(radius);
-    CompositorSurface *out = NULL;
+    CompositorSurface *out = nullptr;
     assert(Compositor_compose(sources, 1, &blur, 1, &out) == COMPOSITOR_OK);
     CompositorBounds s = CompositorSurface_bounds(src), d = CompositorSurface_bounds(out);
     assert((int64_t) d.x == (int64_t) s.x - radius);
@@ -287,7 +287,7 @@ static void scatter_oracles(void) {
     check_scatter(square, 1);
     const CompositorSurface *sources[] = {square};
     FilterToken blur = Filter_scatterBlur(1);
-    CompositorSurface *out = NULL;
+    CompositorSurface *out = nullptr;
     assert(Compositor_compose(sources, 1, &blur, 1, &out) == COMPOSITOR_OK);
     const float *p = CompositorSurface_constPixels(out);
     near(p[4 * (3 * 7 + 3)], .3, 1e-6);
@@ -335,7 +335,7 @@ static void overflow_atomicity(void) {
     CompositorSurface_destroy(out);
     CompositorSurface_pixels(src)[0] = NAN;
     out = dst;
-    assert(Compositor_compose(sources, 1, NULL, 0, &out) == COMPOSITOR_INVALID);
+    assert(Compositor_compose(sources, 1, nullptr, 0, &out) == COMPOSITOR_INVALID);
     assert(Compositor_sourceOver(src, dst) == COMPOSITOR_INVALID);
     assert(!memcmp(before, CompositorSurface_constPixels(dst), sizeof before));
     CompositorSurface_destroy(src);

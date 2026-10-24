@@ -19,7 +19,7 @@ static void widget(void) {
     Picture *picture = Picture(image), *empty = Picture();
     assert(picture && empty);
     assert(Picture_width(picture) == 2 && Picture_height(picture) == 1);
-    assert(Picture_image(picture) == image && Picture_image(empty) == NULL);
+    assert(Picture_image(picture) == image && Picture_image(empty) == nullptr);
     assert(Picture_width(empty) == 0 && Picture_height(empty) == 0);
     Picture_setSize(picture, 8, 4);
     Picture_setLocation(picture, -1, 2);
@@ -45,19 +45,19 @@ static void widget(void) {
     assert(!truncated && strcmp(text, "Picture(8x4,image=2x1)") == 0);
     Picture_toStringStruct(picture, text, sizeof text, &truncated);
     assert(!truncated && strstr(text, "graphics=Element(width=8,height=4)"));
-    Picture_toString(NULL, text, sizeof text, &truncated);
+    Picture_toString(nullptr, text, sizeof text, &truncated);
     assert(!truncated && strcmp(text, "nullptr") == 0);
     Picture_toStringStruct(picture, text, 1, &truncated);
     assert(truncated && text[0] == '\0');
-    Picture_toString(picture, NULL, 0, &truncated);
+    Picture_toString(picture, nullptr, 0, &truncated);
     assert(truncated);
-    Picture_toString(picture, text, sizeof text, NULL);
+    Picture_toString(picture, text, sizeof text, nullptr);
     Image *replacement = Image_2(1, 2);
     Image_fill(replacement, COLOR_WHITE);
     Picture_setImage(picture, replacement);
     assert(Picture_image(picture) == replacement && Picture_width(picture) == 8);
-    Picture_setImage(picture, NULL);
-    assert(Picture_image(picture) == NULL && Image_pixels(replacement)[0] == 255);
+    Picture_setImage(picture, nullptr);
+    assert(Picture_image(picture) == nullptr && Image_pixels(replacement)[0] == 255);
     DisplayList_free(dl); // release old recorded image borrow before asset teardown
     Picture_destroy(picture); // BEFORE parent: removes owned node from borrowed tree
     assert(Element_count(parent) == 0);
@@ -66,13 +66,13 @@ static void widget(void) {
     assert(Image_pixels(image)[0] == 10);
     Image_destroy(image);
     Image_destroy(replacement);
-    Picture_destroy(NULL);
-    Picture_setImage(NULL, NULL);
-    Picture_setSize(NULL, 0, 0);
-    Picture_setLocation(NULL, 0, 0);
-    assert(Picture_graphics(NULL) == NULL && Picture_image(NULL) == NULL);
-    assert(Picture_width(NULL) == 0 && Picture_height(NULL) == 0);
-    assert(Picture_location(NULL).x == 0 && Picture_location(NULL).y == 0);
+    Picture_destroy(nullptr);
+    Picture_setImage(nullptr, nullptr);
+    Picture_setSize(nullptr, 0, 0);
+    Picture_setLocation(nullptr, 0, 0);
+    assert(Picture_graphics(nullptr) == nullptr && Picture_image(nullptr) == nullptr);
+    assert(Picture_width(nullptr) == 0 && Picture_height(nullptr) == 0);
+    assert(Picture_location(nullptr).x == 0 && Picture_location(nullptr).y == 0);
 }
 
 // Checks rejected dimensions/formats, diagnostics, and preservation of prior state.
@@ -92,13 +92,13 @@ static void invalid(void) {
     Picture_setLocation(picture, NAN, 1);
     Picture_setLocation(picture, 1, INFINITY);
     Image *missing = Image_2(1, 1);
-    assert(missing && Picture(missing) == NULL);
+    assert(missing && Picture(missing) == nullptr);
     Picture_setImage(picture, missing);
     Image *bgra = Image_4(1, 1, IMAGE_FORMAT_BGRA8, 0);
     Image_fill(bgra, COLOR_WHITE);
     Picture_setImage(picture, bgra);
     bool truncated = false;
-    Picture_toString(picture, NULL, 1, &truncated);
+    Picture_toString(picture, nullptr, 1, &truncated);
     assert(truncated);
     fflush(stderr);
     assert(dup2(saved, STDERR_FILENO) >= 0);
@@ -114,7 +114,7 @@ static void invalid(void) {
     fclose(capture);
     assert(Picture_width(picture) == 5 && Picture_height(picture) == 7);
     assert(Picture_location(picture).x == 2 && Picture_location(picture).y == 3);
-    assert(Picture_image(picture) == NULL);
+    assert(Picture_image(picture) == nullptr);
     Picture_setSize(picture, -0.0f, 0);
     assert(Picture_width(picture) == 0 && Picture_height(picture) == 0);
     Picture_destroy(picture);

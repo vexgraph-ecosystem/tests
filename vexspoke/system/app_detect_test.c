@@ -41,30 +41,30 @@ static int sFailures = 0;
 // Checks AppDetect registry access, host probes, and null-safe public entry points.
 int main(int argc, const char **argv) {
     AppDetect *detect = AppDetect_shared();
-    CHECK(detect != NULL);
+    CHECK(detect != nullptr);
     printf("AppDetect_count = %u\n", AppDetect_count(detect));
     CHECK(AppDetect_count(detect) == 14);
 
     // --- registry ------------------------------------------------------------
     const AppSlot *opencode = AppDetect_get(detect, "opencode");
-    CHECK(opencode != NULL);
+    CHECK(opencode != nullptr);
     CHECK(opencode && strcmp(AppDetect_getName(detect, opencode), "opencode") == 0);
-    CHECK(opencode && AppDetect_getDisplayName(detect, opencode) != NULL);
-    CHECK(AppDetect_get(detect, "hermes") != NULL);
-    CHECK(AppDetect_get(detect, "nous") != NULL);
-    CHECK(AppDetect_get(detect, "codex") != NULL);
-    CHECK(AppDetect_get(detect, "claude") != NULL);
-    CHECK(AppDetect_get(detect, "t3") != NULL);
-    CHECK(AppDetect_get(detect, "grok") != NULL);
-    CHECK(AppDetect_get(detect, "gemini") != NULL);
-    CHECK(AppDetect_get(detect, "aider") != NULL);
-    CHECK(AppDetect_get(detect, "goose") != NULL);
-    CHECK(AppDetect_get(detect, "cline") != NULL);
-    CHECK(AppDetect_get(detect, "qwen-code") != NULL);
-    CHECK(AppDetect_get(detect, "continue") != NULL);
-    CHECK(AppDetect_get(detect, "definitely-not-a-tool-xyzzy") == NULL);
-    CHECK(AppDetect_at(detect, 0) != NULL);
-    CHECK(AppDetect_at(detect, AppDetect_count(detect)) == NULL);
+    CHECK(opencode && AppDetect_getDisplayName(detect, opencode) != nullptr);
+    CHECK(AppDetect_get(detect, "hermes") != nullptr);
+    CHECK(AppDetect_get(detect, "nous") != nullptr);
+    CHECK(AppDetect_get(detect, "codex") != nullptr);
+    CHECK(AppDetect_get(detect, "claude") != nullptr);
+    CHECK(AppDetect_get(detect, "t3") != nullptr);
+    CHECK(AppDetect_get(detect, "grok") != nullptr);
+    CHECK(AppDetect_get(detect, "gemini") != nullptr);
+    CHECK(AppDetect_get(detect, "aider") != nullptr);
+    CHECK(AppDetect_get(detect, "goose") != nullptr);
+    CHECK(AppDetect_get(detect, "cline") != nullptr);
+    CHECK(AppDetect_get(detect, "qwen-code") != nullptr);
+    CHECK(AppDetect_get(detect, "continue") != nullptr);
+    CHECK(AppDetect_get(detect, "definitely-not-a-tool-xyzzy") == nullptr);
+    CHECK(AppDetect_at(detect, 0) != nullptr);
+    CHECK(AppDetect_at(detect, AppDetect_count(detect)) == nullptr);
 
     // --- expanded rows --------------------------------------------------------
     const AppSlot *t3 = AppDetect_get(detect, "t3");
@@ -78,7 +78,7 @@ int main(int argc, const char **argv) {
     // --- PATH resolution ------------------------------------------------------
     char path[4096];
     CHECK(AppDetect_which(detect, "ls", path, sizeof(path)));
-    CHECK(strstr(path, "/ls") != NULL);
+    CHECK(strstr(path, "/ls") != nullptr);
     CHECK(AppDetect_isOnPath(detect, "sh"));
     CHECK(!AppDetect_isOnPath(detect, "definitely-not-a-bin-xyzzy"));
     CHECK(!AppDetect_which(detect, "definitely-not-a-bin-xyzzy", path, sizeof(path)));
@@ -96,8 +96,8 @@ int main(int argc, const char **argv) {
 
     // --- live process liveness ------------------------------------------------
     // Truthy probe: our own executable is running (basename of argv[0]).
-    const char *selfName = argc > 0 && argv[0] ? strrchr(argv[0], '/') : NULL;
-    selfName = selfName ? selfName + 1 : (argc > 0 ? argv[0] : NULL);
+    const char *selfName = argc > 0 && argv[0] ? strrchr(argv[0], '/') : nullptr;
+    selfName = selfName ? selfName + 1 : (argc > 0 ? argv[0] : nullptr);
     ProcessProbe *probe = ProcessProbe_shared();
     CHECK(selfName && ProcessProbe_isRunning(probe, selfName));
     // Reported, not asserted: machine-state dependent.
@@ -107,22 +107,22 @@ int main(int argc, const char **argv) {
            AppDetect_isRunning(detect, t3) ? "yes" : "no");
 
     // --- null-safety (Rule 24) ------------------------------------------------
-    CHECK(AppDetect_count(NULL) == 0);
-    CHECK(AppDetect_get(NULL, NULL) == NULL);
-    CHECK(AppDetect_get(detect, NULL) == NULL);
-    CHECK(AppDetect_at(NULL, 0) == NULL);
-    CHECK(AppDetect_getName(NULL, NULL) == NULL);
-    CHECK(AppDetect_getAltProcs(NULL, NULL) == NULL);
-    CHECK(AppDetect_getNote(NULL, NULL) == NULL);
-    CHECK(AppDetect_isOnPath(NULL, "ls") == false);
-    CHECK(AppDetect_isAppBundle(NULL, "Safari") == false);
-    CHECK(AppDetect_isInstalled(NULL, NULL) == false);
-    CHECK(AppDetect_isRunning(NULL, NULL) == false);
-    CHECK(AppDetect_isRunning(detect, NULL) == false);
-    CHECK(!AppDetect_which(NULL, "ls", path, sizeof(path)));
-    CHECK(!AppDetect_which(detect, "ls", NULL, 0));
-    CHECK(ProcessProbe_isRunning(NULL, NULL) == false);
-    CHECK(ProcessProbe_isDriverLoaded(NULL, NULL, NULL) == false);
+    CHECK(AppDetect_count(nullptr) == 0);
+    CHECK(AppDetect_get(nullptr, nullptr) == nullptr);
+    CHECK(AppDetect_get(detect, nullptr) == nullptr);
+    CHECK(AppDetect_at(nullptr, 0) == nullptr);
+    CHECK(AppDetect_getName(nullptr, nullptr) == nullptr);
+    CHECK(AppDetect_getAltProcs(nullptr, nullptr) == nullptr);
+    CHECK(AppDetect_getNote(nullptr, nullptr) == nullptr);
+    CHECK(AppDetect_isOnPath(nullptr, "ls") == false);
+    CHECK(AppDetect_isAppBundle(nullptr, "Safari") == false);
+    CHECK(AppDetect_isInstalled(nullptr, nullptr) == false);
+    CHECK(AppDetect_isRunning(nullptr, nullptr) == false);
+    CHECK(AppDetect_isRunning(detect, nullptr) == false);
+    CHECK(!AppDetect_which(nullptr, "ls", path, sizeof(path)));
+    CHECK(!AppDetect_which(detect, "ls", nullptr, 0));
+    CHECK(ProcessProbe_isRunning(nullptr, nullptr) == false);
+    CHECK(ProcessProbe_isDriverLoaded(nullptr, nullptr, nullptr) == false);
 
     if (sFailures == 0) {
         printf("app_detect_test: ALL CHECKS PASSED\n");

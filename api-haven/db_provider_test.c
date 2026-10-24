@@ -54,14 +54,14 @@ int main(int argc, const char **argv) {
     (void)argv;
 
     DbProvider *db = DbProvider_shared();
-    CHECK(db != NULL);
+    CHECK(db != nullptr);
     const uint32_t total = DbProvider_count(db);
     printf("DbProvider_count = %u\n", total);
     CHECK(total == 25);
 
     // --- slug lookups ----------------------------------------------------------
     const DbProviderSlot *pg = DbProvider_get(db, "postgresql");
-    CHECK(pg != NULL);
+    CHECK(pg != nullptr);
     CHECK(pg && strcmp(DbProvider_getDisplayName(db, pg), "PostgreSQL") == 0);
     CHECK(pg && strcmp(DbProvider_getEngine(db, pg), "postgres") == 0);
     CHECK(pg && DbProvider_getDefaultPort(db, pg) == 5432);
@@ -81,31 +81,31 @@ int main(int argc, const char **argv) {
     const DbProviderSlot *bq = DbProvider_get(db, "google-bigquery");
     CHECK(bq && DbProvider_getFamily(db, bq) == DB_PROVIDER_FAMILY_SQL_COMPAT);
 
-    CHECK(DbProvider_get(db, "amazon-aurora-mysql") != NULL);
-    CHECK(DbProvider_get(db, "ibm-db2-luw") != NULL);
-    CHECK(DbProvider_get(db, "definitely-not-a-db") == NULL);
+    CHECK(DbProvider_get(db, "amazon-aurora-mysql") != nullptr);
+    CHECK(DbProvider_get(db, "ibm-db2-luw") != nullptr);
+    CHECK(DbProvider_get(db, "definitely-not-a-db") == nullptr);
 
     // --- engine lookups --------------------------------------------------------
     const DbProviderSlot *sqlserver = DbProvider_findByEngine(db, "sqlserver");
-    CHECK(sqlserver != NULL);
+    CHECK(sqlserver != nullptr);
     CHECK(sqlserver && strcmp(DbProvider_getSlug(db, sqlserver),
                               "azure-sql-database") == 0);
-    CHECK(DbProvider_findByEngine(db, "postgres") != NULL);
-    CHECK(DbProvider_findByEngine(db, "definitely-not-an-engine") == NULL);
+    CHECK(DbProvider_findByEngine(db, "postgres") != nullptr);
+    CHECK(DbProvider_findByEngine(db, "definitely-not-an-engine") == nullptr);
 
     // --- positional + consistency ----------------------------------------------
-    CHECK(DbProvider_at(db, 0) != NULL);
-    CHECK(DbProvider_at(db, total) == NULL);
+    CHECK(DbProvider_at(db, 0) != nullptr);
+    CHECK(DbProvider_at(db, total) == nullptr);
     const char *names[25];
     uint32_t nameCount = 0;
     for (uint32_t i = 0; i < total; i++) {
         const DbProviderSlot *row = DbProvider_at(db, i);
-        CHECK(row != NULL);
+        CHECK(row != nullptr);
         CHECK(row && isSlugValid(DbProvider_getSlug(db, row)));
         // slug uniqueness: get() must resolve every row back to itself
         CHECK(row && DbProvider_get(db, DbProvider_getSlug(db, row)) == row);
-        const char *rowName = row ? DbProvider_getDisplayName(db, row) : NULL;
-        const char *rowEngine = row ? DbProvider_getEngine(db, row) : NULL;
+        const char *rowName = row ? DbProvider_getDisplayName(db, row) : nullptr;
+        const char *rowEngine = row ? DbProvider_getEngine(db, row) : nullptr;
         CHECK(rowName && (*rowName) != '\0');
         CHECK(rowEngine && (*rowEngine) != '\0');
         if (row && rowName) {
@@ -120,17 +120,17 @@ int main(int argc, const char **argv) {
     }
 
     // --- null-safety (Rule 24) ------------------------------------------------
-    CHECK(DbProvider_count(NULL) == 0);
-    CHECK(DbProvider_get(NULL, NULL) == NULL);
-    CHECK(DbProvider_get(db, NULL) == NULL);
-    CHECK(DbProvider_findByEngine(NULL, NULL) == NULL);
-    CHECK(DbProvider_at(NULL, 0) == NULL);
-    CHECK(DbProvider_getSlug(NULL, NULL) == NULL);
-    CHECK(DbProvider_getDisplayName(NULL, NULL) == NULL);
-    CHECK(DbProvider_getEngine(NULL, NULL) == NULL);
-    CHECK(DbProvider_getNote(NULL, NULL) == NULL);
-    CHECK(DbProvider_getDefaultPort(NULL, NULL) == 0);
-    CHECK(DbProvider_getFamily(NULL, NULL) == DB_PROVIDER_FAMILY_SQL);
+    CHECK(DbProvider_count(nullptr) == 0);
+    CHECK(DbProvider_get(nullptr, nullptr) == nullptr);
+    CHECK(DbProvider_get(db, nullptr) == nullptr);
+    CHECK(DbProvider_findByEngine(nullptr, nullptr) == nullptr);
+    CHECK(DbProvider_at(nullptr, 0) == nullptr);
+    CHECK(DbProvider_getSlug(nullptr, nullptr) == nullptr);
+    CHECK(DbProvider_getDisplayName(nullptr, nullptr) == nullptr);
+    CHECK(DbProvider_getEngine(nullptr, nullptr) == nullptr);
+    CHECK(DbProvider_getNote(nullptr, nullptr) == nullptr);
+    CHECK(DbProvider_getDefaultPort(nullptr, nullptr) == 0);
+    CHECK(DbProvider_getFamily(nullptr, nullptr) == DB_PROVIDER_FAMILY_SQL);
 
     if (sFailures == 0) {
         printf("db_provider_test: ALL CHECKS PASSED (%u data sources)\n", total);

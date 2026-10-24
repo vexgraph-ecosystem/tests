@@ -147,19 +147,19 @@ typedef struct WalkStats {
 static void walkCell(int32_t gridX, int32_t gridY, int32_t dx, int32_t dy,
                      const void *element, void *userData) {
     WalkStats *s = (WalkStats*) userData;
-    s->count++;
+    (*s).count++;
     if (element == nullptr)
-        s->nullElement++;
+        (*s).nullElement++;
     int64_t dist = (int64_t) dx * dx + (int64_t) dy * dy;
     if (dist > 9)                                       // radius 3
-        s->badDistance++;
+        (*s).badDistance++;
     if (gridX != dx + 3 || gridY != dy + 3)
-        s->mismatchedOffset++;
+        (*s).mismatchedOffset++;
     if (element != nullptr) {
         int v = 0;
         for (size_t i = 0; i < sizeof(int); i++)
             ((uint8_t*) &v)[i] = ((const uint8_t*) element)[i];
-        s->checksum += v;
+        (*s).checksum += v;
     }
 }
 

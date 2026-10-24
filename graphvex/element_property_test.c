@@ -36,15 +36,15 @@ int main(void) {
     Element *b = Element();
     Element_setProperty(b, Element_property(a));         // bind (borrow)
     CHECK(Element_property(b) == Element_property(a));
-    CHECK(Element_property(b)->background == COLOR_RGBA(10, 20, 30, 255));
+    CHECK((*Element_property(b)).background == COLOR_RGBA(10, 20, 30, 255));
 
     Element_setBackground(a, COLOR_RGBA(200, 100, 100, 255));
-    CHECK(Element_property(b)->background == COLOR_RGBA(200, 100, 100, 255));  // shared write
+    CHECK((*Element_property(b)).background == COLOR_RGBA(200, 100, 100, 255));  // shared write
 
     Element_ownProperty(b);                              // detach into a private copy
     CHECK(Element_property(b) != Element_property(a));
     Element_setBackground(a, COLOR_RGBA(1, 2, 3, 255));
-    CHECK(Element_property(b)->background == COLOR_RGBA(200, 100, 100, 255));  // no longer follows
+    CHECK((*Element_property(b)).background == COLOR_RGBA(200, 100, 100, 255));  // no longer follows
 
     // 2. revalidate + dirty subtree
     Element *root = Element();

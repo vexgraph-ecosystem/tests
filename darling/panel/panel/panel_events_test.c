@@ -27,7 +27,7 @@ static bool near(float a, float b) { return (a > b ? a - b : b - a) < 0.01f; }
 
 typedef struct Trace { int ids[8]; int count; } Trace;
 // Append one dispatch marker while capacity remains.
-static void push(Trace *t, int id) { if (t->count < 8) t->ids[t->count++] = id; }
+static void push(Trace *t, int id) { if ((*t).count < 8) (*t).ids[(*t).count++] = id; }
 
 // Record that the child received a scroll event.
 static void on_scroll_child(Element *e, const Scroll *s, void *ud)  { (void)e; (void)s; push(ud, 1); }
@@ -37,7 +37,7 @@ static void on_scroll_parent(Element *e, const Scroll *s, void *ud) { (void)e; (
 // Apply wheel deltas to the registered ScrollPanel viewport.
 static void on_wheel(Element *e, const Scroll *s, void *ud) {
     (void)e;
-    ScrollPanel_scrollBy(ud, s->dx, s->dy);
+    ScrollPanel_scrollBy(ud, (*s).dx, (*s).dy);
 }
 
 #include "darling/test_application.h"

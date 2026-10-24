@@ -45,9 +45,9 @@ int main(int argc, const char **argv) {
     (void)argv;
 
     AiProvider *dir = AiProvider_shared();
-    CHECK(dir != NULL);
+    CHECK(dir != nullptr);
     const AiProviderSlot *anthropic = AiProvider_get(dir, "anthropic");
-    CHECK(anthropic != NULL);
+    CHECK(anthropic != nullptr);
 
     // --- Anthropic: URL + auth -------------------------------------------------
     AiChatAnthropic achat = AiChatAnthropic("claude-sonnet-4-5", "ant-key");
@@ -60,7 +60,7 @@ int main(int argc, const char **argv) {
     CHECK(AiChatAnthropic_buildRequest(&achat, sMessages, 2,
                                        body, sizeof(body), url, sizeof(url), &auth));
     CHECK(strcmp(url, "https://api.anthropic.com/v1/v1/messages") == 0 ||
-          strstr(url, "/v1/messages") != NULL);
+          strstr(url, "/v1/messages") != nullptr);
     CHECK(auth.kind == API_AUTH_API_KEY);
     CHECK(strcmp(auth.headerName, "x-api-key") == 0);
     CHECK(strcmp(auth.credential, "ant-key") == 0);
@@ -78,7 +78,7 @@ int main(int argc, const char **argv) {
     CHECK(Json_count(&doc, msgs) == 2);
     JsonRef m0 = Json_at(&doc, msgs, 0);
     JsonRef c0 = Json_member(&doc, m0, "content");
-    CHECK(c0 >= 0 && strcmp(Json_string(&doc, c0, NULL), "explain \"sse\" \n briefly") == 0);
+    CHECK(c0 >= 0 && strcmp(Json_string(&doc, c0, nullptr), "explain \"sse\" \n briefly") == 0);
 
     // --- Anthropic: override + no-auth + custom ceiling --------------------------
     AiChatAnthropic_setBaseUrl(&achat, "https://proxy.example/anthropic");
@@ -86,7 +86,7 @@ int main(int argc, const char **argv) {
     CHECK(AiChatAnthropic_buildRequest(&achat, sMessages, 1,
                                        body, sizeof(body), url, sizeof(url), &auth));
     CHECK(strcmp(url, "https://proxy.example/anthropic/v1/messages") == 0);
-    CHECK(strstr(body, "\"max_tokens\":512") != NULL);
+    CHECK(strstr(body, "\"max_tokens\":512") != nullptr);
 
     AiChatAnthropic bare = AiChatAnthropic("claude-haiku");
     CHECK(AiChatAnthropic_buildRequest(&bare, sMessages, 1,
@@ -94,9 +94,9 @@ int main(int argc, const char **argv) {
     CHECK(auth.kind == API_AUTH_NONE);
 
     // --- Anthropic: guards (no network) -------------------------------------------
-    CHECK(!AiChatAnthropic_buildRequest(NULL, sMessages, 1,
+    CHECK(!AiChatAnthropic_buildRequest(nullptr, sMessages, 1,
                                         body, sizeof(body), url, sizeof(url), &auth));
-    CHECK(!AiChatAnthropic_buildRequest(&bare, NULL, 1,
+    CHECK(!AiChatAnthropic_buildRequest(&bare, nullptr, 1,
                                         body, sizeof(body), url, sizeof(url), &auth));
     AiChatAnthropic noModel = AiChatAnthropic();
     CHECK(!AiChatAnthropic_buildRequest(&noModel, sMessages, 1,
@@ -108,13 +108,13 @@ int main(int argc, const char **argv) {
     char tiny[16];
     CHECK(!AiChatAnthropic_buildRequest(&bare, sMessages, 2,
                                         tiny, sizeof(tiny), url, sizeof(url), &auth));
-    CHECK(!AiChatAnthropic_complete(&bare, sMessages, 1, body, sizeof(body), NULL));
+    CHECK(!AiChatAnthropic_complete(&bare, sMessages, 1, body, sizeof(body), nullptr));
 
     // --- Anthropic: getters/setters (Rule 24) ---------------------------------------
     AiChatAnthropic ac = AiChatAnthropic();
-    CHECK(AiChatAnthropic_getModel(&ac) == NULL);
-    CHECK(AiChatAnthropic_getModel(NULL) == NULL);
-    CHECK(AiChatAnthropic_getMaxTokens(NULL) == 0);
+    CHECK(AiChatAnthropic_getModel(&ac) == nullptr);
+    CHECK(AiChatAnthropic_getModel(nullptr) == nullptr);
+    CHECK(AiChatAnthropic_getMaxTokens(nullptr) == 0);
     AiChatAnthropic_setProvider(&ac, dir);
     AiChatAnthropic_setPeer(&ac, anthropic);
     AiChatAnthropic_setModel(&ac, "claude-opus");
@@ -127,10 +127,10 @@ int main(int argc, const char **argv) {
     CHECK(strcmp(AiChatAnthropic_getApiKey(&ac), "k") == 0);
     CHECK(strcmp(AiChatAnthropic_getBaseUrl(&ac), "https://o") == 0);
     CHECK(AiChatAnthropic_getMaxTokens(&ac) == 2048);
-    CHECK(AiChatAnthropic_getProvider(NULL) == NULL);
-    CHECK(AiChatAnthropic_getPeer(NULL) == NULL);
-    CHECK(AiChatAnthropic_getApiKey(NULL) == NULL);
-    CHECK(AiChatAnthropic_getBaseUrl(NULL) == NULL);
+    CHECK(AiChatAnthropic_getProvider(nullptr) == nullptr);
+    CHECK(AiChatAnthropic_getPeer(nullptr) == nullptr);
+    CHECK(AiChatAnthropic_getApiKey(nullptr) == nullptr);
+    CHECK(AiChatAnthropic_getBaseUrl(nullptr) == nullptr);
 
     // --- Gemini: URL carries the model + goog auth ------------------------------------
     AiChatGemini gchat = AiChatGemini("gemini-2.0-flash", "goog-key");
@@ -159,39 +159,39 @@ int main(int argc, const char **argv) {
     JsonRef p0 = Json_member(&doc, g0, "parts");
     CHECK(Json_count(&doc, p0) == 1);
     JsonRef t0 = Json_member(&doc, Json_at(&doc, p0, 0), "text");
-    CHECK(t0 >= 0 && strcmp(Json_string(&doc, t0, NULL), "explain \"sse\" \n briefly") == 0);
+    CHECK(t0 >= 0 && strcmp(Json_string(&doc, t0, nullptr), "explain \"sse\" \n briefly") == 0);
 
     // --- Gemini: system folds into user ---------------------------------------------------
     const AiMessage sysMsg[1] = {{"system", "be brief"}};
     CHECK(AiChatGemini_buildRequest(&gchat, sysMsg, 1,
                                     body, sizeof(body), url, sizeof(url), &auth));
-    CHECK(strstr(body, "\"role\":\"user\"") != NULL);
+    CHECK(strstr(body, "\"role\":\"user\"") != nullptr);
 
     // --- Gemini: override + guards -----------------------------------------------------------
     AiChatGemini_setBaseUrl(&gchat, "https://proxy.example/gemini");
     CHECK(AiChatGemini_buildRequest(&gchat, sMessages, 1,
                                     body, sizeof(body), url, sizeof(url), &auth));
-    CHECK(strstr(url, "https://proxy.example/gemini/v1beta/models/") != NULL);
+    CHECK(strstr(url, "https://proxy.example/gemini/v1beta/models/") != nullptr);
 
     AiChatGemini gbare = AiChatGemini("gemini-flash-lite");
     CHECK(AiChatGemini_buildRequest(&gbare, sMessages, 1,
                                     body, sizeof(body), url, sizeof(url), &auth));
     CHECK(auth.kind == API_AUTH_NONE);
-    CHECK(!AiChatGemini_buildRequest(NULL, sMessages, 1,
+    CHECK(!AiChatGemini_buildRequest(nullptr, sMessages, 1,
                                      body, sizeof(body), url, sizeof(url), &auth));
-    CHECK(!AiChatGemini_buildRequest(&gbare, NULL, 1,
+    CHECK(!AiChatGemini_buildRequest(&gbare, nullptr, 1,
                                      body, sizeof(body), url, sizeof(url), &auth));
     AiChatGemini gnoModel = AiChatGemini();
     CHECK(!AiChatGemini_buildRequest(&gnoModel, sMessages, 1,
                                      body, sizeof(body), url, sizeof(url), &auth));
     CHECK(!AiChatGemini_buildRequest(&gbare, sMessages, 2,
                                      tiny, sizeof(tiny), url, sizeof(url), &auth));
-    CHECK(!AiChatGemini_complete(&gbare, sMessages, 1, body, sizeof(body), NULL));
+    CHECK(!AiChatGemini_complete(&gbare, sMessages, 1, body, sizeof(body), nullptr));
 
     // --- Gemini: getters/setters ---------------------------------------------------------------
     AiChatGemini gc = AiChatGemini();
-    CHECK(AiChatGemini_getModel(&gc) == NULL);
-    CHECK(AiChatGemini_getModel(NULL) == NULL);
+    CHECK(AiChatGemini_getModel(&gc) == nullptr);
+    CHECK(AiChatGemini_getModel(nullptr) == nullptr);
     AiChatGemini_setProvider(&gc, dir);
     AiChatGemini_setPeer(&gc, anthropic);
     AiChatGemini_setModel(&gc, "gemini-pro");
@@ -202,10 +202,10 @@ int main(int argc, const char **argv) {
     CHECK(strcmp(AiChatGemini_getModel(&gc), "gemini-pro") == 0);
     CHECK(strcmp(AiChatGemini_getApiKey(&gc), "gk") == 0);
     CHECK(strcmp(AiChatGemini_getBaseUrl(&gc), "https://go") == 0);
-    CHECK(AiChatGemini_getProvider(NULL) == NULL);
-    CHECK(AiChatGemini_getPeer(NULL) == NULL);
-    CHECK(AiChatGemini_getApiKey(NULL) == NULL);
-    CHECK(AiChatGemini_getBaseUrl(NULL) == NULL);
+    CHECK(AiChatGemini_getProvider(nullptr) == nullptr);
+    CHECK(AiChatGemini_getPeer(nullptr) == nullptr);
+    CHECK(AiChatGemini_getApiKey(nullptr) == nullptr);
+    CHECK(AiChatGemini_getBaseUrl(nullptr) == nullptr);
 
     if (sFailures == 0) {
         printf("ai_chat_sisters_test: ALL CHECKS PASSED\n");

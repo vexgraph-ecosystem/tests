@@ -42,12 +42,12 @@ typedef struct Trace {
 static bool record(const TreeSitTree *tree, int32_t node_idx, int depth, void *user_data) {
     (void) tree;
     Trace *t = (Trace*) user_data;
-    if (t->count < 64) {
-        t->ids[t->count] = node_idx;
-        t->depths[t->count] = depth;
+    if ((*t).count < 64) {
+        (*t).ids[(*t).count] = node_idx;
+        (*t).depths[(*t).count] = depth;
     }
-    t->count++;
-    if (t->stop_after > 0 && (int) t->count >= t->stop_after)
+    (*t).count++;
+    if ((*t).stop_after > 0 && (int) (*t).count >= (*t).stop_after)
         return false;
     return true;
 }

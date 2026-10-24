@@ -172,7 +172,7 @@ static void testInsertAndRead(void) {
     // The exact bound pointer comes back, at its index.
     void *got = Database_row(db, "player", 37u);
     CHECK(got == (void*) &rows[37]);
-    CHECK(((Row*) got)->id == 137u);
+    CHECK((*((Row*) got)).id == 137u);
     CHECK(Database_row(db, "player", 64u) == nullptr); // out of range
     CHECK(Database_row(db, "player", 0u) == (void*) &rows[0]);
 
@@ -230,7 +230,7 @@ static void testInsertOwned(void) {
     input.health = 99;
     Row *stored = (Row*) Database_row(db, "player", 0u);
     CHECK(stored != nullptr && stored != &input);
-    CHECK(stored != nullptr && stored->id == 29u && stored->health == 31);
+    CHECK(stored != nullptr && (*stored).id == 29u && (*stored).health == 31);
     CHECK(Database_insert(db, "player", &borrowed) == -1);
     CHECK(Database_count(db, "player") == 1u);
 
@@ -325,7 +325,7 @@ static void testPersistence(void) {
     CHECK(Database_count(db2, "player") == 4u);
     for (uint32_t i = 0u; i < 4u; i++) {
         Row *got = (Row*) Database_row(db2, "player", i);
-        CHECK(got != nullptr && got->id == 7u + i && got->health == (int32_t) (i + 1u));
+        CHECK(got != nullptr && (*got).id == 7u + i && (*got).health == (int32_t) (i + 1u));
     }
 
     // Loaded rows are owned: binding a live row into them rejects.
@@ -338,7 +338,7 @@ static void testPersistence(void) {
     CHECK(Database_insertOwned(db2, "player", &appended, sizeof appended) == 4);
     appended.health = 0;
     Row *owned = (Row*) Database_row(db2, "player", 4u);
-    CHECK(owned != nullptr && owned != &appended && owned->health == 99);
+    CHECK(owned != nullptr && owned != &appended && (*owned).health == 99);
     CHECK(Database_count(db2, "player") == 5u);
 
     // Re-loading into a non-empty entity rejects without mutation.
@@ -430,7 +430,7 @@ static void testSafeSave(void) {
     Database_define(c, sc);
     CHECK(Database_load(c, path) == DATABASE_OK);
     CHECK(Database_count(c, "player") == 6u);
-    CHECK(((Row*) Database_row(c, "player", 0u))->id == 2u);
+    CHECK((*((Row*) Database_row(c, "player", 0u))).id == 2u);
 
     // A rejected save must not touch the destination.
     Database *d = Database();
@@ -492,7 +492,7 @@ static void testPageStorePersistence(void) {
     CHECK(idField != nullptr);
     if (idField != nullptr) {
         Field_setOffset(idField, (uint32_t) offsetof(Row, id));
-        Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+        Field_setSize(idField, (uint32_t) sizeof((*((Row*) nullptr)).id));
         CHECK(Struct_add(schema, idField) == 0u);
         Field_free(idField);
     }
@@ -505,7 +505,7 @@ static void testPageStorePersistence(void) {
     Row *changed = (Row*) Database_row(db, "player", 0u);
     CHECK(changed != nullptr);
     if (changed != nullptr)
-        changed->health = 999;
+        (*changed).health = 999;
     CHECK(Database_saveStore(db, store) == DATABASE_IO); // bounded journal rejects
     Database_free(db);
     Struct_free(schema);
@@ -531,8 +531,8 @@ static void testPageStorePersistence(void) {
         CHECK(Database_loadStore(mismatch, store) == DATABASE_INVALID);
         CHECK(Database_count(mismatch, "player") == 1u);
         Row *preserved = (Row*) Database_row(mismatch, "player", 0u);
-        CHECK(preserved != nullptr && preserved->id == priorRow.id &&
-              preserved->health == priorRow.health);
+        CHECK(preserved != nullptr && (*preserved).id == priorRow.id &&
+              (*preserved).health == priorRow.health);
         uint8_t *preservedBytes = (uint8_t*) preserved;
         CHECK(preservedBytes != nullptr &&
               preservedBytes[sizeof(Row)] == 0x5Au);
@@ -547,7 +547,7 @@ static void testPageStorePersistence(void) {
         CHECK(idField != nullptr);
         if (idField != nullptr) {
             Field_setOffset(idField, (uint32_t) offsetof(Row, id));
-            Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+            Field_setSize(idField, (uint32_t) sizeof((*((Row*) nullptr)).id));
             CHECK(Struct_add(schema, idField) == 0u);
             Field_free(idField);
         }
@@ -563,8 +563,8 @@ static void testPageStorePersistence(void) {
         CHECK(absentEntry.code == DATABASE_ABSENT && !absentEntry.found);
         for (uint32_t i = 0u; i < 3u; i++) {
             Row *row = (Row*) Database_row(db, "player", i);
-            CHECK(row != nullptr && row->id == source[i].id &&
-                  row->health == source[i].health); // rejected replacement preserved old root
+            CHECK(row != nullptr && (*row).id == source[i].id &&
+                  (*row).health == source[i].health); // rejected replacement preserved old root
         }
         uintptr_t wanted = 42u;
         DatabaseResult *query = Database_queryEqual(db, "player", "id",
@@ -572,7 +572,7 @@ static void testPageStorePersistence(void) {
         CHECK(query != nullptr && DatabaseResult_count(query) == 1u);
         void *queriedRow = nullptr;
         CHECK(query != nullptr && DatabaseResult_next(query, &queriedRow));
-        CHECK(queriedRow != nullptr && ((Row*) queriedRow)->id == wanted);
+        CHECK(queriedRow != nullptr && (*((Row*) queriedRow)).id == wanted);
         DatabaseResult_free(query);
         Database_free(db);
         Struct_free(schema);
@@ -641,7 +641,7 @@ static void testPageStoreRecovery(void) {
         CHECK(Database_loadStore(db, store) == DATABASE_OK);
         CHECK(Database_count(db, "player") == 1u);
         Row *row = (Row*) Database_row(db, "player", 0u);
-        CHECK(row != nullptr && row->id == 91u && row->health == 101);
+        CHECK(row != nullptr && (*row).id == 91u && (*row).health == 101);
     }
     Database_free(db);
     Struct_free(schema);
@@ -670,9 +670,9 @@ static void testStructuredEqualityQuery(void) {
     }
     Struct_setSize(schema, (uint32_t) sizeof(Row));
     Field_setOffset(idField, (uint32_t) offsetof(Row, id));
-    Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+    Field_setSize(idField, (uint32_t) sizeof((*((Row*) nullptr)).id));
     Field_setOffset(healthField, (uint32_t) offsetof(Row, health));
-    Field_setSize(healthField, (uint32_t) sizeof(((Row*) nullptr)->health));
+    Field_setSize(healthField, (uint32_t) sizeof((*((Row*) nullptr)).health));
     Field_setFlags(healthField, REFLECT_FIELD_INDEXED); // the index declaration
     Field_setOffset(badField, (uint32_t) sizeof(Row) - 1u);
     Field_setSize(badField, 2u);
@@ -697,7 +697,7 @@ static void testStructuredEqualityQuery(void) {
         void *second = nullptr;
         CHECK(DatabaseResult_next(matches, &first));
         CHECK(DatabaseResult_next(matches, &second));
-        CHECK(((Row*) first)->health == 11 && ((Row*) second)->health == 17);
+        CHECK((*((Row*) first)).health == 11 && (*((Row*) second)).health == 17);
         CHECK(DatabaseResult_next(matches, &first) == false);
         DatabaseResult_free(matches);
     }
@@ -721,8 +721,8 @@ static void testStructuredEqualityQuery(void) {
     if (range != nullptr) {
         void *low = nullptr;
         void *high = nullptr;
-        CHECK(DatabaseResult_next(range, &low) && ((Row*) low)->health == 13);
-        CHECK(DatabaseResult_next(range, &high) && ((Row*) high)->health == 17);
+        CHECK(DatabaseResult_next(range, &low) && (*((Row*) low)).health == 13);
+        CHECK(DatabaseResult_next(range, &high) && (*((Row*) high)).health == 17);
         CHECK(!DatabaseResult_next(range, &low));
         DatabaseResult_free(range);
     }
@@ -757,8 +757,8 @@ static void testStructuredEqualityQuery(void) {
     if (range != nullptr) {
         void *first = nullptr;
         void *second = nullptr;
-        CHECK(DatabaseResult_next(range, &first) && ((Row*) first)->health == 13);
-        CHECK(DatabaseResult_next(range, &second) && ((Row*) second)->health == 17);
+        CHECK(DatabaseResult_next(range, &first) && (*((Row*) first)).health == 13);
+        CHECK(DatabaseResult_next(range, &second) && (*((Row*) second)).health == 17);
         CHECK(!DatabaseResult_next(range, &first));
         DatabaseResult_free(range);
     }
@@ -772,9 +772,9 @@ static void testStructuredEqualityQuery(void) {
     CHECK(range != nullptr && DatabaseResult_count(range) == 3u);
     if (range != nullptr) {
         void *row = nullptr;
-        CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 13);
-        CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 14);
-        CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 17);
+        CHECK(DatabaseResult_next(range, &row) && (*((Row*) row)).health == 13);
+        CHECK(DatabaseResult_next(range, &row) && (*((Row*) row)).health == 14);
+        CHECK(DatabaseResult_next(range, &row) && (*((Row*) row)).health == 17);
         CHECK(!DatabaseResult_next(range, &row));
         DatabaseResult_free(range);
     }
@@ -790,7 +790,7 @@ static void testStructuredEqualityQuery(void) {
     DatabaseFieldSpan span = Database_fieldSpan(db, "player", "health");
     CHECK(span.code == DATABASE_OK);
     CHECK(span.offset == (uint32_t) offsetof(Row, health));
-    CHECK(span.size == (uint32_t) sizeof(((Row*) nullptr)->health));
+    CHECK(span.size == (uint32_t) sizeof((*((Row*) nullptr)).health));
     span = Database_fieldSpan(db, "PLAYER", "Health"); // folded: case is irrelevant
     CHECK(span.code == DATABASE_OK && span.offset == (uint32_t) offsetof(Row, health));
     span = Database_fieldSpan(db, "player", "id");
@@ -844,9 +844,9 @@ static void testPersistedIndex(void) {
         CHECK(idField != nullptr && healthField != nullptr);
         if (idField != nullptr && healthField != nullptr) {
             Field_setOffset(idField, (uint32_t) offsetof(Row, id));
-            Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+            Field_setSize(idField, (uint32_t) sizeof((*((Row*) nullptr)).id));
             Field_setOffset(healthField, (uint32_t) offsetof(Row, health));
-            Field_setSize(healthField, (uint32_t) sizeof(((Row*) nullptr)->health));
+            Field_setSize(healthField, (uint32_t) sizeof((*((Row*) nullptr)).health));
             Field_setFlags(healthField, REFLECT_FIELD_INDEXED);
             CHECK(Struct_add(schema, idField) == 0u);
             CHECK(Struct_add(schema, healthField) == 1u);
@@ -879,9 +879,9 @@ static void testPersistedIndex(void) {
         CHECK(idField != nullptr && healthField != nullptr);
         if (idField != nullptr && healthField != nullptr) {
             Field_setOffset(idField, (uint32_t) offsetof(Row, id));
-            Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+            Field_setSize(idField, (uint32_t) sizeof((*((Row*) nullptr)).id));
             Field_setOffset(healthField, (uint32_t) offsetof(Row, health));
-            Field_setSize(healthField, (uint32_t) sizeof(((Row*) nullptr)->health));
+            Field_setSize(healthField, (uint32_t) sizeof((*((Row*) nullptr)).health));
             Field_setFlags(healthField, REFLECT_FIELD_INDEXED);
             CHECK(Struct_add(schema, idField) == 0u);
             CHECK(Struct_add(schema, healthField) == 1u);
@@ -898,9 +898,9 @@ static void testPersistedIndex(void) {
         CHECK(range != nullptr && DatabaseResult_count(range) == 3u);
         if (range != nullptr) {
             void *row = nullptr;
-            CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 20);
-            CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 30);
-            CHECK(DatabaseResult_next(range, &row) && ((Row*) row)->health == 40);
+            CHECK(DatabaseResult_next(range, &row) && (*((Row*) row)).health == 20);
+            CHECK(DatabaseResult_next(range, &row) && (*((Row*) row)).health == 30);
+            CHECK(DatabaseResult_next(range, &row) && (*((Row*) row)).health == 40);
             CHECK(!DatabaseResult_next(range, &row));
             DatabaseResult_free(range);
         }
@@ -923,7 +923,7 @@ static void testPersistedIndex(void) {
         CHECK(idField != nullptr && movedField != nullptr);
         if (idField != nullptr && movedField != nullptr) {
             Field_setOffset(idField, (uint32_t) offsetof(Row, id));
-            Field_setSize(idField, (uint32_t) sizeof(((Row*) nullptr)->id));
+            Field_setSize(idField, (uint32_t) sizeof((*((Row*) nullptr)).id));
             Field_setOffset(movedField, (uint32_t) offsetof(Row, id)); // moved
             Field_setSize(movedField, (uint32_t) sizeof(int32_t));
             Field_setFlags(movedField, REFLECT_FIELD_INDEXED);

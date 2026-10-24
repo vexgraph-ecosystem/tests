@@ -140,19 +140,19 @@ static void walkVoxel(int32_t gx, int32_t gy, int32_t gz,
                       int32_t dx, int32_t dy, int32_t dz,
                       const void *voxel, void *userData) {
     WalkStats *s = (WalkStats*) userData;
-    s->count++;
+    (*s).count++;
     if (voxel == nullptr)
-        s->nullVoxel++;
+        (*s).nullVoxel++;
     int64_t dist = (int64_t) dx * dx + (int64_t) dy * dy + (int64_t) dz * dz;
     if (dist > 4)                                        // radius 2
-        s->badDistance++;
+        (*s).badDistance++;
     if (gx != dx + 2 || gy != dy + 2 || gz != dz + 2)
-        s->mismatchedOffset++;
+        (*s).mismatchedOffset++;
     if (voxel != nullptr) {
         int v = 0;
         for (size_t i = 0; i < sizeof(int); i++)
             ((uint8_t*) &v)[i] = ((const uint8_t*) voxel)[i];
-        s->checksum += v;
+        (*s).checksum += v;
     }
 }
 

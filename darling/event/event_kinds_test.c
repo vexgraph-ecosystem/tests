@@ -21,7 +21,7 @@ static int g_fail = 0;
 
 typedef struct Trace { int ids[32]; int count; float lastMag; } Trace;
 // Appends an event-kind identifier while the fixed trace has room.
-static void push(Trace *t, int id) { if (t->count < 32) t->ids[t->count++] = id; }
+static void push(Trace *t, int id) { if ((*t).count < 32) (*t).ids[(*t).count++] = id; }
 
 // Records mouse-down delivery.
 static void m_down(Element *e, const Mouse *m, void *ud)  { (void)e; (void)m; push(ud,  1); }
@@ -38,7 +38,7 @@ static void z_zoom(Element *e, const Zoom *z, void *ud) {
     (void)e;
     Trace *t = ud;
     push(t, 6);
-    t->lastMag = z->magnitude;
+    (*t).lastMag = (*z).magnitude;
 }
 // Records touch-down delivery.
 static void t_down(Element *e, const Touch *t, void *ud) { (void)e; (void)t; push(ud, 7); }

@@ -29,16 +29,16 @@ static void darling_test_owner(Application *application, void *userdata) {
     (void)application;
     DarlingTestState *state = userdata;
 #ifdef DARLING_TEST_WITH_ARGS
-    state->result = darling_test_body(state->argc, state->argv);
+    (*state).result = darling_test_body((*state).argc, (*state).argv);
 #else
-    state->result = darling_test_body();
+    (*state).result = darling_test_body();
 #endif
 }
 
 static void darling_test_start(Application *application, void *userdata) {
     DarlingTestState *state = userdata;
-    if (!Application_invoke(application, darling_test_owner, state)) state->result = 1;
-    if (!state->keepOpen || state->result != 0) Application_close(application);
+    if (!Application_invoke(application, darling_test_owner, state)) (*state).result = 1;
+    if (!(*state).keepOpen || (*state).result != 0) Application_close(application);
 }
 
 int main(int argc, char **argv) {

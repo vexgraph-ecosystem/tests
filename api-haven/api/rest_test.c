@@ -47,8 +47,8 @@ static void statusHandler(const HttpExchange *exchange, int clientFd, void *user
 /* One GET into a fresh caller buffer; returns the call result and leaves resp. */
 static bool getStatus(const char *url, const ApiAuth *auth, HttpResponse *resp, char *body, size_t cap) {
     memset(resp, 0, sizeof(*resp));
-    resp->body = body;
-    resp->bodyCap = cap;
+    (*resp).body = body;
+    (*resp).bodyCap = cap;
     body[0] = '\0';
     return Rest_get(url, auth, resp);
 }

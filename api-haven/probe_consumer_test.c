@@ -43,31 +43,31 @@ static int sFailures = 0;
 int main(int argc, const char **argv) {
     // --- vexspoke AppDetect through the api_haven seam ------------------------
     AppDetect *detect = AppDetect_shared();
-    CHECK(detect != NULL);
+    CHECK(detect != nullptr);
     const uint32_t appCount = AppDetect_count(detect);
     printf("AppDetect_count (via api_haven) = %u\n", appCount);
     CHECK(appCount >= 12);
-    CHECK(AppDetect_get(detect, "opencode") != NULL);
-    CHECK(AppDetect_get(detect, "codex") != NULL);
-    CHECK(AppDetect_get(detect, "claude") != NULL);
-    CHECK(AppDetect_get(detect, "t3") != NULL);
-    CHECK(AppDetect_get(detect, "grok") != NULL);
-    CHECK(AppDetect_get(detect, "gemini") != NULL);
+    CHECK(AppDetect_get(detect, "opencode") != nullptr);
+    CHECK(AppDetect_get(detect, "codex") != nullptr);
+    CHECK(AppDetect_get(detect, "claude") != nullptr);
+    CHECK(AppDetect_get(detect, "t3") != nullptr);
+    CHECK(AppDetect_get(detect, "grok") != nullptr);
+    CHECK(AppDetect_get(detect, "gemini") != nullptr);
 
     // --- vexspoke CaptureTool through the seam ---------------------------------
     CaptureTool *tools = CaptureTool_shared();
-    CHECK(tools != NULL);
+    CHECK(tools != nullptr);
     const uint32_t captureCount = CaptureTool_count(tools);
     printf("CaptureTool_count (via api_haven) = %u\n", captureCount);
     CHECK(captureCount >= 12);
     const CaptureSlot *obs = CaptureTool_get(tools, "obs");
-    CHECK(obs != NULL);
+    CHECK(obs != nullptr);
     CHECK(obs && CaptureTool_getKind(tools, obs) == CAPTURE_KIND_SCREEN);
-    CHECK(CaptureTool_get(tools, "quicktime-player") != NULL);
+    CHECK(CaptureTool_get(tools, "quicktime-player") != nullptr);
 
     // --- live liveness: self-truthy, driver rows never run ---------------------
-    const char *selfName = argc > 0 && argv[0] ? strrchr(argv[0], '/') : NULL;
-    selfName = selfName ? selfName + 1 : (argc > 0 ? argv[0] : NULL);
+    const char *selfName = argc > 0 && argv[0] ? strrchr(argv[0], '/') : nullptr;
+    selfName = selfName ? selfName + 1 : (argc > 0 ? argv[0] : nullptr);
     ProcessProbe *probe = ProcessProbe_shared();
     CHECK(selfName && ProcessProbe_isRunning(probe, selfName));
     CHECK(!ProcessProbe_isRunning(probe, "definitely-not-a-proc-xyzzy"));
@@ -80,12 +80,12 @@ int main(int argc, const char **argv) {
     printf("isRunning(obs) = %s\n", CaptureTool_isRunning(tools, obs) ? "yes" : "no");
 
     // --- null-safety spot checks -----------------------------------------------
-    CHECK(AppDetect_count(NULL) == 0);
-    CHECK(CaptureTool_count(NULL) == 0);
-    CHECK(AppDetect_isRunning(NULL, NULL) == false);
-    CHECK(CaptureTool_isInstalled(NULL, NULL) == false);
-    CHECK(ProcessProbe_isRunning(NULL, NULL) == false);
-    CHECK(ProcessProbe_isDriverLoaded(NULL, NULL, NULL) == false);
+    CHECK(AppDetect_count(nullptr) == 0);
+    CHECK(CaptureTool_count(nullptr) == 0);
+    CHECK(AppDetect_isRunning(nullptr, nullptr) == false);
+    CHECK(CaptureTool_isInstalled(nullptr, nullptr) == false);
+    CHECK(ProcessProbe_isRunning(nullptr, nullptr) == false);
+    CHECK(ProcessProbe_isDriverLoaded(nullptr, nullptr, nullptr) == false);
 
     if (sFailures == 0) {
         printf("probe_consumer_test: ALL CHECKS PASSED (vexspoke probes reachable)\n");

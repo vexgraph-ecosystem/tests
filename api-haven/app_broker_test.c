@@ -85,40 +85,40 @@ int main(int argc, const char **argv) {
 
     // --- AppProvider allowlist ----------------------------------------------
     AppProvider *dir = AppProvider_shared();
-    CHECK(dir != NULL);
+    CHECK(dir != nullptr);
     CHECK(AppProvider_count(dir) == 29);
-    CHECK(AppProvider_at(dir, 0) != NULL);
-    CHECK(AppProvider_at(dir, 29) == NULL);
-    CHECK(AppProvider_get(dir, "apple-notes") != NULL);
-    CHECK(AppProvider_get(dir, "apple-music") != NULL);
-    CHECK(AppProvider_get(dir, "spotify-local") != NULL);
-    CHECK(AppProvider_get(dir, "apple-shortcuts") != NULL);
-    CHECK(AppProvider_get(dir, "osascript") != NULL);
-    CHECK(AppProvider_get(dir, "telegram") != NULL);
-    CHECK(AppProvider_get(dir, "messenger") != NULL);
-    CHECK(AppProvider_get(dir, "python") != NULL);
-    CHECK(AppProvider_get(dir, "php") != NULL);
-    CHECK(AppProvider_get(dir, "node") != NULL);
-    CHECK(AppProvider_get(dir, "go-toolchain") != NULL);
-    CHECK(AppProvider_get(dir, "rust-toolchain") != NULL);
-    CHECK(AppProvider_get(dir, "unity") != NULL);
-    CHECK(AppProvider_get(dir, "unreal") != NULL);
-    CHECK(AppProvider_get(dir, "godot") != NULL);
-    CHECK(AppProvider_get(dir, "discord-bot") != NULL);
-    CHECK(AppProvider_get(dir, "discord-presence") != NULL);
-    CHECK(AppProvider_get(dir, "slack") != NULL);
-    CHECK(AppProvider_get(dir, "whatsapp") != NULL);
-    CHECK(AppProvider_get(dir, "signal") != NULL);
-    CHECK(AppProvider_get(dir, "email") != NULL);
-    CHECK(AppProvider_get(dir, "sms") != NULL);
-    CHECK(AppProvider_get(dir, "matrix") != NULL);
-    CHECK(AppProvider_get(dir, "mattermost") != NULL);
-    CHECK(AppProvider_get(dir, "line") != NULL);
-    CHECK(AppProvider_get(dir, "teams") != NULL);
-    CHECK(AppProvider_get(dir, "webhooks") != NULL);
-    CHECK(AppProvider_get(dir, "irc") != NULL);
-    CHECK(AppProvider_get(dir, "imessage") != NULL);
-    CHECK(AppProvider_get(dir, "definitely-not-an-app") == NULL);
+    CHECK(AppProvider_at(dir, 0) != nullptr);
+    CHECK(AppProvider_at(dir, 29) == nullptr);
+    CHECK(AppProvider_get(dir, "apple-notes") != nullptr);
+    CHECK(AppProvider_get(dir, "apple-music") != nullptr);
+    CHECK(AppProvider_get(dir, "spotify-local") != nullptr);
+    CHECK(AppProvider_get(dir, "apple-shortcuts") != nullptr);
+    CHECK(AppProvider_get(dir, "osascript") != nullptr);
+    CHECK(AppProvider_get(dir, "telegram") != nullptr);
+    CHECK(AppProvider_get(dir, "messenger") != nullptr);
+    CHECK(AppProvider_get(dir, "python") != nullptr);
+    CHECK(AppProvider_get(dir, "php") != nullptr);
+    CHECK(AppProvider_get(dir, "node") != nullptr);
+    CHECK(AppProvider_get(dir, "go-toolchain") != nullptr);
+    CHECK(AppProvider_get(dir, "rust-toolchain") != nullptr);
+    CHECK(AppProvider_get(dir, "unity") != nullptr);
+    CHECK(AppProvider_get(dir, "unreal") != nullptr);
+    CHECK(AppProvider_get(dir, "godot") != nullptr);
+    CHECK(AppProvider_get(dir, "discord-bot") != nullptr);
+    CHECK(AppProvider_get(dir, "discord-presence") != nullptr);
+    CHECK(AppProvider_get(dir, "slack") != nullptr);
+    CHECK(AppProvider_get(dir, "whatsapp") != nullptr);
+    CHECK(AppProvider_get(dir, "signal") != nullptr);
+    CHECK(AppProvider_get(dir, "email") != nullptr);
+    CHECK(AppProvider_get(dir, "sms") != nullptr);
+    CHECK(AppProvider_get(dir, "matrix") != nullptr);
+    CHECK(AppProvider_get(dir, "mattermost") != nullptr);
+    CHECK(AppProvider_get(dir, "line") != nullptr);
+    CHECK(AppProvider_get(dir, "teams") != nullptr);
+    CHECK(AppProvider_get(dir, "webhooks") != nullptr);
+    CHECK(AppProvider_get(dir, "irc") != nullptr);
+    CHECK(AppProvider_get(dir, "imessage") != nullptr);
+    CHECK(AppProvider_get(dir, "definitely-not-an-app") == nullptr);
 
     const AppProviderSlot *notes = AppProvider_get(dir, "apple-notes");
     CHECK(notes && AppProvider_getFamily(dir, notes) == APP_PROVIDER_FAMILY_OSA_SCRIPT);
@@ -138,26 +138,26 @@ int main(int argc, const char **argv) {
     CHECK(strcmp(target, "com.apple.Notes") == 0);
     char tiny[4];
     CHECK(!AppProvider_resolveTarget(dir, notes, tiny, sizeof(tiny)));
-    CHECK(!AppProvider_resolveTarget(dir, notes, NULL, 64));
-    CHECK(!AppProvider_resolveTarget(NULL, notes, target, sizeof(target)));
+    CHECK(!AppProvider_resolveTarget(dir, notes, nullptr, 64));
+    CHECK(!AppProvider_resolveTarget(nullptr, notes, target, sizeof(target)));
 
     // --- null-safety (Rule 24) ----------------------------------------------
-    CHECK(AppProvider_count(NULL) == 0);
-    CHECK(AppProvider_at(NULL, 0) == NULL);
-    CHECK(AppProvider_get(NULL, NULL) == NULL);
-    CHECK(AppProvider_get(dir, NULL) == NULL);
-    CHECK(AppProvider_getSlug(NULL, NULL) == NULL);
-    CHECK(AppProvider_getDisplayName(NULL, NULL) == NULL);
-    CHECK(AppProvider_getBundleIdOrScheme(NULL, NULL) == NULL);
-    CHECK(AppProvider_getNote(NULL, NULL) == NULL);
-    CHECK(AppProvider_getFamily(NULL, NULL) == APP_PROVIDER_FAMILY_OSA_SCRIPT);
-    CHECK(AppProvider_getAuth(NULL, NULL) == APP_PROVIDER_AUTH_NONE);
+    CHECK(AppProvider_count(nullptr) == 0);
+    CHECK(AppProvider_at(nullptr, 0) == nullptr);
+    CHECK(AppProvider_get(nullptr, nullptr) == nullptr);
+    CHECK(AppProvider_get(dir, nullptr) == nullptr);
+    CHECK(AppProvider_getSlug(nullptr, nullptr) == nullptr);
+    CHECK(AppProvider_getDisplayName(nullptr, nullptr) == nullptr);
+    CHECK(AppProvider_getBundleIdOrScheme(nullptr, nullptr) == nullptr);
+    CHECK(AppProvider_getNote(nullptr, nullptr) == nullptr);
+    CHECK(AppProvider_getFamily(nullptr, nullptr) == APP_PROVIDER_FAMILY_OSA_SCRIPT);
+    CHECK(AppProvider_getAuth(nullptr, nullptr) == APP_PROVIDER_AUTH_NONE);
 
     // --- unbound-driver degrade (target set, no driver: no slot consumed) ---
     AppBroker bare = AppBroker();
     AppBroker_setTarget(&bare, notes);
     CHECK(AppBroker_getTarget(&bare) == notes);
-    CHECK(AppBroker_getDriver(&bare) == NULL);
+    CHECK(AppBroker_getDriver(&bare) == nullptr);
     CHECK(AppBroker_getTimeout(&bare) == 100);
     CHECK(!AppBroker_isRunning(&bare));
     char out[128];
@@ -165,8 +165,8 @@ int main(int argc, const char **argv) {
     CHECK(!AppBroker_action(&bare, "list-notes", "{}", 2, out, sizeof(out), &jobId));
     CHECK(AppBroker_getLastStatus(&bare) == APP_STATUS_IDLE);
     CHECK(AppBroker_getJobCount(&bare) == 0);
-    CHECK(!AppBroker_action(NULL, "x", "{}", 2, out, sizeof(out), &jobId));
-    CHECK(!AppBroker_action(&bare, NULL, "{}", 2, out, sizeof(out), &jobId));
+    CHECK(!AppBroker_action(nullptr, "x", "{}", 2, out, sizeof(out), &jobId));
+    CHECK(!AppBroker_action(&bare, nullptr, "{}", 2, out, sizeof(out), &jobId));
     CHECK(!AppBroker_action(&bare, "", "{}", 2, out, sizeof(out), &jobId));
     AppBroker noTarget = AppBroker();
     AppDriverTable echoTable;
@@ -193,12 +193,12 @@ int main(int argc, const char **argv) {
     CHECK(AppBroker_poll(&b, jobId) == APP_STATUS_DONE);
     CHECK(!AppBroker_isRunning(&b));
     const AppJob *slot = AppBroker_getJobAt(&b, 0);
-    CHECK(slot != NULL);
+    CHECK(slot != nullptr);
     CHECK(slot && (*slot).outLen == 10);
-    CHECK(AppBroker_getJobAt(&b, 1) == NULL);
+    CHECK(AppBroker_getJobAt(&b, 1) == nullptr);
     CHECK(!AppBroker_cancel(&b, jobId)); // DONE slot: false
     CHECK(AppBroker_poll(&b, 999) == APP_STATUS_IDLE);
-    CHECK(AppBroker_poll(NULL, 1) == APP_STATUS_IDLE);
+    CHECK(AppBroker_poll(nullptr, 1) == APP_STATUS_IDLE);
 
     // --- TIMEOUT path on driver failure ---------------------------------------
     AppDriverTable failTable;

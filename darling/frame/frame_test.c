@@ -21,7 +21,7 @@ static int g_fail = 0;
 // Counts invocation of a child Frame's close callback.
 static void onClosed(Frame *frame, void *ud) {
     (void)frame;
-    *(int *)ud += 1;
+    *(int*) ud += 1;
 }
 
 #define DARLING_TEST_HAS_FRAMES

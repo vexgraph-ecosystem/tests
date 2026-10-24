@@ -39,16 +39,16 @@ static int sFailures = 0;
 // Verifies capture-tool registry metadata and process/driver liveness probe behavior.
 int main(int argc, const char **argv) {
     CaptureTool *tools = CaptureTool_shared();
-    CHECK(tools != NULL);
+    CHECK(tools != nullptr);
     const uint32_t total = CaptureTool_count(tools);
     printf("CaptureTool_count = %u\n", total);
     CHECK(total == 15);
-    CHECK(CaptureTool_at(tools, 0) != NULL);
-    CHECK(CaptureTool_at(tools, total) == NULL);
+    CHECK(CaptureTool_at(tools, 0) != nullptr);
+    CHECK(CaptureTool_at(tools, total) == nullptr);
 
     // --- registry shape --------------------------------------------------------
     const CaptureSlot *obs = CaptureTool_get(tools, "obs");
-    CHECK(obs != NULL);
+    CHECK(obs != nullptr);
     CHECK(obs && strcmp(CaptureTool_getDisplayName(tools, obs), "OBS Studio") == 0);
     CHECK(obs && strcmp(CaptureTool_getProcKey(tools, obs), "obs") == 0);
     CHECK(obs && CaptureTool_getKind(tools, obs) == CAPTURE_KIND_SCREEN);
@@ -67,21 +67,21 @@ int main(int argc, const char **argv) {
     const CaptureSlot *zoom = CaptureTool_get(tools, "zoom");
     CHECK(zoom && CaptureTool_getKind(tools, zoom) == CAPTURE_KIND_STREAM);
 
-    CHECK(CaptureTool_get(tools, "definitely-not-a-capture-tool") == NULL);
+    CHECK(CaptureTool_get(tools, "definitely-not-a-capture-tool") == nullptr);
 
     // --- driver-vs-process contract -------------------------------------------
     const CaptureSlot *blackhole = CaptureTool_get(tools, "blackhole");
-    CHECK(blackhole && CaptureTool_getProcKey(tools, blackhole) == NULL);
-    CHECK(blackhole && CaptureTool_getDriverDir(tools, blackhole) != NULL);
+    CHECK(blackhole && CaptureTool_getProcKey(tools, blackhole) == nullptr);
+    CHECK(blackhole && CaptureTool_getDriverDir(tools, blackhole) != nullptr);
     const CaptureSlot *soundflower = CaptureTool_get(tools, "soundflower");
-    CHECK(soundflower && CaptureTool_getProcKey(tools, soundflower) == NULL);
-    CHECK(soundflower && CaptureTool_getDriverDir(tools, soundflower) != NULL);
+    CHECK(soundflower && CaptureTool_getProcKey(tools, soundflower) == nullptr);
+    CHECK(soundflower && CaptureTool_getDriverDir(tools, soundflower) != nullptr);
 
     for (uint32_t i = 0; i < total; i++) {
         const CaptureSlot *row = CaptureTool_at(tools, i);
-        CHECK(row != NULL);
-        CHECK(row && CaptureTool_getSlug(tools, row) != NULL);
-        CHECK(row && CaptureTool_getDisplayName(tools, row) != NULL);
+        CHECK(row != nullptr);
+        CHECK(row && CaptureTool_getSlug(tools, row) != nullptr);
+        CHECK(row && CaptureTool_getDisplayName(tools, row) != nullptr);
         CHECK(row && CaptureTool_getKind(tools, row) >= CAPTURE_KIND_SCREEN);
         CHECK(row && CaptureTool_getKind(tools, row) <= CAPTURE_KIND_AUDIO);
         // exactly one probe path per row: process XOR driver
@@ -105,8 +105,8 @@ int main(int argc, const char **argv) {
     CHECK(CaptureTool_countRunningAll(tools) <= total);
     CHECK(CaptureTool_countRunning(tools, CAPTURE_KIND_SCREEN) <= total);
     // Self-truthy liveness via ProcessProbe on our own executable.
-    const char *selfName = argc > 0 && argv[0] ? strrchr(argv[0], '/') : NULL;
-    selfName = selfName ? selfName + 1 : (argc > 0 ? argv[0] : NULL);
+    const char *selfName = argc > 0 && argv[0] ? strrchr(argv[0], '/') : nullptr;
+    selfName = selfName ? selfName + 1 : (argc > 0 ? argv[0] : nullptr);
     ProcessProbe *probe = ProcessProbe_shared();
     CHECK(selfName && ProcessProbe_isRunning(probe, selfName));
     CHECK(!ProcessProbe_isRunning(probe, "definitely-not-a-proc-xyzzy"));
@@ -114,20 +114,20 @@ int main(int argc, const char **argv) {
                                        "/definitely/not/a/dir-xyzzy", "obs"));
 
     // --- null-safety (Rule 24) -------------------------------------------------
-    CHECK(CaptureTool_count(NULL) == 0);
-    CHECK(CaptureTool_at(NULL, 0) == NULL);
-    CHECK(CaptureTool_get(NULL, NULL) == NULL);
-    CHECK(CaptureTool_get(tools, NULL) == NULL);
-    CHECK(CaptureTool_isRunning(NULL, NULL) == false);
-    CHECK(CaptureTool_isInstalled(NULL, NULL) == false);
-    CHECK(CaptureTool_countRunning(NULL, CAPTURE_KIND_SCREEN) == 0);
-    CHECK(CaptureTool_countRunningAll(NULL) == 0);
-    CHECK(CaptureTool_getSlug(NULL, NULL) == NULL);
-    CHECK(CaptureTool_getDisplayName(NULL, NULL) == NULL);
-    CHECK(CaptureTool_getProcKey(NULL, NULL) == NULL);
-    CHECK(CaptureTool_getDriverDir(NULL, NULL) == NULL);
-    CHECK(CaptureTool_getNote(NULL, NULL) == NULL);
-    CHECK(CaptureTool_getKind(NULL, NULL) == CAPTURE_KIND_SCREEN);
+    CHECK(CaptureTool_count(nullptr) == 0);
+    CHECK(CaptureTool_at(nullptr, 0) == nullptr);
+    CHECK(CaptureTool_get(nullptr, nullptr) == nullptr);
+    CHECK(CaptureTool_get(tools, nullptr) == nullptr);
+    CHECK(CaptureTool_isRunning(nullptr, nullptr) == false);
+    CHECK(CaptureTool_isInstalled(nullptr, nullptr) == false);
+    CHECK(CaptureTool_countRunning(nullptr, CAPTURE_KIND_SCREEN) == 0);
+    CHECK(CaptureTool_countRunningAll(nullptr) == 0);
+    CHECK(CaptureTool_getSlug(nullptr, nullptr) == nullptr);
+    CHECK(CaptureTool_getDisplayName(nullptr, nullptr) == nullptr);
+    CHECK(CaptureTool_getProcKey(nullptr, nullptr) == nullptr);
+    CHECK(CaptureTool_getDriverDir(nullptr, nullptr) == nullptr);
+    CHECK(CaptureTool_getNote(nullptr, nullptr) == nullptr);
+    CHECK(CaptureTool_getKind(nullptr, nullptr) == CAPTURE_KIND_SCREEN);
 
     if (sFailures == 0) {
         printf("capture_tool_test: ALL CHECKS PASSED (%u capture tools)\n", total);

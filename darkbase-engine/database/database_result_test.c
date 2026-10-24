@@ -112,7 +112,7 @@ static void testWalk(void) {
         void *got = nullptr;
         CHECK(DatabaseResult_next(r, &got));
         CHECK(got == (void*) &rows[i]);
-        CHECK(((Row2*) got)->v == i * 10u);
+        CHECK((*((Row2*) got)).v == i * 10u);
     }
     CHECK(DatabaseResult_position(r) == 8u);
     void *past = (void*) (uintptr_t) 2u;

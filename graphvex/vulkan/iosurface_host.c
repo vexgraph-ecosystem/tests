@@ -30,7 +30,7 @@ void *IosHost_create(int width, int height) {
     IOSurfaceRef s = IOSurfaceCreate(d);
     CFRelease(nw); CFRelease(nh); CFRelease(nbpe); CFRelease(nbpr); CFRelease(nfmt);
     CFRelease(d);
-    return (void *)s;
+    return (void*) s;
 }
 
 /** Releases a surface returned by IosHost_create; nullptr is ignored. */
@@ -44,7 +44,7 @@ const uint8_t *IosHost_lockRead(void *surface, size_t *outStride) {
     if (IOSurfaceLock((IOSurfaceRef) surface, kIOSurfaceLockReadOnly, nullptr) != kIOReturnSuccess)
         return nullptr;
     if (outStride) *outStride = IOSurfaceGetBytesPerRow((IOSurfaceRef)surface);
-    return (const uint8_t *)IOSurfaceGetBaseAddress((IOSurfaceRef)surface);
+    return (const uint8_t*) IOSurfaceGetBaseAddress((IOSurfaceRef)surface);
 }
 
 /** Ends the read lock acquired by IosHost_lockRead; nullptr is ignored. */

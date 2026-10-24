@@ -193,7 +193,7 @@ int main(void) {
     C23Lexer_free(lexer);
 
     const unsigned char malformed[] = {0xE1u, 0x80u, 'x', 0u, 'y'};
-    lexer = C23Lexer(18u, (const char *) malformed, sizeof malformed);
+    lexer = C23Lexer(18u, (const char*) malformed, sizeof malformed);
     take(lexer, SYNTAX_ROLE_INVALID, 0u, 2u);
     take(lexer, SYNTAX_ROLE_IDENTIFIER, 2u, 3u);
     take(lexer, SYNTAX_ROLE_INVALID, 3u, 4u);
@@ -222,21 +222,21 @@ int main(void) {
     C23Lexer_free(lexer);
 
     const unsigned char nulInString[] = {'"', 'a', 0u, 'b', '"'};
-    lexer = C23Lexer(35u, (const char *) nulInString, sizeof nulInString);
+    lexer = C23Lexer(35u, (const char*) nulInString, sizeof nulInString);
     take(lexer, SYNTAX_ROLE_INVALID, 0u, 3u);
     take(lexer, SYNTAX_ROLE_IDENTIFIER, 3u, 4u);
     take(lexer, SYNTAX_ROLE_INVALID, 4u, 5u);
     C23Lexer_free(lexer);
 
     const unsigned char nulEscapedInString[] = {'"', 'a', '\\', 0u, 'b', '"'};
-    lexer = C23Lexer(36u, (const char *) nulEscapedInString, sizeof nulEscapedInString);
+    lexer = C23Lexer(36u, (const char*) nulEscapedInString, sizeof nulEscapedInString);
     take(lexer, SYNTAX_ROLE_INVALID, 0u, 4u);
     take(lexer, SYNTAX_ROLE_IDENTIFIER, 4u, 5u);
     take(lexer, SYNTAX_ROLE_INVALID, 5u, 6u);
     C23Lexer_free(lexer);
 
     const unsigned char nulInCharacter[] = {'\'', 'a', 0u, '\''};
-    lexer = C23Lexer(37u, (const char *) nulInCharacter, sizeof nulInCharacter);
+    lexer = C23Lexer(37u, (const char*) nulInCharacter, sizeof nulInCharacter);
     take(lexer, SYNTAX_ROLE_INVALID, 0u, 3u);
     take(lexer, SYNTAX_ROLE_INVALID, 3u, 4u);
     C23Lexer_free(lexer);
@@ -244,7 +244,7 @@ int main(void) {
     const unsigned char maximalSubparts[] = {
         0xE0u, 0x80u, 0x80u, 0xF1u, 0x80u, 'x'
     };
-    lexer = C23Lexer(29u, (const char *) maximalSubparts, sizeof maximalSubparts);
+    lexer = C23Lexer(29u, (const char*) maximalSubparts, sizeof maximalSubparts);
     take(lexer, SYNTAX_ROLE_INVALID, 0u, 1u);
     take(lexer, SYNTAX_ROLE_INVALID, 1u, 2u);
     take(lexer, SYNTAX_ROLE_INVALID, 2u, 3u);
@@ -253,7 +253,7 @@ int main(void) {
     C23Lexer_free(lexer);
 
     const unsigned char commentBytes[] = {'/', '*', 'a', 0xE1u, 0x80u, 'x', '*', '/', 'z'};
-    lexer = C23Lexer(24u, (const char *) commentBytes, sizeof commentBytes);
+    lexer = C23Lexer(24u, (const char*) commentBytes, sizeof commentBytes);
     take(lexer, SYNTAX_ROLE_COMMENT, 0u, 3u);
     take(lexer, SYNTAX_ROLE_INVALID, 3u, 5u);
     take(lexer, SYNTAX_ROLE_COMMENT, 5u, 8u);
@@ -261,7 +261,7 @@ int main(void) {
     C23Lexer_free(lexer);
 
     const unsigned char stringBytes[] = {'"', 'a', 0xE1u, 0x80u, 'b', '"'};
-    lexer = C23Lexer(25u, (const char *) stringBytes, sizeof stringBytes);
+    lexer = C23Lexer(25u, (const char*) stringBytes, sizeof stringBytes);
     take(lexer, SYNTAX_ROLE_STRING, 0u, 2u);
     take(lexer, SYNTAX_ROLE_INVALID, 2u, 4u);
     take(lexer, SYNTAX_ROLE_STRING, 4u, 6u);
@@ -348,9 +348,9 @@ int main(void) {
         "a\\\nb",
         "\"a\\\nb\"",
         "'a\\\nb'",
-        (const char *) nulInString,
-        (const char *) nulEscapedInString,
-        (const char *) nulInCharacter
+        (const char*) nulInString,
+        (const char*) nulEscapedInString,
+        (const char*) nulInCharacter
     };
     const size_t coverageLengths[] = {
         strlen(coverageSamples[0]), strlen(coverageSamples[1]), strlen(coverageSamples[2]),

@@ -27,34 +27,34 @@ typedef struct FakeApp {
     bool stopOnInput;
 } FakeApp;
 
-static bool fOpen(void *ctx) { ((Fake*) ctx)->opens++; return true; }
-static void fClose(void *ctx) { ((Fake*) ctx)->closes++; }
+static bool fOpen(void *ctx) { (*((Fake*) ctx)).opens++; return true; }
+static void fClose(void *ctx) { (*((Fake*) ctx)).closes++; }
 static bool fSize(void *ctx, size_t *w, size_t *h) {
     Fake *f = (Fake*) ctx;
-    *w = f->w; *h = f->h;
-    return f->w > 0 && f->h > 0;
+    *w = (*f).w; *h = (*f).h;
+    return (*f).w > 0 && (*f).h > 0;
 }
 static bool fPresent(void *ctx, const char *cells, size_t w, size_t h) {
     Fake *f = (Fake*) ctx;
     (void) cells; (void) w; (void) h;
-    f->presents++;
+    (*f).presents++;
     return true;
 }
 static bool fPoll(void *ctx, int timeoutMs, CommandLineEvent *out) {
     Fake *f = (Fake*) ctx;
     (void) timeoutMs;
-    f->polls++;
-    if (!f->pending)
+    (*f).polls++;
+    if (!(*f).pending)
         return false;
-    f->pending = false;
-    *out = f->next;
+    (*f).pending = false;
+    *out = (*f).next;
     return true;
 }
-static bool fMouse(void *ctx, bool enabled) { ((Fake*) ctx)->mouse = enabled ? 1 : 0; return true; }
+static bool fMouse(void *ctx, bool enabled) { (*((Fake*) ctx)).mouse = enabled ? 1 : 0; return true; }
 
 static bool aDraw(void *ctx, CommandLine *line) {
     FakeApp *a = (FakeApp*) ctx;
-    a->draws++;
+    (*a).draws++;
     char *cells = CommandLine_getCells(line);
     if (cells != nullptr)
         memset(cells, '.', CommandLine_getWidth(line) * CommandLine_getHeight(line));
@@ -63,8 +63,8 @@ static bool aDraw(void *ctx, CommandLine *line) {
 static bool aInput(void *ctx, CommandLine *line, const CommandLineEvent *event) {
     FakeApp *a = (FakeApp*) ctx;
     (void) event;
-    a->inputs++;
-    if (a->stopOnInput) {
+    (*a).inputs++;
+    if ((*a).stopOnInput) {
         CommandLine_stop(line);
         return false;
     }

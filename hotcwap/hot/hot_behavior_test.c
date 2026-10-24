@@ -55,7 +55,7 @@ int main(void) {
     bool (*restore)(const void *, size_t) = (bool (*)(const void *, size_t)) dlsym(h, "Hot_restore");
     bool (*migrate)(const char *, const void *, size_t, void *, size_t, size_t *) =
         (bool (*)(const char *, const void *, size_t, void *, size_t, size_t *)) dlsym(h, "Hot_migrate");
-    const void *(*tramps)(uint32_t *) = (const void *(*)(uint32_t *)) dlsym(h, "VkModuleGetTrampolines");
+    const void *(*tramps)(uint32_t*) = (const void *(*)(uint32_t*)) dlsym(h, "VkModuleGetTrampolines");
 
     CHECK(pulse && bar && texturePath && setBias && getBias && save && restore && migrate && tramps);
     if (!(pulse && bar && texturePath && setBias && getBias && save && restore && migrate && tramps)) {

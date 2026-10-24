@@ -56,44 +56,44 @@ int main(int argc, const char **argv) {
 
     // --- directory shape ---------------------------------------------------------
     AssetProvider *dir = AssetProvider_shared();
-    CHECK(dir != NULL);
+    CHECK(dir != nullptr);
     const uint32_t total = AssetProvider_count(dir);
     printf("AssetProvider_count = %u\n", total);
     CHECK(total == 12);
-    CHECK(AssetProvider_at(dir, 0) != NULL);
-    CHECK(AssetProvider_at(dir, total) == NULL);
+    CHECK(AssetProvider_at(dir, 0) != nullptr);
+    CHECK(AssetProvider_at(dir, total) == nullptr);
 
     // --- blessed-API row ------------------------------------------------------------
     const AssetProviderSlot *unsplash = AssetProvider_get(dir, "unsplash");
-    CHECK(unsplash != NULL);
+    CHECK(unsplash != nullptr);
     CHECK(unsplash && strcmp(AssetProvider_getDisplayName(dir, unsplash), "Unsplash") == 0);
-    CHECK(unsplash && AssetProvider_getApiBase(dir, unsplash) != NULL);
-    CHECK(unsplash && AssetProvider_getLicenseFamily(dir, unsplash) != NULL);
-    CHECK(unsplash && AssetProvider_getSampleTitle(dir, unsplash) != NULL);
-    CHECK(unsplash && AssetProvider_getSampleAuthor(dir, unsplash) != NULL);
-    CHECK(unsplash && AssetProvider_getSamplePreview(dir, unsplash) != NULL);
-    CHECK(unsplash && AssetProvider_getSampleDownload(dir, unsplash) != NULL);
+    CHECK(unsplash && AssetProvider_getApiBase(dir, unsplash) != nullptr);
+    CHECK(unsplash && AssetProvider_getLicenseFamily(dir, unsplash) != nullptr);
+    CHECK(unsplash && AssetProvider_getSampleTitle(dir, unsplash) != nullptr);
+    CHECK(unsplash && AssetProvider_getSampleAuthor(dir, unsplash) != nullptr);
+    CHECK(unsplash && AssetProvider_getSamplePreview(dir, unsplash) != nullptr);
+    CHECK(unsplash && AssetProvider_getSampleDownload(dir, unsplash) != nullptr);
 
     // --- catalog-only row (no search API, curated manifest) -----------------------------
     const AssetProviderSlot *kenney = AssetProvider_get(dir, "kenney");
-    CHECK(kenney && AssetProvider_getApiBase(dir, kenney) == NULL);
+    CHECK(kenney && AssetProvider_getApiBase(dir, kenney) == nullptr);
     CHECK(kenney && strcmp(AssetProvider_getLicenseFamily(dir, kenney), "CC0") == 0);
-    CHECK(kenney && AssetProvider_getSampleDownload(dir, kenney) != NULL);
-    CHECK(AssetProvider_get(dir, "quaternius") != NULL);
-    CHECK(AssetProvider_get(dir, "definitely-not-a-source") == NULL);
+    CHECK(kenney && AssetProvider_getSampleDownload(dir, kenney) != nullptr);
+    CHECK(AssetProvider_get(dir, "quaternius") != nullptr);
+    CHECK(AssetProvider_get(dir, "definitely-not-a-source") == nullptr);
 
     // --- directory consistency ------------------------------------------------------------
     const char *names[12];
     uint32_t nameCount = 0;
     for (uint32_t i = 0; i < total; i++) {
         const AssetProviderSlot *row = AssetProvider_at(dir, i);
-        CHECK(row != NULL);
+        CHECK(row != nullptr);
         CHECK(row && isSlugValid(AssetProvider_getSlug(dir, row)));
         CHECK(row && AssetProvider_get(dir, AssetProvider_getSlug(dir, row)) == row);
-        const char *rowName = row ? AssetProvider_getDisplayName(dir, row) : NULL;
+        const char *rowName = row ? AssetProvider_getDisplayName(dir, row) : nullptr;
         CHECK(rowName && (*rowName) != '\0');
-        CHECK(row && AssetProvider_getLicenseFamily(dir, row) != NULL);
-        CHECK(row && AssetProvider_getSampleDownload(dir, row) != NULL);
+        CHECK(row && AssetProvider_getLicenseFamily(dir, row) != nullptr);
+        CHECK(row && AssetProvider_getSampleDownload(dir, row) != nullptr);
         if (row && rowName) {
             int dup = 0;
             for (uint32_t j = 0; j < nameCount; j++) {
@@ -106,19 +106,19 @@ int main(int argc, const char **argv) {
     }
 
     // --- null-safety (Rule 24) -------------------------------------------------------------------
-    CHECK(AssetProvider_count(NULL) == 0);
-    CHECK(AssetProvider_get(NULL, NULL) == NULL);
-    CHECK(AssetProvider_get(dir, NULL) == NULL);
-    CHECK(AssetProvider_at(NULL, 0) == NULL);
-    CHECK(AssetProvider_getSlug(NULL, NULL) == NULL);
-    CHECK(AssetProvider_getDisplayName(NULL, NULL) == NULL);
-    CHECK(AssetProvider_getApiBase(NULL, NULL) == NULL);
-    CHECK(AssetProvider_getLicenseFamily(NULL, NULL) == NULL);
-    CHECK(AssetProvider_getSampleTitle(NULL, NULL) == NULL);
-    CHECK(AssetProvider_getSampleAuthor(NULL, NULL) == NULL);
-    CHECK(AssetProvider_getSamplePreview(NULL, NULL) == NULL);
-    CHECK(AssetProvider_getSampleDownload(NULL, NULL) == NULL);
-    CHECK(AssetProvider_getNote(NULL, NULL) == NULL);
+    CHECK(AssetProvider_count(nullptr) == 0);
+    CHECK(AssetProvider_get(nullptr, nullptr) == nullptr);
+    CHECK(AssetProvider_get(dir, nullptr) == nullptr);
+    CHECK(AssetProvider_at(nullptr, 0) == nullptr);
+    CHECK(AssetProvider_getSlug(nullptr, nullptr) == nullptr);
+    CHECK(AssetProvider_getDisplayName(nullptr, nullptr) == nullptr);
+    CHECK(AssetProvider_getApiBase(nullptr, nullptr) == nullptr);
+    CHECK(AssetProvider_getLicenseFamily(nullptr, nullptr) == nullptr);
+    CHECK(AssetProvider_getSampleTitle(nullptr, nullptr) == nullptr);
+    CHECK(AssetProvider_getSampleAuthor(nullptr, nullptr) == nullptr);
+    CHECK(AssetProvider_getSamplePreview(nullptr, nullptr) == nullptr);
+    CHECK(AssetProvider_getSampleDownload(nullptr, nullptr) == nullptr);
+    CHECK(AssetProvider_getNote(nullptr, nullptr) == nullptr);
 
     // --- broker: cursor copies --------------------------------------------------------------------------
     AssetBroker broker = AssetBroker();
@@ -140,7 +140,7 @@ int main(int argc, const char **argv) {
     CHECK(AssetBroker_getBytesCopied(&broker) == 8);
 
     // --- broker: empty chunk is a no-op success ----------------------------------------------------------------
-    CHECK(AssetBroker_copyChunk(&broker, NULL, 0, dest, sizeof(dest), &used, &truncated));
+    CHECK(AssetBroker_copyChunk(&broker, nullptr, 0, dest, sizeof(dest), &used, &truncated));
     CHECK(used == 8);
 
     // --- broker: oversize chunk refused (per-chunk bound, never whole-file) ----------------------------------------
@@ -202,7 +202,7 @@ int main(int argc, const char **argv) {
     const char *wayTooLong = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdefX";
     CHECK(!AssetBroker_setCacheSub(&st, wayTooLong, &subTrunc));
     CHECK(subTrunc);
-    CHECK(!AssetBroker_setCacheSub(&st, NULL, &subTrunc));
+    CHECK(!AssetBroker_setCacheSub(&st, nullptr, &subTrunc));
     CHECK(!AssetBroker_setCacheSub(nullptr, "x", &subTrunc));
     AssetBroker_setCancelled(&st, true);
     CHECK(AssetBroker_isCancelled(&st));

@@ -89,31 +89,31 @@ int main(int argc, const char **argv) {
 
     // --- EngineProvider directory shape ------------------------------------
     EngineProvider *dir = EngineProvider_shared();
-    CHECK(dir != NULL);
+    CHECK(dir != nullptr);
     CHECK(EngineProvider_count(dir) == 20);
-    CHECK(EngineProvider_at(dir, 0) != NULL);
-    CHECK(EngineProvider_at(dir, 20) == NULL);
-    CHECK(EngineProvider_get(dir, "claude-code") != NULL);
-    CHECK(EngineProvider_get(dir, "opencode") != NULL);
-    CHECK(EngineProvider_get(dir, "kilocode") != NULL);
-    CHECK(EngineProvider_get(dir, "t3-code") != NULL);
-    CHECK(EngineProvider_get(dir, "agy") != NULL);
-    CHECK(EngineProvider_get(dir, "codex") != NULL);
-    CHECK(EngineProvider_get(dir, "gemini-cli") != NULL);
-    CHECK(EngineProvider_get(dir, "aider") != NULL);
-    CHECK(EngineProvider_get(dir, "pi") != NULL);
-    CHECK(EngineProvider_get(dir, "goose") != NULL);
-    CHECK(EngineProvider_get(dir, "cursor-cli") != NULL);
-    CHECK(EngineProvider_get(dir, "kiro-cli") != NULL);
-    CHECK(EngineProvider_get(dir, "windsurf") != NULL);
-    CHECK(EngineProvider_get(dir, "qwen-code") != NULL);
-    CHECK(EngineProvider_get(dir, "crush") != NULL);
-    CHECK(EngineProvider_get(dir, "hermes") != NULL);
-    CHECK(EngineProvider_get(dir, "amp") != NULL);
-    CHECK(EngineProvider_get(dir, "gptme") != NULL);
-    CHECK(EngineProvider_get(dir, "openhands") != NULL);
-    CHECK(EngineProvider_get(dir, "copilot-cli") != NULL);
-    CHECK(EngineProvider_get(dir, "definitely-not-an-engine") == NULL);
+    CHECK(EngineProvider_at(dir, 0) != nullptr);
+    CHECK(EngineProvider_at(dir, 20) == nullptr);
+    CHECK(EngineProvider_get(dir, "claude-code") != nullptr);
+    CHECK(EngineProvider_get(dir, "opencode") != nullptr);
+    CHECK(EngineProvider_get(dir, "kilocode") != nullptr);
+    CHECK(EngineProvider_get(dir, "t3-code") != nullptr);
+    CHECK(EngineProvider_get(dir, "agy") != nullptr);
+    CHECK(EngineProvider_get(dir, "codex") != nullptr);
+    CHECK(EngineProvider_get(dir, "gemini-cli") != nullptr);
+    CHECK(EngineProvider_get(dir, "aider") != nullptr);
+    CHECK(EngineProvider_get(dir, "pi") != nullptr);
+    CHECK(EngineProvider_get(dir, "goose") != nullptr);
+    CHECK(EngineProvider_get(dir, "cursor-cli") != nullptr);
+    CHECK(EngineProvider_get(dir, "kiro-cli") != nullptr);
+    CHECK(EngineProvider_get(dir, "windsurf") != nullptr);
+    CHECK(EngineProvider_get(dir, "qwen-code") != nullptr);
+    CHECK(EngineProvider_get(dir, "crush") != nullptr);
+    CHECK(EngineProvider_get(dir, "hermes") != nullptr);
+    CHECK(EngineProvider_get(dir, "amp") != nullptr);
+    CHECK(EngineProvider_get(dir, "gptme") != nullptr);
+    CHECK(EngineProvider_get(dir, "openhands") != nullptr);
+    CHECK(EngineProvider_get(dir, "copilot-cli") != nullptr);
+    CHECK(EngineProvider_get(dir, "definitely-not-an-engine") == nullptr);
 
     const EngineProviderSlot *opencode = EngineProvider_get(dir, "opencode");
     CHECK(opencode && strcmp(EngineProvider_getCliName(dir, opencode), "opencode") == 0);
@@ -125,35 +125,35 @@ int main(int argc, const char **argv) {
     CHECK(strcmp(cli, "opencode") == 0);
     char tiny[4];
     CHECK(!EngineProvider_resolveCli(dir, opencode, tiny, sizeof(tiny)));
-    CHECK(!EngineProvider_resolveCli(dir, opencode, NULL, 32));
+    CHECK(!EngineProvider_resolveCli(dir, opencode, nullptr, 32));
     CHECK(!EngineProvider_resolveCli(dir, opencode, cli, 0));
-    CHECK(!EngineProvider_resolveCli(NULL, opencode, cli, sizeof(cli)));
-    CHECK(!EngineProvider_resolveCli(dir, NULL, cli, sizeof(cli)));
+    CHECK(!EngineProvider_resolveCli(nullptr, opencode, cli, sizeof(cli)));
+    CHECK(!EngineProvider_resolveCli(dir, nullptr, cli, sizeof(cli)));
 
     // --- null-safety (Rule 24) ----------------------------------------------
-    CHECK(EngineProvider_count(NULL) == 0);
-    CHECK(EngineProvider_at(NULL, 0) == NULL);
-    CHECK(EngineProvider_get(NULL, NULL) == NULL);
-    CHECK(EngineProvider_get(dir, NULL) == NULL);
-    CHECK(EngineProvider_getSlug(NULL, NULL) == NULL);
-    CHECK(EngineProvider_getDisplayName(NULL, NULL) == NULL);
-    CHECK(EngineProvider_getCliName(NULL, NULL) == NULL);
-    CHECK(EngineProvider_getNote(NULL, NULL) == NULL);
-    CHECK(EngineProvider_getFamily(NULL, NULL) == ENGINE_PROVIDER_FAMILY_CLI);
-    CHECK(EngineProvider_getAuth(NULL, NULL) == ENGINE_PROVIDER_AUTH_NONE);
+    CHECK(EngineProvider_count(nullptr) == 0);
+    CHECK(EngineProvider_at(nullptr, 0) == nullptr);
+    CHECK(EngineProvider_get(nullptr, nullptr) == nullptr);
+    CHECK(EngineProvider_get(dir, nullptr) == nullptr);
+    CHECK(EngineProvider_getSlug(nullptr, nullptr) == nullptr);
+    CHECK(EngineProvider_getDisplayName(nullptr, nullptr) == nullptr);
+    CHECK(EngineProvider_getCliName(nullptr, nullptr) == nullptr);
+    CHECK(EngineProvider_getNote(nullptr, nullptr) == nullptr);
+    CHECK(EngineProvider_getFamily(nullptr, nullptr) == ENGINE_PROVIDER_FAMILY_CLI);
+    CHECK(EngineProvider_getAuth(nullptr, nullptr) == ENGINE_PROVIDER_AUTH_NONE);
 
     // --- unbound-driver degrade (no engine, no driver: no slot consumed) ----
     Harness bare = Harness();
-    CHECK(Harness_getEngine(&bare) == NULL);
-    CHECK(Harness_getDriver(&bare) == NULL);
+    CHECK(Harness_getEngine(&bare) == nullptr);
+    CHECK(Harness_getDriver(&bare) == nullptr);
     CHECK(Harness_getTimeout(&bare) == 100);
     CHECK(!Harness_isRunning(&bare));
     uint32_t jobId = 0;
     CHECK(!Harness_run(&bare, "hello", 5, 100, &jobId));
     CHECK(Harness_getLastStatus(&bare) == HARNESS_STATUS_IDLE);
     CHECK(Harness_getJobCount(&bare) == 0);
-    CHECK(!Harness_run(NULL, "hello", 5, 100, &jobId));
-    CHECK(!Harness_run(&bare, NULL, 5, 100, &jobId));
+    CHECK(!Harness_run(nullptr, "hello", 5, 100, &jobId));
+    CHECK(!Harness_run(&bare, nullptr, 5, 100, &jobId));
     CHECK(!Harness_run(&bare, "hello", 0, 100, &jobId));
 
     // --- bound run + poll + cancel through the stub --------------------------
@@ -174,8 +174,8 @@ int main(int argc, const char **argv) {
     CHECK(Harness_isRunning(&h));
     CHECK(Harness_getJobStatus(&h, jobId) == HARNESS_STATUS_RUNNING);
     CHECK(Harness_poll(&h, jobId) == HARNESS_STATUS_RUNNING);
-    CHECK(Harness_getJobAt(&h, 0) != NULL);
-    CHECK(Harness_getJobAt(&h, 1) == NULL);
+    CHECK(Harness_getJobAt(&h, 0) != nullptr);
+    CHECK(Harness_getJobAt(&h, 1) == nullptr);
     CHECK(Harness_cancel(&h, jobId));
     CHECK(sCancelCalls == 1);
     CHECK(Harness_getJobStatus(&h, jobId) == HARNESS_STATUS_IDLE);
@@ -183,8 +183,8 @@ int main(int argc, const char **argv) {
     CHECK(!Harness_cancel(&h, jobId)); // idle slot: false
     CHECK(!Harness_cancel(&h, 999));   // unknown job: false
     CHECK(Harness_poll(&h, 999) == HARNESS_STATUS_IDLE);
-    CHECK(Harness_poll(NULL, 1) == HARNESS_STATUS_IDLE);
-    CHECK(Harness_getJobStatus(NULL, 1) == HARNESS_STATUS_IDLE);
+    CHECK(Harness_poll(nullptr, 1) == HARNESS_STATUS_IDLE);
+    CHECK(Harness_getJobStatus(nullptr, 1) == HARNESS_STATUS_IDLE);
 
     // --- BUSY_FULL: 16 bounded slots, 17th run refused -----------------------
     Harness full = Harness();
@@ -210,7 +210,7 @@ int main(int argc, const char **argv) {
 
     // --- NULL-driver poll degrades to the stored status ----------------------
     HarnessDriverTable noPoll = stubTable();
-    noPoll.pollFn = NULL;
+    noPoll.pollFn = nullptr;
     Harness_setDriver(&h, &driverCtx, noPoll);
     CHECK(Harness_poll(&h, 1) == HARNESS_STATUS_IDLE);
 

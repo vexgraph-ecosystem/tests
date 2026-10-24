@@ -7,7 +7,7 @@
 #include <string.h>
 #include "frame/frame.h"
 #include "c23/event_invoke.h"
-#include "../../test_support.h"
+#include "test_support.h"
 #define DARLING_TEST_HAS_FRAMES
 #define DARLING_TEST_WITH_ARGS
 #include "darling/test_application.h"
