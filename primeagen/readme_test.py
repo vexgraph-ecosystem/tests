@@ -13,7 +13,7 @@ import os
 import shutil
 
 ROOT = Path(__file__).resolve().parents[2]
-APP = ROOT / "personal/primeagen"
+APP = ROOT / "suite/personal/primeagen"
 
 
 class ReadmeTest(unittest.TestCase):
@@ -103,10 +103,25 @@ class ReadmeTest(unittest.TestCase):
         self.assertIn("Hot_requiresRecovery", terminal)
         self.assertIn("updateRequested && !SessionBridge_isBusy", terminal)
         self.assertIn('"Primeagen_command"', view)
-        for claim in ("three columns", "offline previews", "shared line borders", "install-command.sh", "caller's working directory"):
+        for claim in ("four top-level folders", "mock conversation/composer", "right-side chat interface", "exactly one `#general` channel", "Nerd Font", "full-width selection rectangle", "borderless panel", "Ctrl-B", "install-command.sh", "caller's working directory"):
             self.assertIn(claim, readme)
         self.assertIn("Primeagen_panelsClick", view)
-        self.assertIn("selection == 0 &&", terminal)
+        self.assertIn("TerminalTreeView_addChild", terminal)
+        self.assertIn("TerminalTreeView_toggle", terminal)
+        self.assertIn("TUI_CTRL_B", terminal)
+        self.assertIn("TerminalTreeView_scrollBy", terminal)
+        self.assertIn('L"⌄"', view)
+        self.assertIn('L"›"', view)
+        self.assertIn("\\uf07c", view)
+        self.assertIn("\\uf07b", view)
+        self.assertIn("\\uf544", view)
+        self.assertIn("\\uf233", view)
+        self.assertIn("\\uf086", view)
+        tree_view = view.split("\nbool Primeagen_drawTreePanels(", 1)[1].split("\nconst void *VkModuleGetTrampolines", 1)[0]
+        self.assertNotIn("│", tree_view)
+        self.assertIn("PRIMEAGEN_PAIR_TREE_SELECTED", tree_view)
+        self.assertIn("mvhline", tree_view)
+        self.assertIn("panel == PRIMEAGEN_PANEL_PEOPLE && selection == 0", terminal)
         self.assertIn("readlink", (APP / "primeagen").read_text())
 
     def test_cli_no_contact_doctor_and_standalone_source_root_build(self):
@@ -118,12 +133,12 @@ class ReadmeTest(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="primeagen-standalone-") as temp:
             target = Path(temp) / "independent checkout"
             shutil.copytree(APP, target, ignore=shutil.ignore_patterns(".git", ".build", "__pycache__", ".env"))
-            roots = {"API_HAVEN_SOURCE_DIR": ROOT / "drivers/api-haven/src",
-                     "HARNESS_SOURCE_DIR": ROOT / "interfaces/harness/src",
-                      "VEXSPOKE_SOURCE_DIR": ROOT / "host-behavior/vexspoke/src"}
-            roots["HOTCWAP_SOURCE_DIR"] = ROOT / "host-behavior/hotcwap"
-            roots["DETERMINANT_SOURCE_DIR"] = ROOT / "drivers/determinant/src"
-            roots["RELATIONAL_ENGINE_SOURCE_DIR"] = ROOT / "host-behavior/relational-engine/src"
+            roots = {"API_HAVEN_SOURCE_DIR": ROOT / "suite/ecosystem/api-haven/src",
+                     "HARNESS_SOURCE_DIR": ROOT / "suite/ecosystem/harness/src",
+                     "VEXSPOKE_SOURCE_DIR": ROOT / "suite/ecosystem/vexspoke/src"}
+            roots["HOTCWAP_SOURCE_DIR"] = ROOT / "suite/ecosystem/hotcwap"
+            roots["DETERMINANT_SOURCE_DIR"] = ROOT / "suite/ecosystem/determinant/src"
+            roots["RELATIONAL_ENGINE_SOURCE_DIR"] = ROOT / "suite/ecosystem/relational-engine/src"
             env = {**os.environ, **{key: str(value) for key, value in roots.items()}}
             result = subprocess.run([sys.executable, str(target / "build.py")], capture_output=True, timeout=120, env=env)
             self.assertEqual(result.returncode, 0, result.stderr)

@@ -9,14 +9,16 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
-APP = ROOT / "personal/primeagen"
-VEX = ROOT / "host-behavior/vexspoke/src"
-API = ROOT / "drivers/api-haven/src"
-HOT = ROOT / "host-behavior/hotcwap"
-DET = ROOT / "drivers/determinant/src"
+APP = ROOT / "suite/personal/primeagen"
+VEX = ROOT / "suite/ecosystem/vexspoke/src"
+API = ROOT / "suite/ecosystem/api-haven/src"
+HOT = ROOT / "suite/ecosystem/hotcwap"
+DET = ROOT / "suite/ecosystem/determinant/src"
+REL = ROOT / "suite/ecosystem/relational-engine/src"
 # The R3 terminal toolkit the view now draws through (canvas → frame → appearance).
 DET_SOURCES = ["terminal/terminal_canvas.c", "terminal/terminal_frame.c",
-               "terminal/terminal_image.c", "terminal/terminal_appearance.c"]
+               "terminal/terminal_image.c", "terminal/terminal_appearance.c",
+               "terminal/terminal_tree_view.c"]
 
 
 class NativeTuiTest(unittest.TestCase):
@@ -49,7 +51,7 @@ class NativeTuiTest(unittest.TestCase):
                     with self.subTest(owner=owner, sanitized=sanitized):
                         dest = Path(directory) / "owner"
                         argv = ["clang", "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-O1",
-                                "-mcpu=apple-m1", "-mmacosx-version-min=14.0", f"-I{APP}", f"-I{VEX}", f"-I{API}", f"-I{HOT}", f"-I{DET}"]
+                                "-mcpu=apple-m1", "-mmacosx-version-min=14.0", f"-I{APP}", f"-I{VEX}", f"-I{API}", f"-I{HOT}", f"-I{DET}", f"-I{REL}"]
                         if sanitized:
                             argv += ["-fsanitize=address,undefined", "-fno-omit-frame-pointer"]
                         argv += [str(ROOT / "tests/primeagen" / owner)]
@@ -59,6 +61,7 @@ class NativeTuiTest(unittest.TestCase):
                                 argv += [str(APP / "cli/appearance.c")]
                             argv += [str(DET / source) for source in DET_SOURCES]
                         argv += [str(APP / "tui/markdown.c")]
+                        argv += [str(REL / "nio/mem.c"), str(REL / "type/type.c"), str(VEX / "atomic/spin.c")]
                         argv += [str(API / "harness/harness.c"), str(API / "harness/engine_provider.c")]
                         argv += [str(VEX / "net/json.c"), "-Wl,-dead_strip", "-lncurses", "-o", str(dest)]
                         if owner == "cli/main_test.c":
