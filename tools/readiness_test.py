@@ -65,7 +65,8 @@ class ReadinessTest(unittest.TestCase):
             "| :--- | :---: | ---: | :--- | :--- | :--- | :--- |\n"
             f"| `tests/demo/thing_test.c` | ✅ | 1700000000 | {self.test_sha} | "
             "fixture command | demo test | passed |\n"
-            "| `tests/demo/missing_test.c` | ❌ | — | — | none | not run | untested |\n")
+            "| `tests/demo/missing_test.c` | ❌ | — | — | none | not run | untested |\n",
+            encoding="utf-8")
 
         claims = {
             "version": 1,

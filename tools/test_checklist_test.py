@@ -168,9 +168,10 @@ class ChecklistTest(unittest.TestCase):
         report = self.root / CHECKLIST.REPORT
         report.parent.mkdir(parents=True, exist_ok=True)
         report.write_text("| Filename | Tested? | Time | Hash | Evidence | Written by | Result |\n"
-                          "| `tests/subject_test.py` | ❌ | — | — | No evidence | private-name (agent ses_private) | untested |\n")
+                          "| `tests/subject_test.py` | ❌ | — | — | No evidence | private-name (agent ses_private) | untested |\n",
+                          encoding="utf-8")
         self.run_cli(["sync"])
-        text = report.read_text()
+        text = report.read_text(encoding="utf-8")
         self.assertNotIn("Written by", text)
         self.assertNotIn("private-name", text)
         self.assertNotIn("ses_private", text)
