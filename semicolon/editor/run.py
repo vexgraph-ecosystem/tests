@@ -126,8 +126,12 @@ def main():
                             argv=[str(output), "--root", str(directory), "--file", str(editable),
                                   "--icons", "plain"],
                             env={"TERM": "xterm-256color", "SEMICOLON_BG": "#202020"})
+        closed = False
         try:
-            assert shell.wait_for(b"color.c", seconds=10.0), "C23 file did not open"
+            if not shell.wait_for(b"color.c", seconds=10.0):
+                closed = True
+                code, captured = shell.finish()
+                raise AssertionError(f"C23 file did not open. Exit: {code}, captured: {captured!r}")
             payload = shell.repaint()
             text = re.sub(rb"\x1b\[[0-9;]*m|\x1b\(B", b"", payload)
             assert b"\x1b[38;5;34m" in payload and b"int" in payload, payload
@@ -147,7 +151,9 @@ def main():
                 shell.drain(0.1)
             assert editable.read_text() == "/** doc */\n//int value;\n", "coloring changed saved source bytes"
         finally:
-            assert shell.finish()[0] == 0
+            if not closed:
+                code, captured = shell.finish()
+                assert code == 0, f"shell exited with {code}; captured: {captured!r}"
         print("PASS scripted PTY C23 keyword/doc/regular-comment foreground and edit recoloring; exact autosaved bytes")
 
         # The snapshot history owns and frees whole line arrays, so exercise the real
