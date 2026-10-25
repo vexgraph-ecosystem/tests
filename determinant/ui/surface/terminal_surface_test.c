@@ -8,8 +8,8 @@
 // Scope note: this owner proves the surface's own contract on borrowed grids. It
 // does not compile a negative-arity case (no determinant owner does) and cannot
 // prove physical device output, which stays the host's and the user's acceptance.
-#include "terminal/terminal_surface.h"
-#include "terminal/terminal_canvas.h"
+#include "ui/surface/terminal_surface.h"
+#include "ui/surface/terminal_canvas.h"
 #include "terminal/terminal_color.h"
 #include "determinant/support.h"
 

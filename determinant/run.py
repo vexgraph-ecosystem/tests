@@ -91,7 +91,7 @@ def main():
             ("Command", "cli/command.h", "Command(1)", "Command_1"),
             ("Scanner", "cli/scanner.h", "Scanner(1)", "Scanner_1"),
             ("CommandRegistry", "cli/commandregistry.h", "CommandRegistry(1)", "CommandRegistry_1"),
-            ("Terminal", "terminal/terminal.h", "Terminal(1)", "Terminal_1"),
+            ("Terminal", "ui/surface/terminal.h", "Terminal(1)", "Terminal_1"),
             ("TerminalButton", "terminal/terminal_button.h", "TerminalButton(1)", "TerminalButton_1"),
             ("TerminalAnchor", "terminal/terminal_anchor.h", "TerminalAnchor(1, 2, 3, 4)", "TerminalAnchor_4"),
             ("TerminalPanel", "terminal/terminal_panel.h", "TerminalPanel(1)", "TerminalPanel_1"),

@@ -1,6 +1,6 @@
 // Externally supervised real loaded-module swap. The test host owns dlopen,
 // callable-code lifetime and exclusion, not Determinant. No Primeagen proof.
-#include "terminal/terminal.h"
+#include "ui/surface/terminal.h"
 #include "test_support.h"
 #include "determinant/support.h"
 #include <dlfcn.h>

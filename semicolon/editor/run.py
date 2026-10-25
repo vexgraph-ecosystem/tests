@@ -42,7 +42,7 @@ def main():
         "adapters/c/c23_highlights.c", "adapters/c/c23_lexer.c",
         "adapters/c/c23_lex_step.c", "syntax/role.c",
         "analysis/syntax_span.c", "document/source_range.c", "text/bounded_text.c")]
-    dependencies += [DETERMINANT / "terminal/terminal_canvas.c"]
+    dependencies += [DETERMINANT / "ui/surface/terminal_canvas.c"]
     with tempfile.TemporaryDirectory(prefix="semicolon-language-") as directory:
         directory = Path(directory)
         source = directory / "main.c"

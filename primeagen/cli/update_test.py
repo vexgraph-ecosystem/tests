@@ -34,7 +34,7 @@ def build_views(base):
                    str(APP / "tui/tui.c"), str(APP / "tui/markdown.c"),
                    str(VEX / "net/json.c"),
                    *[str(ROOT / "drivers/determinant/src" / name) for name in
-                     ("terminal/terminal_canvas.c", "terminal/terminal_frame.c",
+                     ("ui/surface/terminal_canvas.c", "terminal/terminal_frame.c",
                       "terminal/terminal_image.c", "terminal/terminal_appearance.c")],
                    "-lncurses", "-o", str(module)]
         subprocess.run(command, check=True, capture_output=True, timeout=60)

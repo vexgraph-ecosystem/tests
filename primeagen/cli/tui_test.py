@@ -16,7 +16,7 @@ HOT = ROOT / "suite/ecosystem/hotcwap"
 DET = ROOT / "suite/ecosystem/determinant/src"
 REL = ROOT / "suite/ecosystem/relational-engine/src"
 # The R3 terminal toolkit the view now draws through (canvas → frame → appearance).
-DET_SOURCES = ["terminal/terminal_canvas.c", "terminal/terminal_frame.c",
+DET_SOURCES = ["ui/surface/terminal_canvas.c", "terminal/terminal_frame.c",
                "terminal/terminal_image.c", "terminal/terminal_appearance.c",
                "terminal/terminal_tree_view.c"]
 

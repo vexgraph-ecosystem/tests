@@ -1,7 +1,7 @@
 // Owner: Terminal cold geometry/backing admission, cell preservation/refusal,
 // sink routing, resident state + view/command swap, busy exclusion, projections.
 // External serialized API; no arbitrary native rollback or OS acquisition.
-#include "terminal/terminal.h"
+#include "ui/surface/terminal.h"
 #include "determinant/support.h"
 static size_t deliveries;
 static bool sink(void *context, const char *text, size_t length) {

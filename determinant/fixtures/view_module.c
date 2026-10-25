@@ -1,6 +1,6 @@
 // Trusted externally supervised fixture, not a production loader or owner test.
 // Native callbacks operate only on resident state and host-admitted cell backing.
-#include "terminal/terminal.h"
+#include "ui/surface/terminal.h"
 #ifndef DETERMINANT_FIXTURE_MARK
 #define DETERMINANT_FIXTURE_MARK 65
 #endif
