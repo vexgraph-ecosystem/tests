@@ -1,5 +1,5 @@
 // Owner: TerminalTextView — generic text viewport. Tail stick, scroll, clip.
-#include "terminal/terminal_text_view.h"
+#include "ui/text/terminal_text_view.h"
 #include "determinant/support.h"
 
 int main(void) {

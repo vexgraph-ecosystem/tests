@@ -12,7 +12,7 @@
 // teardown undefined, so the tree is acyclic by contract; a direct self-add is
 // refused outright. Layer-growth allocation failure is unreachable in-process.
 #include "ui/panel/terminal_panel.h"
-#include "terminal/terminal_text.h"
+#include "ui/text/terminal_text.h"
 #include "terminal/terminal_color.h"
 #include "determinant/support.h"
 

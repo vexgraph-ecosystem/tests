@@ -5,7 +5,7 @@
 //
 // Scope note: single-line by contract, so multi-row behaviour is not claimed.
 // No negative-arity case here (the runner owns the shared arity battery).
-#include "terminal/terminal_text.h"
+#include "ui/text/terminal_text.h"
 #include "terminal/terminal_color.h"
 #include "determinant/support.h"
 

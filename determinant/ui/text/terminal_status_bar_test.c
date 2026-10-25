@@ -1,5 +1,5 @@
 // Owner: TerminalStatusBar — generic one-row status. Left/right, collision drop.
-#include "terminal/terminal_status_bar.h"
+#include "ui/text/terminal_status_bar.h"
 #include "determinant/support.h"
 
 int main(void) {
