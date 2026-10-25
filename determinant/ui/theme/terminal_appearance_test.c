@@ -1,5 +1,5 @@
 // Owner: TerminalAppearance — named look presets. Registry, lookup, apply, draw.
-#include "terminal/terminal_appearance.h"
+#include "ui/theme/terminal_appearance.h"
 #include "determinant/support.h"
 
 int main(void) {

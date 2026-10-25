@@ -17,7 +17,7 @@ DET = ROOT / "suite/ecosystem/determinant/src"
 REL = ROOT / "suite/ecosystem/relational-engine/src"
 # The R3 terminal toolkit the view now draws through (canvas → frame → appearance).
 DET_SOURCES = ["ui/surface/terminal_canvas.c", "ui/panel/terminal_frame.c",
-               "ui/image/terminal_image.c", "terminal/terminal_appearance.c",
+               "ui/image/terminal_image.c", "ui/theme/terminal_appearance.c",
                "ui/tree/terminal_tree_view.c"]
 
 
