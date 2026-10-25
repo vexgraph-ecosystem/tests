@@ -6,7 +6,7 @@
 // The whole point of this owner is that it needs no terminal: every case is a
 // literal byte string, so a mouse bug that would take twenty minutes to
 // reproduce by hand takes one assert.
-#include "terminal/terminal_input.h"
+#include "events/terminal_input.h"
 #include "determinant/support.h"
 
 // Feed a literal sequence, returning how many feed calls completed an event.
