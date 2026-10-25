@@ -1,6 +1,6 @@
 // Owner: TerminalMarkdownView — the terminal Markdown preview. Cold parsing and
 // cell-aware wrapping are checked separately from hot rendering.
-#include "terminal/terminal_markdown_view.h"
+#include "ui/markdown/terminal_markdown_view.h"
 #include "terminal/terminal_color.h"
 #include "determinant/support.h"
 
