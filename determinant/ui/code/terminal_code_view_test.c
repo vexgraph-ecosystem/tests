@@ -2,7 +2,7 @@
 // The caller owns token meaning; this test proves C23-style color/weight output,
 // hint placement without source mutation, horizontal clipping and rejection
 // preservation for malformed spans and UTF-8 boundaries.
-#include "terminal/terminal_code_view.h"
+#include "ui/code/terminal_code_view.h"
 #include <assert.h>
 #include <string.h>
 
