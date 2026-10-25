@@ -1,7 +1,7 @@
 // Purpose: caller clicks a terminal button or feeds normalized keys. The widget
 // activates only enabled/focused input, preserves the grid on rejected geometry,
 // loses focus outside/on escape/disable and renders distinct deterministic cells.
-#include "terminal/terminal_button.h"
+#include "ui/button/terminal_button.h"
 #include "determinant/support.h"
 static bool sink(void *context, const char *text, size_t length) {
     (void) context; (void) text; (void) length; return true;
