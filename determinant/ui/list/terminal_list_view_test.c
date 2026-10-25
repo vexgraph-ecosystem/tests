@@ -1,6 +1,6 @@
 // Owner: TerminalListView — generic list. Marker, selection, scroll, navigation,
 // pens, clipping, projections.
-#include "terminal/terminal_list_view.h"
+#include "ui/list/terminal_list_view.h"
 #include "determinant/support.h"
 
 int main(void) {
