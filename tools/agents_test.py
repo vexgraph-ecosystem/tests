@@ -36,7 +36,10 @@ class AgentsTest(unittest.TestCase):
                         AGENTS_BUS=str(self.path / "bus.md"), CAPTURE=str(self.path / "capture"))
 
     def cli(self, *args):
-        return subprocess.check_output(["bash", "-c", STUB, "stub", str(ROOT / "tools/agents.sh"), *args],
+        script = ROOT / "tools/shell/agents.sh"
+        if not script.is_file():
+            script = ROOT / "tools/scripts/agents.sh"
+        return subprocess.check_output(["bash", "-c", STUB, "stub", str(script), *args],
                                        env=self.env, text=True)
 
     def message(self):

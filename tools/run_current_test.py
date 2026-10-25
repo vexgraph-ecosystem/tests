@@ -22,7 +22,7 @@ class RunCurrentTest(unittest.TestCase):
         self.env = dict(os.environ, B_HOME=str(self.home / "state"))
 
     def invoke(self, *args):
-        return subprocess.run([str(ROOT / "tools/run-current"), *map(str, args)],
+        return subprocess.run([str(ROOT / "tools/scripts/run-current"), *map(str, args)],
                               cwd=self.home, env=self.env, capture_output=True,
                               text=True, timeout=120)
 
@@ -79,17 +79,18 @@ class RunCurrentTest(unittest.TestCase):
         project = (ROOT / "tools/b").read_text()
         self.assertIn('run exec "$root/tools/workspace.c" --', project)
         docs = (ROOT / "tools/BUILD.md").read_text()
-        for phrase in ("tools/run-current", "deliberately exits 5", "project-owned executable graph"):
+        for phrase in ("tools/scripts/run-current", "deliberately exits 5", "project-owned executable graph"):
             self.assertIn(phrase, docs)
 
     def test_workspace_routing_without_launching_windows(self):
         workspace = self.home / "workspace with spaces"
-        tools = workspace / "tools"
+        tools = workspace / "tools/scripts"
         tools.mkdir(parents=True)
-        shutil.copy2(ROOT / "tools/run-current", tools / "run-current")
+        shutil.copy2(ROOT / "tools/scripts/run-current", tools / "run-current")
         generic = workspace / "suite/personal/b"
         generic.mkdir(parents=True)
-        for launcher, label in ((tools / "b", "graph"), (generic / "b", "generic")):
+        for launcher, label in ((workspace / "tools/b", "graph"), (generic / "b", "generic")):
+            launcher.parent.mkdir(parents=True, exist_ok=True)
             launcher.write_text(f'#!/bin/sh\nprintf "{label}\\n"\nprintf "%s\\n" "$@"\n')
             launcher.chmod(0o755)
         for relative, route in (("tests/ui/gallery.c", "graph"),
@@ -110,7 +111,7 @@ class RunCurrentTest(unittest.TestCase):
         toolset = ET.parse(settings).getroot()
         tool = toolset.find("tool")
         options = {node.get("name"): node.get("value") for node in tool.findall("exec/option")}
-        self.assertEqual(options["COMMAND"], "$USER_HOME$/vexgraph/tools/run-current")
+        self.assertEqual(options["COMMAND"], "$USER_HOME$/vexgraph/tools/scripts/run-current")
         self.assertEqual(options["PARAMETERS"], '"$FilePath$"')
         project = ET.parse(ROOT / ".idea/workspace.xml").getroot()
         actions = [node.get("actionId") for node in project.findall(".//option[@name='ToolBeforeRunTask']")]

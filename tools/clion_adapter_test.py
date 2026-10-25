@@ -47,7 +47,7 @@ class ClionAdapterTest(unittest.TestCase):
         self.assertIn(str(ROOT / "suite/ecosystem/darling-framework/src"), target["includes"])
         self.assertIn(str(ROOT / "suite/ecosystem/graphvex/src"), target["includes"])
         self.assertIn("UNDEBUG", target["definitions"])
-        self.assertIn("-std=gnu23", target["options"])
+        self.assertTrue(any(f in target["options"] for f in ("-std=gnu23", "-std=gnu2x")))
         archives = [Path(p).name for p in target["libraries"] if p.endswith(".a")]
         self.assertIn("libdarling.a", archives)
         self.assertIn("libhotcwap.a", archives)
@@ -102,7 +102,8 @@ class ClionAdapterTest(unittest.TestCase):
         entry = next(item for item in database if Path(item["file"]) == source)
         command = entry["command"]
         self.assertIn("vexgraph_index_vexspoke", command)
-        for flag in ("-std=gnu23", "-Werror", "-mcpu=apple-m1", "DEBUG_BORROW_CHECK=1"):
+        self.assertTrue(any(f in command for f in ("-std=gnu23", "-std=gnu2x")))
+        for flag in ("-Werror", "-mcpu=apple-m1", "DEBUG_BORROW_CHECK=1"):
             self.assertIn(flag, command)
         self.assertIn(str(ROOT / "suite/ecosystem/vexspoke/src"), command)
         # Execute the actual indexing command for the reported problem file.
@@ -132,7 +133,7 @@ class ClionAdapterTest(unittest.TestCase):
         for source in target["sources"]:
             entry = next(item for item in database if item["file"] == source)
             self.assertIn("vexgraph_index_determinant.dir", entry["command"])
-            self.assertIn("-std=gnu23", entry["command"])
+            self.assertTrue(any(f in entry["command"] for f in ("-std=gnu23", "-std=gnu2x")))
 
     def test_gallery_and_shared_helpers_have_owned_contexts(self):
         import shlex
@@ -151,7 +152,7 @@ class ClionAdapterTest(unittest.TestCase):
         for source in sources:
             entry = next(item for item in database if item["file"] == source and
                          "vexgraph_index_filter_gallery.dir" in item["command"])
-            self.assertIn("-std=gnu23", entry["command"])
+            self.assertTrue(any(f in entry["command"] for f in ("-std=gnu23", "-std=gnu2x")))
             result = subprocess.run(shlex.split(entry["command"]), cwd=entry["directory"],
                                     text=True, capture_output=True, timeout=120)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

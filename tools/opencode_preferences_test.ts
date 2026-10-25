@@ -27,8 +27,8 @@ async function fallbackFixture(gist: string | null): Promise<string> {
   const root = await mkdtemp(join(tmpdir(), "opencode-preferences-"))
   scratch.push(root)
   await mkdir(join(root, "metadata/gists/preferences"), { recursive: true })
-  await mkdir(join(root, "tools"))
-  await writeFile(join(root, "tools/agents.sh"), "")
+  await mkdir(join(root, "tools/scripts"), { recursive: true })
+  await writeFile(join(root, "tools/scripts/agents.sh"), "")
   await writeFile(join(root, "SETUP.md"), "SESSION_SETUP_ONCE")
   if (gist !== null) await writeFile(join(root, "metadata/gists/preferences/gist.md"), gist)
   return root
