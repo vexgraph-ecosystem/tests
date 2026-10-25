@@ -83,7 +83,7 @@ class WorkspaceTest(unittest.TestCase):
                              "drivers/determinant/src/widgets/button.c",
                              "tests/determinant/cli/command_test.c",
                              "tests/determinant/terminal/console_test.c",
-                             "tests/determinant/terminal/terminal_reload_test.c",
+                             "tests/determinant/ui/surface/terminal_reload_test.c",
                              "tests/determinant/fixtures/view_module.c",
                              "tests/determinant/fixtures/ignored_test.c",
                              "tests/determinant/terminal/helper.c"):
