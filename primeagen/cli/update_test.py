@@ -35,7 +35,7 @@ def build_views(base):
                    str(VEX / "net/json.c"),
                    *[str(ROOT / "drivers/determinant/src" / name) for name in
                      ("ui/surface/terminal_canvas.c", "terminal/terminal_frame.c",
-                      "terminal/terminal_image.c", "terminal/terminal_appearance.c")],
+                      "ui/image/terminal_image.c", "terminal/terminal_appearance.c")],
                    "-lncurses", "-o", str(module)]
         subprocess.run(command, check=True, capture_output=True, timeout=60)
         (base / f"{title}.sha256").write_text(hashlib.sha256(module.read_bytes()).hexdigest() + "\n")

@@ -1,6 +1,6 @@
 // Owner: TerminalImage — picture → cells. Luminance/glyph mapping, box sample,
 // 1:1 render, region-fit render, transparency skip, invert, ramp, projections.
-#include "terminal/terminal_image.h"
+#include "ui/image/terminal_image.h"
 #include "determinant/support.h"
 
 int main(void) {
