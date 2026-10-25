@@ -6,6 +6,7 @@
 // null-slot no-ops, null-self safety, and the single vetoable slot
 // (onQuitRequested — true = may quit, false = app declines).
 
+#include <stdint.h>
 #include <stdio.h>
 
 #include "annotation/overview.h"

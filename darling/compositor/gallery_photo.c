@@ -1,8 +1,11 @@
 #include "gallery_photo.h"
 #include <string.h>
+
+#ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreGraphics/CoreGraphics.h>
 #include <ImageIO/ImageIO.h>
+#endif
 
 // MODULE: gallery fixture photo decoding. No owned persistent state.
 // Native headers stay in this TU: Apple's Point/Rect collide with Graphvex's.
@@ -12,6 +15,14 @@
 // Source pixel safety bound: 16 Mi pixels; output bound matches GpuScope budget.
 bool GalleryPhoto_decode(const char *path, unsigned width, unsigned height,
                          uint8_t *dest, size_t stride) {
+#ifndef __APPLE__
+    (void) path;
+    (void) width;
+    (void) height;
+    (void) dest;
+    (void) stride;
+    return false;
+#else
     if (!dest || !width || !height || (uint64_t) width * height > GALLERY_PHOTO_OUTPUT_PIXEL_LIMIT ||
         stride < (size_t) width * 4u || stride > SIZE_MAX / height)
         return false;
@@ -70,4 +81,5 @@ bool GalleryPhoto_decode(const char *path, unsigned width, unsigned height,
                 pixel[c] = pixel[3] ? (uint8_t) ((pixel[c] * 255u + pixel[3] / 2u) / pixel[3]) : 0;
         }
     return true;
+#endif
 }

@@ -6,13 +6,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+#ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreGraphics/CoreGraphics.h>
 #include <ImageIO/ImageIO.h>
-#include <unistd.h>
+#endif
 
 // Tests bounded photo decoding, bundled lookup, orientation, and rejection recovery.
 int main(int argc, char **argv) {
+#ifndef __APPLE__
+    (void) argc;
+    (void) argv;
+    puts("gallery_photo_test: skipped on non-Apple platform");
+    return 0;
+#else
     const char *path = FILTER_GALLERY_SOURCE_RESOURCE;
     if (argc == 2 && !strcmp(argv[1], "--bundle"))
         path = nullptr;
@@ -76,4 +85,5 @@ int main(int argc, char **argv) {
     free(pixels);
     puts("gallery_photo_test: PASS bounded photo decoding, orientation, rejection and recovery");
     return 0;
+#endif
 }
