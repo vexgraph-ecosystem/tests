@@ -1,6 +1,6 @@
 // Owner: TerminalFrame — bare region layout. Regions, bands, rails collapse,
 // rules, background paint, small-root degradation, projections.
-#include "terminal/terminal_frame.h"
+#include "ui/panel/terminal_frame.h"
 #include "determinant/support.h"
 
 int main(void) {

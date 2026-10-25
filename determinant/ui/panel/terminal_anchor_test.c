@@ -10,7 +10,7 @@
 //
 // Scope note: this owner proves placement arithmetic. It does not compile a
 // negative-arity case (no determinant owner does) and renders no pixels.
-#include "terminal/terminal_anchor.h"
+#include "ui/panel/terminal_anchor.h"
 #include "determinant/support.h"
 
 static bool rectEqual(TerminalRect a, TerminalRect b) {
