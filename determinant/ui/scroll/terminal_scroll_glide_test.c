@@ -1,7 +1,7 @@
 // Owner: TerminalScrollGlide — per-axis viewport momentum. Defaults, configured
 // easing, impulse/target/position/halt/clamp, one-frame step and snap, safe
 // defaults, projections, and the hot step guard.
-#include "terminal/terminal_scroll_glide.h"
+#include "ui/scroll/terminal_scroll_glide.h"
 #include "determinant/support.h"
 #include <math.h>
 #include <stdint.h>
