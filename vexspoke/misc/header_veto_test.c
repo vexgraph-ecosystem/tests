@@ -14,7 +14,7 @@
  * MODULE: HeaderVetoTest (tests/header_veto_test.c — LOCAL ONLY, uncommitted)
  * LEVEL: L3 — Module Code (headless verification harness)
  * ============================================================================
- * Local proof for the 16-byte frozen header: sugar veto fires on corrupted
+ * Local proof for the 32-byte frozen header: sugar and hash vetoes fire on corrupted
  * headers, interior and foreign pointers fail closed, free invalidates,
  * class-from-length routing recycles across size classes, and Similar
  * answers identity only. Never committed (repo tests/ policy) — run by
@@ -54,20 +54,20 @@ int main(void) {
     CHECK("similar diff class", Memory_similar(a, c) == false);
     CHECK("similar null", Memory_similar(nullptr, a) == false && Memory_similar(a, nullptr) == false);
 
-    // section 2 Corrupted sugar vetoes reads.
+    // section 2 Corrupted redirect vetoes reads (header word 4: pointer).
     uint8_t *ha = (uint8_t*) a;
-    ha[-4] ^= 0xFFu;
-    CHECK("corrupt sugar kills length", Memory_length(a) == 0);
-    CHECK("corrupt sugar kills type", Memory_type(a) == 0);
-    CHECK("corrupt sugar kills similar", Memory_similar(a, b) == false);
-    ha[-4] ^= 0xFFu;
-    CHECK("restored sugar revives", Memory_length(a) == 32);
+    ha[-8] ^= 0xFFu;
+    CHECK("corrupt redirect kills length", Memory_length(a) == 0);
+    CHECK("corrupt redirect kills type", Memory_type(a) == 0);
+    CHECK("corrupt redirect kills similar", Memory_similar(a, b) == false);
+    ha[-8] ^= 0xFFu;
+    CHECK("restored redirect revives", Memory_length(a) == 32);
 
-    // section 3 Corrupted identity vetoes.
-    ha[-16] ^= 0xFFu;
+    // section 3 Corrupted identity vetoes (header word 1: the id).
+    ha[-32] ^= 0xFFu;
     CHECK("corrupt self kills type", Memory_type(a) == 0);
     CHECK("corrupt self kills similar", Memory_similar(a, b) == false);
-    ha[-16] ^= 0xFFu;
+    ha[-32] ^= 0xFFu;
     CHECK("restored self revives", Memory_type(a) == TYPE_STRING_ARRAY);
 
     // section 4 Interior and foreign pointers fail closed.
