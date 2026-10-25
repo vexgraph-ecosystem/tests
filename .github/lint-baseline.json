@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "note": "Ratchet baseline: CI fails only when a file/rule count grows.",
+  "total": 17,
+  "counts": {
+    "darling/compositor/filter_gallery.c::Living Documentation Law": 2,
+    "darling/compositor/gallery_photo.c::Living Documentation Law": 2,
+    "darling/darling_tests.c::Living Documentation Law": 2,
+    "darling/frame/hello_window.c::Living Documentation Law": 2,
+    "determinant/fixtures/view_module.c::Living Documentation Law": 2,
+    "graphvex/vulkan/iosurface_host.c::Living Documentation Law": 2,
+    "hotcwap/hot/fixtures/cold_module.c::Living Documentation Law": 2,
+    "language/adapters/c/corpus.c::Living Documentation Law": 2,
+    "vexspoke/demo/touchid_demo.c::Living Documentation Law": 1
+  }
+}
