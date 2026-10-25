@@ -1,6 +1,6 @@
 // Owner: TerminalInputLine — generic caller-buffered input. Editing, capacity
 // refusal, prefix, render, unbound safety.
-#include "terminal/terminal_input_line.h"
+#include "ui/field/terminal_input_line.h"
 #include "determinant/support.h"
 
 int main(void) {
