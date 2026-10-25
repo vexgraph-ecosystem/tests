@@ -18,7 +18,7 @@ REL = ROOT / "suite/ecosystem/relational-engine/src"
 # The R3 terminal toolkit the view now draws through (canvas → frame → appearance).
 DET_SOURCES = ["ui/surface/terminal_canvas.c", "ui/panel/terminal_frame.c",
                "ui/image/terminal_image.c", "terminal/terminal_appearance.c",
-               "terminal/terminal_tree_view.c"]
+               "ui/tree/terminal_tree_view.c"]
 
 
 class NativeTuiTest(unittest.TestCase):
