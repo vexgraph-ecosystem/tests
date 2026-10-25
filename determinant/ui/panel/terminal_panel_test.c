@@ -13,7 +13,7 @@
 // refused outright. Layer-growth allocation failure is unreachable in-process.
 #include "ui/panel/terminal_panel.h"
 #include "ui/text/terminal_text.h"
-#include "terminal/terminal_color.h"
+#include "format/terminal_color.h"
 #include "determinant/support.h"
 
 enum { W = 24, H = 8 };

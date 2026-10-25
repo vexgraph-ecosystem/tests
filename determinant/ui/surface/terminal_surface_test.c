@@ -10,7 +10,7 @@
 // prove physical device output, which stays the host's and the user's acceptance.
 #include "ui/surface/terminal_surface.h"
 #include "ui/surface/terminal_canvas.h"
-#include "terminal/terminal_color.h"
+#include "format/terminal_color.h"
 #include "determinant/support.h"
 
 enum { W = 8, H = 3 };

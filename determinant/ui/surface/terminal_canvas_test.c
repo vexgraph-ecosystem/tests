@@ -1,7 +1,7 @@
 // Owner: TerminalCanvas — the clipped region primitive. Admission, sub-region
 // clipping, text/line/box primitives, style + colour planes, pen, row projection.
 #include "ui/surface/terminal_canvas.h"
-#include "terminal/terminal_color.h"
+#include "format/terminal_color.h"
 #include "determinant/support.h"
 
 int main(void) {
