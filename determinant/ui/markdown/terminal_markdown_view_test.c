@@ -96,10 +96,10 @@ int main(void) {
     for (size_t row = 0; row < H; ++row)
         for (size_t column = 0; column < W; ++column) {
             uint32_t glyph = TerminalCanvas_glyphAt(&canvas, column, row);
-            if (glyph == '|') {
+            if (glyph == 0x258Cu) {
                 sawCalloutBar = true;
                 sawColoredCallout = (styles[row * W + column] & TERMINAL_STYLE_BOLD) != 0
-                    && fg[row * W + column] == TERMINAL_RGB(105, 190, 220);
+                    && fg[row * W + column] == TERMINAL_RGB(235, 192, 95);
             }
         }
     assert(sawStyledCell);
@@ -116,20 +116,37 @@ int main(void) {
     assert(TerminalMarkdownView_setViewport(view, W));
     clearCanvas(&canvas, cells, styles, fg, bg);
     TerminalMarkdownView_render(view, &canvas);
-    assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == '|');
-    assert(TerminalCanvas_glyphAt(&canvas, 2, 0) == '!');
-    assert(TerminalCanvas_glyphAt(&canvas, 4, 0) == 'W');
-    assert(TerminalCanvas_glyphAt(&canvas, 12, 0) == '!');
-    for (size_t column = 2u; column <= 12u; ++column) {
+    // A callout is a bar plus an uppercase label, never the literal `[! ...]`
+    // punctuation, and its body is indented by the bar on every row.
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == 0x258Cu);
+    assert(TerminalCanvas_glyphAt(&canvas, 1, 0) == ' ');
+    assert(TerminalCanvas_glyphAt(&canvas, 2, 0) == 'W');
+    for (size_t column = 2u; column <= 8u; ++column) {
         assert((styles[column] & TERMINAL_STYLE_BOLD) != 0u);
-        assert(fg[column] == TERMINAL_RGB(235, 190, 95));
+        assert(fg[column] == TERMINAL_RGB(235, 192, 95));
     }
-    assert(TerminalCanvas_glyphAt(&canvas, 0, 1) == '|');
-    assert(TerminalCanvas_glyphAt(&canvas, 2, 1) == ' ');
-    assert(TerminalCanvas_glyphAt(&canvas, 0, 2) == '|');
-    assert(TerminalCanvas_glyphAt(&canvas, 2, 2) == 't');
-    assert((styles[2u * W + 2u] & TERMINAL_STYLE_BOLD) == 0u);
-    assert(fg[2u * W + 2u] == TERMINAL_RGB(9, 8, 7));
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 1) == 0x258Cu);
+    assert(TerminalCanvas_glyphAt(&canvas, 1, 1) == ' ');
+    assert(TerminalCanvas_glyphAt(&canvas, 2, 1) == 't');
+    assert((styles[1u * W + 2u] & TERMINAL_STYLE_BOLD) == 0u);
+    assert(fg[1u * W + 2u] == TERMINAL_RGB(9, 8, 7));
+
+    // The README spelling of the same aside: `!WARNING!` needs no quote gutter,
+    // and the marker is still consumed rather than printed.
+    static const char *bangCallout[] = {
+        "!WARNING!",
+        "Mind the gap",
+    };
+    assert(TerminalMarkdownView_setSource(view, bangCallout,
+                                          sizeof bangCallout / sizeof bangCallout[0]));
+    assert(TerminalMarkdownView_setViewport(view, W));
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == 0x258Cu);
+    assert(TerminalCanvas_glyphAt(&canvas, 2, 0) == 'W');
+    assert(TerminalCanvas_glyphAt(&canvas, 2, 1) == 'M');
+    assert(!canvasContainsText(&canvas, "[!"));
+    assert(!canvasContainsText(&canvas, "!WARNING!"));
 
     // A fenced block is a shaded band, not a box. It gets one blank row above
     // and below, every cell of its rows carries the fence background, and the
@@ -215,7 +232,7 @@ int main(void) {
     assert(memcmp(line.text, "int q = 3;", line.length) == 0);
     clearCanvas(&canvas, cells, styles, fg, bg);
     TerminalMarkdownView_render(view, &canvas);
-    assert(TerminalCanvas_glyphAt(&canvas, 0, quotedBlock.firstRow) == '|');
+    assert(TerminalCanvas_glyphAt(&canvas, 0, quotedBlock.firstRow) == 0x258Cu);
     assert(bg[quotedBlock.firstRow * W + 2u] == codeStyle.fence.bg);
 
     assert(TerminalMarkdownView_setSource(view, lines, sizeof lines / sizeof lines[0]));
@@ -464,6 +481,166 @@ int main(void) {
     clearCanvas(&canvas, cells, styles, fg, bg);
     TerminalMarkdownView_render(view, &canvas);
     assert(TerminalCanvas_glyphAt(&canvas, 0, 0) == 'A');
+
+    // Emphasis is a style span, not printed punctuation: `*quiet*` is italic and
+    // `**loud**` is bold, on the body pen.
+    static const char *emphasis[] = { "plain *quiet* and **loud** text" };
+    assert(TerminalMarkdownView_setSource(view, emphasis, 1));
+    assert(TerminalMarkdownView_setViewport(view, W));
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    bool sawItalic = false;
+    bool sawBold = false;
+    for (size_t row = 0; row < H; ++row)
+        for (size_t column = 0; column + 5u < W; ++column) {
+            if (TerminalCanvas_glyphAt(&canvas, column, row) == 'q'
+                && TerminalCanvas_glyphAt(&canvas, column + 1u, row) == 'u') {
+                for (size_t index = 0; index < 5u; ++index)
+                    assert((styles[row * W + column + index] & TERMINAL_STYLE_ITALIC) != 0u);
+                sawItalic = true;
+            }
+            if (TerminalCanvas_glyphAt(&canvas, column, row) == 'l'
+                && TerminalCanvas_glyphAt(&canvas, column + 1u, row) == 'o'
+                && TerminalCanvas_glyphAt(&canvas, column + 2u, row) == 'u') {
+                for (size_t index = 0; index < 4u; ++index)
+                    assert((styles[row * W + column + index] & TERMINAL_STYLE_BOLD) != 0u);
+                sawBold = true;
+            }
+        }
+    assert(sawItalic && sawBold);
+    assert(!canvasContainsText(&canvas, "*quiet*"));
+
+    // The heading ladder: four levels, four different pens. This is the whole
+    // point of keeping six heading entries instead of one bold heading pen.
+    static const char *headings[] = { "# one", "", "## two", "", "### three", "", "#### four" };
+    // A caller that sets the legacy eight-pen style asks for one heading colour by
+    // definition; this test wants the default ladder back.
+    assert(TerminalMarkdownView_setTheme(view, TerminalMarkdownTheme_0()));
+    assert(TerminalMarkdownView_setSource(view, headings,
+                                          sizeof headings / sizeof headings[0]));
+    assert(TerminalMarkdownView_setViewport(view, W));
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    uint32_t headingFg[4];
+    for (size_t level = 0; level < 4u; ++level) {
+        size_t row = level * 2u + (level == 0 ? 0u : 1u);
+        if (level == 0)
+            row = 0;
+        else
+            row = level * 2u + 1u;
+        headingFg[level] = fg[row * W];
+        assert((styles[row * W] & TERMINAL_STYLE_BOLD) != 0u
+               || (styles[row * W] & TERMINAL_STYLE_MUTED) != 0u);
+    }
+    assert(headingFg[0] != headingFg[1] && headingFg[1] != headingFg[2]
+           && headingFg[2] != headingFg[3] && headingFg[0] != headingFg[3]);
+    assert(TerminalMarkdownView_getTheme(view).heading[0].fg
+           == TerminalMarkdownTheme_0().heading[0].fg);
+
+    // A link is a hit target on the DOCUMENT row, and the target is the source
+    // slice — the view reports it and touches no clipboard.
+    static const char *linkLine[] = { "See [docs](https://example.test) now." };
+    assert(TerminalMarkdownView_setSource(view, linkLine, 1));
+    assert(TerminalMarkdownView_setViewport(view, W));
+    TerminalMarkdownAction linkAction = {0};
+    size_t linkRow = 0;
+    size_t linkColumn = 0;
+    for (size_t row = 0; row < TerminalMarkdownView_rowCount(view) && linkAction.kind == 0; ++row)
+        for (size_t column = 0; column < W; ++column) {
+            TerminalMarkdownAction candidate = TerminalMarkdownView_actionAt(view, row, column);
+            if (candidate.kind == TERMINAL_MARKDOWN_ACTION_LINK) {
+                linkAction = candidate;
+                linkRow = row;
+                linkColumn = column;
+                break;
+            }
+        }
+    assert(linkAction.kind == TERMINAL_MARKDOWN_ACTION_LINK);
+    assert(linkAction.targetLength == strlen("https://example.test"));
+    assert(memcmp(linkAction.target, "https://example.test", linkAction.targetLength) == 0);
+    assert(TerminalMarkdownView_actionAt(view, linkRow, 0).kind
+           == TERMINAL_MARKDOWN_ACTION_NONE);
+    assert(TerminalMarkdownView_setHover(view, linkRow, linkColumn));
+    assert(TerminalMarkdownView_actionAt(view, linkRow, linkColumn).kind
+           == TERMINAL_MARKDOWN_ACTION_LINK);
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    assert(fg[linkRow * W + linkColumn]
+           == TerminalMarkdownView_getTheme(view).linkHover.fg);
+    TerminalMarkdownView_clearHover(view);
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    assert(fg[linkRow * W + linkColumn] == TerminalMarkdownView_getTheme(view).link.fg);
+    assert(strstr(TerminalMarkdownView_toStringStruct(view).text, "hoverRow") != nullptr);
+
+    // The copy affordance: a real icon on the fence's first row, a COPY_CODE
+    // action under it, the source lines on demand, and a check once copied.
+    assert(TerminalMarkdownView_setSource(view, shaded, sizeof shaded / sizeof shaded[0]));
+    assert(TerminalMarkdownView_setViewport(view, W));
+    TerminalMarkdownCodeBlock copyBlock = TerminalMarkdownView_codeBlockAt(view, 2);
+    assert(copyBlock.valid && copyBlock.firstRow == 2u);
+    TerminalMarkdownAction copyAction =
+        TerminalMarkdownView_actionAt(view, copyBlock.firstRow, W - 2u);
+    assert(copyAction.kind == TERMINAL_MARKDOWN_ACTION_COPY_CODE);
+    assert(TerminalMarkdownView_actionAt(view, copyBlock.firstRow + 1u, W - 2u).kind
+           == TERMINAL_MARKDOWN_ACTION_NONE);
+    char copiedText[64];
+    size_t copiedLength = 0;
+    assert(TerminalMarkdownView_copyBlock(view, copyAction.block, copiedText,
+                                          sizeof copiedText, &copiedLength));
+    assert(copiedLength == strlen("int x = 1;\n\nint y = 2;"));
+    assert(memcmp(copiedText, "int x = 1;\n\nint y = 2;", copiedLength) == 0);
+    assert(!TerminalMarkdownView_copyBlock(view, 99, copiedText, sizeof copiedText, nullptr));
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    assert(TerminalCanvas_glyphAt(&canvas, W - 2u, copyBlock.firstRow) == 0x29C9u);
+    assert(TerminalMarkdownView_setCopied(view, copyAction.block, true));
+    assert(TerminalMarkdownView_isCopied(view, copyAction.block));
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    assert(TerminalCanvas_glyphAt(&canvas, W - 2u, copyBlock.firstRow) == 0x2713u);
+    assert(TerminalMarkdownView_setCopied(view, copyAction.block, false));
+    assert(!TerminalMarkdownView_isCopied(view, copyAction.block));
+
+    // Table columns honour the delimiter row's alignment: the header fills the
+    // column, the right-aligned body value ends on the column's right edge.
+    static const char *alignedTable[] = {
+        "| Left | Right |",
+        "| :--- | ---: |",
+        "| abc | xyz |",
+        "| a \\| b | c |",
+    };
+    assert(TerminalMarkdownView_setSource(view, alignedTable,
+                                          sizeof alignedTable / sizeof alignedTable[0]));
+    assert(TerminalMarkdownView_setViewport(view, W));
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    assert(canvasContainsText(&canvas, "a | b"));
+    size_t rightStart = SIZE_MAX;
+    size_t rightEnd = SIZE_MAX;
+    size_t rightHeaderRow = SIZE_MAX;
+    for (size_t row = 0; row < H && rightStart == SIZE_MAX; ++row)
+        for (size_t column = 0; column + 5u <= W; ++column)
+            if (TerminalCanvas_glyphAt(&canvas, column, row) == 'R'
+                && TerminalCanvas_glyphAt(&canvas, column + 1u, row) == 'i'
+                && TerminalCanvas_glyphAt(&canvas, column + 2u, row) == 'g'
+                && TerminalCanvas_glyphAt(&canvas, column + 3u, row) == 'h'
+                && TerminalCanvas_glyphAt(&canvas, column + 4u, row) == 't') {
+                rightStart = column;
+                rightEnd = column + 4u;
+                rightHeaderRow = row;
+                break;
+            }
+    assert(rightStart != SIZE_MAX);
+    assert((styles[rightHeaderRow * W + rightStart] & TERMINAL_STYLE_BOLD) != 0u);
+    bool sawAlignedValue = false;
+    for (size_t row = rightHeaderRow + 1u; row < H; ++row)
+        if (TerminalCanvas_glyphAt(&canvas, rightEnd, row) == 'z'
+            && TerminalCanvas_glyphAt(&canvas, rightStart, row) == ' ') {
+            sawAlignedValue = true;
+            break;
+        }
+    assert(sawAlignedValue);
 
     beginDiagnostics();
     assert(!TerminalMarkdownView_setViewport(view, 0));

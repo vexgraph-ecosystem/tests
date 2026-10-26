@@ -14,9 +14,10 @@ terminal and answers the OSC 11 background query, and a translucent highlight is
 asserted to reach the device as the accent composited over that backdrop - a
 different palette index on a dark theme than on a light one, which is the one
 result that cannot happen if alpha is quietly ignored. A fenced block is driven
-as a copy target: the pty hovers its shaded rows, presses the revealed `[copy]`
-chip and decodes the exact OSC 52 payload, then proves an over-cap block refuses
-with a notice instead of truncating or emitting an escape. The footer crumb keeps
+as a copy target: the pty presses its top-right glyph, the block's exact source is
+read back from the REAL pasteboard, the glyph becomes a check and lapses again on
+its own, and an over-cap block refuses with a notice instead of truncating or
+writing an escape. The footer crumb keeps
 the first two path components and the last directory and file, with an ellipsis
 for the omitted middle, and is proved on a deep workspace path whose full form
 outgrows its fixed band.
@@ -32,11 +33,11 @@ Out of scope by design: whether the shell LOOKS right, and whether dragging feel
 right. Those belong to the user, who runs `semicolon` and drags it.
 """
 from pathlib import Path
-import base64
 import fcntl
 import os
 import pty
 import select
+import shutil
 import struct
 import subprocess
 import sys
@@ -62,7 +63,15 @@ PROJECT_FILE = ROOT / "suite/ecosystem/vexspoke/src/oop/type.h"
 # and overwrite it.
 STATE_DIR = None
 
+# The two glyphs the preview's copy affordance cycles through. They are UTF-8 because the
+# terminal is, and the test drives them as the pty would see them.
+COPY_GLYPH = "⧉".encode()
+CHECK_GLYPH = "✓".encode()
 FRAME_WIDTH = 112
+# The copy glyph keeps one cell of right margin, so on the 112-cell canvas its cell is
+# the second from the right edge.
+COPY_ICON_COLUMN = FRAME_WIDTH - 2
+
 # The footer reserves a fixed 44-cell band for the crumb, so a deep path is clipped there
 # instead of drawing under the status chips.
 CRUMB_CELLS = 44
@@ -610,11 +619,11 @@ def main():
         check("CARET_MARKER" in dynamic_markdown.read_text(),
               "text entered after clicking the caret was not saved to the selected file")
 
-    # A fenced block is a copy target: hovering it reveals the chip, pressing the chip
-    # writes the block's source through OSC 52, and the notice states the outcome. The
-    # expected clipboard text is computed here from the fixture, not read back from the
-    # shell. The over-cap fixture proves the boundary refuses visibly instead of
-    # truncating or emitting an unbounded escape.
+    # A fenced block carries a copy glyph on its top-right cell. A press writes the
+    # block through the REAL system clipboard (not an OSC 52 escape), the glyph becomes
+    # a check, and the check lapses on its own. The expected text is computed here from
+    # the fixture; pbpaste reads the same pasteboard a person would. The over-cap fixture
+    # proves the boundary refuses visibly instead of truncating or writing anything.
     with tempfile.TemporaryDirectory(prefix="semicolon-copy-") as directory:
         copy_project = Path(directory)
         copy_file = copy_project / "copy.md"
@@ -624,39 +633,36 @@ def main():
                              str(copy_file)],
                        env={"SEMICOLON_ICONS": "plain"})
         check(copy_tui.wait_for(b"Copymarker"), "the copy fixture did not render")
-        chip_row = None
-        for row in range(2, 21):
+        copy_tui.repaint()
+        initial = bytes(copy_tui.captured)
+        check(COPY_GLYPH in initial, "the fenced block did not draw its copy glyph")
+        check(b"[copy]" not in initial, "the legacy text chip is still painted")
+        check(b"\x1b]52;" not in initial, "the preview still emits an OSC 52 clipboard escape")
+        icon_row = None
+        for row in range(4, 16):
             before = len(copy_tui.captured)
-            copy_tui.send(b"\x1b[<35;60;%dM" % (row + 1))
-            copy_tui.drain(0.15)
-            if b"[copy]" in bytes(copy_tui.captured[before:]):
-                chip_row = row
+            copy_tui.click(COPY_ICON_COLUMN, row)
+            if CHECK_GLYPH in bytes(copy_tui.captured[before:]):
+                icon_row = row
                 break
-        check(chip_row is not None, "hovering a fenced block did not reveal the copy chip")
-        if chip_row is not None:
-            # Moving off the block clears the chip: it must not linger over prose.
-            before = len(copy_tui.captured)
-            copy_tui.send(b"\x1b[<35;60;%dM" % (chip_row + 5))
-            copy_tui.drain(0.2)
-            check(b"[copy]" not in bytes(copy_tui.captured[before:]),
-                  "the copy chip stayed visible after the pointer left the block")
-            # Return to the block, then press the chip's rightmost cells.
-            copy_tui.send(b"\x1b[<35;60;%dM" % (chip_row + 1))
-            copy_tui.drain(0.2)
-            before = len(copy_tui.captured)
-            copy_tui.click(108, chip_row)
-            delta = bytes(copy_tui.captured[before:])
-            expected = base64.b64encode(b"int main(void) {\n    return 0;\n}\n")
-            check(b"\x1b]52;c;" + expected + b"\x07" in delta,
-                  "clicking the copy chip did not write the block through OSC 52")
+        check(icon_row is not None, "pressing the copy glyph did not show its check")
+        if icon_row is not None:
+            delta = bytes(copy_tui.captured[-4096:])
             plain = re.sub(rb"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\([A-Za-z0-9]", b"", delta)
             check(b"Copied to clipboard" in plain,
                   "a successful copy did not show its notice")
-            # Scrolling moves the content; the chip and its hover must not survive it.
-            before = len(copy_tui.captured)
-            copy_tui.wheel(60, chip_row)
-            check(b"[copy]" not in bytes(copy_tui.captured[before:]),
-                  "scrolling left the copy chip painted at a stale row")
+            check(b"\x1b]52;" not in bytes(copy_tui.captured),
+                  "a copy wrote an OSC 52 escape instead of using the pasteboard")
+            if shutil.which("pbpaste") is not None:
+                pasted = subprocess.run(["pbpaste"], capture_output=True).stdout
+                check(pasted == b"int main(void) {\n    return 0;\n}",
+                      f"the clipboard did not hold the fenced block: {pasted!r}")
+            # The check is feedback, not retained state: the copy glyph comes back when
+            # its window closes, even with no further input.
+            copy_tui.drain(1.8)
+            cleared = copy_tui.repaint()
+            check(COPY_GLYPH in cleared and CHECK_GLYPH not in cleared,
+                  "the copied check did not lapse back to the copy glyph")
         code_exit, _ = copy_tui.finish()
         check(code_exit == 0, "the copy fixture did not shut down cleanly")
 
@@ -669,26 +675,61 @@ def main():
                               str(large_file)],
                         env={"SEMICOLON_ICONS": "plain"})
         check(large_tui.wait_for(b"Largemarker"), "the over-cap fixture did not render")
-        large_chip_row = None
-        for row in range(2, 21):
+        large_tui.repaint()
+        large_icon_row = None
+        for row in range(4, 16):
             before = len(large_tui.captured)
-            large_tui.send(b"\x1b[<35;60;%dM" % (row + 1))
-            large_tui.drain(0.15)
-            if b"[copy]" in bytes(large_tui.captured[before:]):
-                large_chip_row = row
-                break
-        check(large_chip_row is not None, "the over-cap block did not reveal its copy chip")
-        if large_chip_row is not None:
-            before = len(large_tui.captured)
-            large_tui.click(108, large_chip_row)
+            large_tui.click(COPY_ICON_COLUMN, row)
             delta = bytes(large_tui.captured[before:])
+            if b"Code block too large to copy" in re.sub(
+                    rb"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\([A-Za-z0-9]", b"", delta):
+                large_icon_row = row
+                break
+        check(large_icon_row is not None, "the over-cap block did not report its refusal")
+        if large_icon_row is not None:
+            delta = bytes(large_tui.captured[-4096:])
             plain = re.sub(rb"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\([A-Za-z0-9]", b"", delta)
-            check(b"\x1b]52;" not in delta,
-                  "an over-cap block was written to the clipboard instead of refusing")
             check(b"Code block too large to copy" in plain,
                   "the over-cap refusal was not visible as a notice")
+            check(CHECK_GLYPH not in delta,
+                  "an over-cap block pretended to have been copied")
         code_exit, _ = large_tui.finish()
         check(code_exit == 0, "the over-cap fixture did not shut down cleanly")
+
+    # A link press resolves through the same action table and writes its target to the
+    # real pasteboard. The preview never hands an arbitrary URI to a desktop opener.
+    with tempfile.TemporaryDirectory(prefix="semicolon-link-") as directory:
+        link_project = Path(directory)
+        link_file = link_project / "link.md"
+        link_file.write_text("# Linkmarker\n\n[site](https://example.test/path)\n")
+        link_tui = Pty(22, 112,
+                       argv=[str(BINARY), "--root", str(link_project), "--file",
+                             str(link_file)],
+                       env={"SEMICOLON_ICONS": "plain"})
+        check(link_tui.wait_for(b"Linkmarker"), "the link fixture did not render")
+        link_tui.repaint()
+        # The heading is document row 0, the blank line row 1, so the label starts at the
+        # content's first column a few rows down. The warning chip is present by default,
+        # which is why the content begins at screen row 5; scan the small band instead of
+        # baking in that offset.
+        link_hit = False
+        for row in range(4, 11):
+            before = len(link_tui.captured)
+            link_tui.click(RAIL_DIVIDER_COLUMN + 3, row)
+            delta = bytes(link_tui.captured[before:])
+            plain = re.sub(rb"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\([A-Za-z0-9]", b"", delta)
+            if b"Link copied to clipboard" in plain:
+                link_hit = True
+                break
+        check(link_hit, "pressing a link label did not report the link action")
+        if shutil.which("pbpaste") is not None:
+            pasted = subprocess.run(["pbpaste"], capture_output=True).stdout
+            check(pasted == b"https://example.test/path",
+                  f"the clipboard did not hold the link target: {pasted!r}")
+        check(b"\x1b]52;" not in bytes(link_tui.captured),
+              "a link press emitted an OSC 52 escape")
+        link_exit, _ = link_tui.finish()
+        check(link_exit == 0, "the link fixture did not shut down cleanly")
 
     # C implementation files form one alphabetical run before the header run.
     with tempfile.TemporaryDirectory(prefix="semicolon-c-order-") as directory:
@@ -1307,7 +1348,8 @@ def main():
         print(f"FAIL {failures} check(s)", file=sys.stderr)
         return 1
     print("PASS semicolon shell: frame shape, non-tty refusal, pty mouse reporting, wheel "
-          "scroll, divider drag, faded colours, Markdown copy chip and OSC 52, bounded "
+          "scroll, divider drag, faded colours, Markdown copy/link through the real "
+          "clipboard, bounded "
           "two-ended breadcrumb")
     return 0
 
