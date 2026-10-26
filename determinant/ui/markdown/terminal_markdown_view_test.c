@@ -6,7 +6,7 @@
 
 enum { W = 48, H = 12 };
 
-static void clearCanvas(TerminalCanvas *canvas, uint32_t *cells, uint8_t *styles,
+static void clearCanvas(TerminalCanvas *canvas, uint32_t *cells, uint16_t *styles,
                         uint32_t *fg, uint32_t *bg) {
     *canvas = TerminalCanvas(cells, styles, fg, bg, W, H);
     TerminalCanvas_fill(canvas, ' ', TerminalPen());
@@ -50,7 +50,7 @@ int main(void) {
         "| one | two |",
     };
     uint32_t cells[W * H];
-    uint8_t styles[W * H];
+    uint16_t styles[W * H];
     uint32_t fg[W * H];
     uint32_t bg[W * H];
     TerminalCanvas canvas;

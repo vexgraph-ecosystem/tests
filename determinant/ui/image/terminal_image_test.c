@@ -52,7 +52,7 @@ int main(void) {
 
     // renderFit covers a whole region deterministically.
     uint32_t big[6 * 2];
-    uint8_t bigStyles[6 * 2];
+    uint16_t bigStyles[6 * 2];
     TerminalCanvas region = TerminalCanvas(big, bigStyles, 6, 2);
     TerminalImage_setStyle(&img, TERMINAL_STYLE_DIM);
     TerminalImage_renderFit(&img, &region);

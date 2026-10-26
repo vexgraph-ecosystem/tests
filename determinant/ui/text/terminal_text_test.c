@@ -13,7 +13,7 @@ enum { W = 12, H = 1 };
 
 int main(void) {
     uint32_t cells[W * H];
-    uint8_t styles[W * H];
+    uint16_t styles[W * H];
     uint32_t fg[W * H];
     uint32_t bg[W * H];
     TerminalCanvas canvas = TerminalCanvas(cells, styles, fg, bg, W, H);

@@ -7,7 +7,7 @@
 int main(void) {
     enum { W = 12, H = 4 };
     uint32_t cells[W * H];
-    uint8_t styles[W * H];
+    uint16_t styles[W * H];
     uint32_t fg[W * H];
     uint32_t bg[W * H];
 
@@ -52,7 +52,7 @@ int main(void) {
     // Full four-plane canvas: colours land and read back (separate buffers so the
     // earlier glyph assertions stand).
     static uint32_t colorCells[W * H];
-    static uint8_t colorStyles[W * H];
+    static uint16_t colorStyles[W * H];
     memset(fg, 0, sizeof fg);
     memset(bg, 0, sizeof bg);
     TerminalCanvas col = TerminalCanvas(colorCells, colorStyles, fg, bg, W, H);

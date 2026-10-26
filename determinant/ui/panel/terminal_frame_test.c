@@ -6,7 +6,7 @@
 int main(void) {
     enum { W = 40, H = 10 };
     static uint32_t cells[W * H];
-    static uint8_t styles[W * H];
+    static uint16_t styles[W * H];
     static uint32_t fg[W * H];
     static uint32_t bg[W * H];
 

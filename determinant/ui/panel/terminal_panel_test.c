@@ -27,7 +27,7 @@ static TerminalRect rectOf(size_t x, size_t y, size_t w, size_t h) {
 
 int main(void) {
     uint32_t cells[W * H];
-    uint8_t styles[W * H];
+    uint16_t styles[W * H];
     uint32_t fg[W * H];
     uint32_t bg[W * H];
     TerminalCanvas canvas = TerminalCanvas(cells, styles, fg, bg, W, H);
@@ -244,7 +244,7 @@ int main(void) {
 
     // --- GROUNDING: semicolon's IDE example as a real child tree, 103x23 ---
     static uint32_t ideCells[103 * 23];
-    static uint8_t ideStyles[103 * 23];
+    static uint16_t ideStyles[103 * 23];
     TerminalCanvas ide = TerminalCanvas(ideCells, ideStyles, 103, 23);
     TerminalPanel *ideRoot = TerminalPanel();
     TerminalChildId ideTitle = TerminalPanel_addText(ideRoot, TerminalText("vexgraph"),

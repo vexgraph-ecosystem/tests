@@ -113,7 +113,7 @@ static void clearBoth(TerminalCanvas *back, TerminalCanvas *front) {
 int main(void) {
     enum { CELLS = W * H };
     uint32_t backCells[CELLS], frontCells[CELLS];
-    uint8_t backStyles[CELLS], frontStyles[CELLS];
+    uint16_t backStyles[CELLS], frontStyles[CELLS];
     uint32_t backFg[CELLS], frontFg[CELLS], backBg[CELLS], frontBg[CELLS];
     TerminalCanvas back = TerminalCanvas(backCells, backStyles, backFg, backBg, W, H);
     TerminalCanvas front = TerminalCanvas(frontCells, frontStyles, frontFg, frontBg, W, H);
@@ -157,7 +157,7 @@ int main(void) {
     TerminalCanvas subBack = TerminalCanvas_sub(&back, 0, 0, W - 2, H);
     REJECT(TerminalSurface_bind(&surface, &subBack, &front, sink, &log), "bind");   // region differs
     uint32_t thinCells[CELLS];
-    uint8_t thinStyles[CELLS];
+    uint16_t thinStyles[CELLS];
     TerminalCanvas thin = TerminalCanvas(thinCells, thinStyles, W, H);              // no colour planes
     REJECT(TerminalSurface_bind(&surface, &back, &thin, sink, &log), "bind");       // planes differ
     assert(!TerminalSurface_isBound(&surface));
@@ -270,7 +270,7 @@ int main(void) {
 
     // --- A plane the pair does not carry is not a dimension (thin canvas) ---
     uint32_t thinBackCells[CELLS], thinFrontCells[CELLS];
-    uint8_t thinBackStyles[CELLS], thinFrontStyles[CELLS];
+    uint16_t thinBackStyles[CELLS], thinFrontStyles[CELLS];
     TerminalCanvas thinBack = TerminalCanvas(thinBackCells, thinBackStyles, W, H);
     TerminalCanvas thinFront = TerminalCanvas(thinFrontCells, thinFrontStyles, W, H);
     clearBoth(&thinBack, &thinFront);
@@ -290,7 +290,7 @@ int main(void) {
     // --- Region bind: only the region is scanned, coordinates stay absolute ---
     enum { BW = 16, BH = 6 };
     uint32_t bigBackCells[BW * BH], bigFrontCells[BW * BH];
-    uint8_t bigBackStyles[BW * BH], bigFrontStyles[BW * BH];
+    uint16_t bigBackStyles[BW * BH], bigFrontStyles[BW * BH];
     TerminalCanvas bigBack = TerminalCanvas(bigBackCells, bigBackStyles, BW, BH);
     TerminalCanvas bigFront = TerminalCanvas(bigFrontCells, bigFrontStyles, BW, BH);
     clearBoth(&bigBack, &bigFront);
@@ -395,7 +395,7 @@ int main(void) {
 
     // --- Determinism: identically prepared surfaces agree exactly ---
     uint32_t detBackA[CELLS], detFrontA[CELLS], detBackB[CELLS], detFrontB[CELLS];
-    uint8_t detBackStyleA[CELLS], detFrontStyleA[CELLS], detBackStyleB[CELLS], detFrontStyleB[CELLS];
+    uint16_t detBackStyleA[CELLS], detFrontStyleA[CELLS], detBackStyleB[CELLS], detFrontStyleB[CELLS];
     TerminalCanvas detA = TerminalCanvas(detBackA, detBackStyleA, W, H);
     TerminalCanvas detAFront = TerminalCanvas(detFrontA, detFrontStyleA, W, H);
     TerminalCanvas detB = TerminalCanvas(detBackB, detBackStyleB, W, H);
@@ -417,7 +417,7 @@ int main(void) {
 
     // --- A present is a TRANSACTION: bracketed, lazily, and always closed ---
     uint32_t txnBackCells[CELLS], txnFrontCells[CELLS];
-    uint8_t txnBackStyles[CELLS], txnFrontStyles[CELLS];
+    uint16_t txnBackStyles[CELLS], txnFrontStyles[CELLS];
     TerminalCanvas txnBack = TerminalCanvas(txnBackCells, txnBackStyles, W, H);
     TerminalCanvas txnFront = TerminalCanvas(txnFrontCells, txnFrontStyles, W, H);
     TerminalCanvas_fill(&txnBack, ' ', TerminalPen());

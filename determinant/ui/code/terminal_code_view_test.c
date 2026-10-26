@@ -8,7 +8,7 @@
 
 static void testColoredLineAndVirtualHint(void) {
     uint32_t cells[20] = {0};
-    uint8_t styles[20] = {0};
+    uint16_t styles[20] = {0};
     uint32_t foregrounds[20] = {0};
     uint32_t backgrounds[20] = {0};
     TerminalCanvas canvas = TerminalCanvas(cells, styles, foregrounds, backgrounds, 20u, 1u);
