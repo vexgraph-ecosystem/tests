@@ -66,10 +66,39 @@ int main(void) {
     size_t widths[4] = {0};
     assert(TerminalMarkdownTable_allocate(needed, minimums, widths, 2u, 30u));
     assert(widths[0] == 10u && widths[1] == 10u);
+    // The 4-cell spacing floor lands when the padded table still fits, and the exact
+    // natural widths are kept when the padding would overflow the viewport.
+    assert(TerminalMarkdownTable_allocate(needed, minimums, widths, 2u, 31u));
+    assert(widths[0] == 12u && widths[1] == 12u);
+    assert(TerminalMarkdownTable_allocate(needed, minimums, widths, 2u, 30u));
+    assert(widths[0] == 10u && widths[1] == 10u);
     assert(TerminalMarkdownTable_allocate(needed, minimums, widths, 2u, 15u));
     assert(widths[0] == 4u && widths[1] == 4u);
     assert(!TerminalMarkdownTable_allocate(needed, minimums, widths, 2u, 10u));
     assert(!TerminalMarkdownTable_allocate(nullptr, minimums, widths, 2u, 30u));
     assert(!TerminalMarkdownTable_allocate(needed, minimums, widths, 0u, 30u));
+
+    // Warping policy: a table is warped when any column needing room is squeezed below
+    // the threshold (default 30). Unwarped allocation preserves natural needed widths.
+    assert(TerminalMarkdownTable_isWarped(needed, widths, 2u, 30u));
+    widths[0] = 10u;
+    widths[1] = 10u;
+    assert(!TerminalMarkdownTable_isWarped(needed, widths, 2u, 30u));
+    assert(!TerminalMarkdownTable_isWarped(nullptr, widths, 2u, 30u));
+    assert(!TerminalMarkdownTable_isWarped(needed, widths, 0u, 30u));
+
+    size_t unwarpedWidths[4] = {0};
+    assert(TerminalMarkdownTable_allocateUnwarped(needed, unwarpedWidths, 2u) == 31u);
+    assert(unwarpedWidths[0] == 12u && unwarpedWidths[1] == 12u);
+    assert(TerminalMarkdownTable_allocateUnwarped(nullptr, unwarpedWidths, 0u) == 0u);
+
+    // Spacing policy: one column's content width is a whole number of 4-cell steps,
+    // so the borders sit on a stable grid (21 -> 24, an empty column still gets 4).
+    assert(TerminalMarkdownTable_padWidth(0u) == 4u);
+    assert(TerminalMarkdownTable_padWidth(1u) == 4u);
+    assert(TerminalMarkdownTable_padWidth(4u) == 4u);
+    assert(TerminalMarkdownTable_padWidth(5u) == 8u);
+    assert(TerminalMarkdownTable_padWidth(21u) == 24u);
+    assert(TerminalMarkdownTable_padWidth(SIZE_MAX) % 4u == 0u);
     return 0;
 }
