@@ -17,7 +17,9 @@ result that cannot happen if alpha is quietly ignored. A fenced block is driven
 as a copy target: the pty presses its top-right glyph, the block's exact source is
 read back from the REAL pasteboard, the glyph becomes a check and lapses again on
 its own, and an over-cap block refuses with a notice instead of truncating or
-writing an escape. The footer crumb keeps
+writing an escape. A wide table is panned with a modified wheel: its hidden
+columns arrive while the prose above it keeps every cell where it was. The footer
+crumb keeps
 the first two path components and the last directory and file, with an ellipsis
 for the omitted middle, and is proved on a deep workspace path whose full form
 outgrows its fixed band.
@@ -80,11 +82,13 @@ CRUMB_CELLS = 44
 # code begins after the seam, a right-aligned line number, its period, and the pad.
 RAIL_DIVIDER_COLUMN = 50      # 1-based; the tab strip begins at this cell
 CODE_COLUMN = 59              # 1-based for the type.h line-count gutter
-GRIP_START_RE = re.compile(
-    rb"(?:\x1b\[(\d+);(\d+)H|\x1b\[(\d+)d\x08)(?:\x1b\(B)?"
-    rb"(?:\x1b\[[0-9;]*m)*\|")
-GRIP_NEXT_ROW_RE = re.compile(rb"\x1b\[(\d+)d\x08\|")
-TAB_STRIP_START_RE = re.compile(rb"\x1b\[1;(\d+)H")
+# The host paints its own grid, so a run is addressed with CUP and one pen, and the
+# divider grip's `|` is the first glyph of its run on every one of its rows. There is
+# deliberately no VPA/backspace form to accept: nothing but CUP addresses a cell.
+GRIP_ROW_RE = re.compile(rb"\x1b\[(\d+);(\d+)H(?:\x1b\[[0-9;]*m)*\|")
+GRIP_START_RE = GRIP_ROW_RE
+ROW_ONE_RE = re.compile(rb"\x1b\[1;1H(.*?)(?=\x1b\[\d+;\d+H|\Z)", re.S)
+ANSI_RE = re.compile(rb"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\([A-Za-z0-9]")
 
 
 def ensure_built():
@@ -187,15 +191,22 @@ class Pty:
 
     @staticmethod
     def grip_rows(payload):
-        start = GRIP_START_RE.search(payload)
-        if start is None:
-            return []
-        first_row = int(start.group(1) or start.group(3))
-        # ncurses emits either CUP (`ESC [ row ; col H`) or VPA (`ESC [ row d`) to
-        # address a row; both row numbers are absolute. Only the backspace that follows
-        # VPA is relative, and it moves a column, not a row.
-        return [first_row,
-                *(int(row) for row in GRIP_NEXT_ROW_RE.findall(payload[start.end():]))]
+        # One match per row whose run begins with the grip glyph. A full repaint sends a
+        # whole-row run (the grip is then inside it), so this is only meaningful for a
+        # delta - which is exactly what a hover produces.
+        return [int(row) for row, _column in GRIP_ROW_RE.findall(payload)]
+
+    @staticmethod
+    def row_text(payload, row=1):
+        """One row of a FULL repaint as text, independent of how the runs split.
+
+        A full repaint emits each row as one run that begins at column 1, so the whole
+        row is there between that address and the next one.
+        """
+        match = ROW_ONE_RE.search(payload) if row == 1 else None
+        if match is None:
+            return None
+        return ANSI_RE.sub(b"", match.group(1)).decode("utf-8", "replace")
 
     def wheel(self, x, y, button=65):
         self.send(b"\x1b[<%d;%d;%dM" % (button, x + 1, y + 1))
@@ -381,7 +392,7 @@ def main():
     # the last directory and the file, with the omitted middle collapsed to an ellipsis.
     # The fixed 44-cell band still bounds the footer: the full example outgrows it and is
     # clipped at the band, never drawn under the status chips.
-    deep_file = ROOT / "suite/ecosystem/api-haven/src/com/discord/discord.h"
+    deep_file = ROOT / "suite/personal/api-haven/src/com/discord/discord.h"
     deep = dump(FRAME_WIDTH, 23, ROOT, deep_file, "plain")
     check(len(deep) == 23, f"deep-path dump produced {len(deep)} rows, expected 23")
     if len(deep) == 23:
@@ -390,7 +401,7 @@ def main():
               f"the deep crumb does not keep both ends: {deep[22][:60]!r}")
         check(deep[22][11 + CRUMB_CELLS] == " ",
               "the deep crumb ran past its fixed band into the status chips")
-    long_file = ROOT / "suite/ecosystem/api-haven/src/com/discord/discord_webhook.h"
+    long_file = ROOT / "suite/personal/api-haven/src/com/discord/discord_webhook.h"
     long = dump(FRAME_WIDTH, 23, ROOT, long_file, "plain")
     check(len(long) == 23, f"long-path dump produced {len(long)} rows, expected 23")
     if len(long) == 23:
@@ -476,27 +487,31 @@ def main():
         check(icon_pty.wait_for("\uf07c".encode()), "wide curses omitted Nerd folder glyph")
         icon_pty.drain(0.2)
         icon_output = bytes(icon_pty.captured)
+        # A pen starts with `0`, so the colour parameter is never the first thing
+        # after `ESC [`; the pattern accepts the reset and any weights before it.
         for filename, (glyph, color) in color_cases.items():
             colored_icon = re.escape(glyph.encode())
-            pattern = rb"\x1b\[38;5;" + str(color).encode() + rb"m(?:\x1b\[[0-9;]*m)*" + colored_icon
+            pattern = (rb"\x1b\[0;(?:[0-9]+;)*38;5;" + str(color).encode()
+                       + rb"m(?:\x1b\[[0-9;]*m)*" + colored_icon)
             check(re.search(pattern, icon_output) is not None,
                   f"{filename} icon did not use its intended indexed color {color}")
-        check(re.search(rb"\x1b\[38;5;231m(?:\x1b\[[0-9;]*m)* a\.c", icon_output) is not None,
+        check(re.search(rb"\x1b\[0;38;5;231(?:;[0-9]+)*m(?:\x1b\[[0-9;]*m)* a\.c",
+                        icon_output) is not None,
               "the file label was not white beside its colored icon")
-        check(re.search(rb"\x1b\[38;5;180m(?:\x1b\[[0-9;]*m)*\xef\x81\xbb"
-                        rb"\x1b\[38;5;231m folder", icon_output) is not None,
+        check(re.search(rb"\x1b\[0;38;5;180(?:;[0-9]+)*m(?:\x1b\[[0-9;]*m)*\xef\x81\xbb"
+                        rb"\x1b\[0;38;5;231(?:;[0-9]+)*m folder", icon_output) is not None,
               "the folder icon was not colored independently from its white label")
         folder_hover_start = len(icon_pty.captured)
         icon_pty.send(b"\x1b[<35;10;3M")
         icon_pty.drain(0.2)
         folder_hover = bytes(icon_pty.captured[folder_hover_start:])
-        check(b"\x1b[38;5;145m" not in folder_hover,
+        check(b"38;5;145" not in folder_hover,
               "hovering a folder label changed its text to the former hover shade")
         hover_start = len(icon_pty.captured)
         icon_pty.send(b"\x1b[<35;10;4M")  # pointer over the a.c label, not its icon
         icon_pty.drain(0.2)
         hovered_name = bytes(icon_pty.captured[hover_start:])
-        check(b"\x1b[38;5;145m" not in hovered_name,
+        check(b"38;5;145" not in hovered_name,
               "hovering a file label changed its text to the former hover shade")
         code, _ = icon_pty.finish()
         check(code == 0, "colored-icon PTY did not shut down cleanly")
@@ -568,6 +583,84 @@ def main():
         restored_exit, _ = restored_tui.finish()
         check(restored_exit == 0, "restored Markdown mode session did not shut down cleanly")
 
+        # THE TABLE PANS; THE DOCUMENT DOES NOT. A warped table is wider than the
+        # preview, so a modified wheel reaches its hidden right-hand columns. The
+        # prose above it must not move by a single cell while that happens - the
+        # pan belongs to the table, not to the page.
+        pan_file = markdown_project / "pan.md"
+        pan_file.write_text(
+            "# Pan Heading\n\n"
+            "PROSE_ANCHOR stays fixed.\n\n"
+            "| Repository | Workspace path |\n"
+            "| :--- | :--- |\n"
+            "| FIRSTCOL | suite/personal/hotcwap/hotcwap-preferences.md |\n"
+        )
+        pan_tui = Pty(22, 112,
+                      argv=[str(BINARY), "--root", str(markdown_project), "--file",
+                            str(pan_file)],
+                      env={"SEMICOLON_ICONS": "plain"})
+        check(pan_tui.wait_for(b"PROSE_ANCHOR"),
+              "the wide-table Markdown preview never painted its prose")
+        # The saved mode may be Code (an earlier session leaves it there), so select
+        # Preview explicitly and wait for a rendered border before panning.
+        pan_tui.click(105, 2)
+        check(pan_tui.wait_for("\u250c".encode()),
+              "clicking Preview did not render the Markdown table")
+        # One notch pans one cell, so a whole first column needs enough notches to
+        # leave the viewport: the proof is that the table moved while the 24-cell
+        # prose sentence above it is still whole (a document-wide pan would clip it).
+        for _ in range(24):
+            pan_tui.send(b"\x1b[<73;60;6M")   # option + wheel-down -> pan right
+            pan_tui.drain(0.12)
+        panned = re.sub(rb"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\([A-Za-z0-9]",
+                        b"", pan_tui.repaint(rows=22))
+        check(b"PROSE_ANCHOR stays fixed." in panned,
+              "horizontal pan moved the Markdown prose instead of the table alone")
+        check(b"Repository" not in panned,
+              "the warped table did not pan inside the preview")
+        check(b"FIRSTCOL" not in panned,
+              "the first table column did not move with the table")
+        pan_exit, _ = pan_tui.finish()
+        check(pan_exit == 0, "wide-table preview session did not shut down cleanly")
+
+        # A VERTICAL SCROLL MUST NOT BECOME A SCROLL HINT. A device that is asked to
+        # shift a region (`rin`, CSI n T), repeat the last glyph (`rep`, CSI n b),
+        # erase characters (`ech`, CSI n X) or insert/delete lines (CSI n L/M) is a
+        # device being asked to reinterpret the frame - and several terminals list one
+        # of those and then handle it differently, which leaves stale or duplicated
+        # rows. The host writes every cell at an absolute address instead, so none of
+        # them may appear anywhere in the stream; --dump cannot see this, because the
+        # device path is not running there.
+        scroll_file = markdown_project / "scroll.md"
+        scroll_file.write_text(
+            "# Scroll Heading\n\n"
+            + "".join(f"line {index} keeps the body tall.\n\n" for index in range(60))
+            + "| Left | Right |\n| :--- | :--- |\n| ALPHA | omega |\n")
+        scroll_tui = Pty(46, 200,
+                         argv=[str(BINARY), "--root", str(markdown_project), "--file",
+                               str(scroll_file)],
+                         env={"SEMICOLON_ICONS": "plain"})
+        check(scroll_tui.wait_for(b"Scroll Heading"),
+              "the tall Markdown preview never painted its heading")
+        scroll_tui.send(b"\x1b[F")           # End: jump to the table at the bottom
+        scroll_tui.drain(0.5)
+        for _ in range(3):
+            scroll_tui.send(b"\x1b[5~")      # PageUp: three full-row scrolls
+            scroll_tui.drain(0.35)
+        scrolled = bytes(scroll_tui.captured)
+        check(re.search(rb"\x1b\[[0-9]*T", scrolled) is None,
+              "a scrolled frame asked the terminal for rin (CSI n T); the host writes "
+              "absolute cells and a terminal that ignores rin would duplicate rows")
+        check(re.search(rb"\x1b\[[0-9]+b", scrolled) is None,
+              "the frame asked the terminal to repeat a glyph (rep, CSI n b) instead of "
+              "writing the run itself")
+        check(re.search(rb"\x1b\[[0-9]+X", scrolled) is None,
+              "the frame asked the terminal to erase characters (ech, CSI n X)")
+        check(re.search(rb"\x1b\[[0-9]*[LM]", scrolled) is None,
+              "the frame asked the terminal to insert or delete a line (CSI n L/M)")
+        scroll_exit, _ = scroll_tui.finish()
+        check(scroll_exit == 0, "scrolled preview session did not shut down cleanly")
+
         dynamic_project = markdown_project / "dynamic"
         dynamic_project.mkdir()
         plain_file = dynamic_project / "notes.txt"
@@ -601,18 +694,17 @@ def main():
         check(dynamic_markdown.read_text() ==
               "# Dynamic Preview\n\n**DYCARET_MARKERNAMIC_MARKER**\n",
               f"click-to-caret changed the wrong source position: {dynamic_markdown.read_text()!r}")
-        before_x_close = len(dynamic_tui.captured)
         dynamic_tui.click(82, 0)
-        x_close_delta = bytes(dynamic_tui.captured[before_x_close:])
-        check(b"ordinary source" in x_close_delta,
+        # The presenter sends only changed cells, so a delta is not the screen: read the
+        # screen after a full repaint instead. If the close did not happen the Markdown
+        # tab stays active and this text is nowhere on it.
+        check(b"ordinary source" in dynamic_tui.repaint(),
               "clicking a tab's Nerd-font close control did not remove it")
         dynamic_tui.click(10, 2)
         check(dynamic_tui.wait_for(b"DYNAMIC_MARKER"),
               "opening a closed file from the tree did not create a fresh tab")
-        before_middle_close = len(dynamic_tui.captured)
         dynamic_tui.click(70, 0, button=1)
-        middle_close_delta = bytes(dynamic_tui.captured[before_middle_close:])
-        check(b"ordinary source" in middle_close_delta,
+        check(b"ordinary source" in dynamic_tui.repaint(),
               "middle-clicking a tab did not close it and return to the remaining file")
         dynamic_exit, _ = dynamic_tui.finish()
         check(dynamic_exit == 0, "dynamic Markdown selection did not shut down cleanly")
@@ -1015,11 +1107,13 @@ def main():
     before_repaint = len(shell.captured)
     shell.force_repaint()
     repaint = bytes(shell.captured[before_repaint:])
-    tab_start = TAB_STRIP_START_RE.search(repaint)
-    check(tab_start is not None, "the repainted header did not emit its tab-strip row")
-    if tab_start is not None:
-        check(int(tab_start.group(1)) == 61,
-              f"the tab strip began at column {tab_start.group(1)!r}, expected 61 beside the moved seam")
+    header = Pty.row_text(repaint)
+    check(header is not None, "the repainted header did not emit its first row")
+    if header is not None:
+        # The first tab's chip opens at the seam. Column 61 is index 60.
+        check(len(header) > 61 and header[60] == "[",
+              f"the tab strip did not begin at column 61 beside the moved seam "
+              f"({header[50:80]!r})")
 
     # 'q' IS NOT A QUIT KEY. A letter is input - 'q' is a legitimate thing to want to
     # type - so the only exit is Ctrl-C, which raw mode delivers as byte 3.
