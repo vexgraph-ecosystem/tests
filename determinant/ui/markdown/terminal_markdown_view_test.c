@@ -29,6 +29,23 @@ static bool canvasContainsText(const TerminalCanvas *canvas, const char *text) {
     return false;
 }
 
+static size_t rowOfText(const TerminalCanvas *canvas, const char *text) {
+    size_t length = strlen(text);
+    for (size_t row = 0; row < TerminalCanvas_getHeight(canvas); ++row)
+        for (size_t column = 0; column + length <= TerminalCanvas_getWidth(canvas); ++column) {
+            bool matches = true;
+            for (size_t index = 0; index < length; ++index)
+                if (TerminalCanvas_glyphAt(canvas, column + index, row)
+                    != (unsigned char) text[index]) {
+                    matches = false;
+                    break;
+                }
+            if (matches)
+                return row;
+        }
+    return SIZE_MAX;
+}
+
 int main(void) {
     static const char *lines[] = {
         "# Semicolon",
@@ -420,6 +437,14 @@ int main(void) {
                                           sizeof wrappedTable / sizeof wrappedTable[0]));
     assert(TerminalMarkdownView_setViewport(view, W));
     assert(TerminalMarkdownView_setScroll(view, 0u));
+    assert(TerminalMarkdownView_contentWidth(view) > W);
+    assert(TerminalMarkdownView_maxScrollX(view) == TerminalMarkdownView_contentWidth(view) - W);
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    assert(canvasContainsText(&canvas, "Runner"));
+
+    assert(TerminalMarkdownView_setScrollX(view, TerminalMarkdownView_maxScrollX(view)));
+    assert(TerminalMarkdownView_getScrollX(view) == TerminalMarkdownView_maxScrollX(view));
     clearCanvas(&canvas, cells, styles, fg, bg);
     TerminalMarkdownView_render(view, &canvas);
     assert(canvasContainsText(&canvas, "COMPLETE"));
@@ -446,7 +471,78 @@ int main(void) {
         }
     }
     assert(sawRedEmoji);
-    assert(tableJoins >= 4u);
+    assert(tableJoins >= 2u);
+    assert(TerminalMarkdownView_scrollXBy(view, -100));
+    assert(TerminalMarkdownView_getScrollX(view) == 0u);
+
+    // The horizontal pan belongs to the table alone. Prose keeps its document
+    // origin while the warped table slides under it, and the table's own right
+    // edge is reachable at the document-wide maximum.
+    static const char *tablePanLines[] = {
+        "Prose stays put.",
+        "",
+        "| Repository | Workspace path |",
+        "| :--- | :--- |",
+        "| vexspoke | host-behavior/vexspoke/vexspoke-preferences.md |",
+    };
+    assert(TerminalMarkdownView_setSource(view, tablePanLines,
+                                          sizeof tablePanLines / sizeof tablePanLines[0]));
+    assert(TerminalMarkdownView_setViewport(view, W));
+    assert(TerminalMarkdownView_setScroll(view, 0u));
+    assert(TerminalMarkdownView_setScrollX(view, 0u));
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    size_t proseRow = rowOfText(&canvas, "Prose stays put.");
+    size_t wideHeaderRow = rowOfText(&canvas, "Repository");
+    assert(proseRow != SIZE_MAX && wideHeaderRow != SIZE_MAX);
+    assert(TerminalMarkdownView_rowScrollX(view, proseRow) == 0u);
+    assert(TerminalMarkdownView_rowScrollX(view, wideHeaderRow) == 0u);
+    assert(TerminalMarkdownView_contentWidth(view) > W);
+    size_t maximumX = TerminalMarkdownView_maxScrollX(view);
+    assert(maximumX > 0u);
+    // Column content widths are a whole number of 4-cell steps: one left border, one
+    // space and one right border per column (3*columns) plus the closing border (1).
+    assert((TerminalMarkdownView_contentWidth(view) - 7u) % 4u == 0u);
+    assert(TerminalMarkdownView_setScrollX(view, maximumX));
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    assert(TerminalCanvas_glyphAt(&canvas, 0, proseRow) == 'P');
+    assert(canvasContainsText(&canvas, "Prose stays put."));
+    assert(TerminalMarkdownView_rowScrollX(view, proseRow) == 0u);
+    assert(TerminalMarkdownView_rowScrollX(view, wideHeaderRow) == maximumX);
+    assert(TerminalCanvas_glyphAt(&canvas, 0, wideHeaderRow) != 0x2502u);
+    assert(TerminalCanvas_glyphAt(&canvas, W - 1u, wideHeaderRow) == 0x2502u);
+
+    // A table that fits never moves, even while a wider table in the same
+    // document pans by its full overflow.
+    static const char *mixedTableLines[] = {
+        "| ID | Ok |",
+        "| -- | -- |",
+        "| 1 | 2 |",
+        "",
+        "| Repository | Workspace path |",
+        "| :--- | :--- |",
+        "| vexspoke | host-behavior/vexspoke/vexspoke-preferences.md |",
+    };
+    assert(TerminalMarkdownView_setSource(view, mixedTableLines,
+                                          sizeof mixedTableLines / sizeof mixedTableLines[0]));
+    assert(TerminalMarkdownView_setViewport(view, W));
+    assert(TerminalMarkdownView_setScroll(view, 0u));
+    assert(TerminalMarkdownView_setScrollX(view, 0u));
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    size_t smallHeaderRow = rowOfText(&canvas, "ID");
+    size_t mixedHeaderRow = rowOfText(&canvas, "Repository");
+    assert(smallHeaderRow != SIZE_MAX && mixedHeaderRow != SIZE_MAX);
+    assert(TerminalMarkdownView_setScrollX(view, TerminalMarkdownView_maxScrollX(view)));
+    clearCanvas(&canvas, cells, styles, fg, bg);
+    TerminalMarkdownView_render(view, &canvas);
+    assert(TerminalMarkdownView_rowScrollX(view, smallHeaderRow) == 0u);
+    assert(TerminalCanvas_glyphAt(&canvas, 0, smallHeaderRow - 1u) == 0x250Cu);
+    assert(TerminalCanvas_glyphAt(&canvas, 0, smallHeaderRow) == 0x2502u);
+    assert(TerminalMarkdownView_rowScrollX(view, mixedHeaderRow)
+           == TerminalMarkdownView_maxScrollX(view));
+    assert(TerminalMarkdownView_setScrollX(view, 0u));
 
     static const char *numberWidthList[] = {
         "997. item 997", "1000. item 1000", "12345. item 12345",
