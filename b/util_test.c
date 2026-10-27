@@ -16,7 +16,11 @@
 
 /* Checks command/source helper rejection, exit-status propagation, and literal ten-argument forwarding. */
 int main(void) {
+#ifdef _WIN32
+    char *prefix[] = { "sh", "-c", "exit 7" };
+#else
     char *prefix[] = { "/bin/sh", "-c", "exit 7" };
+#endif
     char *empty[] = { nullptr };
     assert(Util_runCommand(nullptr, 0, 0, nullptr) == 1);
     assert(Util_runCommand(prefix, 0, 0, nullptr) == 1);
@@ -26,7 +30,11 @@ int main(void) {
     assert(Util_runCommand(prefix, 3, 1, nullptr) == 1);
     assert(Util_runCommand(prefix, 3, 0, nullptr) == 7);
     char *arguments[] = { "a space", "$(touch NEVER)", ";", "3", "4", "5", "6", "7", "8", "9" };
+#ifdef _WIN32
+    char *ten[] = { "sh", "-c", "test \"$#\" -eq 10 && test \"$1\" = 'a space'", "fixture" };
+#else
     char *ten[] = { "/bin/sh", "-c", "test \"$#\" -eq 10 && test \"$1\" = 'a space'", "fixture" };
+#endif
     assert(Util_runCommand(ten, 4, 10, arguments) == 0);
     char *output = nullptr;
     assert(Util_checkSources(nullptr, "/*.sh", prefix, 1, &output) == 1);

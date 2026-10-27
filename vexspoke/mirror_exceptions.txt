@@ -7,3 +7,4 @@
 src/lang/vec2/vec2.c  vexspoke/lang/vec2_test.c
 src/lang/vec3/vec3.c  vexspoke/lang/vec3_test.c
 src/lang/vec4/vec4.c  vexspoke/lang/vec4_test.c
+src/net/vex_ws_source.c  api-haven/ws_source_binding_test.c

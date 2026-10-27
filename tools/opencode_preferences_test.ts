@@ -122,7 +122,7 @@ test("check holds the shape and the injection budget", async () => {
   const report = await prefs("check")
   expect(report).toContain("PASS")
   expect(report).toContain("injected:")
-  expect(report).toContain("37 compressed / 37 full")
+  expect(report).toContain("38 compressed / 38 full")
 })
 
 test("project config declares constitution and AGENTS points at the command", async () => {

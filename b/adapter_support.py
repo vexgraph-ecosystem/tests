@@ -6,7 +6,11 @@ import subprocess
 import tempfile
 import unittest
 
-ROOT = Path(__file__).resolve().parents[2] / "personal/b"
+_ROOT_CANDIDATES = [
+    Path(__file__).resolve().parents[2] / "suite/personal/b",
+    Path(__file__).resolve().parents[2] / "personal/b",
+]
+ROOT = next((p for p in _ROOT_CANDIDATES if p.exists()), _ROOT_CANDIDATES[0])
 
 
 class AdapterCase(unittest.TestCase):

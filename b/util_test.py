@@ -1,16 +1,21 @@
 """Build/run the new shared helper boundaries with assertions and ASan/UBSan."""
 import os
+import sys
 from pathlib import Path
 import subprocess
+import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from adapter_support import AdapterCase, ROOT
 
 
 class UtilTest(AdapterCase):
     def test_command_boundaries_and_memory_safety(self):
-        self.require_tool("cc", "--version")
+        cc = os.environ.get("CC", "cc")
+        self.require_tool(cc, "--version")
         output = self.project / "util-test"
         source = Path(__file__).with_suffix(".c")
-        command = ["cc", "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-UNDEBUG",
+        command = [cc, "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-UNDEBUG",
                    "-fsanitize=address,undefined", "-fno-omit-frame-pointer", "-I", str(ROOT),
                    str(source), str(ROOT / "util.c"), "-o", str(output)]
         compiled = subprocess.run(command, capture_output=True, text=True, timeout=60)
@@ -22,3 +27,7 @@ class UtilTest(AdapterCase):
         self.assertEqual(len(diagnostics), 11, result.stderr)
         self.assertTrue(all(line.startswith("[vex]") for line in diagnostics), result.stderr)
         self.assertFalse((self.project / "NEVER").exists())
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -27,13 +27,14 @@
  * ============================================================================
  */
 
-// 16-byte header stamped by the allocator for negative pointer recovery
-typedef struct NegativeHeader {
+// 32-byte header stamped by the allocator for negative pointer recovery
+typedef struct MemoryHeader {
     uint64_t typeId;
-    uint32_t length;
-    uint32_t sugar;
-} NegativeHeader;
-_Static_assert(sizeof(NegativeHeader) == 16, "NegativeHeader must stay 16 Bytes");
+    uint64_t hash;
+    uint64_t length;
+    uint64_t pointer;
+} MemoryHeader;
+_Static_assert(sizeof(MemoryHeader) == 32, "MemoryHeader must stay 32 Bytes");
 
 static int g_failures = 0;
 
@@ -92,9 +93,9 @@ int main(void) {
     CHECK("transient t1 is legit", Lifetime_isLegit(t1));
     CHECK("transient t2 is legit", Lifetime_isLegit(t2));
 
-    // #6 16-byte NegativeHeader introspection (O(1) negative pointer recovery)
-    NegativeHeader *h1 = ((NegativeHeader*) p1) - 1;
-    NegativeHeader *h2 = ((NegativeHeader*) p2) - 1;
+    // #6 32-byte MemoryHeader introspection (O(1) negative pointer recovery)
+    MemoryHeader *h1 = ((MemoryHeader*) p1) - 1;
+    MemoryHeader *h2 = ((MemoryHeader*) p2) - 1;
     CHECK("p1 header typeId", (*h1).typeId == 100);
     CHECK("p1 header length", (*h1).length == 64);
     CHECK("p2 header typeId", (*h2).typeId == 101);
@@ -106,7 +107,17 @@ int main(void) {
     CHECK("transient alloc after reset", t3 != nullptr);
     CHECK("transient t3 is legit", Lifetime_isLegit(t3));
 
-    // #8 Persistent free recycling
+    // #8 Accessors and relational root binding
+    CHECK("getPersistentArena returns p", Lifetime_getPersistentArena(&lt) == lt.persistentArena);
+    CHECK("getTransientArena returns t", Lifetime_getTransientArena(&lt) == lt.transientArena);
+    CHECK("initial relational is null", Lifetime_getRelational(&lt) == nullptr);
+    void *dummyRel = (void*) 0x20000;
+    Lifetime_setRelational(&lt, dummyRel);
+    CHECK("getRelational returns bound root", Lifetime_getRelational(&lt) == dummyRel);
+    Lifetime_setRelational(&lt, (void*) 0x10001); // unaligned
+    CHECK("unaligned relational set rejected", Lifetime_getRelational(&lt) == dummyRel);
+
+    // #9 Persistent free recycling
     Lifetime_freePersistent(&lt, p1);
     Lifetime_freePersistent(&lt, p2);
     CHECK("persistent free no crash", true);
