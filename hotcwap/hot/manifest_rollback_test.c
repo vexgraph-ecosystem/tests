@@ -25,6 +25,7 @@
 // state lives in a mkdtemp dir and is best-effort removed on exit. POSIX-only
 // (dlopen-based loader contract); on Windows the harness skips with exit 0.
 
+#include "platform/platform.h"
 #include <dirent.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -192,7 +193,7 @@ static bool poll_until_generation(HotModule *hot, uint64_t target) {
 }
 
 int main(void) {
-#if defined(_WIN32)
+#if defined(VEX_PLATFORM_WINDOWS)
     printf("manifest_rollback_test: SKIP (POSIX dlopen contract)\n");
     return B_TEST_SKIP;
 #else
