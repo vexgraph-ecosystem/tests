@@ -6,6 +6,7 @@
 // IOSurface stride is wrong; this is the zoom/live-resize crash in the shell.
 
 #include <stdio.h>
+#include "platform/platform.h"
 
 #include "frame/frame.h"
 #include "window/window.h"
@@ -36,7 +37,7 @@ int main(void) {
         Frame_setSize(f, sizes[i][0], sizes[i][1]);
         Frame_render(f);
         CHECK(Frame_root(f).w == (float)sizes[i][0]);
-#ifdef __APPLE__
+#if defined(VEX_PLATFORM_APPLE)
         CHECK(Window_presentSurfaceContents(Frame_window(f)) != nullptr);
 #endif
     }
