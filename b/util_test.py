@@ -15,9 +15,13 @@ class UtilTest(AdapterCase):
         self.require_tool(cc, "--version")
         output = self.project / "util-test"
         source = Path(__file__).with_suffix(".c")
+        # The utility owner moved under util/ and now includes the R0 platform header,
+        # so the harness carries the same include roots the root build gives it.
+        lifetime = Path(__file__).resolve().parents[3] / "vexgraph-ecosystem/lifetime/src"
         command = [cc, "-std=gnu23", "-Wall", "-Wextra", "-Werror", "-UNDEBUG",
-                   "-fsanitize=address,undefined", "-fno-omit-frame-pointer", "-I", str(ROOT),
-                   str(source), str(ROOT / "util.c"), "-o", str(output)]
+                   "-fsanitize=address,undefined", "-fno-omit-frame-pointer",
+                   "-I", str(ROOT), "-I", str(ROOT / "util"), "-I", str(lifetime),
+                   str(source), str(ROOT / "util/util.c"), "-o", str(output)]
         compiled = subprocess.run(command, capture_output=True, text=True, timeout=60)
         self.assertEqual(compiled.returncode, 0, compiled.stdout + compiled.stderr)
         result = subprocess.run([str(output)], cwd=self.project, capture_output=True,
