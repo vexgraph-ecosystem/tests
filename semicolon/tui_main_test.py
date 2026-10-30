@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Owner: the semicolon terminal shell (suite/projects/semicolon/src/main/tui-main.c).
+"""Owner: the semicolon terminal shell (vexgraph-ecosystem/semicolon/src/main/tui-main.c).
 
 MODULE: tui_main_test.py
 REGISTRY: main() builds the shell through its own build.py and proves the shell's
@@ -48,8 +48,8 @@ import tempfile
 import termios
 import time
 
-ROOT = Path(__file__).resolve().parents[2]
-APP = ROOT / "suite/projects/semicolon"
+ROOT = Path(__file__).resolve().parents[3]
+APP = ROOT / "vexgraph-ecosystem/semicolon"
 BUILD = APP / "build.py"
 BINARY = APP / ".build/semicolon-tui"
 
@@ -57,7 +57,7 @@ BINARY = APP / ".build/semicolon-tui"
 # the dump has to be given a root and a file: an ambient cwd would make the frame - and so
 # every assertion about it - a guess.
 PROJECT_ROOT = APP
-PROJECT_FILE = ROOT / "suite/ecosystem/vexspoke/src/oop/type.h"
+PROJECT_FILE = ROOT / "vexgraph-ecosystem/vexspoke/src/oop/type.h"
 
 # The interactive runs are pinned to the same project and file as the dump, and to a
 # throwaway state directory: a session cache is per project and lives outside the tree, so
@@ -96,6 +96,27 @@ def ensure_built():
     if result.returncode:
         print(f"BUILD FAIL\n{result.stdout}{result.stderr}", file=sys.stderr)
         raise SystemExit(1)
+
+
+def pasteboard_settles(expected, timeout=2.0):
+    """Wait, bounded, for a pasteboard write to become visible to `pbpaste`.
+
+    The pasteboard is shared with the desktop, so the reader can lag the writer by a
+    moment. A single immediate read makes this a race; the app's write has returned
+    before it paints the notice, so waiting on the reader is not hiding a product bug.
+    Returns (matched, last_read).
+    """
+    if shutil.which("pbpaste") is None:
+        return True, b""
+    deadline = time.monotonic() + timeout
+    last = b""
+    while True:
+        last = subprocess.run(["pbpaste"], capture_output=True).stdout
+        if last == expected:
+            return True, last
+        if time.monotonic() >= deadline:
+            return False, last
+        time.sleep(0.02)
 
 
 def dump(width, height, root=None, semicolon_file=None, icons="plain"):
@@ -390,27 +411,33 @@ def main():
 
     # The crumb keeps the two ends of a deep path: the checkout and its first child, then
     # the last directory and the file, with the omitted middle collapsed to an ellipsis.
-    # The fixed 44-cell band still bounds the footer: the full example outgrows it and is
-    # clipped at the band, never drawn under the status chips.
-    deep_file = ROOT / "suite/personal/api-haven/src/com/discord/discord.h"
-    deep = dump(FRAME_WIDTH, 23, ROOT, deep_file, "plain")
-    check(len(deep) == 23, f"deep-path dump produced {len(deep)} rows, expected 23")
-    if len(deep) == 23:
-        check(deep[22][11:11 + CRUMB_CELLS].startswith(
-                  "[vexgraph > suite > … > discord > discord.h]"),
-              f"the deep crumb does not keep both ends: {deep[22][:60]!r}")
-        check(deep[22][11 + CRUMB_CELLS] == " ",
-              "the deep crumb ran past its fixed band into the status chips")
-    long_file = ROOT / "suite/personal/api-haven/src/com/discord/discord_webhook.h"
-    long = dump(FRAME_WIDTH, 23, ROOT, long_file, "plain")
-    check(len(long) == 23, f"long-path dump produced {len(long)} rows, expected 23")
-    if len(long) == 23:
-        check(long[22][11:11 + CRUMB_CELLS] ==
-              "[vexgraph > suite > … > discord > discord_we",
-              f"the long crumb is not bounded at the fixed band: "
-              f"{long[22][11:11 + CRUMB_CELLS]!r}")
-        check("[utf-8]" in long[22][11 + CRUMB_CELLS:],
-              "the bounded crumb displaced the status chips")
+    # The 44-cell band is narrower than today's top-level directory names, so the fixture
+    # is a temporary checkout of the shape the band was designed for: the first-two /
+    # last-two rule is what is under test, not the current name of the workspace root.
+    with tempfile.TemporaryDirectory(prefix="semicolon-deep-") as directory:
+        deep_root = Path(directory) / "vexgraph"
+        deep_file = deep_root / "suite/personal/api-haven/src/com/discord/discord.h"
+        deep_file.parent.mkdir(parents=True)
+        deep_file.write_text("int value;\n")
+        deep = dump(FRAME_WIDTH, 23, deep_root, deep_file, "plain")
+        check(len(deep) == 23, f"deep-path dump produced {len(deep)} rows, expected 23")
+        if len(deep) == 23:
+            check(deep[22][11:11 + CRUMB_CELLS].startswith(
+                      "[vexgraph > suite > … > discord > discord.h]"),
+                  f"the deep crumb does not keep both ends: {deep[22][:60]!r}")
+            check(deep[22][11 + CRUMB_CELLS] == " ",
+                  "the deep crumb ran past its fixed band into the status chips")
+        long_file = deep_root / "suite/personal/api-haven/src/com/discord/discord_webhook.h"
+        long_file.write_text("int value;\n")
+        long = dump(FRAME_WIDTH, 23, deep_root, long_file, "plain")
+        check(len(long) == 23, f"long-path dump produced {len(long)} rows, expected 23")
+        if len(long) == 23:
+            check(long[22][11:11 + CRUMB_CELLS] ==
+                  "[vexgraph > suite > … > discord > discord_we",
+                  f"the long crumb is not bounded at the fixed band: "
+                  f"{long[22][11:11 + CRUMB_CELLS]!r}")
+            check("[utf-8]" in long[22][11 + CRUMB_CELLS:],
+                  "the bounded crumb displaced the status chips")
 
     # Four relative components exactly fill the first-two/last-two breadcrumb shape; no
     # middle component is omitted, so showing an ellipsis here would invent missing path.
@@ -593,7 +620,7 @@ def main():
             "PROSE_ANCHOR stays fixed.\n\n"
             "| Repository | Workspace path |\n"
             "| :--- | :--- |\n"
-            "| FIRSTCOL | suite/personal/hotcwap/hotcwap-preferences.md |\n"
+            "| FIRSTCOL | vexgraph-hobby-projects/hotcwap/hotcwap-preferences.md |\n"
         )
         pan_tui = Pty(22, 112,
                       argv=[str(BINARY), "--root", str(markdown_project), "--file",
@@ -746,8 +773,8 @@ def main():
             check(b"\x1b]52;" not in bytes(copy_tui.captured),
                   "a copy wrote an OSC 52 escape instead of using the pasteboard")
             if shutil.which("pbpaste") is not None:
-                pasted = subprocess.run(["pbpaste"], capture_output=True).stdout
-                check(pasted == b"int main(void) {\n    return 0;\n}",
+                matched, pasted = pasteboard_settles(b"int main(void) {\n    return 0;\n}")
+                check(matched,
                       f"the clipboard did not hold the fenced block: {pasted!r}")
             # The check is feedback, not retained state: the copy glyph comes back when
             # its window closes, even with no further input.
@@ -815,8 +842,8 @@ def main():
                 break
         check(link_hit, "pressing a link label did not report the link action")
         if shutil.which("pbpaste") is not None:
-            pasted = subprocess.run(["pbpaste"], capture_output=True).stdout
-            check(pasted == b"https://example.test/path",
+            matched, pasted = pasteboard_settles(b"https://example.test/path")
+            check(matched,
                   f"the clipboard did not hold the link target: {pasted!r}")
         check(b"\x1b]52;" not in bytes(link_tui.captured),
               "a link press emitted an OSC 52 escape")
