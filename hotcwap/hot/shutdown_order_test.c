@@ -14,6 +14,7 @@
 // Headless but real (dlopen-based loader contract). Scratch state lives in a
 // mkdtemp dir under the VEX_MANIFEST test seam. POSIX-only.
 
+#include "platform/platform.h"
 #include <dirent.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -141,7 +142,7 @@ static bool stage_module(const char *loadBase) {
 }
 
 int main(void) {
-#if defined(_WIN32)
+#if defined(VEX_PLATFORM_WINDOWS)
     printf("shutdown_order_test: SKIP (POSIX dlopen contract)\n");
     return B_TEST_SKIP;
 #else
