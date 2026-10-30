@@ -57,7 +57,7 @@ int main(void) {
     CHECK(!Permission_requiresRestart(PERMISSION_CAMERA));
     CHECK(!Permission_requiresRestart((PermissionKind) 999));
 
-#if defined(__APPLE__)
+#if defined(VEX_PLATFORM_APPLE)
     // On macOS the CoreGraphics quartet and the framework kinds are all wired:
     // their status is GRANTED / NOT_DETERMINED (a bare CLI has no bundle
     // identity, so the framework kinds answer NOT_DETERMINED without touching
