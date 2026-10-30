@@ -98,37 +98,37 @@ int main(void)
     CHECK(!strcmp(VEX_ARCH_NAME, "x86_64"));
 #endif
 
-    // Each exact target must carry its declared platform, family, width and name.
+   // Each exact target must carry its declared platform, family, width and name.
 #if defined(VEX_PLATFORM_APPLE_SILICON)
-    CHECK(!strcmp(VEX_PLATFORM_NAME, "darwin"));
-    CHECK(!strcmp(VEX_ARCH_FAMILY, "arm"));
-    CHECK(!strcmp(VEX_ARCH_NAME, "arm64"));
-    CHECK(!strcmp(VEX_TARGET_NAME, "darwin-arm64"));
+   CHECK(!strcmp(VEX_PLATFORM_NAME, "darwin"));
+   CHECK(!strcmp(VEX_ARCH_FAMILY, "arm"));
+   CHECK(!strcmp(VEX_ARCH_NAME, "arm64"));
+   CHECK(!strcmp(VEX_TARGET_NAME, "darwin-arm64"));
 #elif defined(VEX_PLATFORM_APPLE_X86_64)
-    CHECK(!strcmp(VEX_PLATFORM_NAME, "darwin"));
-    CHECK(!strcmp(VEX_ARCH_FAMILY, "x86"));
-    CHECK(!strcmp(VEX_ARCH_NAME, "x86_64"));
-    CHECK(!strcmp(VEX_TARGET_NAME, "darwin-x86_64"));
+   CHECK(!strcmp(VEX_PLATFORM_NAME, "darwin"));
+   CHECK(!strcmp(VEX_ARCH_FAMILY, "x86"));
+   CHECK(!strcmp(VEX_ARCH_NAME, "x86_64"));
+   CHECK(!strcmp(VEX_TARGET_NAME, "darwin-x86_64"));
 #elif defined(VEX_PLATFORM_LINUX_ARM64)
-    CHECK(!strcmp(VEX_PLATFORM_NAME, "linux"));
-    CHECK(!strcmp(VEX_ARCH_FAMILY, "arm"));
-    CHECK(!strcmp(VEX_ARCH_NAME, "arm64"));
-    CHECK(!strcmp(VEX_TARGET_NAME, "linux-arm64"));
+   CHECK(!strcmp(VEX_PLATFORM_NAME, "linux"));
+   CHECK(!strcmp(VEX_ARCH_FAMILY, "arm"));
+   CHECK(!strcmp(VEX_ARCH_NAME, "arm64"));
+   CHECK(!strcmp(VEX_TARGET_NAME, "linux-arm64"));
 #elif defined(VEX_PLATFORM_LINUX_X86_64)
-    CHECK(!strcmp(VEX_PLATFORM_NAME, "linux"));
-    CHECK(!strcmp(VEX_ARCH_FAMILY, "x86"));
-    CHECK(!strcmp(VEX_ARCH_NAME, "x86_64"));
-    CHECK(!strcmp(VEX_TARGET_NAME, "linux-x86_64"));
+   CHECK(!strcmp(VEX_PLATFORM_NAME, "linux"));
+   CHECK(!strcmp(VEX_ARCH_FAMILY, "x86"));
+   CHECK(!strcmp(VEX_ARCH_NAME, "x86_64"));
+   CHECK(!strcmp(VEX_TARGET_NAME, "linux-x86_64"));
 #elif defined(VEX_PLATFORM_WINDOWS_ARM64)
-    CHECK(!strcmp(VEX_PLATFORM_NAME, "windows"));
-    CHECK(!strcmp(VEX_ARCH_FAMILY, "arm"));
-    CHECK(!strcmp(VEX_ARCH_NAME, "arm64"));
-    CHECK(!strcmp(VEX_TARGET_NAME, "windows-arm64"));
+   CHECK(!strcmp(VEX_PLATFORM_NAME, "windows"));
+   CHECK(!strcmp(VEX_ARCH_FAMILY, "arm"));
+   CHECK(!strcmp(VEX_ARCH_NAME, "arm64"));
+   CHECK(!strcmp(VEX_TARGET_NAME, "windows-arm64"));
 #elif defined(VEX_PLATFORM_WINDOWS_X86_64)
-    CHECK(!strcmp(VEX_PLATFORM_NAME, "windows"));
-    CHECK(!strcmp(VEX_ARCH_FAMILY, "x86"));
-    CHECK(!strcmp(VEX_ARCH_NAME, "x86_64"));
-    CHECK(!strcmp(VEX_TARGET_NAME, "windows-x86_64"));
+   CHECK(!strcmp(VEX_PLATFORM_NAME, "windows"));
+   CHECK(!strcmp(VEX_ARCH_FAMILY, "x86"));
+   CHECK(!strcmp(VEX_ARCH_NAME, "x86_64"));
+   CHECK(!strcmp(VEX_TARGET_NAME, "windows-x86_64"));
 #endif
 
     // The floor is 64-bit; the header's _Static_assert must agree with the build.
