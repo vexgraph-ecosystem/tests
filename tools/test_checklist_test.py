@@ -15,8 +15,10 @@ import unittest
 from unittest.mock import patch
 
 
-ROOT = Path(__file__).resolve().parents[2]
-SPEC = importlib.util.spec_from_file_location("checklist", ROOT / "tools/test_checklist.py")
+ROOT = Path(__file__).resolve().parents[3] if len(Path(__file__).resolve().parents) > 3 else Path(__file__).resolve().parents[2]
+_CANDIDATES = [ROOT / "tools/python/test_checklist.py", ROOT / "tools/test_checklist.py"]
+SCRIPT = next((p for p in _CANDIDATES if p.exists()), _CANDIDATES[0])
+SPEC = importlib.util.spec_from_file_location("checklist", SCRIPT)
 CHECKLIST = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CHECKLIST)
 

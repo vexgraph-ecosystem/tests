@@ -18,8 +18,10 @@ import unittest
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[2]
-SPEC = importlib.util.spec_from_file_location("readiness", ROOT / "tools/readiness.py")
+ROOT = Path(__file__).resolve().parents[3] if len(Path(__file__).resolve().parents) > 3 else Path(__file__).resolve().parents[2]
+_CANDIDATES = [ROOT / "tools/python/readiness.py", ROOT / "tools/readiness.py"]
+SCRIPT = next((p for p in _CANDIDATES if p.exists()), _CANDIDATES[0])
+SPEC = importlib.util.spec_from_file_location("readiness", SCRIPT)
 READINESS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(READINESS)
 

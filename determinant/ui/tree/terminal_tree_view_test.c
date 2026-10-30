@@ -20,6 +20,7 @@
 // exercised — only its counting and its diagnostic are. The finite boundary this owner
 // does prove is the one a caller reaches by accident: the viewport and the row list.
 #include "ui/tree/terminal_tree_view.h"
+#include "ui/surface/terminal_canvas.h"
 #include "determinant/support.h"
 #include <string.h>
 
@@ -530,6 +531,22 @@ int main(void) {
     assert(TerminalTreeView_exhaustionCount(view) == 0u);        // nothing ran out
     TerminalTreeView_clearExhaustion(view);
     assert(TerminalTreeView_exhaustionCount(view) == 0u);
+
+    // --- Indent, icon configuration and uniform paint ---
+    assert(TerminalTreeView_getIndent(view) == 2u);
+    assert(TerminalTreeView_setIndent(view, 4u));
+    assert(TerminalTreeView_getIndent(view) == 4u);
+    assert(TerminalTreeView_getNerdIcons(view));
+    assert(TerminalTreeView_setNerdIcons(view, false));
+    assert(!TerminalTreeView_getNerdIcons(view));
+
+    uint32_t cells[20 * 5];
+    for (size_t i = 0; i < 20 * 5; ++i)
+        cells[i] = ' ';
+    TerminalCanvas canvas = TerminalCanvas_4(cells, nullptr, 20, 5);
+    TerminalTreeView_paint(view, &canvas);
+    TerminalTreeView_setNerdIcons(view, true);
+    TerminalTreeView_paint(view, &canvas);
 
     TerminalTreeView_free(view);
     return 0;

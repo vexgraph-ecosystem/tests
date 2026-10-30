@@ -17,8 +17,10 @@ from collections import Counter
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[2]
-SPEC = importlib.util.spec_from_file_location("linter", ROOT / "tools/linter.py")
+ROOT = Path(__file__).resolve().parents[3] if len(Path(__file__).resolve().parents) > 3 else Path(__file__).resolve().parents[2]
+_CANDIDATES = [ROOT / "tools/python/linter.py", ROOT / "tools/linter.py"]
+SCRIPT = next((p for p in _CANDIDATES if p.exists()), _CANDIDATES[0])
+SPEC = importlib.util.spec_from_file_location("linter", SCRIPT)
 LINTER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(LINTER)
 

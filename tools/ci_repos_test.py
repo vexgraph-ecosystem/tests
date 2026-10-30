@@ -18,8 +18,10 @@ import unittest
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[2]
-SPEC = importlib.util.spec_from_file_location("ci_repos", ROOT / "tools/ci_repos.py")
+ROOT = Path(__file__).resolve().parents[3] if len(Path(__file__).resolve().parents) > 3 else Path(__file__).resolve().parents[2]
+_CANDIDATES = [ROOT / "tools/python/ci_repos.py", ROOT / "tools/ci_repos.py"]
+SCRIPT = next((p for p in _CANDIDATES if p.exists()), _CANDIDATES[0])
+SPEC = importlib.util.spec_from_file_location("ci_repos", SCRIPT)
 CI_REPOS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CI_REPOS)
 

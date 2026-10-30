@@ -13,7 +13,12 @@ import tempfile
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[2] / "personal/b"
+_ROOT_CANDIDATES = [
+    Path(__file__).resolve().parents[3] / "vexgraph-hobby-projects/b",
+    Path(__file__).resolve().parents[2] / "personal/b",
+    Path(__file__).resolve().parents[2] / "suite/personal/b",
+]
+ROOT = next((p for p in _ROOT_CANDIDATES if p.exists()), _ROOT_CANDIDATES[0])
 
 
 class CliTest(unittest.TestCase):
@@ -68,7 +73,7 @@ class CliTest(unittest.TestCase):
         self.source("hello.py", 'import sys\n'
                     'print(" ".join(sys.argv[1:]))\n'
                     'sys.exit(3)\n')
-        for arguments in (("run", "instance", "hello.py"), ("python", "hello.py")):
+        for arguments in (("run", "instance", "hello.py"), ("breeze", "hello.py")):
             result = self.invoke(*arguments, "--", "hello", "py", expected=3)
             self.assertEqual(result.stdout.strip(), "hello py")
         self.assertFalse(list(self.project.rglob("__pycache__")))
@@ -81,13 +86,13 @@ class CliTest(unittest.TestCase):
     def test_python_build_keeps_bytecode_out_of_source(self):
         self.require_python()
         self.source("hello.py", 'print("built")\n')
-        output = Path(self.invoke("build", "python").stdout.strip())
+        output = Path(self.invoke("adapter", "python", "build").stdout.strip())
         self.assertTrue(output.is_relative_to(self.home / "state"))
         self.assertTrue(any(path.suffix == ".pyc" for path in output.rglob("*.pyc")))
         self.assertFalse(list(self.project.rglob("__pycache__")))
 
     def test_python_build_without_sources(self):
-        self.invoke("build", "python", expected=1)  # no .py -> cannot enumerate
+        self.invoke("adapter", "python", "build", expected=1)  # no .py -> cannot enumerate
 
     def test_rust_exec_builds_then_runs(self):
         self.require_rust()
@@ -107,10 +112,10 @@ class CliTest(unittest.TestCase):
         self.require_rust()
         self.source("main.rs", 'mod value; fn main() { println!("{}", value::get()); }\n')
         self.source("value.rs", 'pub fn get() -> i32 { 42 }\n')
-        output = self.invoke("build", "rust").stdout.strip()
+        output = self.invoke("adapter", "rust", "build").stdout.strip()
         self.assertEqual(self.invoke("run", "exec", output).stdout.strip(), "42")
         (self.project / "main.rs").rename(self.project / "other.rs")
-        self.assertIn("crate root", self.invoke("build", "rust", expected=1).stderr)
+        self.assertIn("crate root", self.invoke("adapter", "rust", "build", expected=1).stderr)
 
     def test_rust_failure_does_not_run_previous_artifact(self):
         self.require_rust()
@@ -133,9 +138,9 @@ class CliTest(unittest.TestCase):
 
     def test_csharp_build_failure_recovery_and_multiple_entries(self):
         self.require_tool("dotnet", "--version")
-        self.invoke("build", "csharp", expected=1)
+        self.invoke("adapter", "csharp", "build", expected=1)
         source = self.source("hello.cs", 'System.Console.WriteLine("Hello World");\n')
-        output = Path(self.invoke("build", "csharp").stdout.strip())
+        output = Path(self.invoke("adapter", "csharp", "build").stdout.strip())
         self.assertTrue(output.is_relative_to(self.home / "state"))
         result = subprocess.run(["dotnet", str(output)], env=self.environment,
                                 capture_output=True, text=True, timeout=30)
@@ -144,9 +149,9 @@ class CliTest(unittest.TestCase):
         source.write_text("not C sharp\n")
         self.assertNotIn("Hello World", self.invoke("run", "exec", source, expected=1).stdout)
         source.write_text('System.Console.WriteLine("recovered");\n')
-        self.assertEqual(self.invoke("csharp", source).stdout.strip(), "recovered")
+        self.assertEqual(self.invoke("breeze", source).stdout.strip(), "recovered")
         self.source("second.cs", "// ambiguous entry\n")
-        self.assertIn("exactly one", self.invoke("build", "csharp", expected=1).stderr)
+        self.assertIn("exactly one", self.invoke("adapter", "csharp", "build", expected=1).stderr)
 
     def test_r_hello_modes_arguments_exit_and_lowercase_extension(self):
         self.require_tool("Rscript", "--version")
@@ -154,46 +159,45 @@ class CliTest(unittest.TestCase):
             source = self.source(f"hello with spaces.{extension}",
                                  'cat(paste(commandArgs(trailingOnly=TRUE), collapse="|"), "\\n", sep="")\n'
                                  'quit(status=5)\n')
-            for command in (("r", source), ("run", "instance", source), ("run", "exec", source)):
+            for command in (("breeze", source), ("run", "instance", source), ("run", "exec", source)):
                 result = self.invoke(*command, "--", "Hello World", "$(touch NEVER)", expected=5)
                 self.assertEqual(result.stdout.strip(), "Hello World|$(touch NEVER)")
         self.assertFalse((self.project / "NEVER").exists())
 
     def test_r_parse_only_build_failure_and_recovery(self):
         self.require_tool("Rscript", "--version")
-        self.invoke("build", "r", expected=1)
+        self.invoke("adapter", "r", "build", expected=1)
         source = self.source("hello.R", 'stop("must not execute during build")\n')
         self.source("helper.r", 'x <- 1\n')
-        self.assertEqual(Path(self.invoke("build", "r").stdout.strip()), self.project.resolve())
+        self.assertEqual(Path(self.invoke("adapter", "r", "build").stdout.strip()), self.project.resolve())
         source.write_text("x <- (\n")
-        self.invoke("build", "r", expected=1)
+        self.invoke("adapter", "r", "build", expected=1)
         source.write_text('cat("recovered\\n")\n')
-        self.assertEqual(self.invoke("R", source).stdout.strip(), "recovered")
+        self.assertEqual(self.invoke("breeze", source).stdout.strip(), "recovered")
 
     def test_python_syntax_failure_and_recovery(self):
         self.require_python()
         source = self.source("hello.py", "def broken(\n")
-        self.invoke("build", "python", expected=1)
+        self.invoke("adapter", "python", "build", expected=1)
         source.write_text('print("Hello World")\n')
-        self.invoke("build", "python")
-        self.assertEqual(self.invoke("python", source).stdout.strip(), "Hello World")
+        self.invoke("adapter", "python", "build")
+        self.assertEqual(self.invoke("breeze", source).stdout.strip(), "Hello World")
 
     def test_rust_directory_build_and_documented_missing_toolchain(self):
         self.source("hello.rs", 'fn main() {}\n')
         if shutil.which("rustc") is None:
-            result = self.invoke("build", "rust", expected=1)
+            result = self.invoke("adapter", "rust", "build", expected=1)
             self.assertIn("cannot launch rustc", result.stderr)
             return
-        output = Path(self.invoke("build", "rust").stdout.strip())
+        output = Path(self.invoke("adapter", "rust", "build").stdout.strip())
         self.assertTrue(output.is_file())
 
     def test_help_and_invalid_grammar(self):
         help_text = self.invoke("--help").stdout
-        for command in ("b run", "b build", "b create manifest", "b box", "b java"):
+        for command in ("workspace", "build", "breeze", "run", "box", "adapter"):
             self.assertIn(command, help_text)
-            self.assertIn(command, (ROOT / "README.md").read_text())
-        for arguments in (("nonsense",), ("build",), ("run", "exec"),
-                          ("build", "c", ".", "extra"), ("java", "hello.c")):
+        for arguments in (("nonsense",), ("run", "exec"),
+                          ("adapter", "c", "build", ".", "extra")):
             self.assertIn("[vex]", self.invoke(*arguments, expected=1).stderr)
 
     def test_c_source_run_arguments_and_exit_status(self):
@@ -209,7 +213,7 @@ class CliTest(unittest.TestCase):
 
     def test_build_current_directory_and_existing_exec(self):
         self.source(text='int main(void) { return 9; }\n')
-        output = Path(self.invoke("build", "c").stdout.strip())
+        output = Path(self.invoke("adapter", "c", "build").stdout.strip())
         self.assertTrue(output.is_file())
         self.assertTrue(output.is_relative_to(self.home / "state"))
         self.invoke("run", "exec", output, expected=9)
@@ -219,20 +223,20 @@ class CliTest(unittest.TestCase):
         self.source("main.c", '#include "value.h"\nint main(void) { return value(); }\n')
         self.source("value.c", 'int value(void) { return 11; }\n')
         self.source("value.h", 'int value(void);\n')
-        output = Path(self.invoke("build", "c", self.project).stdout.strip())
+        output = Path(self.invoke("adapter", "c", "build", self.project).stdout.strip())
         self.invoke("run", "exec", output, expected=11)
 
     def test_directory_glob_characters_are_literal(self):
         unusual = self.project / "literal [project]"
         unusual.mkdir()
         (unusual / "main.c").write_text('int main(void) { return 0; }\n')
-        output = Path(self.invoke("build", "c", unusual).stdout.strip())
+        output = Path(self.invoke("adapter", "c", "build", unusual).stdout.strip())
         self.invoke("run", "exec", output)
 
     def test_empty_missing_and_non_executable_inputs(self):
-        self.invoke("build", "c", expected=1)
-        self.invoke("build", "c", "missing", expected=1)
-        self.invoke("build", "rust", expected=1)
+        self.invoke("adapter", "c", "build", expected=1)
+        self.invoke("adapter", "c", "build", "missing", expected=1)
+        self.invoke("adapter", "rust", "build", expected=1)
         self.invoke("run", "exec", "missing.c", expected=1)
         text = self.source("plain.txt", "not executable\n")
         self.invoke("run", "exec", text, expected=1)
@@ -247,7 +251,7 @@ class CliTest(unittest.TestCase):
     def test_missing_tool_is_reported(self):
         self.source()
         environment = dict(self.environment, CC="missing-b-test-compiler")
-        result = self.invoke("build", "c", environment=environment, expected=1)
+        result = self.invoke("adapter", "c", "build", environment=environment, expected=1)
         self.assertIn("cannot launch", result.stderr)
 
     def test_c_instance_and_export_reject_without_side_effects(self):
@@ -271,7 +275,7 @@ class CliTest(unittest.TestCase):
 
     def test_create_manifest_template_and_preserve_existing_file(self):
         manifest = self.project / "box.json"
-        result = self.invoke("create", "manifest", manifest)
+        result = self.invoke("box", "--init", manifest)
         self.assertEqual(result.stdout.strip(), str(manifest))
         text = manifest.read_text()
         parsed = json.loads(text)
@@ -287,9 +291,9 @@ class CliTest(unittest.TestCase):
         self.assertIn("clean", text)
         self.assertIn("com.example.myapp", text)
         self.assertIn("cannot create manifest", self.invoke(
-            "create", "manifest", manifest, expected=1).stderr)
+            "box", "--init", manifest, expected=1).stderr)
         self.assertEqual(manifest.read_text(), text)
-        self.assertIn("b create manifest <path>", self.invoke("--help").stdout)
+        self.assertIn("box --init <path>", self.invoke("--help").stdout)
 
     def test_box_exports_declared_payload_and_rejects_defects(self):
         (self.project / "dist").mkdir()
@@ -329,14 +333,14 @@ class CliTest(unittest.TestCase):
         self.assertIn("application.id is required",
                       self.invoke("box", manifest, "invalid-out", expected=1).stderr)
         self.assertEqual(list(self.project.glob("*-out")), [])
-        self.assertIn("only the portable format is implemented", self.invoke("--help").stdout)
+        self.assertIn("box <manifest.json> <output>", self.invoke("--help").stdout)
 
     def test_java_source_alias_and_direct_instance(self):
         self.require_java()
         self.source("Hello.java", 'class Hello { public static void main(String[] args) {'
                     'System.out.println(args[0]); System.exit(6); } }\n')
         before = set((self.home / "state").rglob("*.class"))
-        for arguments in (("java", "Hello.java"), ("run", "instance", "Hello.java")):
+        for arguments in (("breeze", "Hello.java"), ("run", "instance", "Hello.java")):
             result = self.invoke(*arguments, "--", "hello world", expected=6)
             self.assertEqual(result.stdout.strip(), "hello world")
         self.assertFalse(list(self.project.rglob("*.class")))
@@ -353,15 +357,32 @@ class CliTest(unittest.TestCase):
 
     def test_existing_executable_instance_needs_no_compiler(self):
         self.source(text='int main(void) { return 9; }\n')
-        output = self.invoke("build", "c").stdout.strip()
+        output = self.invoke("adapter", "c", "build").stdout.strip()
         environment = dict(self.environment, CC="missing-b-test-compiler")
         self.invoke("run", "instance", output, environment=environment, expected=9)
 
     def test_java_directory_build(self):
         self.require_java()
         self.source("Hello.java", 'class Hello { public static void main(String[] args) {} }\n')
-        output = Path(self.invoke("build", "java").stdout.strip())
+        output = Path(self.invoke("adapter", "java", "build").stdout.strip())
         self.assertTrue((output / "Hello.class").is_file())
+
+    def test_adapter_list(self):
+        result = self.invoke("adapter", "list")
+        self.assertIn("c", result.stdout)
+        self.assertIn("python", result.stdout)
+        self.assertIn("rust", result.stdout)
+
+    def test_workspace_init_and_rescan(self):
+        self.source("main.c", "int main(void) { return 0; }\n")
+        result = self.invoke("workspace")
+        self.assertIn("files discovered", result.stdout)
+        ws_file = self.project / ".b" / "workspace.json"
+        self.assertTrue(ws_file.is_file())
+        data = json.loads(ws_file.read_text())
+        self.assertEqual(data["name"], self.project.name)
+        paths = [f["path"] for f in data["files"]]
+        self.assertIn("main.c", paths)
 
 
 if __name__ == "__main__":

@@ -4,9 +4,9 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import { promisify } from "node:util"
-import plugin, { buildPreferencesPrompt } from "../../.opencode/plugins/preferences/index"
+import plugin, { buildPreferencesPrompt } from "../../../.opencode/plugins/preferences/index"
 
-const ROOT = resolve(import.meta.dir, "../..")
+const ROOT = resolve(import.meta.dir, "../../..")
 const BUDGET = 32 * 1024
 const run = promisify(execFile)
 const scratch: string[] = []
@@ -40,13 +40,13 @@ test("the injected block is the compressed constitution plus indexes, never the 
   expect(prompt).toContain(gist.trimEnd())
   expect(prompt).toContain("Per-File Battle Test Law")
 
-  for (const lawbook of ["suite/ecosystem/graphvex/graphvex-preferences.md",
-    "suite/ecosystem/determinant/determinant-preferences.md",
-    "suite/personal/primeagen/primeagen-preferences.md"]) {
+  for (const lawbook of ["vexgraph-ecosystem/graphvex/graphvex-preferences.md",
+    "vexgraph-ecosystem/determinant/determinant-preferences.md",
+    "vexgraph-hobby-projects/primeagen/primeagen-preferences.md"]) {
     expect(prompt).toContain(lawbook)
     expect(prompt).not.toContain(await readFile(join(ROOT, lawbook), "utf8"))
   }
-  expect(prompt).not.toContain(await readFile(join(ROOT, "tests/test-preferences.md"), "utf8"))
+  expect(prompt).not.toContain(await readFile(join(ROOT, "vexgraph-ecosystem/tests/test-preferences.md"), "utf8"))
 })
 
 test("the block fits the per-request budget", async () => {
@@ -114,7 +114,7 @@ test("proof laws and repository laws are served complete on demand", async () =>
   expect(await prefs("test", "Two-Dylib Swap")).toContain("### Two-Dylib Swap Law")
   expect(await prefs("repo", "func")).toContain("func — Repo-Local Living Preferences")
   expect(await prefs("repo", "func", "Standalone Opcode")).toContain("### Standalone Opcode Tool Law")
-  expect(await prefs("repo", "func", "--path")).toContain("suite/personal/func/func-preferences.md")
+  expect(await prefs("repo", "func", "--path")).toContain("vexgraph-hobby-projects/func/func-preferences.md")
   await expect(prefs("repo", "no-such-repo")).rejects.toThrow()
 })
 

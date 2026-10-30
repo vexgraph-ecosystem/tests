@@ -7,6 +7,7 @@ import tempfile
 import unittest
 
 _ROOT_CANDIDATES = [
+    Path(__file__).resolve().parents[3] / "vexgraph-hobby-projects/b",
     Path(__file__).resolve().parents[2] / "suite/personal/b",
     Path(__file__).resolve().parents[2] / "personal/b",
 ]

@@ -52,8 +52,8 @@ int main(void) {
     TerminalMarkdownTableCellLine line = TerminalMarkdownTable_cellLine("ab cd", 5, 0, 3u);
     assert(!line.truncated && line.cells == 2u && line.length == 2u && line.next == 3u);
     line = TerminalMarkdownTable_cellLine("abcdefgh", 8, 0, 4u);
-    assert(line.truncated);
-    assert(line.cells == 3u && line.length == 3u && line.next == 3u);
+    assert(!line.truncated && line.trailingHyphen);
+    assert(line.cells == 4u && line.length == 3u && line.next == 3u);
     line = TerminalMarkdownTable_cellLine("ab cd", 5, 3, 3u);
     assert(!line.truncated && line.cells == 2u && line.length == 2u && line.next == 5u);
     line = TerminalMarkdownTable_cellLine("", 0, 0, 3u);

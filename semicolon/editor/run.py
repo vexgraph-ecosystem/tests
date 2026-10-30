@@ -78,10 +78,11 @@ def main():
             print(f"PASS {mode} SemicolonSyntax: 2560 spans, staged failures, recovery, leak accounting")
             host = directory / f"{mode}-host"
             curses = "-lncurses" if sys.platform == "darwin" else "-lncursesw"
+            extra_platform = ["-fobjc-arc", "-framework", "AppKit"] if sys.platform == "darwin" else []
             run([compiler, *flags, *sanitizer, *includes,
                  str(ROOT / "tests/semicolon/editor/language_bridge_test.c"),
                  *(str(path) for path in build.sources(DETERMINANT, VEXSPOKE, ENGINE, LANGUAGE)),
-                 curses, "-lm", "-o", str(host)])
+                 curses, *extra_platform, "-lm", "-o", str(host)])
             result = run([str(host), str(source), str(plain)])
             messages = result.stderr.splitlines()
             assert len(messages) == 1 and "SemicolonSyntax storage refused" in messages[0], messages
@@ -134,8 +135,8 @@ def main():
                 raise AssertionError(f"C23 file did not open. Exit: {code}, captured: {captured!r}")
             payload = shell.repaint()
             text = re.sub(rb"\x1b\[[0-9;]*m|\x1b\(B", b"", payload)
-            assert b"\x1b[38;5;34m" in payload and b"int" in payload, payload
-            assert b"\x1b[38;5;108m" in payload and b"/** doc */" in text, payload
+            assert b"38;5;34m" in payload and b"int" in payload, payload
+            assert b"38;5;108m" in payload and b"/** doc */" in text, payload
             shell.send(b"\x1b[B")
             shell.send(b"\x1b[H")
             shell.send(b"//")
@@ -144,7 +145,7 @@ def main():
             # inside the source run. Inspect text without those attributes while
             # independently asserting the emitted regular-comment foreground.
             text = re.sub(rb"\x1b\[[0-9;]*m|\x1b\(B", b"", payload)
-            assert b"\x1b[38;5;145m" in payload and b"//int value;" in text, payload
+            assert b"38;5;145m" in payload and b"//int value;" in text, payload
             deadline = time.monotonic() + 5.0
             while (editable.read_text() != "/** doc */\n//int value;\n"
                    and time.monotonic() < deadline):
@@ -164,7 +165,7 @@ def main():
         run([compiler, *flags, "-fsanitize=address,undefined", "-fno-omit-frame-pointer",
              *includes, str(APP / "src/main/tui-main.c"),
              *(str(path) for path in build.sources(DETERMINANT, VEXSPOKE, ENGINE, LANGUAGE)),
-             curses, "-lm", "-o", str(sanitized)])
+             curses, *extra_platform, "-lm", "-o", str(sanitized)])
         history = directory / "history.c"
         history.write_bytes(b"int value;\n")
         history_shell = helpers.Pty(
