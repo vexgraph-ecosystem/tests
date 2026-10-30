@@ -4,6 +4,7 @@
 // displays them, and present publishes a surface by swapping the layer's
 // contents. Apple-only; elsewhere the surface is NULL and calls are no-ops.
 
+#include "platform/platform.h"
 #include <stdio.h>
 
 #include "window/window.h"
@@ -21,7 +22,7 @@ int main(void) {
     Window *w = Window_create("present surface", 320, 240);
     CHECK(w != nullptr);
 
-#ifdef __APPLE__
+#if defined(VEX_PLATFORM_APPLE)
     // two IOSurfaces = the double buffer; the layer shows whichever we publish
     void *front = Window_createPresentSurface(w, 320, 240);
     void *back = Window_createPresentSurface(w, 320, 240);
