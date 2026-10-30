@@ -1,6 +1,7 @@
 #ifndef DARLING_TEST_FRAME_CHROME_LAB_H
 #define DARLING_TEST_FRAME_CHROME_LAB_H
 
+#include "platform/platform.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,7 +42,7 @@ static int frameChromeLab(int argc, char **argv, const char *title, int mode, bo
         fprintf(stderr, "usage: %s [--interactive]\n", argv[0]);
         return 1;
     }
-#ifndef __APPLE__
+#if !defined(VEX_PLATFORM_APPLE)
     if (lights) {
         puts("SKIP: native traffic-light assertions require macOS");
         return B_TEST_SKIP;
@@ -76,7 +77,7 @@ static int frameChromeLab(int argc, char **argv, const char *title, int mode, bo
     CHROME_CHECK(Window_isTransparent(window));
     Frame_setTransparent(frame, false);
     CHROME_CHECK(!Window_isTransparent(window));
-#ifdef __APPLE__
+#if defined(VEX_PLATFORM_APPLE)
     if (mode == WINDOW_UNDECORATED_NAKED) {
         for (int i = 0; i < 3; ++i)
             CHROME_CHECK(Window_macOS_isTrafficLightButtonVisible(window, (WindowTrafficLight)i));
