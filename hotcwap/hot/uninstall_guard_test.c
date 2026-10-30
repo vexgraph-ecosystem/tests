@@ -21,6 +21,7 @@
 // SAFE TO RUN: HOME and VEX_MANIFEST are redirected into mkdtemp scratch dirs,
 // so no real user or system directory is ever a candidate. POSIX-only.
 
+#include "platform/platform.h"
 #include <dirent.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -119,7 +120,7 @@ static bool path_exists(const char *path) {
 }
 
 int main(void) {
-#if defined(_WIN32)
+#if defined(VEX_PLATFORM_WINDOWS)
     printf("uninstall_guard_test: SKIP (POSIX path contract)\n");
     return B_TEST_SKIP;
 #else
