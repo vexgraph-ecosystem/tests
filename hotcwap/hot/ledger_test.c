@@ -14,6 +14,7 @@
 // SAFE TO RUN: HOME is redirected into a mkdtemp scratch dir, so the ledger
 // file never touches the real per-user state directory. POSIX-only.
 
+#include "platform/platform.h"
 #include <dirent.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -71,7 +72,7 @@ static bool rmtree(const char *path) {
 }
 
 int main(void) {
-#if defined(_WIN32)
+#if defined(VEX_PLATFORM_WINDOWS)
     printf("ledger_test: SKIP (POSIX state-file contract)\n");
     return B_TEST_SKIP;
 #else
