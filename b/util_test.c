@@ -1,4 +1,5 @@
 #include "b.h"
+#include "platform/platform.h"
 
 ;;DEFINITION
 /* New command/check helpers reject invalid cold inputs before array access.
@@ -16,7 +17,7 @@
 
 /* Checks command/source helper rejection, exit-status propagation, and literal ten-argument forwarding. */
 int main(void) {
-#ifdef _WIN32
+#if defined(VEX_PLATFORM_WINDOWS)
     char *prefix[] = { "sh", "-c", "exit 7" };
 #else
     char *prefix[] = { "/bin/sh", "-c", "exit 7" };
@@ -30,7 +31,7 @@ int main(void) {
     assert(Util_runCommand(prefix, 3, 1, nullptr) == 1);
     assert(Util_runCommand(prefix, 3, 0, nullptr) == 7);
     char *arguments[] = { "a space", "$(touch NEVER)", ";", "3", "4", "5", "6", "7", "8", "9" };
-#ifdef _WIN32
+#if defined(VEX_PLATFORM_WINDOWS)
     char *ten[] = { "sh", "-c", "test \"$#\" -eq 10 && test \"$1\" = 'a space'", "fixture" };
 #else
     char *ten[] = { "/bin/sh", "-c", "test \"$#\" -eq 10 && test \"$1\" = 'a space'", "fixture" };
