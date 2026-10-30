@@ -4,6 +4,7 @@
 // surface, background/transparency/blur, panels, and capture.
 
 #include <stdio.h>
+#include "platform/platform.h"
 
 #include "frame/frame.h"
 #include "panel/panel.h"
@@ -57,7 +58,7 @@ int main(void) {
     // the zero-copy seam: on Apple a render publishes an IOSurface to the
     // window's CALayer; elsewhere the RGBA fallback leaves the layer untouched
     Frame_render(f);
-#ifdef __APPLE__
+#if defined(VEX_PLATFORM_APPLE)
     CHECK(Window_presentSurfaceContents(Frame_window(f)) != nullptr);
 #else
     CHECK(Window_presentSurfaceContents(Frame_window(f)) == nullptr);
