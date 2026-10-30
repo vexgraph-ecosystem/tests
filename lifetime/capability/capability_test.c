@@ -13,6 +13,7 @@
 // flaky. The law cares that the probe is honest and cached, not that an M-chip
 // has a particular bit.
 
+#include "platform/platform.h"
 #include <stdint.h>
 #include <stdio.h>
 
