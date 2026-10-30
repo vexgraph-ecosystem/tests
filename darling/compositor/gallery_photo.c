@@ -1,7 +1,8 @@
 #include "gallery_photo.h"
+#include "platform/platform.h"
 #include <string.h>
 
-#ifdef __APPLE__
+#if defined(VEX_PLATFORM_APPLE)
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreGraphics/CoreGraphics.h>
 #include <ImageIO/ImageIO.h>
@@ -15,7 +16,7 @@
 // Source pixel safety bound: 16 Mi pixels; output bound matches GpuScope budget.
 bool GalleryPhoto_decode(const char *path, unsigned width, unsigned height,
                          uint8_t *dest, size_t stride) {
-#ifndef __APPLE__
+#if !defined(VEX_PLATFORM_APPLE)
     (void) path;
     (void) width;
     (void) height;
