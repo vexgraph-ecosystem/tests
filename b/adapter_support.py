@@ -23,7 +23,8 @@ class AdapterCase(unittest.TestCase):
         cls.environment = dict(os.environ, B_HOME=str(cls.home / "state"),
                                npm_config_loglevel="silent", npm_config_update_notifier="false",
                                npm_config_cache=str(cls.home / "npm-cache"))
-        subprocess.run([str(ROOT / "b"), "--help"], env=cls.environment,
+        b_cmd = ["bash", str(ROOT / "b")] if os.name == "nt" else [str(ROOT / "b")]
+        subprocess.run([*b_cmd, "--help"], env=cls.environment,
                        capture_output=True, check=True, timeout=120)
 
     def setUp(self):
@@ -32,7 +33,8 @@ class AdapterCase(unittest.TestCase):
         self.project = Path(self.temp.name)
 
     def invoke(self, *args, expected=0, environment=None):
-        result = subprocess.run([str(ROOT / "b"), *map(str, args)], cwd=self.project,
+        b_cmd = ["bash", str(ROOT / "b")] if os.name == "nt" else [str(ROOT / "b")]
+        result = subprocess.run([*b_cmd, *map(str, args)], cwd=self.project,
                                 env=environment or self.environment, capture_output=True,
                                 text=True, timeout=120)
         if expected is None:
