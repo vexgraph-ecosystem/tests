@@ -57,7 +57,7 @@ int main(void) {
     CHECK((uint64_t) again == before);
     CHECK(Capability_osMajor() == Capability_osMajor());
 
-#if defined(__APPLE__)
+#if defined(VEX_PLATFORM_APPLE)
     // The floor guarantees macOS 14+; the probe must agree.
     CHECK(Capability_osMajor() >= 14);
 #endif
