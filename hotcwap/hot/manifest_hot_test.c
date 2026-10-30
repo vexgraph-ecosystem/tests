@@ -21,6 +21,7 @@
 // a mkdtemp dir and is best-effort removed on exit. POSIX-only (dlopen-based
 // loader contract); on Windows the harness skips with exit 0.
 
+#include "platform/platform.h"
 #include <dirent.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -169,7 +170,7 @@ static bool wait_for_generation(HotModule *hot, uint32_t target) {
 }
 
 int main(void) {
-#if defined(_WIN32)
+#if defined(VEX_PLATFORM_WINDOWS)
     printf("manifest_hot_test: SKIP (POSIX dlopen contract)\n");
     return B_TEST_SKIP;
 #else
