@@ -3,11 +3,12 @@
 // The weighted pool: append choices, cumulative weights, a draw lands in the
 // pool, capacity overflow is refused, and addProbable carries a Probable across.
 
+#include "platform/platform.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#if defined(_WIN32)
+#if defined(VEX_PLATFORM_WINDOWS)
 #include <io.h>
 #define TEST_DUP _dup
 #define TEST_DUP2 _dup2
