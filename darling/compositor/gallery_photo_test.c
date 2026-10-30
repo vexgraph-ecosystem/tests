@@ -1,6 +1,7 @@
 // Gallery photograph bridge owner: decode the tracked photo reproducibly,
 // preserve destination on rejection, and resolve an app-bundled copy without
 // source-tree access. No window/appearance or production decoder claim.
+#include "platform/platform.h"
 #include "gallery_photo.h"
 #include <assert.h>
 #include <stdio.h>
@@ -8,7 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifdef __APPLE__
+#if defined(VEX_PLATFORM_APPLE)
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreGraphics/CoreGraphics.h>
 #include <ImageIO/ImageIO.h>
@@ -16,7 +17,7 @@
 
 // Tests bounded photo decoding, bundled lookup, orientation, and rejection recovery.
 int main(int argc, char **argv) {
-#ifndef __APPLE__
+#if !defined(VEX_PLATFORM_APPLE)
     (void) argc;
     (void) argv;
     puts("gallery_photo_test: skipped on non-Apple platform");
