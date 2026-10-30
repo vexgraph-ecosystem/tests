@@ -14,6 +14,7 @@
 // Headless but real (dlopen-based loader contract). Scratch state lives in a
 // mkdtemp dir under the VEX_MANIFEST test seam. POSIX-only.
 
+#include "platform/platform.h"
 #include <dirent.h>
 #include <dlfcn.h>
 #include <errno.h>
@@ -181,7 +182,7 @@ static bool wait_for_generation(HotModule *hot, uint32_t target) {
 }
 
 int main(void) {
-#if defined(_WIN32)
+#if defined(VEX_PLATFORM_WINDOWS)
     printf("wrong_binary_test: SKIP (POSIX dlopen contract)\n");
     return B_TEST_SKIP;
 #else
